@@ -86,11 +86,11 @@
 			redirect($CFG->wwwroot.'/blocks/configurable_reports/editcomp.php?id='.$id.'&amp;comp='.$comp);
 		}
 		else if ($data = $editform->get_data()) {
-			$compclass->form_process_data(&$editform);
+			$compclass->form_process_data($editform);
 			add_to_log($report->courseid, 'configurable_reports', 'edit', '', $report->name);
 		}
 		
-		$compclass->form_set_data(&$editform);
+		$compclass->form_set_data($editform);
 
 	}
 	

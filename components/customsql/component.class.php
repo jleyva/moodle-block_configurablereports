@@ -31,7 +31,7 @@ class component_customsql extends component_base{
 		$this->help = true;
 	}
 	
-	function form_process_data($cform){
+	function form_process_data(&$cform){
 		global $DB;
 		if($this->form){
 			$data = $cform->get_data();
@@ -43,7 +43,7 @@ class component_customsql extends component_base{
 		}
 	}
 	
-	function form_set_data($cform){
+	function form_set_data(&$cform){
 		if($this->form){
 			$fdata = new stdclass;
 			$components = cr_unserialize($this->config->components);
