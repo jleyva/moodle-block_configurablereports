@@ -32,6 +32,7 @@ class component_timeline extends component_base{
 	}
 	
 	function form_process_data(&$cform){
+		global $DB;
 		if($this->form){
 			$data = $cform->get_data();
 			$components = cr_unserialize($this->config->components);
