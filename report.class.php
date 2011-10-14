@@ -561,7 +561,10 @@
 					}
 
 			$this->totalrecords = count($this->finalreport->table->data);		
-			$pagination = print_paging_bar($this->totalrecords,$page,$this->config->pagination,"viewreport.php?id=".$this->config->id."$postfiltervars&amp;",'page',false,true);
+			//$pagination = print_paging_bar($this->totalrecords,$page,$this->config->pagination,"viewreport.php?id=".$this->config->id."$postfiltervars&amp;",'page',false,true);
+			$pagingbar = new paging_bar($this->totalrecords, $page, $this->config->pagination, "viewreport.php?id=".$this->config->id."$postfiltervars&amp;");
+			$pagingbar->pagevar = 'page';
+			$pagination =  $OUTPUT->render($pagingbar);
 		}				
 				
 		$search = array('##reportname##','##reportsummary##','##graphs##','##exportoptions##','##calculationstable##','##pagination##');
@@ -655,7 +658,10 @@
 							}
 						}
 						
-				print_paging_bar($this->totalrecords,$page,$this->config->pagination,"viewreport.php?id=".$this->config->id."$postfiltervars&amp;");
+				//print_paging_bar($this->totalrecords,$page,$this->config->pagination,"viewreport.php?id=".$this->config->id."$postfiltervars&amp;");
+				$pagingbar = new paging_bar($this->totalrecords, $page, $this->config->pagination, "viewreport.php?id=".$this->config->id."$postfiltervars&amp;");
+				$pagingbar->pagevar = 'page';
+				echo $OUTPUT->render($pagingbar);
 			}
 		
 			if(!empty($this->finalreport->calcs->data[0])){
