@@ -504,7 +504,7 @@
 		$table->cellspacing = (isset($components['columns']['config']))? $components['columns']['config']->cellspacing : '1';
 		$table->class = (isset($components['columns']['config']))? $components['columns']['config']->class : 'generaltable';
 	
-		$calcs = new stdclass;
+		$calcs = new html_table();
 		$calcs->data = array($finalcalcs);
 		$calcs->head = $tablehead;
 		$calcs->size = $tablesize;
@@ -666,7 +666,7 @@
 		
 			if(!empty($this->finalreport->calcs->data[0])){
 				echo '<br /><br /><br /><div class="centerpara"><b>'.get_string("columncalculations","block_configurable_reports").'</b></div><br />';
-				print_table($this->finalreport->calcs);				
+				echo html_writer::table($this->finalreport->calcs);
 			}
 			echo "</div>";
 			
