@@ -45,16 +45,14 @@
   
   function cr_add_jsordering($cssid){
 	global $DB, $CFG;
+    echo html_writer::script(false, new moodle_url('/blocks/configurable_reports/js/jquery-latest.js'));
+    echo html_writer::script(false, new moodle_url('/blocks/configurable_reports/js/jquery.tablesorter.min.js'));
+    $script = '$(document).ready(function() {
+        // call the tablesorter plugin
+        $("'.$cssid.'").tablesorter();
+    });';
+    echo html_writer::script($script);
 	?>
-		<script type="text/javascript" src="<?php echo $CFG->wwwroot.'/blocks/configurable_reports/js/';?>jquery-latest.js"	></script>	
-		<script type="text/javascript" src="<?php echo $CFG->wwwroot.'/blocks/configurable_reports/js/';?>jquery.tablesorter.min.js"></script>
-
-		<script type="text/javascript" id="js">
-			$(document).ready(function() {
-					// call the tablesorter plugin
-					$("<?php echo $cssid; ?>").tablesorter();         
-			});    
-		</script>
 
 		<style type="text/css">
 		<?php echo $cssid; ?> th.header{
