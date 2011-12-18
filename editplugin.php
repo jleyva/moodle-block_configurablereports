@@ -200,8 +200,8 @@
 					print_error('errorsaving');
 				}
 				else{
-					header("Location: editcomp.php?id=$id&comp=$comp");
-					die;
+					redirect(new moodle_url('/blocks/configurable_reports/editcomp.php', array('id' => $id, 'comp' => $comp)));
+					exit;
 				}
 			}
 		}
