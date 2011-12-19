@@ -35,7 +35,7 @@
 	$courseid = $report->courseid;
 	
 	if (! $course = $DB->get_record("course",array( "id" =>  $courseid)) ) {
-		error("No such course id");
+		print_error("No such course id");
 	}
 
 	// Force user login in course (SITE or Course)

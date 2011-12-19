@@ -57,7 +57,7 @@ class customsql_form extends moodleform {
 		$sql = trim($sql);
 
         // Simple test to avoid evil stuff in the SQL.
-        if (preg_match('/\b(ALTER|CREATE|DELETE|DROP|GRANT|INSERT|INTO|TRUNCATE|UPDATE)\b/i', $sql)) {
+        if (preg_match('/\b(ALTER|CREATE|DELETE|DROP|GRANT|INSERT|INTO|TRUNCATE|UPDATE|SET|VACUUM|REINDEX|DISCARD|LOCK)\b/i', $sql)) {
             $errors['querysql'] = get_string('notallowedwords', 'block_configurable_reports');
 
         // Do not allow any semicolons.

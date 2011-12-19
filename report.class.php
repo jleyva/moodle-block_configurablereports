@@ -504,7 +504,7 @@
 		$table->cellspacing = (isset($components['columns']['config']))? $components['columns']['config']->cellspacing : '1';
 		$table->class = (isset($components['columns']['config']))? $components['columns']['config']->class : 'generaltable';
 	
-		$calcs = new stdclass;
+		$calcs = new html_table();
 		$calcs->data = array($finalcalcs);
 		$calcs->head = $tablehead;
 		$calcs->size = $tablesize;
@@ -529,7 +529,7 @@
 	}
 	
 	function print_template($config){
-		global $DB, $CFG;
+		global $DB, $CFG, $OUTPUT;
 		
 		$page_contents = array();
 		$page_contents['header'] = (isset($config->header) && $config->header)? $config->header : '';
@@ -603,12 +603,13 @@
 		echo format_text($page_contents['footer'], FORMAT_HTML);
 		echo "</div>\n";
 		echo '<div class="centerpara"><br />';
-		echo "<img src=\"{$CFG->wwwroot}/blocks/configurable_reports/img/print.png\" alt=\".get_string('printreport','block_configurable_reports')\">&nbsp;<a href=\"javascript: printDiv('printablediv')\">".get_string('printreport','block_configurable_reports')."</a>";	
+		echo $OUTPUT->pix_icon('print', get_string('printreport', 'block_configurable_reports'), 'block_configurable_reports');
+		echo "&nbsp;<a href=\"javascript: printDiv('printablediv')\">".get_string('printreport','block_configurable_reports')."</a>";	
 		echo "</div>\n";
 	}
 	
 	function print_report_page(){
-		global $DB, $CFG, $FULLME, $USER;
+		global $DB, $CFG, $FULLME, $OUTPUT, $USER;
 		
 		cr_print_js_function();
 		$components = cr_unserialize($this->config->components);
@@ -666,7 +667,7 @@
 		
 			if(!empty($this->finalreport->calcs->data[0])){
 				echo '<br /><br /><br /><div class="centerpara"><b>'.get_string("columncalculations","block_configurable_reports").'</b></div><br />';
-				print_table($this->finalreport->calcs);				
+				echo html_writer::table($this->finalreport->calcs);
 			}
 			echo "</div>";
 			
@@ -677,7 +678,8 @@
 		}		
 		
 		echo '<div class="centerpara"><br />';
-		echo "<img src=\"{$CFG->wwwroot}/blocks/configurable_reports/img/print.png\" alt=\".get_string('printreport','block_configurable_reports')\">&nbsp;<a href=\"javascript: printDiv('printablediv')\">".get_string('printreport','block_configurable_reports')."</a>";	
+		echo $OUTPUT->pix_icon('print', get_string('printreport', 'block_configurable_reports'), 'block_configurable_reports');
+		echo "&nbsp;<a href=\"javascript: printDiv('printablediv')\">".get_string('printreport','block_configurable_reports')."</a>";	
 		echo "</div>\n";
 	}
 	

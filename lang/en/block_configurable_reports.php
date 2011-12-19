@@ -185,7 +185,7 @@ $string['noexplicitprefix'] = "No explicit prefix";
 $string['queryfailed'] = "Query failed";
 $string['norowsreturned'] = "No rows returned";
 
-$string['listofsqlreports'] = '<a href=\"http://docs.moodle.org/en/ad-hoc_contributed_reports\" target=\"_blank\">List of SQL Contributed reports</a>';
+$string['listofsqlreports'] = '<a href="http://docs.moodle.org/en/ad-hoc_contributed_reports" target="_blank">List of SQL Contributed reports</a>';
 
 $string['usersincoursereport_summary'] = "Any user in the current report course";
 
