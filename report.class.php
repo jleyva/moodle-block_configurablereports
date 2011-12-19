@@ -603,12 +603,13 @@
 		echo format_text($page_contents['footer'], FORMAT_HTML);
 		echo "</div>\n";
 		echo '<div class="centerpara"><br />';
-		echo "<img src=\"{$CFG->wwwroot}/blocks/configurable_reports/img/print.png\" alt=\".get_string('printreport','block_configurable_reports')\">&nbsp;<a href=\"javascript: printDiv('printablediv')\">".get_string('printreport','block_configurable_reports')."</a>";	
+		echo $OUTPUT->pix_icon('print', get_string('printreport', 'block_configurable_reports'), 'block_configurable_reports');
+		echo "&nbsp;<a href=\"javascript: printDiv('printablediv')\">".get_string('printreport','block_configurable_reports')."</a>";	
 		echo "</div>\n";
 	}
 	
 	function print_report_page(){
-		global $DB, $CFG, $FULLME, $USER;
+		global $DB, $CFG, $FULLME, $OUTPUT, $USER;
 		
 		cr_print_js_function();
 		$components = cr_unserialize($this->config->components);
@@ -677,7 +678,8 @@
 		}		
 		
 		echo '<div class="centerpara"><br />';
-		echo "<img src=\"{$CFG->wwwroot}/blocks/configurable_reports/img/print.png\" alt=\".get_string('printreport','block_configurable_reports')\">&nbsp;<a href=\"javascript: printDiv('printablediv')\">".get_string('printreport','block_configurable_reports')."</a>";	
+		echo $OUTPUT->pix_icon('print', get_string('printreport', 'block_configurable_reports'), 'block_configurable_reports');
+		echo "&nbsp;<a href=\"javascript: printDiv('printablediv')\">".get_string('printreport','block_configurable_reports')."</a>";	
 		echo "</div>\n";
 	}
 	

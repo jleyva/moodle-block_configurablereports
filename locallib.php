@@ -44,7 +44,7 @@
   }
   
   function cr_add_jsordering($cssid){
-	global $DB, $CFG;
+	global $DB, $CFG, $OUTPUT;
     echo html_writer::script(false, new moodle_url('/blocks/configurable_reports/js/jquery-latest.js'));
     echo html_writer::script(false, new moodle_url('/blocks/configurable_reports/js/jquery.tablesorter.min.js'));
     $script = '$(document).ready(function() {
@@ -56,18 +56,18 @@
 
 		<style type="text/css">
 		<?php echo $cssid; ?> th.header{
-			background-image:url(<?php echo $CFG->wwwroot.'/blocks/configurable_reports/img/';?>normal.gif);
+			background-image:url(<?php echo $OUTPUT->pix_url('normal', 'block_configurable_reports'); ?>);
 			background-position:right center;
 			background-repeat:no-repeat;
 			cursor:pointer;
 		}
 
 		<?php echo $cssid; ?> th.headerSortUp{
-		 background-image:url(<?php echo $CFG->wwwroot.'/blocks/configurable_reports/img/';?>asc.gif);
+		 background-image:url(<?php echo $OUTPUT->pix_url('asc', 'block_configurable_reports');?>);
 		}
 
 		<?php echo $cssid; ?> th.headerSortDown{
-		 background-image:url(<?php echo $CFG->wwwroot.'/blocks/configurable_reports/img/';?>desc.gif);
+		 background-image:url(<?php echo $OUTPUT->pix_url('desc', 'block_configurable_reports');?>);
 		}    
 		</style>		
 	<?php 
