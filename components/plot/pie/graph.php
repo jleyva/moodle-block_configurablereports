@@ -39,7 +39,7 @@
 	$courseid = $report->courseid;
 
 	if (! $course = $DB->get_record("course",array( "id" =>  $courseid)) ) {
-		error("No such course id");
+		print_error("No such course id");
 	}
 
 	// Force user login in course (SITE or Course)
@@ -61,7 +61,7 @@
 	$reportclass = new $reportclassname($report);
 
 	if (!$reportclass->check_permissions($USER->id, $context)){
-		error("No permissions");
+		print_error("No permissions");
 	} 
 	else{
 	

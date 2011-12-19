@@ -37,8 +37,8 @@
 	$delete = optional_param('delete', 0, PARAM_INT);
 	
 	if(!$pname){
-		header("Location: $CFG->wwwroot/blocks/configurable_reports/editcomp.php?id=$id&comp=$comp");
-		die;
+		redirect(new moodle_url('/blocks/configurable_reports/editcomp.php', array('id' => $id, 'comp' => $comp)));
+		exit;
 	}
 	
 	if(! $report = $DB->get_record('block_configurable_reports_report',array('id' => $id)))
@@ -114,8 +114,8 @@
 			$components[$comp]['elements'] = $elements;
 			$report->components = cr_serialize($components);
 			$DB->update_record('block_configurable_reports_report',$report);
-			header("Location: $CFG->wwwroot/blocks/configurable_reports/editcomp.php?id=$id&comp=$comp");			
-			die;
+			redirect(new moodle_url('/blocks/configurable_reports/editcomp.php', array('id' => $id, 'comp' => $comp)));
+			exit;
 		}
 	}
 
@@ -136,9 +136,11 @@
 		require_once($CFG->dirroot.'/blocks/configurable_reports/components/'.$comp.'/'.$pname.'/form.php');
 		$classname = $pname.'_form';
 		
-		$formurl = "editplugin.php?id=$id&comp=$comp&pname=$pname";
-		if($cid)
-			$formurl .= "&cid=$cid";
+		$formurlparams = array('id' => $id, 'comp' => $comp, 'pname' => $pname);
+		if($cid) {
+			$formurlparams['cid'] = $cid;
+		}
+		$formurl = new moodle_url('/blocks/configurable_reports', $formurlparams);
 		$editform = new $classname($formurl,compact('comp','cid','id','pluginclass','compclass','report','reportclass'));
 			
 		if(!empty($cdata)){		
@@ -178,8 +180,8 @@
 					print_error('errorsaving');
 				}
 				else{
-					header("Location: editcomp.php?id=$id&comp=$comp");
-					die;
+					redirect(new moodle_url('/blocks/configurable_reports/editcomp.php', array('id' => $id, 'comp' => $comp)));
+					exit;
 				}
 					
 			}
@@ -200,8 +202,8 @@
 					print_error('errorsaving');
 				}
 				else{
-					header("Location: editcomp.php?id=$id&comp=$comp");
-					die;
+					redirect(new moodle_url('/blocks/configurable_reports/editcomp.php', array('id' => $id, 'comp' => $comp)));
+					exit;
 				}
 			}
 		}
@@ -222,8 +224,8 @@
 			print_error('errorsaving');
 		}
 		else{
-			header("Location: editcomp.php?id=$id&comp=$comp");
-			die;
+			redirect(new moodle_url('/blocks/configurable_reports/editcomp.php', array('id' => $id, 'comp' => $comp)));
+			exit;
 		}
 	}
 	

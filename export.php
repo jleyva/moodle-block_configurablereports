@@ -57,7 +57,7 @@
 	$downloadfilename = clean_filename(format_string($report->name)).'.xml';
 	$version = $DB->get_field('block','version',array('name' => 'configurable_reports'));
 	if(!$version)
-		error("Plugin not found");
+		print_error("Plugin not found");
 
 	$data = '<?xml version="1.0" encoding="UTF-8" ?>'."\n";
 	$data .= "<report version=\"$version\">";

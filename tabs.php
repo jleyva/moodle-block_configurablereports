@@ -28,15 +28,15 @@ if (!defined('MOODLE_INTERNAL')) {
 
 $top = array();
 
-$top[] = new tabobject('report', $CFG->wwwroot.'/blocks/configurable_reports/editreport.php?id='.$report->id,
+$top[] = new tabobject('report', new moodle_url('/blocks/configurable_reports/editreport.php', array('id' => $report->id)),
                 get_string('report','block_configurable_reports'));
 
 foreach($reportclass->components as $comptab){
-	$top[] = new tabobject($comptab, $CFG->wwwroot.'/blocks/configurable_reports/editcomp.php?id='.$report->id.'&comp='.$comptab,
+	$top[] = new tabobject($comptab, new moodle_url('/blocks/configurable_reports/editcomp.php', array('id' => $report->id, 'comp' => $comptab)),
                 get_string($comptab,'block_configurable_reports'));
 }
 
-$top[] = new tabobject('viewreport', $CFG->wwwroot.'/blocks/configurable_reports/viewreport.php?id='.$report->id,
+$top[] = new tabobject('viewreport', new moodle_url('/blocks/configurable_reports/viewreport.php', array('id' => $report->id)),
                 get_string('viewreport','block_configurable_reports'));
 
 $tabs = array($top);
