@@ -15,6 +15,7 @@ Thanks to:
 Ivan Breziansky for translating the block to slovak language
 Iñaki Arenaza for translating the block documentation to spanish
 Luis de Vasconcelos for testing the block
+Adam Olley and Netspot Moodle Partner for improving some parts of the Moodle2 version
 
 Some parts of this plugin uses code of:
 
