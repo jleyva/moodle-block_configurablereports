@@ -1,6 +1,6 @@
 <?php
 
-$block_configurable_reports_capabilities = array(
+$capabilities = array(
 
     'block/configurable_reports:managereports' => array(
 
@@ -37,7 +37,5 @@ $block_configurable_reports_capabilities = array(
             'admin' => CAP_ALLOW
         )
     )
-    
-);
 
-?>
+);
