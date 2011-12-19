@@ -529,7 +529,7 @@
 	}
 	
 	function print_template($config){
-		global $DB, $CFG;
+		global $DB, $CFG, $OUTPUT;
 		
 		$page_contents = array();
 		$page_contents['header'] = (isset($config->header) && $config->header)? $config->header : '';
