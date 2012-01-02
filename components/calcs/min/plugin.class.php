@@ -65,14 +65,17 @@ class plugin_min extends plugin_base{
 				$sql =$config->querysql;
 				$sql = $reportclass->prepare_sql($sql);
 				if($rs = $reportclass->execute_query($sql)){
-                    $row = array_shift($rs);					$i = 0;
-					foreach($row as $colname=>$value){
-						if($i == $data->column)
-							return str_replace('_', ' ', $colname);
-						$i++;
+					foreach($rs as $row){
+						$i = 0;
+						foreach($row as $colname=>$value){
+							if($i == $data->column)
+								return str_replace('_', ' ', $colname);
+							$i++;
+						}
+						break;
 					}
 					$rs->close();
-				}
+				}}
 			}				
 		}
 		
