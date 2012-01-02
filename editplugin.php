@@ -140,7 +140,7 @@
 		if($cid) {
 			$formurlparams['cid'] = $cid;
 		}
-		$formurl = new moodle_url('/blocks/configurable_reports', $formurlparams);
+		$formurl = new moodle_url('/blocks/configurable_reports/editplugin.php', $formurlparams);
 		$editform = new $classname($formurl,compact('comp','cid','id','pluginclass','compclass','report','reportclass'));
 			
 		if(!empty($cdata)){		
