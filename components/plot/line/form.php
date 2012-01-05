@@ -42,13 +42,15 @@ class line_form extends moodleform {
 				$sql = $config->querysql;
 				$sql = $reportclass->prepare_sql($sql);
 				if($rs = $reportclass->execute_query($sql)){
-					$row = array_shift($rs);
-					$i = 1;
-					foreach($row as $colname=>$value){
-						$options[$i] = str_replace('_', ' ', $colname);
-						$i++;
+					foreach($rs as $row){
+						$i = 1;
+						foreach($row as $colname=>$value){
+							$options[$i] = str_replace('_', ' ', $colname);
+							$i++;
+						}
+						break;
 					}
-					$rs->close();
+					$rs->close();					
 				}
 			}			
 		}
