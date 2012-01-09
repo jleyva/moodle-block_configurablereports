@@ -38,10 +38,11 @@ class plugin_currentusercourses extends plugin_base{
 	
 	// data -> Plugin configuration data
 	function execute($data,$user,$courseid){
-		global $DB;
+		global $DB, $CFG;
+		require_once($CFG->libdir.'/enrollib.php');
 		
 		$finalcourses = array();		
-		$mycourses = get_my_courses($user->id);
+		$mycourses = enrol_get_users_courses($user->id);
 		if(!empty($mycourses))
 			$finalcourses = array_keys($mycourses);
 				
