@@ -6,8 +6,8 @@ $capabilities = array(
 
         'captype' => 'write',
         'contextlevel' => CONTEXT_BLOCK,
-        'legacy' => array(
-            'admin' => CAP_ALLOW
+        'archetypes' => array(
+            'manager' => CAP_ALLOW
         )
     ),
 
@@ -15,8 +15,8 @@ $capabilities = array(
 
         'captype' => 'write',
         'contextlevel' => CONTEXT_BLOCK,
-        'legacy' => array(
-            'admin' => CAP_ALLOW
+        'archetypes' => array(
+            'manager' => CAP_ALLOW
         )
     ),	
 	
@@ -24,8 +24,8 @@ $capabilities = array(
 
         'captype' => 'write',
         'contextlevel' => CONTEXT_BLOCK,
-        'legacy' => array(
-            'admin' => CAP_ALLOW
+        'archetypes' => array(
+            'manager' => CAP_ALLOW
         )
     ),
 
@@ -33,8 +33,8 @@ $capabilities = array(
 
         'captype' => 'read',
         'contextlevel' => CONTEXT_BLOCK,
-        'legacy' => array(
-            'admin' => CAP_ALLOW
+        'archetypes' => array(
+            'manager' => CAP_ALLOW
         )
     )
 
