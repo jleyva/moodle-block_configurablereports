@@ -57,7 +57,7 @@ class plugin_userfield extends plugin_base{
 						$p->data = ($p->data)? get_string('yes') : get_string('no');
 					}
 					if($p->datatype == 'datetime'){
-						$p->data = userdate($p->data)					
+						$p->data = userdate($p->data);
 					}
 					$row->{'profile_'.$p->shortname} = $p->data;
 				}
