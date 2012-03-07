@@ -25,7 +25,6 @@
 class component_calcs extends component_base{
 	
 	function init(){
-		$this->plugins = true;
 		$this->ordering = false;
 		$this->form = false;
 		$this->help = true;

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<XMLDB PATH="blocks/configurable_reports/db" VERSION="20100924" COMMENT="XMLDB file for Moodle blocks/configurable_reports"
+<XMLDB PATH="blocks/configurable_reports/db" VERSION="2012030600" COMMENT="XMLDB file for Moodle blocks/configurable_reports"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="../../../lib/xmldb/xmldb.xsd"
 >
@@ -7,19 +7,36 @@
     <TABLE NAME="block_configurable_reports_report" COMMENT="block_configurable_reports_report table retrofitted from MySQL">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="true"  NEXT="courseid"/>
-        <FIELD NAME="courseid" TYPE="int" LENGTH="11" NOTNULL="true" UNSIGNED="true" SEQUENCE="false"  PREVIOUS="id" NEXT="ownerid"/>
+        <FIELD NAME="courseid" TYPE="int" LENGTH="11" NOTNULL="false" UNSIGNED="true" SEQUENCE="false"  PREVIOUS="id" NEXT="ownerid"/>
         <FIELD NAME="ownerid" TYPE="int" LENGTH="11" NOTNULL="true" UNSIGNED="true" SEQUENCE="false"  PREVIOUS="courseid" NEXT="visible"/>
         <FIELD NAME="visible" TYPE="int" LENGTH="4" NOTNULL="true" UNSIGNED="true" SEQUENCE="false"  PREVIOUS="ownerid" NEXT="name"/>
         <FIELD NAME="name" TYPE="char" LENGTH="128" NOTNULL="true" SEQUENCE="false"  PREVIOUS="visible" NEXT="summary"/>
         <FIELD NAME="summary" TYPE="text" LENGTH="small" NOTNULL="false" SEQUENCE="false"  PREVIOUS="name" NEXT="type"/>
         <FIELD NAME="type" TYPE="char" LENGTH="128" NOTNULL="true" SEQUENCE="false"  PREVIOUS="summary" NEXT="pagination"/>
-		<FIELD NAME="pagination" TYPE="int" LENGTH="4" NOTNULL="false" UNSIGNED="true" SEQUENCE="false"  PREVIOUS="type" NEXT="components"/>
-        <FIELD NAME="components" TYPE="text" LENGTH="small" NOTNULL="false" SEQUENCE="false"  PREVIOUS="pagination" NEXT="export"/>
-        <FIELD NAME="export" TYPE="char" LENGTH="255" NOTNULL="false" SEQUENCE="false"  PREVIOUS="components" NEXT="jsordering"/>
+		<FIELD NAME="pagination" TYPE="int" LENGTH="4" NOTNULL="false" UNSIGNED="true" SEQUENCE="false"  PREVIOUS="type" NEXT="export"/>
+        <FIELD NAME="export" TYPE="char" LENGTH="255" NOTNULL="false" SEQUENCE="false"  PREVIOUS="pagination" NEXT="jsordering"/>
         <FIELD NAME="jsordering" TYPE="int" LENGTH="4" NOTNULL="false" UNSIGNED="true" SEQUENCE="false"  PREVIOUS="export"/>
       </FIELDS>
       <KEYS>
-        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id" NEXT="course"/>
+        <KEY NAME="course"  TYPE="foreign" FIELDS="courseid" REFTABLE="course" REFFIELDS="id" PREVIOUS="primary" NEXT="ownerid"/>
+        <KEY NAME="owner"   TYPE="foreign" FIELDS="ownerid" REFTABLE="user" REFFIELDS="id" PREVIOUS="course"/>
+      </KEYS>
+    </TABLE>
+    <TABLE NAME="block_configurable_reports_plugin" COMMENT="Report plugin configuration">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="true"  NEXT="reportid"/>
+        <FIELD NAME="reportid" TYPE="int" LENGTH="11" NOTNULL="true" UNSIGNED="true" SEQUENCE="false"  PREVIOUS="id" NEXT="component"/>
+        <FIELD NAME="component" TYPE="char" LENGTH="128" NOTNULL="true" SEQUENCE="false"  PREVIOUS="reportid" NEXT="plugin"/>
+        <FIELD NAME="plugin" TYPE="char" LENGTH="128" NOTNULL="true" SEQUENCE="false"  PREVIOUS="component" NEXT="sortorder"/>
+        <FIELD NAME="sortorder" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="plugin" NEXT="name"/>
+        <FIELD NAME="name" TYPE="text" LENGTH="small" NOTNULL="false" SEQUENCE="false"  PREVIOUS="sortorder" NEXT="summary"/>
+        <FIELD NAME="summary" TYPE="text" LENGTH="small" NOTNULL="false" SEQUENCE="false"  PREVIOUS="name" NEXT="configdata"/>
+        <FIELD NAME="configdata" TYPE="text" LENGTH="small" NOTNULL="false" SEQUENCE="false" PREVIOUS="summary" COMMENT="A serialized blob of configuration data for this report plugin."/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id" NEXT="report"/>
+        <KEY NAME="report"  TYPE="foreign" FIELDS="reportid" REFTABLE="block_configurable_reports_report" REFFIELDS="id" PREVIOUS="primary"/>
       </KEYS>
     </TABLE>
   </TABLES>

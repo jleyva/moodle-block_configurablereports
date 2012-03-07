@@ -33,6 +33,8 @@ class report_edit_form extends moodleform {
         global $DB, $USER, $CFG;
 
         $mform =& $this->_form;
+        $id = $this->_customdata['id'];
+        $courseid = $this->_customdata['courseid'];
 
         $mform->addElement('header', 'general', get_string('general', 'form'));
 
@@ -47,16 +49,19 @@ class report_edit_form extends moodleform {
 		$mform->addElement('htmleditor', 'summary', get_string('summary'));
         $mform->setType('summary', PARAM_RAW);
         	
-        $typeoptions = cr_get_report_plugins($this->_customdata['courseid']);
+        $typeoptions = cr_get_report_plugins($courseid);
 		
 		$eloptions = array();
-		if(isset($this->_customdata['report']->id) && $this->_customdata['report']->id)
+		if($id){
 			$eloptions = array('disabled'=>'disabled');
-		$mform->addElement('select', 'type', get_string("typeofreport",'block_configurable_reports'), $typeoptions,$eloptions);
+		}
+		$label = get_string("typeofreport",'block_configurable_reports');
+		$mform->addElement('select', 'type', $label, $typeoptions, $eloptions);
 		$mform->addHelpButton('type','typeofreport', 'block_configurable_reports');
  
-		for($i=0;$i<=100;$i++)
+		for ($i=0; $i<=100; $i++) {
 			$pagoptions[$i] = $i;
+		}
 		$mform->addElement('select', 'pagination', get_string("pagination",'block_configurable_reports'), $pagoptions);
 		$mform->setDefault('pagination',0);
 		$mform->addHelpButton('pagination','pagination', 'block_configurable_reports');
@@ -66,26 +71,36 @@ class report_edit_form extends moodleform {
 		
 		$mform->addElement('header', 'exportoptions', get_string('exportoptions', 'block_configurable_reports'));
 		$options = cr_get_export_plugins();
-		
 		foreach($options as $key=>$val){
 			$mform->addElement('checkbox','export_'.$key,null,$val);
 		}
 
-		if(isset($this->_customdata['report']->id) && $this->_customdata['report']->id)
-			$mform->addElement('hidden','id',$this->_customdata['report']->id);
-		$mform->addElement('hidden','courseid',$this->_customdata['courseid']);
-		
-        // buttons
-        $this->add_action_buttons(true, get_string('add'));
-
+		$mform->addElement('hidden', 'courseid', $courseid);
+		if ($id) {
+			$mform->addElement('hidden', 'id', $id);
+			$this->add_action_buttons();
+		} else {
+		    $this->add_action_buttons(true, get_string('add'));
+		}
     }
 	
 	function validation($data, $files){
 		$errors = parent::validation($data, $files);
-				
+		
+		// SQL report has special permissions due to full DB access
+		if ($data['type'] == 'sql') {
+		    if ($this->_customdata['courseid']) {
+		        $context = context_course::instance($this->_customdata['courseid']);
+		    } else {
+		        $context = context_system::instance();
+		    }
+    		if (!has_capability('block/configurable_reports:managesqlreports', $context)) {
+		        $errors[] = 'nosqlpermissions';
+		    }
+	    }
+		
 		return $errors;
-	}		
-
+	}
 }
 
 ?>

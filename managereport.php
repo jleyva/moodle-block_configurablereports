@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -22,131 +21,175 @@
   * @date: 2009
   */
 
-    require_once("../../config.php");	
-	require_once($CFG->dirroot."/blocks/configurable_reports/locallib.php");
-	require_once 'import_form.php';
-	
-	$courseid = optional_param('courseid',SITEID,PARAM_INT);
-	
-	if (! $course = $DB->get_record("course",array( "id" =>  $courseid)) ) {
-		print_error("No such course id");
-	}
+require_once("../../config.php");	
+require_once($CFG->dirroot."/blocks/configurable_reports/locallib.php");
+require_once($CFG->dirroot."/blocks/configurable_reports/import_form.php");
 
-	// Force user login in course (SITE or Course)
-    if ($course->id == SITEID){
-		require_login();
-		$context = get_context_instance(CONTEXT_SYSTEM);
-	}	
-	else{
-		require_login($course->id);		
-		$context = get_context_instance(CONTEXT_COURSE, $course->id);
-	}
-		
-	if(! has_capability('block/configurable_reports:managereports', $context) && ! has_capability('block/configurable_reports:manageownreports', $context))
-		print_error('badpermissions');
-	
-	$PAGE->set_url('/blocks/configurable_reports/managereport.php', array('courseid'=>$course->id));
-	$PAGE->set_context($context);
-	$PAGE->set_pagelayout('incourse');
-		
-	$mform = new import_form(null,$course->id);
+$courseid = optional_param('courseid', null, PARAM_INT);
 
-	if ($data = $mform->get_data()) {
-		if ($xml = $mform->get_file_content('userfile')) {
-			require_once($CFG->dirroot.'/lib/xmlize.php');
-			$data = xmlize($xml, 1, 'UTF-8');
-			
-			if(isset($data['report']['@']['version'])){
-				$newreport = new stdclass;
-				foreach($data['report']['#'] as $key=>$val){
-					if($key == 'components')
-						$val[0]['#'] = base64_decode(trim($val[0]['#']));
-					$newreport->{$key} = trim($val[0]['#']);
-				}
-				$newreport->courseid = $course->id;
-				$newreport->ownerid = $USER->id;
-				if(!$DB->insert_record('block_configurable_reports_report',$newreport))
-					print_error('errorimporting');
-				header("Location: $CFG->wwwroot/blocks/configurable_reports/managereport.php?courseid={$course->id}");
-				die;
+$params = array();
+if (isset($courseid)) {
+    if (! ($course = $DB->get_record("course", array( "id" =>  $courseid)))) {
+    	print_error("nosuchcourseid", 'block_configurable_reports');
+    }
+    $params['courseid'] = $courseid;
+}
+
+// Force user login in course (SITE or Course)
+if ($course->id == SITEID) {
+	require_login();
+	$context = context_system::instance();
+} else {
+	require_login($course->id);		
+	$context = context_course::instance($course->id);
+}
+// Capability check	
+if(!has_capability('block/configurable_reports:managereports', $context) && 
+        !has_capability('block/configurable_reports:manageownreports', $context)){
+	print_error('badpermissions');
+}
+
+$baseurl = new moodle_url('/blocks/configurable_reports/managereport.php');
+$addurl  = new moodle_url('/blocks/configurable_reports/addreport.php');
+$editurl = new moodle_url('/blocks/configurable_reports/editreport.php');
+$viewurl = new moodle_url('/blocks/configurable_reports/viewreport.php');
+$exporturl = new moodle_url('blocks/configurable_reports/export.php');
+$courseurl = new moodle_url('/course/view.php');
+$userurl = new moodle_url('/user/view.php');
+$PAGE->set_url($baseurl, $params);
+$PAGE->set_context($context);
+$PAGE->set_pagelayout('incourse');
+	
+$importform = new import_form(null,$course->id);
+if (($data = $importform->get_data()) &&
+        ($xml = $mform->get_file_content('userfile'))) {
+	require_once($CFG->dirroot.'/lib/xmlize.php');
+	$data = xmlize($xml, 1, 'UTF-8');
+	
+	if(isset($data['report']['@']['version'])){
+		$newreport = new stdclass;
+		foreach($data['report']['#'] as $key=>$val){
+			if ($key == 'components') {
+				$val[0]['#'] = base64_decode(trim($val[0]['#']));
 			}
+			$newreport->{$key} = trim($val[0]['#']);
 		}
-	}	
-	
-	$reports = cr_get_my_reports($course->id, $USER->id);
-	
-	$title = get_string('reports','block_configurable_reports');
-	$navlinks = array();
-	$navlinks[] = array('name' => $title, 'link' => null, 'type' => 'title');
-	$navigation = build_navigation($navlinks);
+		$newreport->courseid = $course->id;
+		$newreport->ownerid = $USER->id;
+		$DB->insert_record('block_configurable_reports_report', $newreport);
 
-	$PAGE->set_title($title);
-	$PAGE->set_heading( $title);
-	$PAGE->set_cacheable( true);
-	echo $OUTPUT->header();
-			
-	if($reports){
-		$table = new stdclass;
-		$table->head = array(get_string('name'),get_string('course'),get_string('type','block_configurable_reports'),get_string('username'),get_string('edit'),get_string('download','block_configurable_reports'));
-		$table->align = array('left','left','left','left','center','center');
-		$stredit = get_string('edit');
-		$strdelete = get_string('delete');
-		$strhide = get_string('hide');
-		$strshow = get_string('show');
-		$strcopy = get_string('duplicate');
-		$strexport = get_string('exportreport','block_configurable_reports');
-		
-		foreach($reports as $r){
-			
-			if($r->courseid == 1)
-				$coursename = '<a href="'.$CFG->wwwroot.'">'.get_string('site').'</a>';
-			else if(! $coursename = $DB->get_field('course','fullname',array('id' => $r->courseid)))
-				$coursename = get_string('deleted');
-			else
-				$coursename = '<a href="'.$CFG->wwwroot.'/course/view.php?id='.$r->courseid.'">'.$coursename.'</a>';
-				
-			if($owneruser = $DB->get_record('user',array('id' => $r->ownerid)))
-				$owner = '<a href="'.$CFG->wwwroot.'/user/view.php?id='.$r->ownerid.'">'.fullname($owneruser).'</a>';
-			else
-				$owner = get_string('deleted');
-			
-			$editcell = '';
-			$editcell .= '<a title="'.$stredit.'"  href="editreport.php?id='.$r->id.'"><img src="'.$OUTPUT->pix_url('/t/edit').'" class="iconsmall" alt="'.$stredit.'" /></a>&nbsp;&nbsp;';
-			$editcell .= '<a title="'.$strdelete.'"  href="editreport.php?id='.$r->id.'&amp;delete=1&amp;sesskey='.$USER->sesskey.'"><img src="'.$OUTPUT->pix_url('/t/delete').'" class="iconsmall" alt="'.$strdelete.'" /></a>&nbsp;&nbsp;';
-			
-			
-			if (!empty($r->visible)) {
-				$editcell .= '<a title="'.$strhide.'" href="editreport.php?id='.$r->id.'&amp;hide=1&amp;sesskey='.$USER->sesskey.'">'.'<img src="'.$OUTPUT->pix_url('/t/hide').'" class="iconsmall" alt="'.$strhide.'" /></a> ';}
-			else {
-				$editcell .= '<a title="'.$strshow.'" href="editreport.php?id='.$r->id.'&amp;show=1&amp;sesskey='.$USER->sesskey.'">'.'<img src="'.$OUTPUT->pix_url('/t/show').'" class="iconsmall" alt="'.$strshow.'" /></a> ';
-			}
-			$editcell .= '<a title="'.$strcopy.'" href="editreport.php?id='.$r->id.'&amp;duplicate=1&amp;sesskey='.$USER->sesskey.'"><img src="'.$OUTPUT->pix_url('/t/copy').'" class="iconsmall" alt="'.$strcopy.'" /></a>&nbsp;&nbsp;';
-			$editcell .= '<a title="'.$strexport.'" href="export.php?id='.$r->id.'&amp;sesskey='.$USER->sesskey.'"><img src="'.$OUTPUT->pix_url('/i/backup').'" class="iconsmall" alt="'.$strexport.'" /></a>&nbsp;&nbsp;';
-			
-			$download = '';
-			$export = explode(',',$r->export);
-			if(!empty($export)){				
-				foreach($export as $e)
-					if($e){
-						$download .= '<a href="viewreport.php?id='.$r->id.'&amp;download=1&amp;format='.$e.'"><img src="'.$CFG->wwwroot.'/blocks/configurable_reports/export/'.$e.'/pix.gif" alt="'.$e.'">&nbsp;'.(strtoupper($e)).'</a>&nbsp;&nbsp;';
-					}				
-			}
-			
-			$table->data[] = array('<a href="viewreport.php?id='.$r->id.'">'.$r->name.'</a>',$coursename,get_string('report_'.$r->type,'block_configurable_reports'), $owner, $editcell, $download);
-		}
-		
-		$table->id = 'reportslist';
-		cr_add_jsordering("#reportslist");
-		cr_print_table($table);
+		redirect($PAGE->url);
 	}
-	else{
-		echo $OUTPUT->heading(get_string('noreportsavailable','block_configurable_reports'));
-	}
-	
-	echo $OUTPUT->heading('<a href="'.$CFG->wwwroot.'/blocks/configurable_reports/editreport.php?courseid='.$course->id.'">'.(get_string('addreport','block_configurable_reports')).'</a>');
-	
-	$mform->display();
-				
-    echo $OUTPUT->footer();
+}	
+
+if($reports = cr_get_my_reports($course->id, $USER->id)){
+    $sitestr = get_string('site');
+    $delstr = get_string('deleted');
+    
+    $table = new stdclass;
+    $table->id = 'reportslist';
+    $table->head = array(
+            get_string('name'),
+            get_string('course'),
+            get_string('type', 'block_configurable_reports'),
+            get_string('username'),
+            get_string('edit'),
+            get_string('download', 'block_configurable_reports')
+    );
+    $table->align = array('left','left','left','left','center','center');
+ 
+    $icons = array(
+        'edit'       => new pix_icon('t/edit', get_string('edit')),
+        'delete'     => new pix_icon('t/delete', get_string('delete')),
+        'hide'       => new pix_icon('t/hide', get_string('hide')),
+        'show'       => new pix_icon('t/show', get_string('show')),
+        'duplicate'  => new pix_icon('t/copy', get_string('duplicate')),
+        'export'     => new pix_icon('i/backup', get_string('exportreport','block_configurable_reports'))
+    );
+    $divider = '&nbsp;&nbsp;';
+    $pixattr = array('class'=>'iconsmall');
+    
+    foreach($reports as $r){
+        $editurl->params(array('id' => $r->id, 'sesskey' => $USER->sesskey));
+        $exporturl->param('id', $r->id);
+        $viewurl->param('id', $r->id);
+        
+        $reportname = html_writer::tag('a', $r->name, array('href' => $viewurl));
+        $reporttype = get_string('report_'.$r->type, 'block_configurable_reports');
+        
+        if(!isset($r->courseid)) {
+            $coursename = html_writer::tag('a', $sitestr, array('href' => $CFG->wwwroot));
+        } else if (! ($coursename = $DB->get_field('course', 'fullname', array('id' => $r->courseid)))) {
+            $coursename = $delstr;
+        } else {
+            $url = $courseurl->out(true, array('courseid' => $r->courseid));
+            $coursename = html_writer::tag('a', $coursename, array('href' => $url));
+        }
+        
+        if($owneruser = $DB->get_record('user', array('id' => $r->ownerid))){
+            $url = $userurl->out(true, array('id' => $r->ownerid));
+            $owner = html_writer::tag('a', fullname($owneruser), array('href' => $url));
+        } else {
+            $owner = $delstr;
+        }
+
+        $commands = array();
+        $commands[] = $OUTPUT->action_icon($editurl, $icons['edit'], null, $pixattr);
+        $url = $editurl;
+        $url->param('delete', 1);
+        $commands[] = $OUTPUT->action_icon($url, $icons['delete'], null, $pixattr);
+        if (!empty($r->visible)) {
+            $url = $editurl;
+            $url->param('hide', 1);
+            $commands[] = $OUTPUT->action_icon($url, $icons['hide'], null, $pixattr);
+        } else {
+            $url = $editurl;
+            $url->param('show', 1);
+            $commands[] = $OUTPUT->action_icon($url, $icons['show'], null, $pixattr);
+        }
+        $url = $editurl;
+        $url->param('duplicate', 1);
+        $commands[] = $OUTPUT->action_icon($url, $icons['duplicate'], null, $pixattr);
+        $commands[] = $OUTPUT->action_icon($exporturl, $icons['export'], null, $pixattr);
+        $editcell = implode($divider, $commands);
+
+        $download = '';
+        $export = explode(',',$r->export);
+        if(!empty($export)){
+            foreach ($export as $e) {
+                $url = $viewurl;
+                $url->params(array('download' => 1, 'format' => $e));
+                $icon = '<img src="'.$CFG->wwwroot.'/blocks/configurable_reports/export/'.$e.'/pix.gif';
+                $download .= html_writer::tag('a', $icon.'&nbsp;'.strtoupper($e), $url);
+                $download .= $divider;
+            }
+        }
+
+        $table->data[] = array($reportname, $coursename, $reporttype, $owner, $editcell, $download);
+    }
+}
+
+$title = get_string('reports','block_configurable_reports');
+//$PAGE->navbar->add($title);
+$PAGE->set_title($title);
+$PAGE->set_heading($title);
+
+/* Display page */
+
+echo $OUTPUT->header();
+
+if ($reports) {
+    cr_add_jsordering("#reportslist");
+    cr_print_table($table);
+} else {
+    echo $OUTPUT->heading(get_string('noreportsavailable', 'block_configurable_reports'));
+}
+
+$addstr = get_string('addreport','block_configurable_reports');
+echo $OUTPUT->heading(html_writer::tag('a', $addstr, array('href' => $addurl)));
+
+$importform->display();
+			
+echo $OUTPUT->footer();
 
 ?>

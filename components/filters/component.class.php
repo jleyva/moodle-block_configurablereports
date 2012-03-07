@@ -25,7 +25,6 @@
 class component_filters extends component_base{
 	
 	function init(){
-		$this->plugins = true;
 		$this->ordering = true;
 		$this->form = false;
 		$this->help = true;

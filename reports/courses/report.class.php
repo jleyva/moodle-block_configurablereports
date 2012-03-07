@@ -24,9 +24,9 @@
 
 class report_courses extends report_base{
 	
-	function init(){
-		$this->components = array('columns','conditions','ordering','filters','template','permissions','calcs','plot');
-	}	
+    function get_component_list(){
+        return array('columns','conditions','ordering','filters','template','permissions','calcs','plot');
+    }
 
 	function get_all_elements(){
 		global $DB;

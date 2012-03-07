@@ -21,34 +21,74 @@
   * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
   * @date: 2009
   */
- require_once($CFG->dirroot.'/lib/evalmath/evalmath.class.php');
 
- class report_base {
+require_once($CFG->dirroot.'/lib/evalmath/evalmath.class.php');
+require_once($CFG->dirroot.'/blocks/configurable_reports/component.class.php');
+
+class report_base {
+    var $config;        // Report configuration
+	var $components;    // Component objects (and therefore plugin objects)
+	var $plugconfig;    // Current plugin configuration data
 	
-	var $id = 0;
-	var $components = array();
 	var $finalreport;
 	var $totalrecords = 0;
 	var $currentuser = 0;
-	var $currentcourse = 0;
 	var $starttime = 0;
 	var $endtime = 0;
 	
-	function reports_base($report){
-		global $DB, $CFG, $USER;
-		
-		if(is_numeric($report))
-			$this->config = $DB->get_record('block_configurable_reports_report',array('id' => $report));
-		else
-			$this->config = $report;
-			
-		$this->currentuser = $USER;
-		$this->currentcourseid = $this->config->courseid;
-		$this->init();
+	static function get($reportorid){
+	    global $CFG, $DB;
+	    
+	    if (is_numeric($reportorid)) {
+	        $report = $DB->get_record('block_configurable_reports_report', array('id' => $reportorid));
+	    } else if($reportorid instanceof stdClass) {
+	        $report = $reportorid;
+	    } else {
+	        throw new moodle_exception('invalidreport');    //TODO
+	    }
+	    
+	    require_once("$CFG->dirroot/blocks/configurable_reports/reports/$report->type/report.class.php");
+	    
+	    $reportclassname = 'report_'.$report->type;
+	    return new $reportclassname($report);
 	}
 	
-	function __construct($report) {
-		$this->reports_base($report);
+	function __construct($report){
+		global $USER;
+		
+		$this->config = $report;
+		$this->currentuser = $USER;
+		$this->load_components();
+	}
+	
+	function get_name(){
+	    return format_string($this->config->name);
+	}
+	
+	function get_component_list(){
+	    return array();
+	}
+	
+	function _load_components(){
+	    $this->components = array();
+	    foreach($this->get_component_list() as $comp){
+	        $this->components[$comp] = component_base::get($this->config, $comp);
+	    }
+	}
+	
+	function has_component($compname){
+	    return in_array($compname, $this->get_component_list());
+	}
+	
+	function get_component($compname){
+	    if (!$this->has_component($compname)) {
+	        return null;
+	    }
+	    if (!isset($this->components)) {
+	        $this->_load_components();
+	    }
+	    
+	    return $this->components[$compname];
 	}
 	
 	function check_permissions($userid, $context){
@@ -681,8 +721,7 @@
 		echo $OUTPUT->pix_icon('print', get_string('printreport', 'block_configurable_reports'), 'block_configurable_reports');
 		echo "&nbsp;<a href=\"javascript: printDiv('printablediv')\">".get_string('printreport','block_configurable_reports')."</a>";	
 		echo "</div>\n";
-	}
-	
- }
+    }
+}
 
 ?>

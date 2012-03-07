@@ -24,9 +24,9 @@
 
 class report_timeline extends report_base{
 	
-	function init(){
-		$this->components = array('timeline','columns','filters','template','permissions','calcs','plot');
-	}	
+    function get_component_list(){
+        return array('timeline','columns','filters','template','permissions','calcs','plot');
+    }
 
 	function get_all_elements(){
 		$elements = array();

@@ -25,7 +25,6 @@
 class component_customsql extends component_base{
 	
 	function init(){
-		$this->plugins = false;
 		$this->ordering = false;
 		$this->form = true;
 		$this->help = true;

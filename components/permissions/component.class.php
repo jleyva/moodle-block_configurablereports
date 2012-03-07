@@ -23,9 +23,8 @@
   */
 
 class component_permissions extends component_base{
-	
+    
 	function init(){
-		$this->plugins = true;
 		$this->ordering = false;
 		$this->form = true;
 		$this->help = true;

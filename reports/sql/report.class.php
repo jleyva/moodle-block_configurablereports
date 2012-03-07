@@ -26,9 +26,9 @@ define('REPORT_CUSTOMSQL_MAX_RECORDS', 5000);
 
 class report_sql extends report_base{
 	
-	function init(){
-		$this->components = array('customsql','filters', 'template','permissions','calcs','plot');
-	}	
+    function get_component_list(){
+        return array('customsql','filters', 'template','permissions','calcs','plot');
+    }
 
 	function prepare_sql($sql) {
 		global $DB, $USER;

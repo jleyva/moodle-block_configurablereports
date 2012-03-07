@@ -22,7 +22,7 @@
   * @date: 2009
   */
 
-require_once($CFG->dirroot.'/blocks/configurable_reports/plugin.class.php');
+require_once($CFG->dirroot.'/blocks/configurable_reports/components/plugin.class.php');
 
 class plugin_startendtime extends plugin_base{
 	

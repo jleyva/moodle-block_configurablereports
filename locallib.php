@@ -165,10 +165,10 @@ function cr_get_my_reports($courseid, $userid, $allcourses=true){
 	return true;
  }
  
- function cr_get_report_plugins($courseid){
+ function cr_get_report_plugins($courseid = null){
  
 	$pluginoptions = array();
-	$context = ($courseid == SITEID)? get_context_instance(CONTEXT_SYSTEM): get_context_instance(CONTEXT_COURSE,$courseid);
+	$context = isset($courseid) ? context_system::instance() : context_course::instance($courseid);
 	$plugins = get_list_of_plugins('blocks/configurable_reports/reports');
 	
 	if($plugins)
@@ -367,6 +367,8 @@ function table_to_excel($filename,$table){
     exit;
 }
 
-
+function cr_get_string($identifier, $component, $a){
+    
+}
  
 ?>
