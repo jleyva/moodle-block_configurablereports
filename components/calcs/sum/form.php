@@ -26,21 +26,19 @@ if (!defined('MOODLE_INTERNAL')) {
     die('Direct access to this script is forbidden.');    ///  It must be included from a Moodle page
 }
 
-require_once($CFG->libdir.'/formslib.php');
+require_once($CFG->dirroot.'/blocks/configurable_reports/components/calcs/plugin_form.class.php');
 
-class sum_form extends moodleform {
+class sum_form extends calcs_plugin_form {
     function definition() {
-        global $DB, $USER, $CFG;
-
         $mform =& $this->_form;
-
-		$this->_customdata['compclass']->add_form_elements($mform,$this->_customdata['report']->components); 
-	      
-        // buttons
+        	
+        $options = $this->get_column_options();
+    
+        $mform->addElement('header', '', get_string('coursefield','block_configurable_reports'), '');
+        $mform->addElement('select', 'column', get_string('column','block_configurable_reports'), $options);
+    
         $this->add_action_buttons(true, get_string('add'));
-
     }
-
 }
 
 ?>

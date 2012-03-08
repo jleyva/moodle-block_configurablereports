@@ -35,6 +35,7 @@ class report_edit_form extends moodleform {
         $mform =& $this->_form;
         $id = $this->_customdata['id'];
         $courseid = $this->_customdata['courseid'];
+        $reporttype = $this->_customdata['type'];
 
         $mform->addElement('header', 'general', get_string('general', 'form'));
 
@@ -48,16 +49,6 @@ class report_edit_form extends moodleform {
 		
 		$mform->addElement('htmleditor', 'summary', get_string('summary'));
         $mform->setType('summary', PARAM_RAW);
-        	
-        $typeoptions = cr_get_report_plugins($courseid);
-		
-		$eloptions = array();
-		if($id){
-			$eloptions = array('disabled'=>'disabled');
-		}
-		$label = get_string("typeofreport",'block_configurable_reports');
-		$mform->addElement('select', 'type', $label, $typeoptions, $eloptions);
-		$mform->addHelpButton('type','typeofreport', 'block_configurable_reports');
  
 		for ($i=0; $i<=100; $i++) {
 			$pagoptions[$i] = $i;
@@ -75,6 +66,7 @@ class report_edit_form extends moodleform {
 			$mform->addElement('checkbox','export_'.$key,null,$val);
 		}
 
+		$mform->addElement('hidden', 'type', $reporttype);
 		$mform->addElement('hidden', 'courseid', $courseid);
 		if ($id) {
 			$mform->addElement('hidden', 'id', $id);

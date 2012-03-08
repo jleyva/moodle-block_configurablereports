@@ -4,58 +4,16 @@ if (!defined('MOODLE_INTERNAL')) {
     die('Direct access to this script is forbidden.');    ///  It must be included from a Moodle page
 }
 
-require_once($CFG->libdir.'/formslib.php');
+require_once($CFG->dirroot.'/blocks/configurable_reports/components/plot/plugin_form.class.php');
 
-class line_form extends moodleform {
+class line_form extends plot_plugin_form {
     function definition() {
         global $DB, $USER, $CFG;
 
         $mform =& $this->_form;
-		$options = array(0=>get_string('choose'));
-
-		$report = $this->_customdata['report'];
 		
-		if($report->type != 'sql'){		
-			$components = cr_unserialize($this->_customdata['report']->components);
-			
-			if(!is_array($components) || empty($components['columns']['elements']))
-				print_error('nocolumns');
-
-			$columns = $components['columns']['elements'];
-			foreach($columns as $c){
-				$options[] = $c['summary'];
-			}
-		}
-		else{
-			
-			require_once($CFG->dirroot.'/blocks/configurable_reports/report.class.php');
-			require_once($CFG->dirroot.'/blocks/configurable_reports/reports/'.$report->type.'/report.class.php');
-			
-			$reportclassname = 'report_'.$report->type;	
-			$reportclass = new $reportclassname($report);
-			
-			$components = cr_unserialize($report->components);
-			$config = (isset($components['customsql']['config']))? $components['customsql']['config'] : new stdclass;	
-			
-			if(isset($config->querysql)){
-				
-				$sql = $config->querysql;
-				$sql = $reportclass->prepare_sql($sql);
-				if($rs = $reportclass->execute_query($sql)){
-					foreach($rs as $row){
-						$i = 1;
-						foreach($row as $colname=>$value){
-							$options[$i] = str_replace('_', ' ', $colname);
-							$i++;
-						}
-						break;
-					}
-					$rs->close();					
-				}
-			}			
-		}
-		
-		
+        $options = $this->get_column_options();
+        
 		$mform->addElement('header', '', get_string('linegraph','block_configurable_reports'), '');
 
 		$mform->addElement('select', 'xaxis', get_string('xaxis','block_configurable_reports'), $options);
@@ -69,9 +27,7 @@ class line_form extends moodleform {
 		
 		$mform->addElement('checkbox', 'group', get_string('groupseries','block_configurable_reports'));
 				
-        // buttons
         $this->add_action_buttons(true, get_string('add'));
-
     }
 	
 	function validation($data, $files){

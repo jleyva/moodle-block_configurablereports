@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -16,38 +15,29 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /** Configurable Reports
-  * A Moodle block for creating customizable reports
-  * @package blocks
-  * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
-  * @date: 2009
-  */
+ * A Moodle block for creating customizable reports
+ * @package blocks
+ * @author: Nick Koeppen
+ */
 
-class report_users extends report_base{
+require_once($CFG->dirroot.'/blocks/configurable_reports/components/plugin.class.php');
 
-	function get_all_elements(){
-		global $DB;
-		
-		$elements = array();
-		$rs = $DB->get_recordset('user', null, '', 'id');
-        foreach ($rs as $result) {
-			$elements[] = $result->id;
-		}
-		$rs->close();
-		return $elements;
-	}
-	
-	function get_rows($elements, $sqlorder = ''){
-		global $DB, $CFG;
-	
-		if(!empty($elements)){
-			list($usql, $params) = $DB->get_in_or_equal($elements);	
-			return $DB->get_records_select('user',"id $usql", $params, $sqlorder);
-		}	
-		else{
-			return array();
-		}
-	}
-	
+abstract class columns_plugin extends plugin_base{
+    
+    function has_form(){
+        return true;
+    }
+    
+    function summary($data){
+        return format_string($data->columname);
+    }
+    
+    function colformat($data){
+        $align = (isset($data->align))? $data->align : '';
+        $size = (isset($data->size))? $data->size : '';
+        $wrap = (isset($data->wrap))? $data->wrap : '';
+        return array($align,$size,$wrap);
+    }
 }
 
 ?>

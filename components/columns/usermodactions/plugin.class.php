@@ -22,34 +22,13 @@
   * @date: 2009
   */  
 
-require_once($CFG->dirroot.'/blocks/configurable_reports/components/plugin.class.php');
+require_once($CFG->dirroot.'/blocks/configurable_reports/components/columns/plugin.class.php');
 
-class plugin_usermodactions extends plugin_base{
+class plugin_usermodactions extends columns_plugin{
 
 	function init(){
 		$this->fullname = get_string('usermodactions','block_configurable_reports');
 		$this->type = 'undefined';
-		$this->form = true;
-		$this->reporttypes = array('users');
-	}
-	
-	function summary($data){
-		// should be a better way to do this
-		/*if($cm = $DB->get_record('course_modules',array('id' => $data->cmid))){
-			$modname = $DB->get_field('modules','name',array('id' => $cm->module));
-			if($name = $DB->get_field("$modname",'name',array('id' => $data->cmid))){
-				return $data->columname.' ('.$name.')';
-			}
-		}*/		
-		
-		return $data->columname;
-	}
-	
-	function colformat($data){
-		$align = (isset($data->align))? $data->align : '';
-		$size = (isset($data->size))? $data->size : '';
-		$wrap = (isset($data->wrap))? $data->wrap : '';
-		return array($align,$size,$wrap);
 	}
 	
 	// data -> Plugin configuration data

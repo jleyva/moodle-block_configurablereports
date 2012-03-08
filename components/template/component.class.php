@@ -23,28 +23,9 @@
   */
 
 class component_template extends component_base{
-	
-	function init(){
-		$this->plugins = false;
-		$this->ordering = false;
-		$this->form = true;
-		$this->help = true;
-	}
-	
-	function form_process_data(&$cform){
-	    global $DB;
-	    
-		if($this->form){
-			$data = $cform->get_data();
-			// cr_serialize() will add slashes
-			
-			$components = cr_unserialize($this->config->components);
-			$components['template']['config'] = $data;
-			
-			$this->config->components = cr_serialize($components);
-			
-			$DB->update_record('block_configurable_reports_report',$this->config);
-		}
+
+	function has_form(){
+	    return true;
 	}
 	
 	function form_set_data(&$cform){

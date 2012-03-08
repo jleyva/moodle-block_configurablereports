@@ -27,10 +27,7 @@ require_once($CFG->dirroot.'/blocks/configurable_reports/components/plugin.class
 class plugin_fcoursefield extends plugin_base{
 	
 	function init(){
-		$this->form = true;
-		$this->unique = true;
 		$this->fullname = get_string('fcoursefield','block_configurable_reports');
-		$this->reporttypes = array('courses');
 	}
 	
 	function summary($data){

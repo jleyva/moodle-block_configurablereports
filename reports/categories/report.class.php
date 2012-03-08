@@ -23,10 +23,6 @@
   */
 
 class report_categories extends report_base{
-	
-	function get_component_list(){
-		return array('columns','conditions','ordering','filters','template','permissions','calcs','plot');
-	}	
 
 	function get_all_elements(){
 		global $DB;

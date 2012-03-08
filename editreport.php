@@ -108,7 +108,8 @@ if ($delete && confirm_sesskey()){
 	}
 }
 
-$editform = new report_edit_form($PAGE->url, array('id' => $id, 'courseid' => $courseid));
+$reportparams = array('id' => $id, 'type' => $report->type, 'courseid' => $courseid);
+$editform = new report_edit_form($PAGE->url, $reportparams);
 $export = explode(',', $report->export);
 if (!empty($export)) {
 	foreach($export as $e){

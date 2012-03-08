@@ -24,27 +24,33 @@
 
 class component_conditions extends component_base{
 	
-	function init(){
-		$this->ordering = false;
-		$this->form = true;
-		$this->help = true;
+	function plugin_classes(){
+	    return array(
+	            'ccoursefield'         => 'plugin_ccoursefield',
+	            'coursecategory'       => 'plugin_coursecategory',
+	            'coursechild'          => 'plugin_coursechild',
+	            'courseparent'         => 'plugin_courseparent',
+	            'currentreportcourse'  => 'plugin_currentreportcourse',
+	            'currentuser'          => 'plugin_currentuser',
+	            'currentusercourses'   => 'plugin_currentusercourses',
+	            'cuserfield'           => 'plugin_cuserfield',
+	            'parentcategory'       => 'plugin_parentcategory',
+	            'usersincurrentcourse' => 'plugin_usersincurrentcourse',
+	    );
 	}
 	
-	function form_process_data(&$cform){
-		global $DB;
-		
-		if($this->form){
-			$data = $cform->get_data();
-			// cr_serialize() will add slashes
-			
-			$components = cr_unserialize($this->config->components);
-			$components['conditions']['config'] = $data;
-			if(isset($components['conditions']['config']->conditionexpr)){
-				$components['conditions']['config']->conditionexpr = $this->add_missing_conditions($components['conditions']['config']->conditionexpr);
-			}
-			$this->config->components = cr_serialize($components);
-			$DB->update_record('block_configurable_reports_report',$this->config);
+	function form_process_data($data){
+	    global $DB;
+	    if (!$this->form) {
+	        return true;
+	    }
+	    	    
+		if(isset($data->conditionexpr)){
+			$data->conditionexpr = $this->add_missing_conditions($data->conditionexpr);
 		}
+		$configdata = cr_serialize($data);
+		
+		$this->update_configdata($configdata);
 	}
 	
 	function add_missing_conditions($cond){

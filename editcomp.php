@@ -73,9 +73,8 @@ $PAGE->set_title($title);
 $PAGE->set_heading($title);
 
 // TODO: Fix form handling
-if($compclass->form){
-    $customdata = compact('compclass','comp','id','report','reportclass','elements');
-    $editform = $compclass->get_form($PAGE->url, $customdata);
+if($compclass->has_form()){
+    $editform = $compclass->get_form($PAGE->url);
 	
 	if ($editform->is_cancelled()) {
 		redirect(new moodle_url('/blocks/configurable_reports/editreport.php', array('id' => $id)));
@@ -160,7 +159,7 @@ if($pluginoptions = $compclass->get_plugin_options()){
     echo $OUTPUT->box(html_writer::tag('p', $selector, array('class' => 'centerpara')), 'boxaligncenter');
 }
 
-if($compclass->form){
+if($compclass->has_form()){
 	$editform->display();
 }
 

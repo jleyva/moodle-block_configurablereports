@@ -26,11 +26,11 @@ if (!defined('MOODLE_INTERNAL')) {
     die('Direct access to this script is forbidden.');    ///  It must be included from a Moodle page
 }
 
-require_once($CFG->libdir.'/formslib.php');
+require_once($CFG->dirroot.'/blocks/configurable_reports/components/columns/plugin_form.class.php');
 
-class coursefield_form extends moodleform {
+class coursefield_form extends columns_plugin_form {
     function definition() {
-        global $DB, $USER, $CFG;
+        global $DB;
 
         $mform =& $this->_form;
 
@@ -39,26 +39,16 @@ class coursefield_form extends moodleform {
 		$columns = $DB->get_columns('course');
 		
 		$coursecolumns = array();
-		foreach($columns as $c)
+		foreach($columns as $c){
 			$coursecolumns[$c->name] = $c->name;
+		}
 			
         $mform->addElement('select', 'column', get_string('column','block_configurable_reports'), $coursecolumns);
-		
-		$this->_customdata['compclass']->add_form_elements($mform,$this); 
-		
-        // buttons
-        $this->add_action_buttons(true, get_string('add'));
 
+        $this->common_column_options();
+        
+        $this->add_action_buttons(true, get_string('add'));    
     }
-
-	function validation($data, $files){
-		$errors = parent::validation($data, $files);
-		
-		$errors = $this->_customdata['compclass']->validate_form_elements($data,$errors);
-		
-		return $errors;
-	}	
-	
 }
 
 ?>

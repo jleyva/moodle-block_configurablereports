@@ -37,10 +37,8 @@ class customsql_form extends moodleform {
 
         $mform =& $this->_form;
 
-        $mform->addElement('textarea', 'querysql', get_string('querysql', 'block_configurable_reports'),
-                'rows="25" cols="60"');
-        $mform->addRule('querysql', get_string('required'),
-                'required', null, 'client');
+        $mform->addElement('textarea', 'querysql', get_string('querysql', 'block_configurable_reports'), 'rows="25" cols="60"');
+        $mform->addRule('querysql', get_string('required'), 'required', null, 'client');
         $mform->setType('querysql', PARAM_RAW);
 
         $mform->addElement('static', 'note', '', get_string('listofsqlreports', 'block_configurable_reports'));

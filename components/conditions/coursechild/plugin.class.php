@@ -28,8 +28,6 @@ class plugin_coursechild extends plugin_base{
 	
 	function init(){
 		$this->fullname = get_string('coursechild','block_configurable_reports');
-		$this->form = true;
-		$this->reporttypes = array('courses');
 	}
 	
 	function summary($data){

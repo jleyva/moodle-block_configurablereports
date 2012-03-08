@@ -26,10 +26,10 @@ if (!defined('MOODLE_INTERNAL')) {
     die('Direct access to this script is forbidden.');    ///  It must be included from a Moodle page
 }
 
-require_once($CFG->libdir.'/formslib.php');
+require_once($CFG->dirroot.'/blocks/configurable_reports/components/component_form.class.php');
 
-class template_form extends moodleform {
- function definition() {
+class template_form extends component_form {
+    function definition() {
         global $DB, $CFG;
 
         $mform =& $this->_form;
@@ -47,14 +47,8 @@ class template_form extends moodleform {
 					$options[] = $c['summary'];
 				}
 			}
-		}
-		else{
-			
-			require_once($CFG->dirroot.'/blocks/configurable_reports/report.class.php');
-			require_once($CFG->dirroot.'/blocks/configurable_reports/reports/'.$report->type.'/report.class.php');
-			
-			$reportclassname = 'report_'.$report->type;	
-			$reportclass = new $reportclassname($report);
+		} else {
+			$reportclass = report_base::get($report);
 			
 			$components = cr_unserialize($report->components);
 			$config = (isset($components['customsql']['config']))? $components['customsql']['config'] : new stdclass;	
@@ -102,7 +96,6 @@ class template_form extends moodleform {
         $mform->setType('header', PARAM_RAW);
 		$mform->setType('record', PARAM_RAW);
 		$mform->setType('footer', PARAM_RAW);
-
         
         $this->add_action_buttons();
     }
@@ -112,9 +105,8 @@ class template_form extends moodleform {
 
         $errors = parent::validation($data, $files);
 		
-		if($data['enabled']){
-			if(! $data['record'])
-				$errors['record'] = get_string('required');
+		if($data['enabled'] && !$data['record']) {
+			$errors['record'] = get_string('required');
 		}
         		
         return $errors;

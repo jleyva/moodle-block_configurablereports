@@ -29,10 +29,10 @@ if (!defined('MOODLE_INTERNAL')) {
     die('Direct access to this script is forbidden.');    ///  It must be included from a Moodle page
 }
 
-require_once($CFG->libdir.'/formslib.php');
+require_once($CFG->dirroot.'/blocks/configurable_reports/components/component_form.class.php');
 
-class timeline_form extends moodleform {
- function definition() {
+class timeline_form extends component_form {
+    function definition() {
         global $DB, $CFG;
 
         $mform =& $this->_form;
@@ -74,15 +74,6 @@ class timeline_form extends moodleform {
 				
         $this->add_action_buttons();
     }
-
-    function validation($data, $files) {
-        global $DB, $CFG, $db, $USER;
-
-        $errors = parent::validation($data, $files);		
-
-        return $errors;
-    }
-    
 }
 
 ?>

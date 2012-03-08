@@ -23,28 +23,29 @@
   */
 
 class component_permissions extends component_base{
-    
-	function init(){
-		$this->ordering = false;
-		$this->form = true;
-		$this->help = true;
+	
+	function plugin_classes(){
+	    return array(
+	            'anyone'              => 'plugin_anyone',
+	            'puserfield'          => 'plugin_puserfield',
+	            'reportscapabilities' => 'plugin_reportscapabilities',
+	            'roleincourse'        => 'plugin_roleincourse',
+	            'usersincoursereport' => 'plugin_usersincoursereport',
+	    );
 	}
 	
-	function form_process_data(&$cform){
-		global $DB;
-		
-		if($this->form){
-			$data = $cform->get_data();
-			// cr_serialize() will add slashes
-			
-			$components = cr_unserialize($this->config->components);
-			$components['permissions']['config'] = $data;
-			if(isset($components['permissions']['config']->conditionexpr)){
-				$components['permissions']['config']->conditionexpr = $this->add_missing_conditions($components['permissions']['config']->conditionexpr);
-			}
-			$this->config->components = cr_serialize($components);
-			$DB->update_record('block_configurable_reports_report',$this->config);
-		}
+	function form_process_data($data){
+	    global $DB;
+	    if (!$this->form) {
+	        return true;
+	    }
+	
+	    if(isset($data->conditionexpr)){
+	        $data->conditionexpr = $this->add_missing_conditions($data->conditionexpr);
+	    }
+	    $configdata = cr_serialize($data);
+	
+	    $this->update_configdata($configdata);
 	}
 	
 	function add_missing_conditions($cond){

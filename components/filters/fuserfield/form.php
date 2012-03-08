@@ -30,14 +30,12 @@ require_once($CFG->libdir.'/formslib.php');
 
 class fuserfield_form extends moodleform {
     function definition() {
-        global $DB, $USER, $CFG;
+        global $DB;
 
         $mform =& $this->_form;
 
         $mform->addElement('header', '', get_string('fuserfield','block_configurable_reports'), '');
 
-		$this->_customdata['compclass']->add_form_elements($mform,$this); 
-		
 		$columns = $DB->get_columns('user');
 		
 		$usercolumns = array();
@@ -52,13 +50,9 @@ class fuserfield_form extends moodleform {
 		unset($usercolumns['sesskey']);
 			
         $mform->addElement('select', 'field', get_string('field','block_configurable_reports'), $usercolumns);
-		
-       
-        // buttons
+
         $this->add_action_buttons(true, get_string('add'));
-
     }
-
 }
 
 ?>

@@ -23,13 +23,20 @@
   */
 
 class component_filters extends component_base{
-	
-	function init(){
-		$this->ordering = true;
-		$this->form = false;
-		$this->help = true;
-	}
 
+	function plugin_classes(){
+	    return array(
+	            'categories'   => 'plugin_categories',
+	            'courses'      => 'plugin_courses',
+	            'fcoursefield' => 'plugin_fcoursefield',
+	            'fuserfield'   => 'plugin_fuserfield',
+	            'startendtime' => 'plugin_startendtime',
+	    );
+	}
+	
+	function has_ordering(){
+	    return true;
+	}
 }
 
 ?>

@@ -26,17 +26,15 @@ if (!defined('MOODLE_INTERNAL')) {
     die('Direct access to this script is forbidden.');    ///  It must be included from a Moodle page
 }
 
-require_once($CFG->libdir.'/formslib.php');
+require_once($CFG->dirroot.'/blocks/configurable_reports/components/columns/plugin_form.class.php');
 
-class date_form extends moodleform {
+class date_form extends columns_plugin_form {
     function definition() {
         global $DB, $USER, $CFG;
 
         $mform =& $this->_form;
 
         $mform->addElement('header', '', get_string('date','block_configurable_reports'), '');
-		
-		$this->_customdata['compclass']->add_form_elements($mform,$this); 
 		
 		$mform->addElement('select', 'date', get_string('date','block_configurable_reports'), array('starttime'=>get_string('starttime','block_configurable_reports'),'endtime'=>get_string('endtime','block_configurable_reports')));
 		
@@ -48,10 +46,10 @@ class date_form extends moodleform {
 		$mform->addElement('text', 'customdateformat', get_string('customdateformat','block_configurable_reports'));
 		$mform->disabledIf('customdateformat','dateformat','neq','custom');
 
-		// buttons
+        $this->common_column_options();
+        
         $this->add_action_buttons(true, get_string('add'));
-		
-    }	
+    }
 }
 
 ?>

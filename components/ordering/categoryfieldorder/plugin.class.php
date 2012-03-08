@@ -25,14 +25,11 @@
 require_once($CFG->dirroot.'/blocks/configurable_reports/components/plugin.class.php');
 
 class plugin_categoryfieldorder extends plugin_base{
-	
+	//TODO: Investigate SQL var - report.class.php line 440
 	var $sql = true;
 	
 	function init(){
 		$this->fullname = get_string('categoryfield','block_configurable_reports');		
-		$this->form = true;
-		$this->unique = true;
-		$this->reporttypes = array('categories');
 		$this->sql = true;
 	}
 	

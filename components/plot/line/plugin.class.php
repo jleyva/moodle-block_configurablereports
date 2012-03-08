@@ -22,15 +22,12 @@
   * @date: 2009
   */
 
-require_once($CFG->dirroot.'/blocks/configurable_reports/components/plugin.class.php');
+require_once($CFG->dirroot.'/blocks/configurable_reports/components/plot/plugin.class.php');
 
-class plugin_line extends plugin_base{
+class plugin_line extends plot_plugin{
 	
 	function init(){
-		$this->fullname = get_string('line','block_configurable_reports');		
-		$this->form = true;
-		$this->ordering = true;
-		$this->reporttypes = array('timeline', 'sql','timeline');		
+		$this->fullname = get_string('line','block_configurable_reports');
 	}
 	
 	function summary($data){
@@ -45,8 +42,8 @@ class plugin_line extends plugin_base{
 		$data->xaxis--;
 		$data->yaxis--;
 		$data->serieid--;
-		$minvalue = 0;
-		$maxvalue = 0;
+		$min = 0;
+		$max = 0;
 		
 		if($finalreport){
 			foreach($finalreport as $r){
@@ -54,34 +51,94 @@ class plugin_line extends plugin_base{
 				$sname[$hash] = $r[$data->serieid];
 				$val = (isset($r[$data->yaxis]) && is_numeric($r[$data->yaxis]))? $r[$data->yaxis] : 0;
 				$series[$hash][] = $val;
-				$minvalue = ($val < $minvalue)? $val : $minvalue;
-				$maxvalue = ($val > $maxvalue)? $val : $maxvalue;
+				$min = ($val < $min)? $val : $min;
+				$max = ($val > $max)? $val : $max;
 			}			
 		}
-		
-		$params = '';
-				
+
 		$i = 0;
+		$params = compact('id', 'min', 'max');
 		foreach($series as $h=>$s){
-			$params .= "&amp;serie$i=".base64_encode($sname[$h].'||'.implode(',',$s));		
+		    $params['serie'.$i] = $sname[$h].'||'.implode(',',$s);
 			$i++;
 		}
 		
-		return $CFG->wwwroot.'/blocks/configurable_reports/components/plot/line/graph.php?reportid='.$this->report->id.'&id='.$id.$params.'&amp;min='.$minvalue.'&amp;max='.$maxvalue;
+		return $this->get_graphurl($params);
 	}
 	
-	function get_series($data){
+	function get_series($instanceid){
+	    $instance = $this->get_instance($instanceid);
+	    
 		$series = array();
-		foreach($_GET as $key=>$val){
+		foreach($instance->configdata as $series => $values){
 			if(strpos($key,'serie') !== false){
 				$id = (int) str_replace('serie','',$key);
 				list($name, $values) = explode('||',base64_decode($val));
 				$series[$id] = array('serie'=> explode(',',$values), 'name'=> $name);
 			}
 		}
+		
 		return $series;
 	}
 	
+	function graph($series){
+	    $min = optional_param('min',0,PARAM_INT);
+	    $max = optional_param('max',0,PARAM_INT);
+	    $abcise  = optional_param('abcise',-1,PARAM_INT);
+	    
+	    $abciselabel = array();
+	    if ($abcise != -1) {
+	        $abciselabel = $series[$abcise]['serie'];
+	        unset($series[$abcise]);
+	    }
+	    
+	    // Dataset definition
+	    $DataSet = new pData;
+	    $lastid = 0;
+	    foreach($series as $key=>$val){
+	        $DataSet->AddPoint($val['serie'],"Serie$key");
+	        $DataSet->AddAllSeries("Serie$key");
+	        $lastid = $key;
+	    }
+	    
+	    if (!empty($abciselabel)) {
+	        $nk = $lastid + 1;
+	        $DataSet->AddPoint($abciselabel,"Serie$nk");
+	        $DataSet->SetAbsciseLabelSerie("Serie$nk");
+	    } else {
+	        $DataSet->SetAbsciseLabelSerie();
+	    }
+	     
+	    foreach($series as $key=>$val){
+	        $DataSet->SetSerieName($val['name'],"Serie$key");
+	    }
+	    	
+	    // Initialise the graph
+	    $Test = new pChart(700,230);
+	    $Test->setFixedScale($min, $max);
+	    
+	    $Test->setFontProperties($CFG->dirroot."/blocks/configurable_reports/lib/Fonts/tahoma.ttf",8);
+	    $Test->setGraphArea(70,30,680,200);
+	    $Test->drawFilledRoundedRectangle(7,7,693,223,5,240,240,240);
+	    $Test->drawRoundedRectangle(5,5,695,225,5,230,230,230);
+	    $Test->drawGraphArea(255,255,255,TRUE);
+	    $Test->drawScale($DataSet->GetData(),$DataSet->GetDataDescription(),SCALE_NORMAL,150,150,150,TRUE,0,2);
+	    
+	    $Test->drawGrid(4,TRUE,230,230,230,50);
+	    
+	    // Draw the 0 line
+	    $Test->setFontProperties($CFG->dirroot."/blocks/configurable_reports/lib/Fonts/tahoma.ttf",10);
+	    $Test->drawTreshold(0,143,55,72,TRUE,TRUE);
+	    
+	    // Draw the line graph
+	    $Test->drawLineGraph($DataSet->GetData(),$DataSet->GetDataDescription());
+	    $Test->drawPlotGraph($DataSet->GetData(),$DataSet->GetDataDescription(),3,2,255,255,255);
+	    
+	    // Finish the graph
+	    $Test->setFontProperties($CFG->dirroot."/blocks/configurable_reports/lib/Fonts/tahoma.ttf",8);
+	    $Test->drawLegend(75,35,$DataSet->GetDataDescription(),255,255,255);
+	    $Test->Stroke();
+	}
 }
 
 ?>

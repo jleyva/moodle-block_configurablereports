@@ -50,12 +50,7 @@
 	else
 		$context = get_context_instance(CONTEXT_COURSE, $course->id);
 		
-	require_once($CFG->dirroot.'/blocks/configurable_reports/report.class.php');
-	require_once($CFG->dirroot.'/blocks/configurable_reports/reports/'.$report->type.'/report.class.php');
-	
-	$reportclassname = 'report_'.$report->type;	
-	$reportclass = new $reportclassname($report);
-
+	$reportclass = report_base::get($report);
 	if (!$reportclass->check_permissions($USER->id, $context)){
 		print_error("badpermissions",'block_configurable_reports');
 	}

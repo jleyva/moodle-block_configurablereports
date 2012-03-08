@@ -24,8 +24,16 @@
 
 class report_timeline extends report_base{
 	
-    function get_component_list(){
-        return array('timeline','columns','filters','template','permissions','calcs','plot');
+    function component_classes(){
+        return array(
+                'timeline'    => 'component_timeline',
+                'columns'     => 'component_columns',
+                'filters'     => 'component_filters',
+                'permissions' => 'component_permissions',
+                'calcs'       => 'component_calcs',
+                'plot'        => 'component_plot',
+                'template'    => 'component_template',
+        );
     }
 
 	function get_all_elements(){

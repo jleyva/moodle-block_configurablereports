@@ -22,26 +22,14 @@
   * @date: 2009
   */ 
 
-class plugin_roleusersn extends plugin_base{
+require_once($CFG->dirroot.'/blocks/configurable_reports/components/columns/plugin.class.php');
 
+class plugin_roleusersn extends columns_plugin{
 
 	function init(){
 		$this->fullname = get_string('roleusersn','block_configurable_reports');
 		$this->type = 'numeric';
-		$this->form = true;
-		$this->reporttypes = array('courses');
 	}
-	
-	function summary($data){
-		return format_string($data->columname);
-	}
-	
-	function colformat($data){
-		$align = (isset($data->align))? $data->align : '';
-		$size = (isset($data->size))? $data->size : '';
-		$wrap = (isset($data->wrap))? $data->wrap : '';
-		return array($align,$size,$wrap);
-	}	
 	
 	// data -> Plugin configuration data
 	// row -> Full course row c->id, c->fullname, etc...

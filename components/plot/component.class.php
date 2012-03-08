@@ -23,12 +23,16 @@
   */
 
 class component_plot extends component_base{
+
+	function plugin_classes(){
+	    return array(
+	            'line' => 'plugin_line',
+	            'pie'  => 'plugin_pie',
+	    );
+	}
 	
-	function init(){
-		$this->plugins = true;
-		$this->ordering = true;
-		$this->form = false;
-		$this->help = true;
+	function has_ordering(){
+	    return true;
 	}
 }
 

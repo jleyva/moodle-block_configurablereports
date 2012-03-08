@@ -35,26 +35,21 @@ class fcoursefield_form extends moodleform {
         $mform =& $this->_form;
 
         $mform->addElement('header', '', get_string('fcoursefield','block_configurable_reports'), '');
-
-		$this->_customdata['compclass']->add_form_elements($mform,$this); 
 		
 		$columns = $DB->get_columns('course');
 		
 		$coursecolumns = array();
-		foreach($columns as $c)
+		foreach($columns as $c){
 			$coursecolumns[$c->name] = $c->name;
+		}
 			
 		unset($coursecolumns['password']);
 		unset($coursecolumns['sesskey']);
 			
         $mform->addElement('select', 'field', get_string('field','block_configurable_reports'), $coursecolumns);
-		
-       
-        // buttons
+
         $this->add_action_buttons(true, get_string('add'));
-
     }
-
 }
 
 ?>

@@ -27,10 +27,7 @@ require_once($CFG->dirroot.'/blocks/configurable_reports/components/plugin.class
 class plugin_usersincoursereport extends plugin_base{
 	
 	function init(){
-		$this->form = false;
-		$this->unique = true;
 		$this->fullname = get_string('usersincoursereport','block_configurable_reports');
-		$this->reporttypes = array('courses','sql','users','timeline','categories');
 	}
 	
 	function summary($data){
@@ -38,10 +35,7 @@ class plugin_usersincoursereport extends plugin_base{
 	}
 	
 	function execute($userid, $context, $data){
-		global $DB, $CFG;
-		
-		return has_capability('moodle/course:view',$context,$userid);
-		
+		return has_capability('moodle/course:view', $context, $userid);
 	}
 	
 }

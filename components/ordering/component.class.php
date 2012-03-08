@@ -23,11 +23,13 @@
   */
 
 class component_ordering extends component_base{
-	
-	function init(){
-		$this->ordering = false;
-		$this->form = false;
-		$this->help = true;
+    
+	function plugin_classes(){
+	    return array(
+	            'categoryfieldorder' => 'plugin_categoryfieldorder',
+	            'coursefieldorder'   => 'plugin_coursefieldorder',
+	            'userfieldorder'     => 'plugin_userfieldorder',
+	    );
 	}
 }
 

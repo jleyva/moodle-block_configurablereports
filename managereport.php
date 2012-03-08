@@ -185,8 +185,16 @@ if ($reports) {
     echo $OUTPUT->heading(get_string('noreportsavailable', 'block_configurable_reports'));
 }
 
-$addstr = get_string('addreport','block_configurable_reports');
-echo $OUTPUT->heading(html_writer::tag('a', $addstr, array('href' => $addurl)));
+$typeoptions = cr_get_report_plugins($courseid);
+if (!has_capability('block/configurable_reports:managesqlreports', $context)) {
+    unset($typeoptions['sql']);    //TODO: Make more general with specific capabilities (subplugins)
+}
+$typeurls = array();
+foreach($typeoptions as $type => $typename){
+    $typeurls[$addurl->out(true, array('type' => $type))] = $typename;
+}
+$selector = get_string('add').' '.$OUTPUT->render(new url_select($typeurls));
+echo $OUTPUT->box(html_writer::tag('p', $selector, array('class' => 'centerpara')), 'boxaligncenter');
 
 $importform->display();
 			

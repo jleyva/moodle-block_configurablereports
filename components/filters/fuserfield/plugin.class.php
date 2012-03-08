@@ -27,10 +27,7 @@ require_once($CFG->dirroot.'/blocks/configurable_reports/components/plugin.class
 class plugin_fuserfield extends plugin_base{
 	
 	function init(){
-		$this->form = true;
-		$this->unique = true;
 		$this->fullname = get_string('fuserfield','block_configurable_reports');
-		$this->reporttypes = array('users');
 	}
 	
 	function summary($data){

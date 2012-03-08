@@ -29,8 +29,6 @@ class plugin_coursecategory extends plugin_base{
 	function init(){
 		$this->fullname = get_string('coursecategory','block_configurable_reports');
 		$this->type = 'text';
-		$this->form = true;
-		$this->reporttypes = array('courses');
 	}
 	
 	function summary($data){

@@ -28,8 +28,6 @@ class plugin_currentusercourses extends plugin_base{
 	
 	function init(){
 		$this->fullname = get_string('currentusercourses','block_configurable_reports');
-		$this->form = false;
-		$this->reporttypes = array('courses');
 	}
 	
 	function summary($data){

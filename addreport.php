@@ -26,8 +26,10 @@ require_once($CFG->dirroot."/blocks/configurable_reports/locallib.php");
 require_once($CFG->dirroot.'/blocks/configurable_reports/report.class.php');
 require_once($CFG->dirroot.'/blocks/configurable_reports/editreport_form.php');
 
+$type = required_param('type', null, PARAM_ALPHANUMEXT);
 $courseid = optional_param('courseid', null, PARAM_INT);
-$params = array();
+
+$params = array('type' => $type);
 if (isset($courseid)) {
     if (! ($course = $DB->get_record("course", array( "id" =>  $courseid)))) {
     	print_error('invalidcourseid');

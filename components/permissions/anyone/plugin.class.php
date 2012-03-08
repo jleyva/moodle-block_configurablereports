@@ -27,10 +27,7 @@ require_once($CFG->dirroot.'/blocks/configurable_reports/components/plugin.class
 class plugin_anyone extends plugin_base{
 	
 	function init(){
-		$this->form = false;
-		$this->unique = true;
 		$this->fullname = get_string('anyone','block_configurable_reports');
-		$this->reporttypes = array('courses','sql','users','timeline','categories');
 	}
 	
 	function summary($data){
@@ -38,10 +35,7 @@ class plugin_anyone extends plugin_base{
 	}
 	
 	function execute($userid, $context, $data){
-		global $DB, $CFG;
-		
 		return true;
-		
 	}
 	
 }

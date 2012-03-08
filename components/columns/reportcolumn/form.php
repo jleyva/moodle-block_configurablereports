@@ -26,9 +26,9 @@ if (!defined('MOODLE_INTERNAL')) {
     die('Direct access to this script is forbidden.');    ///  It must be included from a Moodle page
 }
 
-require_once($CFG->libdir.'/formslib.php');
+require_once($CFG->dirroot.'/blocks/configurable_reports/components/columns/plugin_form.class.php');
 
-class reportcolumn_form extends moodleform {
+class reportcolumn_form extends columns_plugin_form {
     function definition() {
         global $DB, $USER, $CFG;
 
@@ -56,18 +56,14 @@ class reportcolumn_form extends moodleform {
 						
 		$columnsoptions = $this->_customdata['pluginclass']->get_report_columns($reportid);
 		$mform->addElement('select', 'column', get_string('column','block_configurable_reports'), $columnsoptions);
-		       
-		$this->_customdata['compclass']->add_form_elements($mform,$this); 
-		
-        // buttons
-        $this->add_action_buttons(true, get_string('add'));
 
+        $this->common_column_options();
+        
+        $this->add_action_buttons(true, get_string('add'));
     }
 
 	function validation($data, $files){
 		$errors = parent::validation($data, $files);
-		
-		$errors = $this->_customdata['compclass']->validate_form_elements($data,$errors);
 		
 		if(!$data['reportid'])
 			$errors['reportid'] = get_string('missingcolumn','block_configurable_reports');

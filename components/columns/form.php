@@ -28,7 +28,7 @@ if (!defined('MOODLE_INTERNAL')) {
 
 require_once($CFG->libdir.'/formslib.php');
 
-class columns_form extends moodleform {
+class columns_form extends component_form {
     function definition() {
         global $DB, $USER, $CFG;
 
@@ -41,9 +41,8 @@ class columns_form extends moodleform {
 		$mform->setDefault('tablewidth', '100%');
 		$mform->addHelpButton('tablewidth','reporttable', 'block_configurable_reports');
 		
-		$options = array('center'=>'center','left'=>'left','right'=>'right');
-		
-		$mform->addElement('SELECT', 'tablealign', get_string('tablealign','block_configurable_reports'), $options);
+		$alignoptions = array('center'=>'center','left'=>'left','right'=>'right');
+		$mform->addElement('SELECT', 'tablealign', get_string('tablealign','block_configurable_reports'), $alignoptions);
         $mform->setType('tablealign', PARAM_CLEAN);
 		$mform->setDefault('tablealign', 'center');
 	   
@@ -61,15 +60,13 @@ class columns_form extends moodleform {
         $mform->setType('class', PARAM_CLEAN);
 		$mform->setAdvanced('class');
 	   
-        // buttons
         $this->add_action_buttons(true, get_string('update'));
-
     }
 
 	function validation($data, $files){
 		$errors = parent::validation($data, $files);
 		
-		if(!preg_match("/^\d+%?$/i",trim($data['tablewidth'])))
+		if(!preg_match("/^\d+%?$/i", trim($data['tablewidth'])))
 			$errors['tablewidth'] = get_string('badtablewidth','block_configurable_reports');
 		
 		return $errors;

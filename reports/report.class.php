@@ -25,10 +25,9 @@
 require_once($CFG->dirroot.'/lib/evalmath/evalmath.class.php');
 require_once($CFG->dirroot.'/blocks/configurable_reports/component.class.php');
 
-class report_base {
-    var $config;        // Report configuration
+abstract class report_base {
+    var $config;        // Report configuration (DB record)
 	var $components;    // Component objects (and therefore plugin objects)
-	var $plugconfig;    // Current plugin configuration data
 	
 	var $finalreport;
 	var $totalrecords = 0;
@@ -58,26 +57,34 @@ class report_base {
 		
 		$this->config = $report;
 		$this->currentuser = $USER;
-		$this->load_components();
 	}
 	
 	function get_name(){
 	    return format_string($this->config->name);
 	}
 	
-	function get_component_list(){
-	    return array();
+	function component_classes(){
+		return array(
+		        'columns'     => 'component_columns',
+		        'conditions'  => 'component_conditions',
+		        'ordering'    => 'component_ordering',
+		        'filters'     => 'component_filters',
+		        'permissions' => 'component_permissions',
+		        'calcs'       => 'component_calcs',
+		        'plot'        => 'component_plot',
+		        'template'    => 'component_template',
+		);
 	}
 	
 	function _load_components(){
 	    $this->components = array();
-	    foreach($this->get_component_list() as $comp){
-	        $this->components[$comp] = component_base::get($this->config, $comp);
+	    foreach($this->component_classes() as $comp => $classname){
+	        $this->components[$comp] = component_base::get($this->config, $comp, $classname);
 	    }
 	}
 	
 	function has_component($compname){
-	    return in_array($compname, $this->get_component_list());
+	    return array_key_exists($compname, $this->component_classes());
 	}
 	
 	function get_component($compname){

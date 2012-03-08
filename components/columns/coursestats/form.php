@@ -26,9 +26,9 @@ if (!defined('MOODLE_INTERNAL')) {
     die('Direct access to this script is forbidden.');    ///  It must be included from a Moodle page
 }
 
-require_once($CFG->libdir.'/formslib.php');
+require_once($CFG->dirroot.'/blocks/configurable_reports/components/columns/plugin_form.class.php');
 
-class coursestats_form extends moodleform {
+class coursestats_form extends columns_plugin_form {
     function definition() {
         global $DB, $USER, $CFG;
 
@@ -47,25 +47,21 @@ class coursestats_form extends moodleform {
         $mform->addElement('select', 'roles', get_string('roles'), $userroles,array('multiple'=>'multiple'));
 		$mform->disabledIf('roles','stat','eq','totalenrolments');
 		$mform->disabledIf('roles','stat','eq','activeenrolments');
-		
-		$this->_customdata['compclass']->add_form_elements($mform,$this); 	
-    
-        // buttons
-        $this->add_action_buttons(true, get_string('add'));
 
+        $this->common_column_options();
+        
+        $this->add_action_buttons(true, get_string('add'));
     }
 
 	function validation($data, $files){
-		global $DB, $CFG;
+		global $CFG;
 		$errors = parent::validation($data, $files);
 		
-		$errors = $this->_customdata['compclass']->validate_form_elements($data,$errors);
-		
 		if(!isset($CFG->enablestats) || !$CFG->enablestats)
-			$errors['stat'] = get_string('globalstatsshouldbeenabled','block_configurable_reports');
+			$errors['stat'] = get_string('globalstatsshouldbeenabled', 'block_configurable_reports');
 			
 		if(($data['stat'] == 'activityview' || $data['stat'] == 'activitypost') && !isset($data['roles'])){
-			$errors['roles'] = get_string('youmustselectarole','block_configurable_reports');
+			$errors['roles'] = get_string('youmustselectarole', 'block_configurable_reports');
 		}
 		
 		return $errors;

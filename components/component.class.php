@@ -24,19 +24,19 @@
 
 require_once($CFG->dirroot.'/blocks/configurable_reports/plugin.class.php');
  
-class component_base {
+abstract class component_base {
+    var $report;     // Report configuration (DB record)
+    var $config;     // Component configuration (DB record if exists)
 	var $plugins;    // Plugin objects
 	
-	var $ordering = false;
-	var $form = false;
 	var $help = '';
 	
-	static function get($report, $component) {
+	static function get($report, $component, $classname){
 	    $comppath = self::get_path($report, $component);
-	    require_once("$comppath/$component/component.class.php");
+	    $definitionfile = "$comppath/$component/component.class.php";
+	    require_once($definitionfile);
 	    
-	    $componentclassname = 'component_'.$component;
-	    return new $componentclassname($report);
+	    return new $classname($report);
 	}
 	
 	static function get_path($report, $component){
@@ -57,82 +57,117 @@ class component_base {
 	function __construct($report) {
 		global $DB, $CFG;
 		
-		$this->init();
+		$this->report = $report;
+		$search = array('reportid' => $report->id, 'component' => $this->get_name());
+		$configdata = $DB->get_field('block_configurable_reports_component', 'configdata', $search);
+		$this->config = cr_unserialize($configdata);
 	}
 	
 	function __toString(){
 	    return get_string($this->name, 'block_configurable_reports');
 	}
 	
-	function _load_plugins(){
-	    $this->plugins = array();
-	    foreach($this->get_plugin_list() as $plug){
-	        $this->components[$plug] = plugin_base::get($this->report->config, $this->get_name(), $plug);
-	    }
-	}
-	
 	function get_name(){
-	    $pieces = explode('component_', get_class($this));
-	    
+	    $pieces = explode('_component_', get_class($this));
 	    return $pieces[1];
 	}
 	
-	function get_plugin_list(){
-	    return get_list_of_plugins('blocks/configurable_reports/components/'.$this->get_name());
+	function plugin_classes(){
+	    return array();
 	}
 	
-	function has_plugin($plugname){
+	function _load_plugins(){
+	    $this->plugins = array();
+	    foreach($this->plugin_classes() as $plug){
+	        $this->plugins[$plug] = plugin_base::get($this->report, $this->get_name(), $plug);
+	    }
+	}
+	
+	function get_plugins(){
 	    if (!isset($this->plugins)) {
 	        $this->_load_plugins();
 	    }
 	    
-	    return array_key_exists($plugname, $this->plugins);
+	    return $this->plugins;
+	}
+	
+	function has_plugin($plugname){
+	    return array_key_exists($plugname, $this->plugin_classes());
 	}
 	
 	function get_plugin($plugname){
 	    if (!$this->has_plugin($plugname)) {
 	        return null;
 	    }
+	    $plugins = $this->get_plugins();
 	     
-	    return $this->plugins[$plugname];
+	    return $plugins[$plugname];
 	}
 	
 	function get_plugin_options(){
-	    if (!isset($this->plugins)) {
-	        $this->_load_plugins();
-	    }
-	    if (empty($this->plugins)) {
-	        return array();
-	    }
-	    
-	    $currentplugins = array_keys($this->elements);
+	    $plugins = $this->get_plugins();
 	     
 	    $pluginoptions = array();
-	    foreach($this->plugins as $plugin => $pluginclass){
-	        if($pluginclass->unique && in_array($plugin, $currentplugins)){
-	            continue;
+	    foreach($plugins as $plugin => $pluginclass){
+	        if ($pluginclass->can_create_instance()) {
+	            $pluginoptions[$plugin] = $pluginclass->get_name();
 	        }
-	        $pluginoptions[$plugin] = $pluginclass->get_name();
 	    }
 	    asort($pluginoptions);
 	     
 	    return $pluginoptions;
 	}
 	
-	function get_form($action = null, $customdata = null){
-	    if(!$this->form){
+	function has_ordering(){
+	    return false;
+	}
+	
+	function get_help_icon(){
+	    global $OUTPUT;
+	    
+	    return $OUTPUT->help_icon('comp_'.$this->get_name(), 'block_configurable_reports');
+	}
+	
+	function has_form(){
+	    return false;
+	}
+	
+	function get_form($action = null, $customdata = array()){
+	    if (!$this->has_form()) {
 	        return null;
 	    }
 	    
+	    $component = $this->get_name();
 	    $comppath = self::get_path($this->config, $component);
 	    require_once("$comppath/form.php");
 	    
-	    $classname = $component.'_form';
-	    return new $classname($action, $customdata);
+	    $formclassname = $component.'_form';
+	    $customdata['compclass'] = $this;
+	    return new $formclassname($action, $customdata);
 	}
 	
-	function add_form_elements(&$mform,$fullform) {
-		return false;
+	function form_process_data($data){
+	    if (!$this->has_form()) {
+	        return true;
+	    }
+	    
+	    $configdata = cr_serialize($data);
+	    
+	    $this->update_configdata($configdata);
+	}
+	
+	function update_configdata($configdata){
+	    global $DB;
+	    
+	    $search = array('reportid' => $this->report->id, 'component' => $this->get_name());
+	    if ($record = $DB->get_record('block_configurable_reports_component', $search)){
+	        $record->configdata = $configdata;
+	        $DB->update_record('block_configurable_reports_component', $record);
+	    } else {
+	        $record = (object)$search;
+	        $record->configdata = $configdata;
+	        $DB->insert_record('block_configurable_reports_component', $record);
+	    }
 	}
 }
 

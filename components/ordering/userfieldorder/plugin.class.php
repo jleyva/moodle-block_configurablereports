@@ -30,9 +30,6 @@ class plugin_userfieldorder extends plugin_base{
 	
 	function init(){
 		$this->fullname = get_string('userfield','block_configurable_reports');		
-		$this->form = true;
-		$this->unique = true;
-		$this->reporttypes = array('users');
 		$this->sql = true;
 	}
 	

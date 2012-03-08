@@ -22,30 +22,16 @@
   * @date: 2009
   */ 
 
-require_once($CFG->dirroot.'/blocks/configurable_reports/components/plugin.class.php');
+require_once($CFG->dirroot.'/blocks/configurable_reports/components/columns/plugin.class.php');
 
-class plugin_reportcolumn extends plugin_base{
+class plugin_reportcolumn extends columns_plugin{
 
 	var $reportcache = array();
 
 	function init(){
 		$this->fullname = get_string('reportcolumn','block_configurable_reports');
 		$this->type = 'undefined';
-		$this->form = true;
-		$this->reporttypes = array('courses','users','timeline','categories');
 	}
-	
-	function summary($data){		
-		return format_string($data->columname);
-	}
-	
-	
-	function colformat($data){
-		$align = (isset($data->align))? $data->align : '';
-		$size = (isset($data->size))? $data->size : '';
-		$wrap = (isset($data->wrap))? $data->wrap : '';
-		return array($align,$size,$wrap);
-	}	
 	
 	function get_user_reports(){
 		global $DB, $USER;
@@ -112,14 +98,9 @@ class plugin_reportcolumn extends plugin_base{
 		
 		if(! $report = $DB->get_record('block_configurable_reports_report',array('id' => $data->reportid)))
 			print_error('reportdoesnotexists','block_configurable_reports');
-		
-		require_once($CFG->dirroot.'/blocks/configurable_reports/report.class.php');
-		require_once($CFG->dirroot.'/blocks/configurable_reports/reports/'.$report->type.'/report.class.php');
 	
 		if(!isset($this->reportcache[$row->id])){
-	
-			$reportclassname = 'report_'.$report->type;	
-			$reportclass = new $reportclassname($report);
+			$reportclass = report_base::get($report);
 			
 			// Delete conditions - TODO		
 			// Add new condition

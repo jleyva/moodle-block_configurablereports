@@ -22,24 +22,20 @@
   * @date: 2009
   */
 
-class plugin_base{
-    var $elements;    // Current plugin elements in report
+abstract class plugin_base{
     var $report;
-    var $comp;
-    var $config;
+    var $instances;    // Current plugin instances in report
+    
+    var $component;
     
 	var $fullname = '';
 	var $type = '';
-	var $form = false;
-	var $cache = array();
-	var $unique = false;
 
-	static function get($report, $component, $plugin) {
+	static function get($report, $component, $plugin, $classname) {
 	    $plugpath = self::get_path($report, $component, $plugin);
 	    require_once("$plugpath/plugin.class.php");
-	     
-	    $pluginclassname = 'plugin_'.$plugin;
-	    $pluginclass = new $pluginclassname($report);
+	    
+	    $pluginclass = new $classname($report);
 	}
 	
 	static function get_path($report, $component, $plugin){
@@ -60,35 +56,74 @@ class plugin_base{
 	function __construct($report){
 	    global $DB, $CFG;
 		
-		if(is_numeric($report))
-			$this->report = $DB->get_record('block_configurable_reports_report',array('id' => $report));
-		else
-			$this->report = $report;
+		$this->report = $report;
 		$this->init();
 	}
 	
-	function get_elements(){
+	function __toString(){
+	    return get_string($this->name, 'block_configurable_reports');
+	}
+	
+	function get_name(){
+	    $pieces = explode('_plugin_', get_class($this));
+	    return $pieces[1];
+	}
+	
+	function _load_instances(){
 	    global $DB;
-	     
-	    if(!isset($this->config)){
-	        $this->config = array();
-	        $search = array('reportid' => $this->id);
-	        $records = $DB->get_records('block_configurable_reports_plugin', );
-	        foreach($records as $record){
-	            $record->configdata = cr_unserialize($record->configdata);
-	            $this->plugconfig[$record->component][$record->plugin][$record->id] = $record;
-	        }
+	    
+	    $search = array('reportid' => $this->report->id, 'plugin' => $this->get_name());
+	    $this->instances = $DB->get_records('block_configurable_reports_plugin', $search);
+	    
+	    foreach($this->instances as $id => $instance){
+	        $this->instances[$id]->configdata = cr_unserialize($instance->configdata);
 	    }
-	     
-	    return $this->plugconfig[$component];
+	}
+	
+	/**
+	 * Whether this plugin allows multiple instances.
+	 * @return boolean
+	 */
+	function instance_allow_multiple(){
+	    return true;
+	}
+	
+	/**
+	 * Whether a new instance of this plugin can be created.
+	 * @return boolean
+	 */
+	function can_create_instance(){
+	    return count($this->instances) > 1 ? true : $this->instance_allow_multiple();
+	}
+	
+	function get_instance($id){
+	    $instances = $this->get_instances();
+	    if(!array_key_exists($id, $instances)){
+	        return false;
+	    }
+	    
+	    return $instances[$id];
+	}
+	
+	function get_instances(){
+	    if (!isset($this->instances)) {
+	        $this->_load_instances();
+	    }
+	    
+	    return $this->instances;
+	}
+	
+	function has_form(){
+	    return false;
 	}
 	
 	function get_form($action = null, $customdata = null){
 	    if(!$this->form){
 	        return null;
 	    }
-	     
-	    $plugpath = self::get_path($this->config, $component, $plugin);
+	    
+	    $plugin = $this->get_name();
+	    $plugpath = self::get_path($this->config, $this->comp, $plugin);
 	    require_once("$plugpath/form.php");
 	     
 	    $classname = $plugin.'_form';
@@ -99,9 +134,7 @@ class plugin_base{
 		return '';
 	}
 	
-	function get_name(){
-	    return get_string($this->name, 'block_configurable_reports');
-	}
+	abstract function execute();
 }
 
 ?>

@@ -22,15 +22,13 @@
   * @date: 2009
   */  
 
-require_once($CFG->dirroot.'/blocks/configurable_reports/components/plugin.class.php');
+require_once($CFG->dirroot.'/blocks/configurable_reports/components/columns/plugin.class.php');
 
-class plugin_usermodoutline extends plugin_base{
+class plugin_usermodoutline extends columns_plugin{
 
 	function init(){
 		$this->fullname = get_string('usermodoutline','block_configurable_reports');
 		$this->type = 'undefined';
-		$this->form = true;
-		$this->reporttypes = array('users');
 	}
 	
 	function summary($data){
@@ -46,41 +44,41 @@ class plugin_usermodoutline extends plugin_base{
 		return $data->columname;
 	}
 	
-	function colformat($data){
-		$align = (isset($data->align))? $data->align : '';
-		$size = (isset($data->size))? $data->size : '';
-		$wrap = (isset($data->wrap))? $data->wrap : '';
-		return array($align,$size,$wrap);
-	}
-	
 	// data -> Plugin configuration data
 	// row -> Complet user row c->id, c->fullname, etc...
 	function execute($data,$row,$user,$courseid,$starttime=0,$endtime=0){
 		global $DB, $CFG;
-		if($cm = $DB->get_record('course_modules',array('id' => $data->cmid))){
-			$mod = $DB->get_record('modules',array('id' => $cm->module));
-			if($instance = $DB->get_record("$mod->name",array('id' => $cm->instance))){
-				$libfile = "$CFG->dirroot/mod/$mod->name/lib.php";
-               if (file_exists($libfile)) {
-					require_once($libfile);
-					$user_outline = $mod->name."_user_outline";
-					if (function_exists($user_outline)) {
-						if($course = $DB->get_record('course',array('id' => $this->report->courseid))){
-							$result = $user_outline($course, $row, $mod, $instance);
-							if($result){
-								$returndata = '';
-								if (isset($result->info)) 
-									$returndata .= $result->info.' ';
-								
-								if ((!isset($data->donotshowtime) || !$data->donotshowtime) && !empty($result->time)) 
-									$returndata .= userdate($result->time);
-								return $returndata;
-							}
-						}
-					}
-				}
-			}
-		}	
+		
+		$returndata = '';
+		
+		if (! ($cm = $DB->get_record('course_modules',array('id' => $data->cmid)))) {
+		    return $returndata;
+		}
+		$mod = $DB->get_record('modules',array('id' => $cm->module));
+		
+		if (! ($instance = $DB->get_record("$mod->name",array('id' => $cm->instance)))) {
+		    return $returndata;
+		}
+		
+        $libfile = "$CFG->dirroot/mod/$mod->name/lib.php";
+        if (file_exists($libfile)) {
+        	require_once($libfile);
+        	$user_outline = $mod->name."_user_outline";
+        	if (function_exists($user_outline)) {
+        		if($course = $DB->get_record('course',array('id' => $this->report->courseid))){
+        			$result = $user_outline($course, $row, $mod, $instance);
+        			if($result){
+        				
+        				if (isset($result->info)) 
+        					$returndata .= $result->info.' ';
+        				
+        				if ((!isset($data->donotshowtime) || !$data->donotshowtime) && !empty($result->time)) 
+        					$returndata .= userdate($result->time);
+        				return $returndata;
+        			}
+        		}
+        	}
+        }
 		return '';
 	}
 	

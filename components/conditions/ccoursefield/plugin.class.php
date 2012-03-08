@@ -28,8 +28,6 @@ class plugin_ccoursefield extends plugin_base{
 	
 	function init(){
 		$this->fullname = get_string('ccoursefield','block_configurable_reports');
-		$this->reporttypes = array('courses');
-		$this->form = true;
 	}
 		
 	function summary($data){		

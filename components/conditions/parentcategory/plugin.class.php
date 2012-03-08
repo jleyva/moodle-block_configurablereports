@@ -29,8 +29,6 @@ class plugin_parentcategory extends plugin_base{
 	function init(){
 		$this->fullname = get_string('parentcategory','block_configurable_reports');
 		$this->type = 'text';
-		$this->form = true;
-		$this->reporttypes = array('categories');
 	}
 	
 	function summary($data){
