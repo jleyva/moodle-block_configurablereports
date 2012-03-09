@@ -24,18 +24,19 @@
 
 abstract class plugin_base{
     var $report;
-    var $instances;    // Current plugin instances in report
-    
     var $component;
+    var $instances;    // Current plugin instances in report
     
 	var $fullname = '';
 	var $type = '';
 
-	static function get($report, $component, $plugin, $classname) {
+	static function get($report, $component, $plugin, $classname){
+	    global $CFG;
+	    
 	    $plugpath = self::get_path($report, $component, $plugin);
 	    require_once("$plugpath/plugin.class.php");
 	    
-	    $pluginclass = new $classname($report);
+	    return new $classname($report, $component);
 	}
 	
 	static function get_path($report, $component, $plugin){
@@ -53,11 +54,12 @@ abstract class plugin_base{
 	    return "$basedir/$filepath";
 	}
 	
-	function __construct($report){
+	function __construct($report, $component){
 	    global $DB, $CFG;
 		
 		$this->report = $report;
-		$this->init();
+		$reportclass = report_base::get($report);
+		$this->component = $reportclass->get_component($component);
 	}
 	
 	function __toString(){
@@ -65,7 +67,7 @@ abstract class plugin_base{
 	}
 	
 	function get_name(){
-	    $pieces = explode('_plugin_', get_class($this));
+	    $pieces = explode('plugin_', get_class($this));
 	    return $pieces[1];
 	}
 	
@@ -118,12 +120,14 @@ abstract class plugin_base{
 	}
 	
 	function get_form($action = null, $customdata = null){
-	    if(!$this->form){
+		if (!$this->has_form()) {
 	        return null;
 	    }
 	    
+	    global $CFG;
 	    $plugin = $this->get_name();
-	    $plugpath = self::get_path($this->config, $this->comp, $plugin);
+	    $compclass = $this->component;
+	    $plugpath = self::get_path($this->report, $compclass->get_name(), $plugin);
 	    require_once("$plugpath/form.php");
 	     
 	    $classname = $plugin.'_form';
@@ -134,7 +138,9 @@ abstract class plugin_base{
 		return '';
 	}
 	
-	abstract function execute();
+	function execute(){
+	    return;
+	}
 }
 
 ?>

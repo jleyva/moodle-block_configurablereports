@@ -29,10 +29,15 @@ if (!defined('MOODLE_INTERNAL')) {
     die('Direct access to this script is forbidden.');    ///  It must be included from a Moodle page
 }
 
-require_once($CFG->libdir.'/formslib.php');
+require_once($CFG->dirroot.'/blocks/configurable_reports/components/component_form.class.php');
 
-class customsql_form extends moodleform {
- function definition() {
+class customsql_form extends component_form {
+    
+    function get_component_name(){
+        return 'customsql';
+    }
+    
+    function definition() {
         global $DB, $CFG;
 
         $mform =& $this->_form;
@@ -86,7 +91,6 @@ class customsql_form extends moodleform {
 
         return $errors;
     }
-    
 }
 
 ?>

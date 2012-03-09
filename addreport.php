@@ -23,41 +23,35 @@
 
 require_once("../../config.php");
 require_once($CFG->dirroot."/blocks/configurable_reports/locallib.php");
-require_once($CFG->dirroot.'/blocks/configurable_reports/report.class.php');
-require_once($CFG->dirroot.'/blocks/configurable_reports/editreport_form.php');
+require_once($CFG->dirroot.'/blocks/configurable_reports/reports/report.class.php');
+require_once($CFG->dirroot.'/blocks/configurable_reports/reports/report_form.class.php');
 
-$type = required_param('type', null, PARAM_ALPHANUMEXT);
+$type = required_param('type', PARAM_ALPHANUMEXT);
 $courseid = optional_param('courseid', null, PARAM_INT);
 
 $params = array('type' => $type);
 if (isset($courseid)) {
     if (! ($course = $DB->get_record("course", array( "id" =>  $courseid)))) {
-    	print_error('invalidcourseid');
+        print_error("nosuchcourseid", 'block_configurable_reports');
     }
     $params['courseid'] = $courseid;
-}
 
-// Force user login in course (SITE or Course)
-if ($course->id == SITEID) {
-	require_login();
-	$context = context_system::instance();
+    require_login($courseid);
+    $context = context_course::instance($courseid);
 } else {
-	require_login($course->id);		
-	$context = context_course::instance($course->id);
+    require_login();
+    $context = context_system::instance();
 }
-// Capability check
-if($report->ownerid != $USER->id){
-    require_capability('block/configurable_reports:managereports', $context);
-}else{
-    require_capability('block/configurable_reports:manageownreports', $context);
-}
+// TODO: Capability check
 
 $PAGE->set_context($context);
 $PAGE->set_pagelayout('incourse');
 $baseurl = new moodle_url('/blocks/configurable_reports/addreport.php', $params);
 $editurl = new moodle_url('/blocks/configurable_reports/editcomp.php');
 $PAGE->set_url($baseurl);
+
 $title = get_string('newreport','block_configurable_reports');
+$PAGE->navbar->add($title);
 $PAGE->set_title($title);
 $PAGE->set_heading($title);
 
@@ -67,7 +61,7 @@ if($editform->is_cancelled()){
     
 } else if ($data = $editform->get_data()) {
     $data->ownerid = $USER->id;
-    $data->courseid = $course->id;
+    $data->courseid = $courseid;
     $data->visible = 1;
     $data->jsordering = isset($data->jsordering) ? 1 : 0;
     
@@ -80,11 +74,13 @@ if($editform->is_cancelled()){
 	$data->export = implode(',', $methods);
 
     $newid = $DB->insert_record('block_configurable_reports_report', $data);
-    add_to_log($course->id, 'configurable_reports', 'report created', $baseurl, $data->name);
+    $logcourse = isset($courseid) ? $courseid : $SITE->id;
+    add_to_log($logcourse, 'configurable_reports', 'report created', $baseurl, $data->name);
     
     $reportclass = report_base::get($newid);
-    $complist = $reportclass->get_component_list();
-    redirect($editurl->out(false, array('id' => $newid, 'comp' => $complist[0])));
+    $complist = $reportclass->component_classes();
+    reset($complist);
+    redirect($editurl->out(false, array('id' => $newid, 'comp' => key($complist))));
 }
 
 /* Display page */

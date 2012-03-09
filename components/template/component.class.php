@@ -27,15 +27,6 @@ class component_template extends component_base{
 	function has_form(){
 	    return true;
 	}
-	
-	function form_set_data(&$cform){
-		if($this->form){
-			$fdata = new stdclass;
-			$components = cr_unserialize($this->config->components);
-			$config = (isset($components['template']['config']))? $components['template']['config'] : new stdclass;		
-			$cform->set_data($config);
-		}
-	}
 }
 
 ?>

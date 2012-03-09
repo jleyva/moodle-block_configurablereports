@@ -33,15 +33,12 @@ if (isset($courseid)) {
     	print_error("nosuchcourseid", 'block_configurable_reports');
     }
     $params['courseid'] = $courseid;
-}
-
-// Force user login in course (SITE or Course)
-if ($course->id == SITEID) {
-	require_login();
-	$context = context_system::instance();
+    
+    require_login($courseid);
+    $context = context_course::instance($courseid);
 } else {
-	require_login($course->id);		
-	$context = context_course::instance($course->id);
+    require_login();
+    $context = context_system::instance();
 }
 // Capability check	
 if(!has_capability('block/configurable_reports:managereports', $context) && 
@@ -82,11 +79,11 @@ if (($data = $importform->get_data()) &&
 	}
 }	
 
-if($reports = cr_get_my_reports($course->id, $USER->id)){
+if($reports = cr_get_my_reports($USER->id, $context)){
     $sitestr = get_string('site');
     $delstr = get_string('deleted');
     
-    $table = new stdclass;
+    $table = new html_table();
     $table->id = 'reportslist';
     $table->head = array(
             get_string('name'),
@@ -154,13 +151,12 @@ if($reports = cr_get_my_reports($course->id, $USER->id)){
         $editcell = implode($divider, $commands);
 
         $download = '';
-        $export = explode(',',$r->export);
-        if(!empty($export)){
-            foreach ($export as $e) {
+        if(!empty($r->export)){
+            foreach (explode(',', $r->export) as $e) {
                 $url = $viewurl;
                 $url->params(array('download' => 1, 'format' => $e));
-                $icon = '<img src="'.$CFG->wwwroot.'/blocks/configurable_reports/export/'.$e.'/pix.gif';
-                $download .= html_writer::tag('a', $icon.'&nbsp;'.strtoupper($e), $url);
+                $icon = '<img src="'.$CFG->wwwroot.'/blocks/configurable_reports/export/'.$e.'/pix.gif">';
+                $download .= html_writer::tag('a', $icon.'&nbsp;'.strtoupper($e), array('href' => $url));
                 $download .= $divider;
             }
         }
@@ -170,7 +166,7 @@ if($reports = cr_get_my_reports($course->id, $USER->id)){
 }
 
 $title = get_string('reports','block_configurable_reports');
-//$PAGE->navbar->add($title);
+$PAGE->navbar->add($title);
 $PAGE->set_title($title);
 $PAGE->set_heading($title);
 
@@ -181,6 +177,7 @@ echo $OUTPUT->header();
 if ($reports) {
     cr_add_jsordering("#reportslist");
     cr_print_table($table);
+    //echo html_writer::table($table);
 } else {
     echo $OUTPUT->heading(get_string('noreportsavailable', 'block_configurable_reports'));
 }
@@ -191,10 +188,12 @@ if (!has_capability('block/configurable_reports:managesqlreports', $context)) {
 }
 $typeurls = array();
 foreach($typeoptions as $type => $typename){
-    $typeurls[$addurl->out(true, array('type' => $type))] = $typename;
+    $typeurls[$addurl->out(false, array('type' => $type))] = $typename;
 }
-$selector = get_string('add').' '.$OUTPUT->render(new url_select($typeurls));
-echo $OUTPUT->box(html_writer::tag('p', $selector, array('class' => 'centerpara')), 'boxaligncenter');
+$selector = new url_select($typeurls);
+$selector->class = 'boxaligncenter centerpara';
+$selector->set_label(get_string('add'));
+echo $OUTPUT->render($selector);
 
 $importform->display();
 			

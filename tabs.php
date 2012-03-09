@@ -28,16 +28,18 @@ if (!defined('MOODLE_INTERNAL')) {
 
 $top = array();
 
-$top[] = new tabobject('report', new moodle_url('/blocks/configurable_reports/editreport.php', array('id' => $report->id)),
-                get_string('report','block_configurable_reports'));
+$params = array('id' => $report->id);
+$editurl = new moodle_url('/blocks/configurable_reports/editreport.php', $params);
+$compurl = new moodle_url('/blocks/configurable_reports/editcomp.php', $params);
+$viewurl = new moodle_url('/blocks/configurable_reports/viewreport.php', $params);
 
-foreach($reportclass->components as $comptab){
-	$top[] = new tabobject($comptab, new moodle_url('/blocks/configurable_reports/editcomp.php', array('id' => $report->id, 'comp' => $comptab)),
-                get_string($comptab,'block_configurable_reports'));
+$top[] = new tabobject('report', $editurl, get_string('report','block_configurable_reports'));
+
+foreach($reportclass->components as $comp => $compclass){
+	$top[] = new tabobject($comp, $compurl->out(true, array('comp' => $comp)), get_string($comp,'block_configurable_reports'));
 }
 
-$top[] = new tabobject('viewreport', new moodle_url('/blocks/configurable_reports/viewreport.php', array('id' => $report->id)),
-                get_string('viewreport','block_configurable_reports'));
+$top[] = new tabobject('viewreport', $viewurl, get_string('viewreport','block_configurable_reports'));
 
 $tabs = array($top);
 

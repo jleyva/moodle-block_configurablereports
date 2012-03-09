@@ -27,15 +27,6 @@ class component_timeline extends component_base{
 	function has_form(){
 	    return true;
 	}
-	
-	function form_set_data(&$cform){
-		if($this->form){
-			$fdata = new stdclass;
-			$components = cr_unserialize($this->config->components);			
-			$compconfig = (isset($components['timeline']['config']))? $components['timeline']['config'] : new stdclass;		
-			$cform->set_data($compconfig);
-		}
-	}
 }
 
 ?>

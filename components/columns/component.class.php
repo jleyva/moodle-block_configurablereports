@@ -44,10 +44,8 @@ class component_columns extends component_base{
 	    return true;
 	}
 	
-	function process_form(){
-		if($this->form){
-			return true;
-		}
+	function has_form(){
+	    return true;
 	}
 }
 

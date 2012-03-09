@@ -26,9 +26,14 @@ if (!defined('MOODLE_INTERNAL')) {
     die('Direct access to this script is forbidden.');    ///  It must be included from a Moodle page
 }
 
-require_once($CFG->libdir.'/formslib.php');
+require_once($CFG->dirroot.'/blocks/configurable_reports/components/component_form.class.php');
 
-class conditions_form extends moodleform {
+class conditions_form extends component_form {
+    
+    function get_component_name(){
+        return 'conditions';
+    }
+    
     function definition() {
         global $DB, $USER, $CFG;
 
@@ -37,29 +42,31 @@ class conditions_form extends moodleform {
 		$mform->addElement('static', 'help','',get_string('conditionexprhelp','block_configurable_reports'));
         $mform->addElement('text', 'conditionexpr', get_string('conditionexpr','block_configurable_reports'),'size="50"');
 		$mform->addHelpButton('conditionexpr','conditionexpr_conditions', 'block_configurable_reports');
-	   
-        // buttons
-        $this->add_action_buttons(true, get_string('update'));
 
+        $this->add_action_buttons(true, get_string('update'));
     }
 
 	function validation($data, $files){
 		$errors = parent::validation($data, $files);
 		// TODO - this reg expr can be improved
-		if(!preg_match("/(\(*\s*\bc\d{1,2}\b\s*\(*\)*\s*(\(|and|or|not)\s*)+\(*\s*\bc\d{1,2}\b\s*\(*\)*\s*$/i",$data['conditionexpr']))
+		if (!preg_match("/(\(*\s*\bc\d{1,2}\b\s*\(*\)*\s*(\(|and|or|not)\s*)+\(*\s*\bc\d{1,2}\b\s*\(*\)*\s*$/i",$data['conditionexpr'])) {
 			$errors['conditionexpr'] = get_string('badconditionexpr','block_configurable_reports');
+		}
 			
-		if(substr_count($data['conditionexpr'],'(') != substr_count($data['conditionexpr'],')'))
+		if (substr_count($data['conditionexpr'],'(') != substr_count($data['conditionexpr'],')')) {
 			$errors['conditionexpr'] = get_string('badconditionexpr','block_configurable_reports');
-			
-		if(isset($this->_customdata['elements']) && is_array($this->_customdata['elements'])){
-			$elements = $this->_customdata['elements'];
-			$nel = count($elements);
-			if(!empty($elements) && $nel > 1){
-				preg_match_all('/(\d+)/',$data['conditionexpr'],$matches,PREG_PATTERN_ORDER);
+		}
+		
+		// Check for invalid conditions (greater than number of conditions)
+		$compclass = $this->_customdata['compclass'];
+		$instances = $compclass->get_all_instances();
+		if(!empty($instances)){
+		    $numconditions = count($instances);
+			if($numconditions > 1){
+				preg_match_all('/(\d+)/', $data['conditionexpr'], $matches, PREG_PATTERN_ORDER);
 				foreach($matches[0] as $num){
-					if($num > $nel){
-						$errors['conditionexpr'] = get_string('badconditionexpr','block_configurable_reports');
+					if($num > $numconditions){
+						$errors['conditionexpr'] = get_string('badconditionexpr', 'block_configurable_reports');
 						break;
 					}
 				}
@@ -67,7 +74,30 @@ class conditions_form extends moodleform {
 		}
 		
 		return $errors;
-	}	
+	}
+	
+	function get_config_data(){
+	    $data = parent::get_config_data();
+	    
+	    $data = $this->add_missing_conditions($data);
+	    
+	    return $data;
+	}
+	
+	function save_data($data){
+	    $data = $this->add_missing_conditions($data);
+	    
+	    parent::save_data($data);
+	}
+	
+	function add_missing_conditions($data){
+	    if (isset($data->conditionexpr)) {
+	        $compclass = $this->_customdata['compclass'];
+	        $data->conditionexpr = $compclass->add_missing_conditions($data->conditionexpr);
+	    }
+	    
+	    return $data;
+	}
 }
 
 ?>

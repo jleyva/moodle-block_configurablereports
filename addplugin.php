@@ -26,24 +26,24 @@ require_once("../../config.php");
 require_once($CFG->dirroot."/blocks/configurable_reports/locallib.php");
 require_once($CFG->dirroot.'/blocks/configurable_reports/reports/report.class.php');
 
-$id   = required_param('id', PARAM_INT);
-$comp = required_param('comp', PARAM_ALPHA);
-$plug = required_param('plug', PARAM_ALPHA);
+$id   = required_param('id', PARAM_INT);        // Report id
+$comp = required_param('comp', PARAM_ALPHA);    // Component name
+$plug = required_param('plug', PARAM_ALPHA);    // Plugin name
 
 if (! ($report = $DB->get_record('block_configurable_reports_report', array('id' => $id)))) {
     print_error('reportdoesnotexists');
 }
-if (! ($course = $DB->get_record("course", array( "id" => $report->courseid)))) {
-    print_error('invalidcourseid');
-}
+$courseid = $report->courseid;
+if (isset($courseid)) {
+    if (! ($course = $DB->get_record("course", array( "id" =>  $courseid)))) {
+        print_error('invalidcourseid');
+    }
 
-// Force user login in course (SITE or Course)
-if ($course->id == SITEID) {
+    require_login($courseid);
+    $context = context_course::instance($courseid);
+} else {
     require_login();
     $context = context_system::instance();
-} else {
-    require_login($course->id);
-    $context = context_course::instance($course->id);
 }
 // Capability check
 if($report->ownerid != $USER->id){
@@ -52,57 +52,46 @@ if($report->ownerid != $USER->id){
     require_capability('block/configurable_reports:manageownreports', $context);
 }
 
-$baseurl = new moodle_url('/blocks/configurable_reports/editplugin.php');
+$baseurl = new moodle_url('/blocks/configurable_reports/addplugin.php');
 $returnurl = new moodle_url('/blocks/configurable_reports/editcomp.php', array('id' => $id, 'comp' => $comp));
 $PAGE->set_url($baseurl, array('id' => $id, 'comp' => $comp, 'plug' => $plug));
 $PAGE->set_context($context);
 $PAGE->set_pagelayout('incourse');
 
 $reportclass = report_base::get($report);
-if (!$reportclass->has_component($comp)) {
+$compclass = $reportclass->get_component($comp);
+if (!isset($compclass)) {
     print_error('badcomponent');
 }
-$compconfig = $reportclass->get_component_config($comp);
-$compclass = component_base::get($report, $comp);
-$pluginclass = plugin_base::get($report, $comp, $plug);
+$pluginclass = $compclass->get_plugin($plug);
 
 $title = $reportclass->get_name().' '.$compclass->get_name();
 $PAGE->set_title($title);
 $PAGE->set_heading($title);
+
 navigation_node::override_active_url($returnurl);
 $PAGE->navbar->add($pluginclass->get_name());
 
-if($pluginclass->form){
+if ($pluginclass->has_form()) {
     $customdata = compact('comp','cid','id','pluginclass','compclass','report','reportclass');
-    $editform = $compclass->get_form($PAGE->url, $customdata);
+    $editform = $pluginclass->get_form($PAGE->url, $customdata);
 		
 	if ($editform->is_cancelled()) {
 		redirect($returnurl);
 		
 	} else if ($data = $editform->get_data()) {	
-		add_to_log($report->courseid, 'configurable_reports', 'edit', '', $report->name);
+	    $logcourse = isset($courseid) ? $courseid : $SITE->id;
+		add_to_log($logcourse, 'configurable_reports', 'edit', '', $report->name);
 
-		$allelements = cr_unserialize($report->components);
-		
-		$uniqueid = random_string(15);
-		while(strpos($report->components,$uniqueid) !== false){
-			$uniqueid = random_string(15);
-		}
-		
 		$cdata = array('id' => $uniqueid, 'formdata' => $data, 'pluginname' => $pname, 'pluginfullname' => $pluginclass->fullname, 'summary' => $pluginclass->summary($data));
 		
 		$allelements[$comp]['elements'][] = $cdata;
 		$report->components = cr_serialize($allelements, false);
 		
 		$DB->update_record('block_configurable_reports_report',$report);
-		redirect(new moodle_url('/blocks/configurable_reports/editcomp.php', array('id' => $id, 'comp' => $comp)));
+		redirect($returnurl);
 	}
-} else {			
-	$uniqueid = random_string(15);
-	while(strpos($report->components,$uniqueid) !== false){
-		$uniqueid = random_string(15);
-	}
-	
+} else {
 	$cdata = array('id' => $uniqueid, 'formdata' => new stdclass, 'pluginname' => $pname, 'pluginfullname' => $pluginclass->fullname, 'summary' => $pluginclass->summary(new stdclass));
 	
 	$allelements = cr_unserialize($report->components);
@@ -116,12 +105,9 @@ if($pluginclass->form){
 
 echo $OUTPUT->header();
 
-$currenttab = $comp;
-include('tabs.php');
+cr_print_tabs($reportclass, $comp);
 
-if ($pluginclass->form) {
-	$editform->display();
-}
+$editform->display();
 
 echo $OUTPUT->footer();
 

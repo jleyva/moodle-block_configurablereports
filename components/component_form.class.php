@@ -27,12 +27,38 @@ if (!defined('MOODLE_INTERNAL')) {
 require_once($CFG->libdir.'/formslib.php');
 
 abstract class component_form extends moodleform {
-    abstract function definition();
+    abstract function get_component_name();
     
-    abstract function validation($data, $files);
+    function set_data(){
+        $data = $this->get_config_data();
+        
+        parent::set_data($data);
+    }
     
-    function set_data($default_values){
-        //TODO:
-        parent::set_data($default_values);
+    function get_config_data(){
+        global $DB;
+        
+        $compclass = $this->_customdata['compclass'];
+        $search = array('reportid' => $compclass->report->id, 'component' => $this->get_component_name());
+        $configdata = $DB->get_field('block_configurable_reports_component', 'configdata', $search);
+        
+        return $configdata ? cr_unserialize($configdata) : new stdClass();
+    }
+    
+    function save_data($data){
+        global $DB;
+        
+        $configdata = cr_serialize($data);
+
+        $compclass = $this->_customdata['compclass'];
+        $search = array('reportid' => $compclass->report->id, 'component' => $this->get_component_name());
+        if ($record = $DB->get_record('block_configurable_reports_component', $search)){
+            $record->configdata = $configdata;
+            $DB->update_record('block_configurable_reports_component', $record);
+        } else {
+            $record = (object)$search;
+            $record->configdata = $configdata;
+            $DB->insert_record('block_configurable_reports_component', $record);
+        }
     }
 }

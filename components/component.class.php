@@ -22,7 +22,7 @@
   * @date: 2009
   */
 
-require_once($CFG->dirroot.'/blocks/configurable_reports/plugin.class.php');
+require_once($CFG->dirroot.'/blocks/configurable_reports/components/plugin.class.php');
  
 abstract class component_base {
     var $report;     // Report configuration (DB record)
@@ -32,9 +32,10 @@ abstract class component_base {
 	var $help = '';
 	
 	static function get($report, $component, $classname){
+	    global $CFG;
+	    
 	    $comppath = self::get_path($report, $component);
-	    $definitionfile = "$comppath/$component/component.class.php";
-	    require_once($definitionfile);
+	    require_once("$comppath/component.class.php");
 	    
 	    return new $classname($report);
 	}
@@ -64,11 +65,11 @@ abstract class component_base {
 	}
 	
 	function __toString(){
-	    return get_string($this->name, 'block_configurable_reports');
+	    return get_string($this->get_name(), 'block_configurable_reports');
 	}
 	
 	function get_name(){
-	    $pieces = explode('_component_', get_class($this));
+	    $pieces = explode('component_', get_class($this));
 	    return $pieces[1];
 	}
 	
@@ -78,8 +79,8 @@ abstract class component_base {
 	
 	function _load_plugins(){
 	    $this->plugins = array();
-	    foreach($this->plugin_classes() as $plug){
-	        $this->plugins[$plug] = plugin_base::get($this->report, $this->get_name(), $plug);
+	    foreach($this->plugin_classes() as $plug => $classname){
+	        $this->plugins[$plug] = plugin_base::get($this->report, $this->get_name(), $plug, $classname);
 	    }
 	}
 	
@@ -89,6 +90,20 @@ abstract class component_base {
 	    }
 	    
 	    return $this->plugins;
+	}
+	
+	function get_all_instances(){
+	    global $DB;
+	    
+	    $instances = array();
+	    
+	    $search = array('reportid' => $this->report->id, 'component' => $this->get_name());
+	    $records = $DB->get_records('block_configurable_reports_plugin', $search, 'sortorder');
+	    foreach($records as $record){
+	        $instances[$record->sortorder] = $record;
+	    }
+	    
+	    return $instances;
 	}
 	
 	function has_plugin($plugname){
@@ -110,7 +125,7 @@ abstract class component_base {
 	    $pluginoptions = array();
 	    foreach($plugins as $plugin => $pluginclass){
 	        if ($pluginclass->can_create_instance()) {
-	            $pluginoptions[$plugin] = $pluginclass->get_name();
+	            $pluginoptions[$plugin] = get_string($pluginclass->get_name(), 'block_configurable_reports');
 	        }
 	    }
 	    asort($pluginoptions);
@@ -137,37 +152,14 @@ abstract class component_base {
 	        return null;
 	    }
 	    
+	    global $CFG;
 	    $component = $this->get_name();
-	    $comppath = self::get_path($this->config, $component);
+	    $comppath = self::get_path($this->report, $component);
 	    require_once("$comppath/form.php");
 	    
 	    $formclassname = $component.'_form';
 	    $customdata['compclass'] = $this;
 	    return new $formclassname($action, $customdata);
-	}
-	
-	function form_process_data($data){
-	    if (!$this->has_form()) {
-	        return true;
-	    }
-	    
-	    $configdata = cr_serialize($data);
-	    
-	    $this->update_configdata($configdata);
-	}
-	
-	function update_configdata($configdata){
-	    global $DB;
-	    
-	    $search = array('reportid' => $this->report->id, 'component' => $this->get_name());
-	    if ($record = $DB->get_record('block_configurable_reports_component', $search)){
-	        $record->configdata = $configdata;
-	        $DB->update_record('block_configurable_reports_component', $record);
-	    } else {
-	        $record = (object)$search;
-	        $record->configdata = $configdata;
-	        $DB->insert_record('block_configurable_reports_component', $record);
-	    }
 	}
 }
 

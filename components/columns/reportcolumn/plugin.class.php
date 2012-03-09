@@ -38,7 +38,13 @@ class plugin_reportcolumn extends columns_plugin{
 		
 		$supported = array('courses'=>array('users'), 'users'=>array('courses'), 'timeline'=>array('users','courses','sql'), 'categories' => array('courses'));
 		
-		$reports = cr_get_my_reports($this->report->courseid, $USER->id);
+		if (isset($this->report->courseid)) {
+		    $context = context_course::instance($this->report->courseid);
+		} else {
+		    $context = context_system::instance();
+		}
+		
+		$reports = cr_get_my_reports($USER->id, $context);
 		if($reports){
 			foreach($reports as $key=>$val){
 				if(!in_array($val->type,$supported[$this->report->type]))

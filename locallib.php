@@ -121,27 +121,18 @@
     return $new_var;
 }
 
-function cr_get_my_reports($courseid, $userid, $allcourses=true){
+function cr_get_my_reports($userid, $context){
 	global $DB;
 
-	$reports = array();
-	if ($courseid == SITEID){
-		$context = get_context_instance(CONTEXT_SYSTEM);
-	}	
-	else{
-		$context = get_context_instance(CONTEXT_COURSE, $courseid);
+	$params = array();
+	if ($context instanceof context_course) {
+	    $params['courseid'] = $context->instanceid;
 	}
-
-	if(has_capability('block/configurable_reports:managereports', $context, $userid)){
-		if($courseid == SITEID && $allcourses)
-			$reports = $DB->get_records('block_configurable_reports_report',null,'name ASC');
-		else
-			$reports = $DB->get_records('block_configurable_reports_report',array('courseid' => $courseid),'name ASC');
+	if (!has_capability('block/configurable_reports:managereports', $context, $userid)) {		
+		$params['ownerid'] = $userid;
 	}
-	else{		
-		$reports = $DB->get_records_select('block_configurable_reports_report','ownerid = ? AND courseid = ? ORDER BY name ASC',array($userid,$courseid));		
-	}
-	return $reports;
+	
+	return $DB->get_records('block_configurable_reports_report', $params, 'name ASC');
 }
   
  function cr_serialize($var){
@@ -168,7 +159,7 @@ function cr_get_my_reports($courseid, $userid, $allcourses=true){
  function cr_get_report_plugins($courseid = null){
  
 	$pluginoptions = array();
-	$context = isset($courseid) ? context_system::instance() : context_course::instance($courseid);
+	$context = isset($courseid) ? context_course::instance($courseid) : context_system::instance();
 	$plugins = get_list_of_plugins('blocks/configurable_reports/reports');
 	
 	if($plugins)
@@ -191,6 +182,22 @@ function cr_get_my_reports($courseid, $userid, $allcourses=true){
 		}
 	return $pluginoptions;
  } 
+ 
+function cr_print_tabs($reportclass, $currenttab){
+    $params = array('id' => $reportclass->config->id);
+    $editurl = new moodle_url('/blocks/configurable_reports/editreport.php', $params);
+    $compurl = new moodle_url('/blocks/configurable_reports/editcomp.php', $params);
+    $viewurl = new moodle_url('/blocks/configurable_reports/viewreport.php', $params);
+    
+    $top = array();
+    $top[] = new tabobject('report', $editurl, get_string('report','block_configurable_reports'));
+    foreach($reportclass->get_components() as $comp => $compclass){
+        $top[] = new tabobject($comp, $compurl->out(true, array('comp' => $comp)), get_string($comp,'block_configurable_reports'));
+    }
+    $top[] = new tabobject('viewreport', $viewurl, get_string('viewreport','block_configurable_reports'));
+    
+    print_tabs(array($top), $currenttab);
+}
  
  function cr_print_table($table, $return=false) {
     $output = '';

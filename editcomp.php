@@ -25,23 +25,23 @@ require_once("../../config.php");
 require_once("$CFG->dirroot/blocks/configurable_reports/locallib.php");
 require_once($CFG->dirroot.'/blocks/configurable_reports/reports/report.class.php');
 
-$id   = required_param('id', PARAM_INT);
-$comp = required_param('comp', PARAM_ALPHA);
+$id   = required_param('id', PARAM_INT);        // Report id
+$comp = required_param('comp', PARAM_ALPHA);    // Component name
 
 if (! ($report = $DB->get_record('block_configurable_reports_report', array('id' => $id)))) {
 	print_error('reportdoesnotexists');
 }
-if (! ($course = $DB->get_record("course", array( "id" => $report->courseid)))) {
-	print_error('invalidcourseid');
-}	
+$courseid = $report->courseid;
+if (isset($courseid)) {
+    if (! ($course = $DB->get_record("course", array( "id" =>  $courseid)))) {
+        print_error('invalidcourseid');
+    }
 
-// Force user login in course (SITE or Course)
-if ($course->id == SITEID) {
-	require_login();
-	$context = context_system::instance();
+    require_login($courseid);
+    $context = context_course::instance($courseid);
 } else {
-	require_login($course->id);		
-	$context = context_course::instance($course->id);
+    require_login();
+    $context = context_system::instance();
 }
 // Capability check
 if($report->ownerid != $USER->id){
@@ -52,8 +52,9 @@ if($report->ownerid != $USER->id){
 
 $params = array('id' => $id, 'comp' => $comp);
 $baseurl = new moodle_url('/blocks/configurable_reports/editcomp.php');
-$manageurl = new moodle_url('/blocks/configurable_reports/managereport.php', array('courseid' => $report->courseid));
-$editurl = new moodle_url('/blocks/configurable_reports/editplugin.php', $params);
+$manageurl = new moodle_url('/blocks/configurable_reports/managereport.php', array('courseid' => $courseid));
+$addurl = new moodle_url('/blocks/configurable_reports/addplugin.php', $params);
+$editurl = new moodle_url('/blocks/configurable_reports/editplugin.php', array('comp' => $comp));
 $PAGE->set_url($baseurl, $params);
 $PAGE->set_context($context);	
 $PAGE->set_pagelayout('incourse');
@@ -64,15 +65,13 @@ $compclass = $reportclass->get_component($comp);
 if (!isset($compclass)) {
     print_error('badcomponent');
 }
-$compconfig = $reportclass->get_component_config($comp);
 
-$title = $reportclass->get_name().' '.$compclass->get_name();
+$title = $reportclass->get_name().' '.$compclass->get_name();    //TODO: Display names
 navigation_node::override_active_url($manageurl);
 $PAGE->navbar->add($title);
 $PAGE->set_title($title);
 $PAGE->set_heading($title);
 
-// TODO: Fix form handling
 if($compclass->has_form()){
     $editform = $compclass->get_form($PAGE->url);
 	
@@ -80,14 +79,16 @@ if($compclass->has_form()){
 		redirect(new moodle_url('/blocks/configurable_reports/editreport.php', array('id' => $id)));
 		
 	} else if ($data = $editform->get_data()) {
-		$compclass->form_process_data($editform);
+	    $editform->save_data($data);
 		add_to_log($report->courseid, 'configurable_reports', 'edit', '', $report->name);
 	}
 	
-	$compclass->form_set_data($editform);
+	$editform->set_data();
 }
 
-if ($compconfig) {
+$instances = $compclass->get_all_instances();
+
+if (!empty($instances)) {
     $table = new stdclass;
     $table->head = array(get_string('idnumber'), get_string('name'), get_string('summary'), get_string('edit'));
     
@@ -101,11 +102,11 @@ if ($compconfig) {
     $pixattr = array('class'=>'iconsmall');
     
     $i = 0;
-    $numelements = count($compconfig);
-    foreach($compconfig as $plugin => $config){
-        //TODO: Figure out cid linkage
-        $editurl->params(array('pname' => $plugin));
-        $pluginclass = plugin_base::get($report, $comp, $plugin);
+    $numinstances = count($instances);
+    $plugins = $compclass->get_plugins();
+    foreach($instances as $sortorder => $instance){
+        $editurl->params(array('id' => $instance->id));
+        $pluginclass = $plugins[$instance->plugin];
     
         $commands = array();
         if($pluginclass->form){
@@ -115,12 +116,12 @@ if ($compconfig) {
         $url->params(array('delete' => $config->id, 'sesskey' => $USER->sesskey));
         $commands[] = $OUTPUT->action_icon($url, $icons['delete'], null, $pixattr);
         
-        if ($compclass->ordering && $i != 0 && $numelements > 1) {
+        if ($compclass->ordering && $i != 0 && $numinstances > 1) {
             $url = $editurl;
             $url->params(array('moveup' => $config->id, 'sesskey' => $USER->sesskey));
             $commands[] = $OUTPUT->action_icon($url, $icons['moveup'], null, $pixattr);
         }
-        if($compclass->ordering && $i != $numelements -1){
+        if($compclass->ordering && $i != $numinstances -1){
             $url = $editurl;
             $url->params(array('movedown' => $config->id, 'sesskey' => $USER->sesskey));
             $commands[] = $OUTPUT->action_icon($url, $icons['movedown'], null, $pixattr);
@@ -136,30 +137,30 @@ if ($compconfig) {
 
 echo $OUTPUT->header();
 
-$currenttab = $comp;
-include('tabs.php');
+cr_print_tabs($reportclass, $comp);
 
 if ($helpicon = $compclass->get_help_icon()) {
     echo $OUTPUT->box(html_writer::tag('p', $helpicon, array('class' => 'centerpara')), 'boxaligncenter');
 }
 
-if($elements){
+if (!empty($instances)) {
 	cr_print_table($table);
-} else if($compclass->plugins) {
+} else if ($compclass->plugins) {
 	echo $OUTPUT->heading(get_string('no'.$comp.'yet', 'block_configurable_reports'));
 }
 
-if($pluginoptions = $compclass->get_plugin_options()){
+if ($pluginoptions = $compclass->get_plugin_options()) {
     $plugurls = array();
-    foreach($pluginoptions as $pname => $option){
-        $plugurls[$editurl->out(true, array('pname' => $pname))] = $option;
+    foreach($pluginoptions as $plugin => $option){
+        $plugurls[$addurl->out(false, array('plug' => $plugin))] = $option;
     }
-    $selector = get_string('add').' '.$OUTPUT->render(new url_select($plugurls));
-    
-    echo $OUTPUT->box(html_writer::tag('p', $selector, array('class' => 'centerpara')), 'boxaligncenter');
+    $selector = new url_select($plugurls);
+    $selector->class = 'boxaligncenter centerpara';
+    $selector->set_label(get_string('add'));
+    echo $OUTPUT->render($selector);
 }
 
-if($compclass->has_form()){
+if ($compclass->has_form()) {
 	$editform->display();
 }
 

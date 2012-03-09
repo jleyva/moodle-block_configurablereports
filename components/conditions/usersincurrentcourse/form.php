@@ -26,9 +26,9 @@ if (!defined('MOODLE_INTERNAL')) {
     die('Direct access to this script is forbidden.');    ///  It must be included from a Moodle page
 }
 
-require_once($CFG->libdir.'/formslib.php');
+require_once($CFG->dirroot.'/blocks/configurable_reports/components/plugin_form.class.php');
 
-class usersincurrentcourse_form extends moodleform {
+class usersincurrentcourse_form extends plugin_form {
 
     function definition() {
         global $DB, $USER, $CFG;
@@ -44,11 +44,8 @@ class usersincurrentcourse_form extends moodleform {
 			
         $mform->addElement('select', 'roles', get_string('roles'), $userroles,array('multiple'=>'multiple'));
 		
-        // buttons
         $this->add_action_buttons(true, get_string('add'));
-
     }	
-
 }
 
 ?>

@@ -39,74 +39,36 @@ class component_conditions extends component_base{
 	    );
 	}
 	
-	function form_process_data($data){
-	    global $DB;
-	    if (!$this->form) {
-	        return true;
-	    }
-	    	    
-		if(isset($data->conditionexpr)){
-			$data->conditionexpr = $this->add_missing_conditions($data->conditionexpr);
-		}
-		$configdata = cr_serialize($data);
-		
-		$this->update_configdata($configdata);
+	function has_form(){
+	    return true;
 	}
 	
 	function add_missing_conditions($cond){
-		global $DB;
-		
-		$components = cr_unserialize($this->config->components);
-		
-		if(isset($components['conditions']['elements'])){
-			
-			$elements = $components['conditions']['elements'];		
-			$count = count($elements);
-			if($count == 0 || $count == 1)
-				return '';
-			for($i=$count; $i > 0; $i--){
-				if(strpos($cond,'c'.$i) === false){
-					if($count > 1 && $cond)
-						$cond .= " and c$i";
-					else
-						$cond .= "c$i";
-				}
-			}
-				
-			// Deleting extra conditions
-			
-			for($i = $count + 1; $i <= $count + 5; $i++){
-				$cond = preg_replace('/(\bc'.$i.'\b\s+\b(and|or|not)\b\s*)/i','',$cond);
-				$cond = preg_replace('/(\s+\b(and|or|not)\b\s+\bc'.$i.'\b)/i','',$cond);
-			}
-		}
-		
-		return $cond;
-	}
-	
-	function form_set_data(&$cform){
-		global $DB;
-		if($this->form){
-			$fdata = new stdclass;
-			$components = cr_unserialize($this->config->components);
-			//print_r($components);exit;
-			$conditionsconfig = (isset($components['conditions']['config']))? $components['conditions']['config'] : new stdclass;
-			
-			if(!isset($conditionsconfig->conditionexpr)){
-				$conditionsconfig->conditionexpr = '';
-				$conditionsconfig->conditionexpr = '';
-			}
-			$conditionsconfig->conditionexpr = $this->add_missing_conditions($conditionsconfig->conditionexpr);
-			$fdata->conditionexpr = $conditionsconfig->conditionexpr;
-			
-			$components['conditions']['config']->conditionexpr = $fdata->conditionexpr;
-			$this->config->components = cr_serialize($components);
-			$DB->update_record('block_configurable_reports_report',$this->config);
-						
-			$cform->set_data($fdata);			
-		}
-	}
+	    $instances = $this->get_all_instances();
+	    $count = count($instances);
+	    if(empty($instances) || $count == 1){
+	        return '';
+	    }
+	    
+        for($i=$count; $i > 0; $i--){
+            if (strpos($cond,'c'.$i) !== false){
+                continue;
+            }
+            if ($count > 1 && $cond) {
+                $cond .= " and c$i";
+            } else {
+                $cond .= "c$i";
+            }
+        }
 
+        // Deleting extra conditions
+        for($i = $count + 1; $i <= $count + 5; $i++){
+            $cond = preg_replace('/(\bc'.$i.'\b\s+\b(and|or|not)\b\s*)/i', '', $cond);
+            $cond = preg_replace('/(\s+\b(and|or|not)\b\s+\bc'.$i.'\b)/i', '', $cond);
+        }
+	
+	    return $cond;
+	}
 }
 
 ?>

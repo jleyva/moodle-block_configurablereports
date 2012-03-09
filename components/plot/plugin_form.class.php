@@ -27,42 +27,5 @@ if (!defined('MOODLE_INTERNAL')) {
 require_once($CFG->dirroot.'/blocks/configurable_reports/components/plugin_form.class.php');
 
 abstract class plot_plugin_form extends plugin_form {
-    function get_column_options() {
-        $options = array();
-        
-        if($this->report->type != 'sql'){
-            $components = cr_unserialize($this->_customdata['report']->components);
-            	
-            if(!is_array($components) || empty($components['columns']['elements']))
-                print_error('nocolumns');
-        
-            $columns = $components['columns']['elements'];
-            foreach($columns as $c){
-                $options[] = $c['summary'];
-            }
-        } else {
-            $reportclass = report_base::get($this->report);
-            	
-            $components = cr_unserialize($report->components);
-            $config = (isset($components['customsql']['config']))? $components['customsql']['config'] : new stdclass;
-            	
-            if(isset($config->querysql)){
-                $sql = $config->querysql;
-                $sql = $reportclass->prepare_sql($sql);
-                if($rs = $reportclass->execute_query($sql)){
-                    foreach ($rs as $row) {
-                        $i = 0;
-                        foreach($row as $colname=>$value){
-                            $options[$i] = str_replace('_', ' ', $colname);
-                            $i++;
-                        }
-                        break;
-                    }
-                    $rs->close();
-                }
-            }
-        }
-        
-        return $options;
-    }
+
 }

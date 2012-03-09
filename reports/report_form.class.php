@@ -67,7 +67,10 @@ class report_edit_form extends moodleform {
 		}
 
 		$mform->addElement('hidden', 'type', $reporttype);
-		$mform->addElement('hidden', 'courseid', $courseid);
+		if (isset($courseid)) {
+		    $mform->addElement('hidden', 'courseid', $courseid);
+		}
+		
 		if ($id) {
 			$mform->addElement('hidden', 'id', $id);
 			$this->add_action_buttons();

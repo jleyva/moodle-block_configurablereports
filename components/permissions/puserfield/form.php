@@ -26,9 +26,9 @@ if (!defined('MOODLE_INTERNAL')) {
     die('Direct access to this script is forbidden.');    ///  It must be included from a Moodle page
 }
 
-require_once($CFG->libdir.'/formslib.php');
+require_once($CFG->dirroot.'/blocks/configurable_reports/components/plugin_form.class.php');
 
-class puserfield_form extends moodleform {
+class puserfield_form extends plugin_form {
 
     function definition() {
         global $DB, $USER, $CFG;
@@ -36,52 +36,48 @@ class puserfield_form extends moodleform {
         $mform =& $this->_form;
 
         $mform->addElement('header', '', get_string('coursefield','block_configurable_reports'), '');
-
-		$columns = $DB->get_columns('user');
 		
-		$usercolumns = array();
-		foreach($columns as $c)
-			$usercolumns[$c->name] = $c->name;
-			
-		if($profile = $DB->get_records('user_info_field'))
-			foreach($profile as $p)
-				$usercolumns['profile_'.$p->shortname] = $p->name;	
-			
-		unset($usercolumns['password']);
-		unset($usercolumns['secret']);
-			
+		$usercolumns = $this->get_user_columns();	
         $mform->addElement('select', 'field', get_string('column','block_configurable_reports'), $usercolumns);
 		
-		$mform->addElement('text','value',get_string('value','block_configurable_reports'));		
-		
-		$mform->addRule('value',get_string('required'),'required');
-		
-        // buttons
-        $this->add_action_buttons(true, get_string('add'));
+		$mform->addElement('text', 'value', get_string('value','block_configurable_reports'));
+		$mform->addRule('value', get_string('required'), 'required');
 
+        $this->add_action_buttons(true, get_string('add'));
     }
 	
 	function validation($data,$files){
 		global $DB, $db, $CFG;
 		
 		$errors = parent::validation($data, $files);
-		
-		$columns = $DB->get_columns('user');	
-		$usercolumns = array();
-		foreach($columns as $c)
-			$usercolumns[$c->name] = $c->name;
-
-		if($profile = $DB->get_records('user_info_field'))
-			foreach($profile as $p)
-				$usercolumns['profile_'.$p->shortname] = 'profile_'.$p->shortname;	
 			
-		if(!in_array($data['field'],$usercolumns)){
+		if(!in_array($data['field'], $this->get_user_columns())){
 			$errors['field'] = get_string('error_field','block_configurable_reports');
 		}
 		
 		return $errors;
 	}
 
+	function get_user_columns(){
+	    global $DB;
+	    
+	    $usercolumns = array();
+	    
+	    foreach($DB->get_columns('user') as $c){
+	        $usercolumns[$c->name] = $c->name;
+	    }
+	    
+	    if ($profile = $DB->get_records('user_info_field')) {
+	        foreach($profile as $p){
+	            $usercolumns['profile_'.$p->shortname] = 'profile_'.$p->shortname;
+	        }
+	    }
+	    
+	    unset($usercolumns['password']);
+	    unset($usercolumns['secret']);
+	    
+	    return $usercolumns;
+	}
 }
 
 ?>

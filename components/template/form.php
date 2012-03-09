@@ -29,48 +29,70 @@ if (!defined('MOODLE_INTERNAL')) {
 require_once($CFG->dirroot.'/blocks/configurable_reports/components/component_form.class.php');
 
 class template_form extends component_form {
+    
+    function get_component_name(){
+        return 'template';
+    }
+    
+    function get_column_options(){
+        $compclass = $this->_customdata['compclass'];
+        $report = $compclass->report;
+    
+        $reportclass = report_base::get($report);
+    
+        $options = array();
+        if ($report->type != 'sql') {
+            $columnclass = $reportclass->get_component('columns');
+            if(!isset($columnclass)){
+                return null;
+            }
+            $columns = $columnclass->get_all_instances();
+            if (empty($columns)) {
+                //print_error('nocolumns');
+            }
+    
+            $i = 0;
+            foreach($columns as $c){
+                if(!in_array($i,$columnsused))
+                    $options[$i] = $c['summary'];
+                $i++;
+            }
+        } else {
+            $customsqlclass = $reportclass->get_component('customsql');
+            if(!isset($customsqlclass)){
+                return null;
+            }
+            $config = $customsqlclass->config;
+    
+            if(isset($config->querysql)){
+                $sql = $config->querysql;
+                $sql = $reportclass->prepare_sql($sql);
+                if($rs = $reportclass->execute_query($sql)){
+                    foreach ($rs as $row) {
+                        $i = 0;
+                        foreach($row as $colname=>$value){
+                            $options[$i] = str_replace('_', ' ', $colname);
+                            $i++;
+                        }
+                        break;
+                    }
+                    $rs->close();
+                }
+            }
+        }
+    
+        return $options;
+    }
+    
     function definition() {
         global $DB, $CFG;
 
         $mform =& $this->_form;
 
-		$report = $this->_customdata['report'];
-		
-		$options = array();
-		
-		if($report->type != 'sql'){		
-			$components = cr_unserialize($this->_customdata['report']->components);
-			
-			if(is_array($components) && !empty($components['columns']['elements'])){
-				$columns = $components['columns']['elements'];
-				foreach($columns as $c){
-					$options[] = $c['summary'];
-				}
-			}
-		} else {
-			$reportclass = report_base::get($report);
-			
-			$components = cr_unserialize($report->components);
-			$config = (isset($components['customsql']['config']))? $components['customsql']['config'] : new stdclass;	
-			
-			if(isset($config->querysql)){
-				
-				$sql = $config->querysql;
-				$sql = $reportclass->prepare_sql($sql);
-				if($rs = $reportclass->execute_query($sql)){
-					foreach($rs as $row){
-						$i = 0;
-						foreach($row as $colname=>$value){
-							$options[$i] = str_replace('_', ' ', $colname);
-							$i++;
-						}
-					break;
-					}
-				}
-			}			
-		}		
-		
-		$optionsenabled = array(0=>get_string('disabled','block_configurable_reports'),1=>get_string('enabled','block_configurable_reports'));
+		$optionsenabled = array(
+		    0=>get_string('disabled','block_configurable_reports'),
+		    1=>get_string('enabled','block_configurable_reports')
+		);
 		
 		$mform->addElement('select','enabled',get_string('template','block_configurable_reports'),$optionsenabled);
 		$mform->setDefault('enabled',0);
@@ -80,11 +102,10 @@ class template_form extends component_form {
 		$mform->addHelpButton('header','template_marks', 'block_configurable_reports');
 		
 		$availablemarksrec = '';
-		if($options)
-			foreach($options as $o)
-				$availablemarksrec .= "[[$o]] => $o <br />";
-		
-		$mform->addElement('static','statictext',get_string('availablemarks','block_configurable_reports'),$availablemarksrec);
+		foreach($this->get_column_options() as $o) {
+			$availablemarksrec .= "[[$o]] => $o <br />";
+		}
+		$mform->addElement('static','statictext',get_string('availablemarks','block_configurable_reports'), $availablemarksrec);
 		$mform->addElement('htmleditor', 'record', get_string('templaterecord', 'block_configurable_reports'));
 		$mform->disabledIf('record', 'enabled', 'eq', 0);
 		
@@ -92,7 +113,6 @@ class template_form extends component_form {
         $mform->disabledIf('footer', 'enabled', 'eq', 0);
 		$mform->addHelpButton('footer','template_marks', 'block_configurable_reports');
 		
-		//$mform->addRule('record', get_string('required'), 'required', null, 'client');
         $mform->setType('header', PARAM_RAW);
 		$mform->setType('record', PARAM_RAW);
 		$mform->setType('footer', PARAM_RAW);
@@ -101,8 +121,6 @@ class template_form extends component_form {
     }
 
     function validation($data, $files) {
-        global $DB, $CFG, $db, $USER;
-
         $errors = parent::validation($data, $files);
 		
 		if($data['enabled'] && !$data['record']) {
@@ -111,7 +129,6 @@ class template_form extends component_form {
         		
         return $errors;
     }
-    
 }
 
 ?>

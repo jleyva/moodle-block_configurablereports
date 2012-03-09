@@ -30,20 +30,31 @@ function xmldb_block_configurable_reports_upgrade($oldversion) {
 
     $dbman = $DB->get_manager();
 
-    if ($oldversion < 2012030600) {
+    if ($oldversion < 2012030800) {
         $table = new xmldb_table('block_configurable_reports_report');
         // Change report courseid to allow NULL (site-wide report)
         $field = new xmldb_field('courseid', XMLDB_TYPE_INTEGER, '11', XMLDB_UNSIGNED, XMLDB_NOTNULL, null, null, 'id');
+        $field->setNotNull(false);
         $dbman->change_field_notnull($table, $field);
         // Drop old "components" serialized field
         $field = new xmldb_field('components', XMLDB_TYPE_TEXT, 'small', null, false, null, null, 'pagination');
-        $dbman->drop_field($table, $field);
+        if($dbman->field_exists($table, $field)){
+            $dbman->drop_field($table, $field);
+        }
         
-        // Add plugins table
         $file = $CFG->dirroot.'/blocks/configurable_reports/db/install.xml';
-        $dbman->install_one_table_from_xmldb_file($file, 'block_configurable_reports_plugin');
+        // Add component table
+        $table = 'block_configurable_reports_component';
+        if (!$dbman->table_exists($table)) {
+            $dbman->install_one_table_from_xmldb_file($file, $table);
+        }
+        // Add plugins table
+        $table = 'block_configurable_reports_plugin';
+        if (!$dbman->table_exists($table)) {
+            $dbman->install_one_table_from_xmldb_file($file, $table);
+        }
         
-        upgrade_plugin_savepoint(true, 2012030600, 'block', 'configurable_reports');
+        upgrade_plugin_savepoint(true, 2012030800, 'block', 'configurable_reports');
     }
 
     return true;

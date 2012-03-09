@@ -27,56 +27,15 @@ if (!defined('MOODLE_INTERNAL')) {
 require_once($CFG->libdir.'/formslib.php');
 
 abstract class calcs_plugin_form extends plugin_form {
-    function get_column_options() {
-        $mform = $this->_form;
+    function get_used_columns(){
+        $compclass = $this->_customdata['compclass'];
         
-        $components = cr_unserialize($components);
-        
-        $options = array();
-        if ($this->report->type != 'sql') {
-            if(!is_array($components) || empty($components['columns']['elements']))
-                print_error('nocolumns');
-            	
-            $columns = $components['columns']['elements'];
-            	
-            $calcs = isset($components['calcs']['elements'])?  $components['calcs']['elements']: array();
-            $columnsused = array();
-            if($calcs){
-                foreach($calcs as $c){
-                    $columnsused[] = $c['formdata']->column;
-                }
-            }
-        
-            $i = 0;
-            foreach($columns as $c){
-                if(!in_array($i,$columnsused))
-                    $options[$i] = $c['summary'];
-                $i++;
-            }
-        } else {
-            $reportclass = report_base::get($this->report);
-            	
-            $components = cr_unserialize($this->config->components);
-            $config = (isset($components['customsql']['config']))? $components['customsql']['config'] : new stdclass;
-            	
-            if(isset($config->querysql)){
-        
-                $sql =$config->querysql;
-                $sql = $reportclass->prepare_sql($sql);
-                if($rs = $reportclass->execute_query($sql)){
-                    foreach ($rs as $row) {
-                        $i = 0;
-                        foreach($row as $colname=>$value){
-                            $options[$i] = str_replace('_', ' ', $colname);
-                            $i++;
-                        }
-                        break;
-                    }
-                    $rs->close();
-                }
-            }
+        $columnsused = array();
+        foreach($compclass->get_all_instances() as $instance){
+            $configdata = cr_unserialize($instance->configdata);
+            $columnsused[] = $configdata->column;
         }
         
-        return $options;
+        return $columnsused;
     }
 }

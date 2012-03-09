@@ -24,15 +24,9 @@
 
 class component_customsql extends component_base{
 	
-	function form_set_data(&$cform){
-		if($this->form){
-			$fdata = new stdclass;
-			$components = cr_unserialize($this->config->components);
-			//print_r($components);exit;
-			$sqlconfig = (isset($components['customsql']['config']))? $components['customsql']['config'] : new stdclass;		
-			$cform->set_data($sqlconfig);
-		}
-	}
+    function has_form(){
+        return true;
+    }
 }
 
 ?>

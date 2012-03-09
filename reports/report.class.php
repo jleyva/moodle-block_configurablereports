@@ -23,7 +23,7 @@
   */
 
 require_once($CFG->dirroot.'/lib/evalmath/evalmath.class.php');
-require_once($CFG->dirroot.'/blocks/configurable_reports/component.class.php');
+require_once($CFG->dirroot.'/blocks/configurable_reports/components/component.class.php');
 
 abstract class report_base {
     var $config;        // Report configuration (DB record)
@@ -64,7 +64,7 @@ abstract class report_base {
 	}
 	
 	function component_classes(){
-		return array(
+	    return array(
 		        'columns'     => 'component_columns',
 		        'conditions'  => 'component_conditions',
 		        'ordering'    => 'component_ordering',
@@ -83,6 +83,14 @@ abstract class report_base {
 	    }
 	}
 	
+	function get_components(){
+	    if (!isset($this->components)) {
+	        $this->_load_components();
+	    }
+	    
+	    return $this->components;
+	}
+	
 	function has_component($compname){
 	    return array_key_exists($compname, $this->component_classes());
 	}
@@ -91,11 +99,9 @@ abstract class report_base {
 	    if (!$this->has_component($compname)) {
 	        return null;
 	    }
-	    if (!isset($this->components)) {
-	        $this->_load_components();
-	    }
+	    $components = $this->get_components();
 	    
-	    return $this->components[$compname];
+	    return $components[$compname];
 	}
 	
 	function check_permissions($userid, $context){
