@@ -57,7 +57,7 @@ $PAGE->set_url($baseurl, $params);
 $PAGE->set_context($context);
 $PAGE->set_pagelayout('incourse');
 	
-$importform = new import_form(null,$course->id);
+$importform = new import_form(null, $courseid);
 if (($data = $importform->get_data()) &&
         ($xml = $mform->get_file_content('userfile'))) {
 	require_once($CFG->dirroot.'/lib/xmlize.php');

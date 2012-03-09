@@ -32,7 +32,7 @@ class currentuserfinalgrade_form extends columns_plugin_form {
     function definition(){
         $this->common_column_options();
         
-        $this->add_action_buttons(true, get_string('add'));
+        $this->add_action_buttons();
     }
 }
 

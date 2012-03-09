@@ -54,7 +54,7 @@ class cuserfield_form extends plugin_form {
 		$mform->addElement('text','value',get_string('value','block_configurable_reports'));		
 		
         // buttons
-        $this->add_action_buttons(true, get_string('add'));
+        $this->add_action_buttons();
 
     }
 	

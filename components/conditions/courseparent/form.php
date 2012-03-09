@@ -48,7 +48,7 @@ class courseparent_form extends plugin_form {
 		$mform->addElement('select', 'courseid', get_string('course'), $options);
 				
         // buttons
-        $this->add_action_buttons(true, get_string('add'));
+        $this->add_action_buttons();
 
     }
 

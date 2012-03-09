@@ -46,7 +46,7 @@ class categoryfieldorder_form extends plugin_form {
 		$mform->addElement('select', 'direction', get_string('direction','block_configurable_reports'), $directions);
 				
         // buttons
-        $this->add_action_buttons(true, get_string('add'));
+        $this->add_action_buttons();
 
     }
 

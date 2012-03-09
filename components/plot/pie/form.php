@@ -20,7 +20,7 @@ class pie_form extends plot_plugin_form {
 		$mform->addElement('select', 'areavalue', get_string('pieareavalue','block_configurable_reports'), $options);
 		$mform->addElement('checkbox', 'group', get_string('groupvalues','block_configurable_reports'));
 				
-        $this->add_action_buttons(true, get_string('add'));
+        $this->add_action_buttons();
     }
 
 }

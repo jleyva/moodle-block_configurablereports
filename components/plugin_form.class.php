@@ -28,14 +28,21 @@ require_once($CFG->libdir.'/formslib.php');
 
 abstract class plugin_form extends moodleform {
     
+    function add_action_buttons(){
+        if (!isset($this->_customdata['id'])) {
+            parent::add_action_buttons(true, get_string('add'));
+        } else {
+            parent::add_action_buttons();
+        }
+    }
+    
     function get_used_columns(){
         return array();
     }
     
     function get_column_options(){
-        $compclass = $this->_customdata['compclass'];
-        $report = $compclass->report;
-        
+        $plugclass = $this->_customdata['plugclass'];
+        $report = $plugclass->report;
         $reportclass = report_base::get($report);
     
         $options = array();
@@ -54,7 +61,7 @@ abstract class plugin_form extends moodleform {
             $i = 0;
             foreach($columns as $c){
                 if(!in_array($i,$columnsused))
-                    $options[$i] = $c['summary'];
+                    $options[$i] = $c->summary;
                 $i++;
             }
         } else {
@@ -84,21 +91,33 @@ abstract class plugin_form extends moodleform {
         return $options;
     }
     
-    function save_data($data){
+    function get_data(){
+        $data = parent::get_data();
+        if(!isset($data)){
+            return NULL;
+        }
+        
+        unset($data->mform_showadvanced_last);
+        unset($data->submitbutton);
+        
+        return $data;
+    }
+    
+    function set_data($instance){
+        $data = cr_unserialize($instance->configdata);
+        
+        parent::set_data($data);
+    }
+    
+    function save_data($data, $instanceid = null){  
         global $DB;
-    
-        $configdata = cr_serialize($data);
-    
-        $compclass = $this->_customdata['compclass'];
-        $report = $compclass->report;
-        $search = array('reportid' => $report->id, 'plugin' => $this->get_plugin_name());
-        if ($record = $DB->get_record('block_configurable_reports_plugin', $search)){
-            $record->configdata = $configdata;
-            $DB->update_record('block_configurable_reports_plugin', $record);
+        
+        $plugclass = $this->_customdata['plugclass'];
+        if (isset($instanceid)) {
+            $record = $DB->get_record('block_configurable_reports_plugin', array('id' => $instanceid));
+            $plugclass->update_instance($record, $data);
         } else {
-            $record = (object)$search;
-            $record->configdata = $configdata;
-            $DB->insert_record('block_configurable_reports_plugin', $record);
+            $plugclass->add_instance($data);
         }
     }
 }

@@ -44,7 +44,7 @@ class usersincurrentcourse_form extends plugin_form {
 			
         $mform->addElement('select', 'roles', get_string('roles'), $userroles,array('multiple'=>'multiple'));
 		
-        $this->add_action_buttons(true, get_string('add'));
+        $this->add_action_buttons();
     }	
 }
 

@@ -46,7 +46,7 @@ class roleusersn_form extends columns_plugin_form {
 
         $this->common_column_options();
         
-        $this->add_action_buttons(true, get_string('add'));
+        $this->add_action_buttons();
     }
 }
 

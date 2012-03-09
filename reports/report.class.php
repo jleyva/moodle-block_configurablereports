@@ -393,17 +393,12 @@ abstract class report_base {
 	// Returns a report object 	
 	function create_report(){
 		global $DB, $CFG;
-	
-		//
-		// CONDITIONS
-		//
+
 		
-		$components = cr_unserialize($this->config->components);
-		
-		$conditions = (isset($components['conditions']['elements']))? $components['conditions']['elements'] : array();
-		$filters = (isset($components['filters']['elements']))? $components['filters']['elements'] : array();
-		$columns = (isset($components['columns']['elements']))? $components['columns']['elements'] : array();
-		$ordering = (isset($components['ordering']['elements']))? $components['ordering']['elements'] : array();
+		$conditions = $this->get_component('conditions');
+		$filters = $this->get_component('filters');
+		$columns = $this->get_component('columns');
+		$ordering = $this->get_component('conditions');
 		
 		$finalelements = array();
 		
@@ -414,8 +409,6 @@ abstract class report_base {
 			// All elements
 			$finalelements = $this->get_all_elements();
 		}
-		
-		
 				
 		//
 		// FILTERS
@@ -665,22 +658,19 @@ abstract class report_base {
 		global $DB, $CFG, $FULLME, $OUTPUT, $USER;
 		
 		cr_print_js_function();
-		$components = cr_unserialize($this->config->components);
 		
-		$template = (isset($components['template']['config']) && $components['template']['config']->enabled && $components['template']['config']->record)? $components['template']['config']: false;
-				
-		if($template){
-			$this->print_template($template);
+		$templateclass = $this->get_component('template');
+		if (isset($templateclass->config) && $templateclass->config->enabled 
+		        && $templateclass->config->enabled){
+		    
+			$this->print_template($templateclass->config);
 			return true;
 		}
 				
-			
-		echo '<div class="centerpara">';
-		echo format_text($this->config->summary);
-		echo '</div>';
+	    echo html_writer::tag('div', format_text($this->config->summary), array('class' => 'centerpara'));
 		
 		$this->print_filters();
-		if($this->finalreport->table && !empty($this->finalreport->table->data[0])){			
+		if ($this->finalreport->table && !empty($this->finalreport->table->data[0])) {			
 			
 			echo "<div id=\"printablediv\">\n";
 			$this->print_graphs();
@@ -725,8 +715,7 @@ abstract class report_base {
 			echo "</div>";
 			
 			$this->print_export_options();
-		}
-		else{
+		} else {
 			echo '<div class="centerpara">'.get_string('norecordsfound','block_configurable_reports').'</div>';
 		}		
 		

@@ -24,14 +24,14 @@ if (!defined('MOODLE_INTERNAL')) {
     die('Direct access to this script is forbidden.');
 }
 
-require_once($CFG->libdir.'/formslib.php');
+require_once($CFG->dirroot.'/blocks/configurable_reports/components/plugin_form.class.php');
 
 abstract class calcs_plugin_form extends plugin_form {
     function get_used_columns(){
-        $compclass = $this->_customdata['compclass'];
+        $plugclass = $this->_customdata['plugclass'];
         
         $columnsused = array();
-        foreach($compclass->get_all_instances() as $instance){
+        foreach($plugclass->component->get_all_instances() as $instance){
             $configdata = cr_unserialize($instance->configdata);
             $columnsused[] = $configdata->column;
         }

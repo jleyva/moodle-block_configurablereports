@@ -119,7 +119,7 @@ abstract class plugin_base{
 	    return false;
 	}
 	
-	function get_form($action = null, $customdata = null){
+	function get_form($action = null, $customdata = array()){
 		if (!$this->has_form()) {
 	        return null;
 	    }
@@ -131,11 +131,47 @@ abstract class plugin_base{
 	    require_once("$plugpath/form.php");
 	     
 	    $classname = $plugin.'_form';
+	    $customdata['plugclass'] = $this;
 	    return new $classname($action, $customdata);
 	}
 	
 	function summary(){
-		return '';
+	    return '';
+	}
+	
+	function add_instance($configdata = null){
+	    global $DB;
+	    
+	    $search = array(
+	        'reportid'  => $this->report->id, 
+	        'component' => $this->component->get_name(),
+	    );
+	    $record = new stdClass();
+	    $record->name = '';
+	    $record->summary = $this->summary();
+	    $record->reportid = $search['reportid'];
+	    $record->component = $search['component'];
+	    $record->plugin = $this->get_name();
+	    $lastorder = $DB->get_field('block_configurable_reports_plugin', 'sortorder', $search);
+	    $record->sortorder = $lastorder + 1;
+	    if(isset($configdata)){
+            $record->configdata = cr_serialize($configdata);
+	    }
+        
+        $DB->insert_record('block_configurable_reports_plugin', $record);
+	}
+	
+	function update_instance($record, $configdata){
+	    global $DB;
+	    
+	    $record->configdata = cr_serialize($configdata);
+	    $DB->update_record('block_configurable_reports_plugin', $record);
+	}
+	
+	function delete_instance($instanceid){
+	    global $DB;
+	    
+	    $DB->delete_records('block_configurable_reports_plugin', array('id' => $instanceid));
 	}
 	
 	function execute(){

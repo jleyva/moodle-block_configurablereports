@@ -43,7 +43,7 @@ class puserfield_form extends plugin_form {
 		$mform->addElement('text', 'value', get_string('value','block_configurable_reports'));
 		$mform->addRule('value', get_string('required'), 'required');
 
-        $this->add_action_buttons(true, get_string('add'));
+        $this->add_action_buttons();
     }
 	
 	function validation($data,$files){

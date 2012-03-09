@@ -37,7 +37,7 @@ class max_form extends calcs_plugin_form {
         $mform->addElement('header', '', get_string('coursefield','block_configurable_reports'), '');
         $mform->addElement('select', 'column', get_string('column','block_configurable_reports'), $options);
     
-        $this->add_action_buttons(true, get_string('add'));
+        $this->add_action_buttons();
     }
 }
 

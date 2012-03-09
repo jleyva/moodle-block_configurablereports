@@ -45,7 +45,7 @@ class parentcategory_form extends plugin_form {
 		$mform->addElement('checkbox', 'includesubcats', get_string('includesubcats','block_configurable_reports'));
 				
         // buttons
-        $this->add_action_buttons(true, get_string('add'));
+        $this->add_action_buttons();
 
     }
 

@@ -46,16 +46,15 @@ class template_form extends component_form {
             if(!isset($columnclass)){
                 return null;
             }
-            $columns = $columnclass->get_all_instances();
-            if (empty($columns)) {
+            $instances = $columnclass->get_all_instances();
+            if (empty($instances)) {
                 //print_error('nocolumns');
             }
-    
-            $i = 0;
-            foreach($columns as $c){
-                if(!in_array($i,$columnsused))
-                    $options[$i] = $c['summary'];
-                $i++;
+            
+            foreach($instances as $instance){
+                if(isset($instance->summary)){
+                    $options[] = $instance->summary;
+                }
             }
         } else {
             $customsqlclass = $reportclass->get_component('customsql');

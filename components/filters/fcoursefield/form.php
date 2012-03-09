@@ -48,7 +48,7 @@ class fcoursefield_form extends plugin_form {
 			
         $mform->addElement('select', 'field', get_string('field','block_configurable_reports'), $coursecolumns);
 
-        $this->add_action_buttons(true, get_string('add'));
+        $this->add_action_buttons();
     }
 }
 

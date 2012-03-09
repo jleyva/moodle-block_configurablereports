@@ -42,7 +42,7 @@ class coursecategory_form extends plugin_form {
 		$mform->addElement('select', 'categoryid', get_string('category'), $options);
 				
         // buttons
-        $this->add_action_buttons(true, get_string('add'));
+        $this->add_action_buttons();
 
     }
 

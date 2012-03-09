@@ -140,7 +140,7 @@ abstract class component_base {
 	function get_help_icon(){
 	    global $OUTPUT;
 	    
-	    return $OUTPUT->help_icon('comp_'.$this->get_name(), 'block_configurable_reports');
+	    return $OUTPUT->help_icon('comp_'.$this->get_name(), 'block_configurable_reports', true);
 	}
 	
 	function has_form(){

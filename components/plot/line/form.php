@@ -27,7 +27,7 @@ class line_form extends plot_plugin_form {
 		
 		$mform->addElement('checkbox', 'group', get_string('groupseries','block_configurable_reports'));
 				
-        $this->add_action_buttons(true, get_string('add'));
+        $this->add_action_buttons();
     }
 	
 	function validation($data, $files){

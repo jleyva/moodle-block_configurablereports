@@ -44,7 +44,7 @@ class roleincourse_form extends plugin_form {
 			
         $mform->addElement('select', 'roleid', get_string('roles'), $userroles);
 
-        $this->add_action_buttons(true, get_string('add'));
+        $this->add_action_buttons();
     }
 }
 

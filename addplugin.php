@@ -73,8 +73,7 @@ navigation_node::override_active_url($returnurl);
 $PAGE->navbar->add($pluginclass->get_name());
 
 if ($pluginclass->has_form()) {
-    $customdata = compact('comp','cid','id','pluginclass','compclass','report','reportclass');
-    $editform = $pluginclass->get_form($PAGE->url, $customdata);
+    $editform = $pluginclass->get_form($PAGE->url);
 		
 	if ($editform->is_cancelled()) {
 		redirect($returnurl);
@@ -82,22 +81,14 @@ if ($pluginclass->has_form()) {
 	} else if ($data = $editform->get_data()) {	
 	    $logcourse = isset($courseid) ? $courseid : $SITE->id;
 		add_to_log($logcourse, 'configurable_reports', 'edit', '', $report->name);
-
-		$cdata = array('id' => $uniqueid, 'formdata' => $data, 'pluginname' => $pname, 'pluginfullname' => $pluginclass->fullname, 'summary' => $pluginclass->summary($data));
 		
-		$allelements[$comp]['elements'][] = $cdata;
-		$report->components = cr_serialize($allelements, false);
+		$editform->save_data($data);
 		
-		$DB->update_record('block_configurable_reports_report',$report);
 		redirect($returnurl);
 	}
 } else {
-	$cdata = array('id' => $uniqueid, 'formdata' => new stdclass, 'pluginname' => $pname, 'pluginfullname' => $pluginclass->fullname, 'summary' => $pluginclass->summary(new stdclass));
-	
-	$allelements = cr_unserialize($report->components);
-	$allelements[$comp]['elements'][] = $cdata;
-	$report->components = cr_serialize($allelements);
-	$DB->update_record('block_configurable_reports_report', $report);
+    $pluginclass->add_instance();
+    
 	redirect($returnurl);
 }
 

@@ -27,6 +27,7 @@ if (!defined('MOODLE_INTERNAL')) {
 require_once($CFG->dirroot.'/blocks/configurable_reports/components/plugin_form.class.php');
 
 abstract class columns_plugin_form extends plugin_form {
+    
     protected function common_column_options(){
         global $CFG;
         
@@ -64,11 +65,5 @@ abstract class columns_plugin_form extends plugin_form {
 		}
 		
 		return $errors;
-	}
-	
-	function set_data($default_values){
-	    //TODO: Get component config (DB)
-	    
-	    parent::set_data($default_values);
 	}
 }

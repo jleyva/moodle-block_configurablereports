@@ -32,24 +32,24 @@ $moveup = optional_param('moveup', 0, PARAM_INT);
 $movedown = optional_param('movedown', 0, PARAM_INT);
 $delete = optional_param('delete', 0, PARAM_INT);
 
-if (! ($instance = $DB->get_record('block_configurable_report_plugin', array('id' => $id)))) {
+if (! ($instance = $DB->get_record('block_configurable_reports_plugin', array('id' => $id)))) {
     print_error('instancedoesnotexist');
 }
 if (! ($reportclass = report_base::get($instance->reportid))) {
     print_error('reportdoesnotexists');
 }
 $report = $reportclass->config;
-if (! ($course = $DB->get_record("course", array( "id" => $report->courseid)))) {
-    print_error('invalidcourseid');
-}
+$courseid = $report->courseid;
+if (isset($courseid)) {
+    if (! ($course = $DB->get_record("course", array( "id" =>  $courseid)))) {
+        print_error('invalidcourseid');
+    }
 
-// Force user login in course (SITE or Course)
-if ($course->id == SITEID) {
+    require_login($courseid);
+    $context = context_course::instance($courseid);
+} else {
     require_login();
     $context = context_system::instance();
-} else {
-    require_login($course->id);
-    $context = context_course::instance($course->id);
 }
 // Capability check
 if($report->ownerid != $USER->id){
@@ -72,12 +72,12 @@ if (!isset($compclass)) {
 $pluginclass = $compclass->get_plugin($instance->plugin);
 
 if ($delete && confirm_sesskey()) {
-    $pluginclass->delete_instance();    //TODO
+    $pluginclass->delete_instance($id);    //TODO
     
     redirect($returnurl);
 }
 if (($moveup || $movedown) && confirm_sesskey()){
-    $pluginclass->move_instance();      //TODO
+    $pluginclass->move_instance($id);      //TODO
     
     redirect($returnurl);
 }
@@ -88,15 +88,14 @@ $PAGE->set_heading($title);
 navigation_node::override_active_url($returnurl);
 $PAGE->navbar->add($pluginclass->get_name());
 
-$customdata = compact('comp','cid','id','pluginclass','compclass','report','reportclass');
-$editform = $pluginclass->get_form($PAGE->url, $customdata);		
+$editform = $pluginclass->get_form($PAGE->url, array('id' => $id));		
 $editform->set_data($instance);
 	
 if ($editform->is_cancelled()) {
 	redirect($returnurl);
 	
 } else if ($data = $editform->get_data()) {
-    $editform->save_data($data);
+    $editform->save_data($data, $id);
 	add_to_log($report->courseid, 'configurable_reports', 'edit', '', $report->name);
 
 	redirect($returnurl);
