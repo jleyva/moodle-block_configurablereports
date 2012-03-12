@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -22,39 +21,18 @@
   * @date: 2009
   */
   
-require_once($CFG->dirroot.'/blocks/configurable_reports/components/plugin.class.php');
+require_once($CFG->dirroot.'/blocks/configurable_reports/components/ordering/plugin.class.php');
 
-class plugin_userfieldorder extends plugin_base{
-	
-	var $sql = true;
-	
-	function init(){
-		$this->fullname = get_string('userfield','block_configurable_reports');		
-		$this->sql = true;
-	}
-	
-	function summary($instance){
-		return get_string($data->column).' '.(strtoupper($data->direction));
-	}
-	
-	// data -> Plugin configuration data
-	function execute($data){
-		global $DB, $CFG;
-		
-		if($data->direction == 'asc' || $data->direction == 'desc'){
-			$direction = strtoupper($data->direction);
-			$columns = $DB->get_columns('user');
-		
-			$coursecolumns = array();
-			foreach($columns as $c)
-				$coursecolumns[$c->name] = $c->name;
-				
-			if(isset($coursecolumns[$data->column])){
-				return $data->column.' '.$direction;
-			}
-		}
-		
-		return '';
+class plugin_userfieldorder extends ordering_plugin{
+
+    function get_columns(){
+        global $DB;
+        
+        $columns = array();
+        foreach($DB->get_columns('user') as $dbfield){
+            $columns[$dbfield->name] = $dbfield->name;
+        }
+        return $columns;
 	}
 }
 

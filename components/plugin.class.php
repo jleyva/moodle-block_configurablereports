@@ -159,23 +159,19 @@ abstract class plugin_base{
 	    $instance->reportid = $search['reportid'];
 	    $instance->component = $search['component'];
 	    $instance->plugin = $this->get_name();
-	    $lastorder = $DB->get_field('block_configurable_reports_plugin', 'sortorder', $search);
-	    $instance->sortorder = $lastorder + 1;
-	    if(isset($configdata)){
-             $instance->configdata = cr_serialize($instance->configdata);
-	    }
+	    $last = $DB->get_field('block_configurable_reports_plugin', 'COALESCE(MAX(sortorder), -1)', $search);
+	    $instance->sortorder = $last + 1;
+        $instance->configdata = cr_serialize($instance->configdata);
         
         $DB->insert_record('block_configurable_reports_plugin', $instance);
 	}
 	
-	function update_instance($instance, $configdata){
+	function update_instance($instance){
 	    global $DB;
 	    
-	    if (isset($configdata->name)) {
-	        $instance->name = $configdata->name;
-	    }
-	    $instance->summary = $this->summary($configdata);
-	    $instance->configdata = cr_serialize($configdata);
+	    $instance->name = $this->get_fullname($instance);
+	    $instance->summary = $this->summary($instance);
+	    $instance->configdata = cr_serialize($instance->configdata);
 	    $DB->update_record('block_configurable_reports_plugin', $instance);
 	}
 	

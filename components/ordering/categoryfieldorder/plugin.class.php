@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -22,40 +21,20 @@
   * @date: 2009
   */  
 
-require_once($CFG->dirroot.'/blocks/configurable_reports/components/plugin.class.php');
+require_once($CFG->dirroot.'/blocks/configurable_reports/components/ordering/plugin.class.php');
 
-class plugin_categoryfieldorder extends plugin_base{
+class plugin_categoryfieldorder extends ordering_plugin{
 	//TODO: Investigate SQL var - report.class.php line 440
-	var $sql = true;
-	
-	function init(){
-		$this->fullname = get_string('categoryfield','block_configurable_reports');		
-		$this->sql = true;
-	}
-	
-	function summary($instance){
-		return $data->column.' '.(strtoupper($data->direction));
-	}
-	
-	// data -> Plugin configuration data
-	function execute($data){
-		global $DB, $CFG;
-		
-		if($data->direction == 'asc' || $data->direction == 'desc'){
-			$direction = strtoupper($data->direction);
-			$columns = $DB->get_columns('course_categories');
-		
-			$categorycolumns = array();
-			foreach($columns as $c)
-				$categorycolumns[$c->name] = $c->name;
-				
-			if(isset($categorycolumns[$data->column])){
-				return $data->column.' '.$direction;
-			}
-		}
-		
-		return '';
-	}
+
+    function get_columns(){
+        global $DB;
+    
+        $columns = array();
+        foreach($DB->get_columns('course_categories') as $dbfield){
+            $columns[$dbfield->name] = $dbfield->name;
+        }
+        return $columns;
+    }
 }
 
 ?>

@@ -26,30 +26,19 @@ if (!defined('MOODLE_INTERNAL')) {
     die('Direct access to this script is forbidden.');    ///  It must be included from a Moodle page
 }
 
-require_once($CFG->dirroot.'/blocks/configurable_reports/components/plugin_form.class.php');
+require_once($CFG->dirroot.'/blocks/configurable_reports/components/ordering/plugin_form.class.php');
 
-class categoryfieldorder_form extends plugin_form {
+class categoryfieldorder_form extends ordering_plugin_form {
+
     function definition() {
-        global $DB, $USER, $CFG;
-
         $mform =& $this->_form;
-				
-		$columns = $DB->get_columns('course_categories');
-		
-		$categorycolumns = array();
-		foreach($columns as $c)
-			$categorycolumns[$c->name] = $c->name;
-			
-        $mform->addElement('select', 'column', get_string('column','block_configurable_reports'), $categorycolumns);
-		
-		$directions = array('asc'=>'ASC', 'desc'=>'DESC');
-		$mform->addElement('select', 'direction', get_string('direction','block_configurable_reports'), $directions);
-				
-        // buttons
+    
+        $mform->addElement('header', '', get_string('categoryfieldorder', 'block_configurable_reports'));
+        
+        $this->common_form_elements();
+    
         $this->add_action_buttons();
-
     }
-
 }
 
 ?>

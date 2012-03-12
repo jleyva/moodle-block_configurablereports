@@ -59,7 +59,8 @@ abstract class plugin_form extends moodleform {
         
         $plugclass = $this->_customdata['plugclass'];
         if (isset($instanceid) && ($instance = $plugclass->get_instance($instanceid))) {
-            $plugclass->update_instance($instance, $data);
+            $instance->configdata = $data;
+            $plugclass->update_instance($instance);
         } else {
             $plugclass->add_instance($data);
         }
