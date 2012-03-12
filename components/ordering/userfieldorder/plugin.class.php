@@ -33,7 +33,7 @@ class plugin_userfieldorder extends plugin_base{
 		$this->sql = true;
 	}
 	
-	function summary($data){
+	function summary($instance){
 		return get_string($data->column).' '.(strtoupper($data->direction));
 	}
 	

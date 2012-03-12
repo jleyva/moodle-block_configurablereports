@@ -26,9 +26,6 @@ abstract class plugin_base{
     var $report;
     var $component;
     var $instances;    // Current plugin instances in report
-    
-	var $fullname = '';
-	var $type = '';
 
 	static function get($report, $component, $plugin, $classname){
 	    global $CFG;
@@ -60,10 +57,6 @@ abstract class plugin_base{
 		$this->report = $report;
 		$reportclass = report_base::get($report);
 		$this->component = $reportclass->get_component($component);
-	}
-	
-	function __toString(){
-	    return get_string($this->name, 'block_configurable_reports');
 	}
 	
 	function get_name(){
@@ -115,6 +108,23 @@ abstract class plugin_base{
 	    return $this->instances;
 	}
 	
+	function get_fullname($instance){
+	    if (isset($instance->configdata->name)) {
+	        return $instance->configdata->name;
+	    } else {
+	        $strman = get_string_manager();
+	        $identifier = $this->get_name();
+	        $component = 'block_configurable_reports';
+	        if ($strman->string_exists($identifier, $component)) {
+	            return get_string($identifier, $component);
+	        }
+	    }
+	    
+	    return '';
+	}
+	
+	abstract function summary($instance);
+	
 	function has_form(){
 	    return false;
 	}
@@ -135,10 +145,6 @@ abstract class plugin_base{
 	    return new $classname($action, $customdata);
 	}
 	
-	function summary(){
-	    return '';
-	}
-	
 	function add_instance($configdata = null){
 	    global $DB;
 	    
@@ -146,32 +152,38 @@ abstract class plugin_base{
 	        'reportid'  => $this->report->id, 
 	        'component' => $this->component->get_name(),
 	    );
-	    $record = new stdClass();
-	    $record->name = '';
-	    $record->summary = $this->summary();
-	    $record->reportid = $search['reportid'];
-	    $record->component = $search['component'];
-	    $record->plugin = $this->get_name();
+	    $instance = new stdClass();
+	    $instance->configdata = $configdata;
+	    $instance->name = $this->get_fullname($instance);
+	    $instance->summary = $this->summary($instance);
+	    $instance->reportid = $search['reportid'];
+	    $instance->component = $search['component'];
+	    $instance->plugin = $this->get_name();
 	    $lastorder = $DB->get_field('block_configurable_reports_plugin', 'sortorder', $search);
-	    $record->sortorder = $lastorder + 1;
+	    $instance->sortorder = $lastorder + 1;
 	    if(isset($configdata)){
-            $record->configdata = cr_serialize($configdata);
+             $instance->configdata = cr_serialize($instance->configdata);
 	    }
         
-        $DB->insert_record('block_configurable_reports_plugin', $record);
+        $DB->insert_record('block_configurable_reports_plugin', $instance);
 	}
 	
-	function update_instance($record, $configdata){
+	function update_instance($instance, $configdata){
 	    global $DB;
 	    
-	    $record->configdata = cr_serialize($configdata);
-	    $DB->update_record('block_configurable_reports_plugin', $record);
+	    if (isset($configdata->name)) {
+	        $instance->name = $configdata->name;
+	    }
+	    $instance->summary = $this->summary($configdata);
+	    $instance->configdata = cr_serialize($configdata);
+	    $DB->update_record('block_configurable_reports_plugin', $instance);
 	}
 	
 	function delete_instance($instanceid){
 	    global $DB;
 	    
 	    $DB->delete_records('block_configurable_reports_plugin', array('id' => $instanceid));
+	    unset($this->instances[$instanceid]);
 	}
 	
 	function execute(){

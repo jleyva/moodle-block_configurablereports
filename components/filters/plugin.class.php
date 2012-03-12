@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -16,36 +15,20 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /** Configurable Reports
-  * A Moodle block for creating customizable reports
-  * @package blocks
-  * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
-  * @date: 2009
-  */ 
+ * A Moodle block for creating customizable reports
+ * @package blocks
+ * @author: Nick Koeppen
+ */
 
 require_once($CFG->dirroot.'/blocks/configurable_reports/components/plugin.class.php');
 
-class plugin_coursechild extends plugin_base{
-	
-	function summary($instance){
-		global $DB;
-		$course = $DB->get_record('course',array('id' => $data->courseid));
-		if($course)
-			return get_string('coursechild','block_configurable_reports').' '.(format_string($course->fullname));
-		return '';
-	}
-	
-	// data -> Plugin configuration data
-	function execute($data,$user,$courseid){
-		global $DB;
-		
-		$finalcourses = array();
-		if($courses = $DB->get_records('course_meta',array('child_course' => $data->courseid))){
-			foreach($courses as $c)
-				$finalcourses[] = $c->parent_course;
-		}
-		return $finalcourses;
-	}
-	
+abstract class filters_plugin extends plugin_base{
+    
+    function sql_elements($finalelements, $filter){
+        $filtername = "FILTER_".strtoupper($this->get_name());
+        if(preg_match("/%%$filtername:([^%]+)%%/i", $finalelements, $output)){
+            $replace = ' AND '.$output[1].' = '.$filter;
+            return str_replace("%%$filtername:$output[1]%%", $replace, $finalelements);
+        }
+    }
 }
-
-?>

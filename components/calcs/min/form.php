@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -31,10 +30,11 @@ require_once($CFG->dirroot.'/blocks/configurable_reports/components/calcs/plugin
 class min_form extends calcs_plugin_form {
     function definition() {
         $mform =& $this->_form;
-        	
-        $options = $this->get_column_options();
-    
-        $mform->addElement('header', '', get_string('coursefield','block_configurable_reports'), '');
+        $plugclass = $this->_customdata['plugclass'];
+        $reportclass = report_base::get($plugclass->report);
+            
+        $mform->addElement('header', '', get_string('min','block_configurable_reports'), '');
+        $options = $reportclass->get_column_options();
         $mform->addElement('select', 'column', get_string('column','block_configurable_reports'), $options);
     
         $this->add_action_buttons();

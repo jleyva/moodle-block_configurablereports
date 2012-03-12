@@ -30,27 +30,23 @@ class plugin_courses extends plugin_base{
 		$this->fullname = get_string('filtercourses','block_configurable_reports');
 	}
 	
-	function summary($data){
+	function summary($instance){
 		return get_string('filtercourses_summary','block_configurable_reports');
 	}
 	
 	function execute($finalelements, $data){
-		
-		$filter_courses = optional_param('filter_courses',0,PARAM_INT);
-		if(!$filter_courses)
-			return $finalelements;
-		
-		if($this->report->type != 'sql'){
-				return array($filter_courses);			
-		}
-		else{
-			if(preg_match("/%%FILTER_COURSES:([^%]+)%%/i",$finalelements,
-    $output)){
-				$replace = ' AND '.$output[1].' = '.$filter_courses;				
-				return str_replace('%%FILTER_COURSES:'.$output[1].'%%',$replace,$finalelements);
-			}			
-		}		
-		return $finalelements;
+	    $filter = optional_param('filter_courses', 0, PARAM_INT);
+	    if (!$filter) {
+	        return $finalelements;
+	    }
+	
+	    if ($this->report->type == 'sql' && $sqlelements = $this->sql_elements($finalelements, $filter)) {
+	        return $sqlelements;
+	    } else {
+	        return array($filter);
+	    }
+	    	
+	    return $finalelements;
 	}
 	
 	function print_filter(&$mform){
@@ -85,7 +81,6 @@ class plugin_courses extends plugin_base{
 		
 		$mform->addElement('select', 'filter_courses', get_string('course'), $courseoptions);
 		$mform->setType('filter_courses', PARAM_INT);
-		
 	}
 	
 }

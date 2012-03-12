@@ -35,11 +35,11 @@ abstract class columns_plugin_form extends plugin_form {
         
         $mform->addElement('header', '', get_string('columnandcellproperties','block_configurable_reports'), '');
         
-        $mform->addElement('text', 'columname', get_string('name'));
+        $mform->addElement('text', 'name', get_string('name'));
         if (!empty($CFG->formatstringstriptags)) {
-            $mform->setType('columname', PARAM_TEXT);
+            $mform->setType('name', PARAM_TEXT);
         } else {
-            $mform->setType('columname', PARAM_CLEAN);
+            $mform->setType('name', PARAM_CLEAN);
         }
         
         $alignoptions = array('center'=>'center','left'=>'left','right'=>'right');
@@ -54,7 +54,7 @@ abstract class columns_plugin_form extends plugin_form {
         $mform->addElement('select', 'wrap', get_string('cellwrap','block_configurable_reports'), $wrapoptions);
         $mform->setAdvanced('wrap');
         
-        $mform->addRule('columname',get_string('required'),'required');
+        $mform->addRule('name', get_string('required'), 'required');
     }
     
 	function validation($data, $files){

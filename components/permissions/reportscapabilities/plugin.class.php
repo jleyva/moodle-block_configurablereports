@@ -30,7 +30,7 @@ class plugin_reportscapabilities extends plugin_base{
 		$this->fullname = get_string('reportscapabilities','block_configurable_reports');
 	}
 	
-	function summary($data){
+	function summary($instance){
 		return get_string('reportscapabilities_summary','block_configurable_reports');
 	}
 	

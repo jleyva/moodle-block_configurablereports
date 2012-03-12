@@ -31,7 +31,7 @@ class plugin_parentcategory extends plugin_base{
 		$this->type = 'text';
 	}
 	
-	function summary($data){
+	function summary($instance){
 		global $DB;
 		
 		$cat = $DB->get_record('course_categories',array('id' => $data->categoryid));

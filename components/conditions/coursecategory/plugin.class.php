@@ -26,19 +26,18 @@ require_once($CFG->dirroot.'/blocks/configurable_reports/components/plugin.class
 
 class plugin_coursecategory extends plugin_base{
 	
-	function init(){
-		$this->fullname = get_string('coursecategory','block_configurable_reports');
-		$this->type = 'text';
-	}
-	
-	function summary($data){
+	function summary($instance){
+	    if(! ($data = $instance->configdata)){
+	        return '';
+	    }
 		global $DB;
 		
-		$cat = $DB->get_record('course_categories',array('id' => $data->categoryid));
-		if($cat)
-			return get_string('category').' '.$cat->name;
-		else
+		$catname = $DB->get_field('course_categories', 'name', array('id' => $data->categoryid));
+		if ($catname) {
+			return get_string('category').' '.$catname;
+		} else {
 			return get_string('category').' '.get_string('top');
+		}
 	}
 	
 	// data -> Plugin configuration data

@@ -30,7 +30,7 @@ class plugin_roleincourse extends plugin_base{
 		$this->fullname = get_string('roleincourse','block_configurable_reports');
 	}
 	
-	function summary($data){
+	function summary($instance){
 		global $DB;
 		
 		$rolename = $DB->get_field('role','name',array('id' => $data->roleid));

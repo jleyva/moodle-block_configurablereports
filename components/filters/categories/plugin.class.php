@@ -30,26 +30,22 @@ class plugin_categories extends plugin_base{
 		$this->fullname = get_string('filtercategories','block_configurable_reports');
 	}
 	
-	function summary($data){
+	function summary($instance){
 		return get_string('filtercategories_summary','block_configurable_reports');
 	}
 	
 	function execute($finalelements, $data){
-		
-		$filter_categories = optional_param('filter_categories',0,PARAM_INT);
-		if(!$filter_categories)
+		$filter = optional_param('filter_categories', 0, PARAM_INT);
+		if (!$filter) {
 			return $finalelements;
-		
-		if($this->report->type != 'sql'){
-				return array($filter_categories);			
 		}
-		else{
-			if(preg_match("/%%FILTER_CATEGORIES:([^%]+)%%/i",$finalelements,
-    $output)){
-				$replace = ' AND '.$output[1].' = '.$filter_categories;				
-				return str_replace('%%FILTER_CATEGORIES:'.$output[1].'%%',$replace,$finalelements);
-			}			
-		}		
+		
+		if ($this->report->type == 'sql' && $sqlelements = $this->sql_elements($finalelements, $filter)) {
+		    return $sqlelements;
+		} else {
+		    return array($filter);
+		}
+			
 		return $finalelements;
 	}
 	
@@ -58,8 +54,8 @@ class plugin_categories extends plugin_base{
 		
 		$filter_categories = optional_param('filter_categories',0,PARAM_INT);
 		
-		$reportclassname = 'report_'.$this->report->type;	
-		$reportclass = new $reportclassname($this->report);
+
+		$reportclass = report_base::get($this->report);
 		
 		if($this->report->type != 'sql'){
 			$components = cr_unserialize($this->report->components);		
@@ -85,7 +81,6 @@ class plugin_categories extends plugin_base{
 		
 		$mform->addElement('select', 'filter_categories', get_string('category'), $courseoptions);
 		$mform->setType('filter_categories', PARAM_INT);
-		
 	}
 	
 }

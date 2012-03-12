@@ -30,7 +30,7 @@ class plugin_puserfield extends plugin_base{
 		$this->fullname = get_string('puserfield','block_configurable_reports');
 	}
 	
-	function summary($data){
+	function summary($instance){
 		global $DB;
 		
 		if(strpos($data->field,'profile_') === 0){

@@ -28,8 +28,8 @@ abstract class columns_plugin extends plugin_base{
         return true;
     }
     
-    function summary($data){
-        return format_string($data->columname);
+    function summary($instance){
+        return $this->get_fullname(null);
     }
     
     function colformat($data){

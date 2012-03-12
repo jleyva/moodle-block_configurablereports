@@ -34,55 +34,6 @@ class template_form extends component_form {
         return 'template';
     }
     
-    function get_column_options(){
-        $compclass = $this->_customdata['compclass'];
-        $report = $compclass->report;
-    
-        $reportclass = report_base::get($report);
-    
-        $options = array();
-        if ($report->type != 'sql') {
-            $columnclass = $reportclass->get_component('columns');
-            if(!isset($columnclass)){
-                return null;
-            }
-            $instances = $columnclass->get_all_instances();
-            if (empty($instances)) {
-                //print_error('nocolumns');
-            }
-            
-            foreach($instances as $instance){
-                if(isset($instance->summary)){
-                    $options[] = $instance->summary;
-                }
-            }
-        } else {
-            $customsqlclass = $reportclass->get_component('customsql');
-            if(!isset($customsqlclass)){
-                return null;
-            }
-            $config = $customsqlclass->config;
-    
-            if(isset($config->querysql)){
-                $sql = $config->querysql;
-                $sql = $reportclass->prepare_sql($sql);
-                if($rs = $reportclass->execute_query($sql)){
-                    foreach ($rs as $row) {
-                        $i = 0;
-                        foreach($row as $colname=>$value){
-                            $options[$i] = str_replace('_', ' ', $colname);
-                            $i++;
-                        }
-                        break;
-                    }
-                    $rs->close();
-                }
-            }
-        }
-    
-        return $options;
-    }
-    
     function definition() {
         global $DB, $CFG;
 
@@ -101,7 +52,9 @@ class template_form extends component_form {
 		$mform->addHelpButton('header','template_marks', 'block_configurable_reports');
 		
 		$availablemarksrec = '';
-		foreach($this->get_column_options() as $o) {
+		$plugclass = $this->_customdata['plugclass'];
+		$reportclass = report_base::get($plugclass->report);
+		foreach($reportclass->get_column_options() as $o) {
 			$availablemarksrec .= "[[$o]] => $o <br />";
 		}
 		$mform->addElement('static','statictext',get_string('availablemarks','block_configurable_reports'), $availablemarksrec);

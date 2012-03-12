@@ -26,10 +26,6 @@ require_once($CFG->dirroot.'/blocks/configurable_reports/components/calcs/plugin
 
 class plugin_sum extends calcs_plugin{
 	
-	function init(){
-		$this->fullname = get_string('sum','block_configurable_reports');
-	}
-	
 	function execute($rows){
 		$result = 0;
 		

@@ -31,7 +31,7 @@ class plugin_usermodoutline extends columns_plugin{
 		$this->type = 'undefined';
 	}
 	
-	function summary($data){
+	function summary($instance){
 		global $DB;
 		// should be a better way to do this
 		if($cm = $DB->get_record('course_modules',array('id' => $data->cmid))){

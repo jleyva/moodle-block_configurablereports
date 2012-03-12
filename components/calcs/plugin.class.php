@@ -28,47 +28,15 @@ abstract class calcs_plugin extends plugin_base{
 	    return true;
 	}
 	
-	function summary($data){
-		global $DB, $CFG;
-		
-		if($this->report->type != 'sql'){
-			$components = cr_unserialize($this->report->components);		
-			if(!is_array($components) || empty($components['columns']['elements']))
-				print_error('nocolumns');
-					
-			$columns = $components['columns']['elements'];
-			$i = 0;
-			foreach($columns as $c){
-				if($i == $data->column)
-					return $c['summary'];
-				$i++;
-			}
-		} else {
-			$reportclass = report_base::get($this->report);
-			
-			$components = cr_unserialize($this->report->components);
-			$config = (isset($components['customsql']['config']))? $components['customsql']['config'] : new stdclass;	
-			
-			if(isset($config->querysql)){
-				
-				$sql =$config->querysql;
-				$sql = $reportclass->prepare_sql($sql);
-				if($rs = $reportclass->execute_query($sql)){
-					foreach($rs as $row){
-						$i = 0;
-						foreach($row as $colname=>$value){
-							if($i == $data->column)
-								return str_replace('_', ' ', $colname);
-							$i++;
-						}
-						break;
-					}
-					$rs->close();
-				}
-			}				
+	function summary($instance){
+		if(! ($data = $instance->configdata)){
+		    return '';
 		}
 		
-		return '';
+		$reportclass = report_base::get($this->report);
+		$options = $reportclass->get_column_options();
+		
+		return $options[$data->column];
 	}
 }
 

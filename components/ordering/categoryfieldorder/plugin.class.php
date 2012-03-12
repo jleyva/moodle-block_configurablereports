@@ -33,7 +33,7 @@ class plugin_categoryfieldorder extends plugin_base{
 		$this->sql = true;
 	}
 	
-	function summary($data){
+	function summary($instance){
 		return $data->column.' '.(strtoupper($data->direction));
 	}
 	

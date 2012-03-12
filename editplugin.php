@@ -70,6 +70,9 @@ if (!isset($compclass)) {
     print_error('badcomponent');
 }
 $pluginclass = $compclass->get_plugin($instance->plugin);
+if ( !($instance = $pluginclass->get_instance($instance->id))){
+    print_error('badinstance');
+}
 
 if ($delete && confirm_sesskey()) {
     $pluginclass->delete_instance($id);    //TODO
@@ -96,7 +99,9 @@ if ($editform->is_cancelled()) {
 	
 } else if ($data = $editform->get_data()) {
     $editform->save_data($data, $id);
-	add_to_log($report->courseid, 'configurable_reports', 'edit', '', $report->name);
+    
+    $logcourse = isset($courseid) ? $courseid : $SITE->id;
+	add_to_log($logcourse, 'configurable_reports', 'edit', '', $report->name);
 
 	redirect($returnurl);
 }

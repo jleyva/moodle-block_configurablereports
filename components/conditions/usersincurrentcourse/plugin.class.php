@@ -30,7 +30,7 @@ class plugin_usersincurrentcourse extends plugin_base{
 		$this->fullname = get_string('usersincurrentcourse','block_configurable_reports');
 	}
 		
-	function summary($data){
+	function summary($instance){
 		return get_string('usersincurrentcourse_summary','block_configurable_reports');
 		
 	}

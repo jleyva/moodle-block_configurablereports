@@ -25,14 +25,16 @@
 require_once($CFG->dirroot.'/blocks/configurable_reports/components/plugin.class.php');
 
 class plugin_ccoursefield extends plugin_base{
-	
-	function init(){
-		$this->fullname = get_string('ccoursefield','block_configurable_reports');
-	}
 		
-	function summary($data){		
+	function summary($instance){
+	    if(! ($data = $instance->configdata)){
+	        return '';
+	    }
 		return get_string($data->field).' '.$data->operator.' '.$data->value;
-		
+	}
+	
+	function has_form(){
+	    return true;
 	}
 	
 	// data -> Plugin configuration data

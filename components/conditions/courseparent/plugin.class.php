@@ -30,7 +30,7 @@ class plugin_courseparent extends plugin_base{
 		$this->fullname = get_string('courseparent','block_configurable_reports');
 	}
 	
-	function summary($data){
+	function summary($instance){
 		global $DB;
 		
 		$course = $DB->get_record('course',array('id' => $data->courseid));

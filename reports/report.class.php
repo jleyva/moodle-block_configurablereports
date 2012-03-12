@@ -104,6 +104,51 @@ abstract class report_base {
 	    return $components[$compname];
 	}
 	
+	function get_column_options($ignore = array()){
+	    $options = array();
+	    if ($this->config->type != 'sql') {
+	        $columnclass = $this->get_component('columns');
+	        if(!isset($columnclass)){
+	            return null;
+	        }
+	        $instances = $columnclass->get_all_instances();
+	        if (empty($instances)) {
+	            //print_error('nocolumns');
+	        }
+	
+	        $i = 0;
+	        foreach($instances as $instance){
+	            if(!in_array($i, $ignore) && isset($instance->summary)){
+	                $options[$i] = $instance->summary;
+	            }
+	            $i++;
+	        }
+	    } else {
+	        $customsqlclass = $this->get_component('customsql');
+	        if(!isset($customsqlclass)){
+	            return null;
+	        }
+	        $config = $customsqlclass->config;
+	
+	        if(isset($config->querysql)){
+	            $sql = $this->prepare_sql($config->querysql);
+	            if($rs = $this->execute_query($sql)){
+	                foreach ($rs as $row) {
+	                    $i = 0;
+	                    foreach($row as $colname=>$value){
+	                        $options[$i] = str_replace('_', ' ', $colname);
+	                        $i++;
+	                    }
+	                    break;
+	                }
+	                $rs->close();
+	            }
+	        }
+	    }
+	
+	    return $options;
+	}
+	
 	function check_permissions($userid, $context){
 		global $DB, $CFG, $USER;
 				

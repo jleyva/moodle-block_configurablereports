@@ -30,7 +30,7 @@ class plugin_line extends plot_plugin{
 		$this->fullname = get_string('line','block_configurable_reports');
 	}
 	
-	function summary($data){
+	function summary($instance){
 		return get_string('linesummary','block_configurable_reports');
 	}
 	

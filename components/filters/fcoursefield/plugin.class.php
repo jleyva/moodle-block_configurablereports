@@ -30,7 +30,7 @@ class plugin_fcoursefield extends plugin_base{
 		$this->fullname = get_string('fcoursefield','block_configurable_reports');
 	}
 	
-	function summary($data){
+	function summary($instance){
 		return $data->field;
 	}
 	

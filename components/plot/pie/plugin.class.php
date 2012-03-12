@@ -30,7 +30,7 @@ class plugin_pie extends plot_plugin{
 		$this->fullname = get_string('pie','block_configurable_reports');
 	}
 	
-	function summary($data){
+	function summary($instance){
 		return get_string('piesummary','block_configurable_reports');
 	}
 	

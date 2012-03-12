@@ -25,11 +25,7 @@
 require_once($CFG->dirroot.'/blocks/configurable_reports/components/calcs/plugin.class.php');
 
 class plugin_average extends calcs_plugin{
-	
-	function init(){
-		$this->fullname = get_string('average','block_configurable_reports');
-	}
-	
+    
 	function execute($rows){
 		$result = 0;
 		$els = 0;

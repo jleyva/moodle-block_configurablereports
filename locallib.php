@@ -135,13 +135,19 @@ function cr_get_my_reports($userid, $context){
 	return $DB->get_records('block_configurable_reports_report', $params, 'name ASC');
 }
   
- function cr_serialize($var){
-	return serialize(urlencode_recursive($var));
- }
-
- function cr_unserialize($var){
-	return urldecode_recursive(unserialize($var));
- } 
+    function cr_serialize($var){
+        if (!is_object($var)) {
+            return $var;
+        }
+        return serialize(urlencode_recursive($var));
+    }
+    
+    function cr_unserialize($var){
+        if (!is_string($var)) {
+            return $var;
+        }
+        return urldecode_recursive(unserialize($var));
+    } 
   
  function cr_check_report_permissions($report,$userid,$context){
 	global $DB, $CFG;

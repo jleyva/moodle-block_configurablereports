@@ -113,18 +113,18 @@ if (!empty($instances)) {
         if($pluginclass->has_form()){
             $commands[] = $OUTPUT->action_icon($editurl, $icons['edit'], null, $pixattr);
         }
-        $url = $editurl;
+        $url = clone($editurl);
         $url->params(array('delete' => 1, 'sesskey' => $USER->sesskey));
         $commands[] = $OUTPUT->action_icon($url, $icons['delete'], null, $pixattr);
         
         if ($compclass->has_ordering()) {
             if ($i != 0 && $numinstances > 1) {
-                $url = $editurl;
+                $url = clone($editurl);
                 $url->params(array('moveup' => 1, 'sesskey' => $USER->sesskey));
                 $commands[] = $OUTPUT->action_icon($url, $icons['moveup'], null, $pixattr);
             }
             if ($i != $numinstances -1) {
-                $url = $editurl;
+                $url = clone($editurl);
                 $url->params(array('movedown' => 1, 'sesskey' => $USER->sesskey));
                 $commands[] = $OUTPUT->action_icon($url, $icons['movedown'], null, $pixattr);
             }

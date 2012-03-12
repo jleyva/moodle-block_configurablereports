@@ -30,7 +30,7 @@ class plugin_startendtime extends plugin_base{
 		$this->fullname = get_string('startendtime','block_configurable_reports');
 	}
 	
-	function summary($data){
+	function summary($instance){
 		return get_string('filterstartendtime_summary','block_configurable_reports');
 	}
 	
@@ -80,7 +80,6 @@ $output)){
 		$mform->setDefault('filter_starttime', time() - 3600 * 24);
         $mform->addElement('date_selector', 'filter_endtime', get_string('endtime', 'block_configurable_reports'));
 		$mform->setDefault('filter_endtime', time() + 3600 * 24);
-		
 	}
 	
 }
