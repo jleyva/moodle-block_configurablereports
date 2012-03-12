@@ -25,11 +25,7 @@
 require_once($CFG->dirroot.'/blocks/configurable_reports/components/plugin.class.php');
 
 class plugin_anyone extends plugin_base{
-	
-	function init(){
-		$this->fullname = get_string('anyone','block_configurable_reports');
-	}
-	
+
 	function summary($instance){
 		return get_string('anyone_summary','block_configurable_reports');
 	}

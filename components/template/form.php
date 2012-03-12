@@ -52,8 +52,8 @@ class template_form extends component_form {
 		$mform->addHelpButton('header','template_marks', 'block_configurable_reports');
 		
 		$availablemarksrec = '';
-		$plugclass = $this->_customdata['plugclass'];
-		$reportclass = report_base::get($plugclass->report);
+		$compclass = $this->_customdata['compclass'];
+		$reportclass = report_base::get($compclass->report);
 		foreach($reportclass->get_column_options() as $o) {
 			$availablemarksrec .= "[[$o]] => $o <br />";
 		}

@@ -25,41 +25,41 @@
 require_once($CFG->dirroot.'/blocks/configurable_reports/components/plugin.class.php');
 
 class plugin_puserfield extends plugin_base{
-	
-	function init(){
-		$this->fullname = get_string('puserfield','block_configurable_reports');
-	}
-	
+    
 	function summary($instance){
 		global $DB;
 		
+		$data = $instance->configdata;
 		if(strpos($data->field,'profile_') === 0){
 			$name = $DB->get_field('user_info_field','name',array('shortname' => str_replace('profile_','', $data->field)));
 			return $name .' = '.$data->value;
-		}	
+		}
+		
 		return $data->field.' = '.$data->value;
 	}
 	
+	function has_form(){
+	    return true;
+	}
+	
 	function execute($userid, $context, $data){
-		global $DB, $CFG;
+		global $DB;
 		
-		if(!$user = $DB->get_record('user',array('id' => $userid)))
+		if (! ($user = $DB->get_record('user',array('id' => $userid)))) {
 			return false;
+		}
 		
-		if(strpos($data->field,'profile_') === 0){			
-			if($profiledata = get_records_sql("SELECT d.*, f.shortname, f.datatype FROM {user_info_data} d ,{user_info_field} f 
-							WHERE f.id = d.fieldid AND d.userid = ?", array($userid))){
-				foreach($profiledata as $p){					
-					$user->{'profile_'.$p->shortname} = $p->data;
-				}
+		if (strpos($data->field,'profile_') === 0) {
+		    $tables = '{user_info_data} d ,{user_info_field} f';
+		    $columns = 'd.*, f.shortname, f.datatype';
+		    $sql = "SELECT $columns FROM $tables WHERE f.id = d.fieldid AND d.userid = ?";
+		    $profiledata = $DB->get_records_sql($sql, array($userid));
+			foreach($profiledata as $p){				
+				$user->{'profile_'.$p->shortname} = $p->data;
 			}
 		}
 		
-		if(isset($user->{$data->field}) && $user->{$data->field} == $data->value)
-			return true;
-		
-		return false;
-		
+		return isset($user->{$data->field}) && ($user->{$data->field} == $data->value);
 	}
 	
 }

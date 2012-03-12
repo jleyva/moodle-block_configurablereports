@@ -26,17 +26,11 @@ require_once($CFG->dirroot.'/blocks/configurable_reports/components/plugin.class
 
 class plugin_reportscapabilities extends plugin_base{
 	
-	function init(){
-		$this->fullname = get_string('reportscapabilities','block_configurable_reports');
-	}
-	
 	function summary($instance){
 		return get_string('reportscapabilities_summary','block_configurable_reports');
 	}
 	
 	function execute($userid, $context, $data){
-		global $DB, $CFG;
-		
 		return has_capability('moodle/site:viewreports', context_system::instance(), $userid);
 	}
 	

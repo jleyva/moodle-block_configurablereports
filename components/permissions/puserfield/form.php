@@ -31,8 +31,6 @@ require_once($CFG->dirroot.'/blocks/configurable_reports/components/plugin_form.
 class puserfield_form extends plugin_form {
 
     function definition() {
-        global $DB, $USER, $CFG;
-
         $mform =& $this->_form;
 
         $mform->addElement('header', '', get_string('coursefield','block_configurable_reports'), '');
@@ -47,8 +45,6 @@ class puserfield_form extends plugin_form {
     }
 	
 	function validation($data,$files){
-		global $DB, $db, $CFG;
-		
 		$errors = parent::validation($data, $files);
 			
 		if(!in_array($data['field'], $this->get_user_columns())){
@@ -62,9 +58,8 @@ class puserfield_form extends plugin_form {
 	    global $DB;
 	    
 	    $usercolumns = array();
-	    
-	    foreach($DB->get_columns('user') as $c){
-	        $usercolumns[$c->name] = $c->name;
+	    foreach($DB->get_columns('user') as $column){
+	        $usercolumns[$column->name] = $column->name;
 	    }
 	    
 	    if ($profile = $DB->get_records('user_info_field')) {

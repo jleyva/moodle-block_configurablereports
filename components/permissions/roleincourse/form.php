@@ -30,18 +30,13 @@ require_once($CFG->dirroot.'/blocks/configurable_reports/components/plugin_form.
 
 class roleincourse_form extends plugin_form {
     function definition() {
-        global $DB, $USER, $CFG;
+        global $DB;
 
         $mform =& $this->_form;
 
         $mform->addElement('header', '', get_string('roleincourse','block_configurable_reports'), '');
-	
-		$roles = $DB->get_records('role');
-		
-		$userroles = array();
-		foreach($roles as $r)
-			$userroles[$r->id] = $r->name;
-			
+
+		$userroles = $DB->get_records_menu('role', null, 'name', 'id, name');
         $mform->addElement('select', 'roleid', get_string('roles'), $userroles);
 
         $this->add_action_buttons();

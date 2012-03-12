@@ -26,29 +26,29 @@ require_once($CFG->dirroot.'/blocks/configurable_reports/components/plugin.class
 
 class plugin_roleincourse extends plugin_base{
 	
-	function init(){
-		$this->fullname = get_string('roleincourse','block_configurable_reports');
-	}
-	
 	function summary($instance){
 		global $DB;
 		
-		$rolename = $DB->get_field('role','name',array('id' => $data->roleid));
-		$coursename = $DB->get_field('course','fullname',array('id' => $this->report->courseid));
+		$data = $instance->configdata;
+		$rolename = $DB->get_field('role', 'name', array('id' => $data->roleid));
+		$coursename = $DB->get_field('course', 'fullname', array('id' => $this->report->courseid));
 		return $rolename.' '.$coursename;
+	}
+
+	function has_form(){
+	    return true;
 	}
 	
 	function execute($userid, $context, $data){
-		global $DB, $CFG;
-		
-		$context = ($this->report->courseid == SITEID)? get_context_instance(CONTEXT_SYSTEM): get_context_instance(CONTEXT_COURSE,$this->report->courseid);
-		$roles = get_user_roles($context,$userid);
+		$roles = get_user_roles($context, $userid);
 		if(!empty($roles)){
 			foreach($roles as $rol){
-				if($rol->roleid == $data->roleid)
+				if ($rol->roleid == $data->roleid) {
 					return true;
+				}
 			}
 		}
+		
 		return false;
 	}
 	
