@@ -33,10 +33,6 @@ require_once($CFG->dirroot.'/blocks/configurable_reports/components/component_fo
 
 class timeline_form extends component_form {
     
-    function get_component_name(){
-        return 'timeline';
-    }
-    
     function definition() {
         global $DB, $CFG;
 

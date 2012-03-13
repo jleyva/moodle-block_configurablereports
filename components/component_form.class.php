@@ -27,7 +27,6 @@ if (!defined('MOODLE_INTERNAL')) {
 require_once($CFG->libdir.'/formslib.php');
 
 abstract class component_form extends moodleform {
-    abstract function get_component_name();
     
     function set_data(){
         $data = $this->get_config_data();
@@ -39,7 +38,7 @@ abstract class component_form extends moodleform {
         global $DB;
         
         $compclass = $this->_customdata['compclass'];
-        $search = array('reportid' => $compclass->report->id, 'component' => $this->get_component_name());
+        $search = array('reportid' => $compclass->report->id, 'component' => $compclass->get_name());
         $configdata = $DB->get_field('block_configurable_reports_component', 'configdata', $search);
         
         return $configdata ? cr_unserialize($configdata) : new stdClass();
@@ -51,7 +50,7 @@ abstract class component_form extends moodleform {
         $configdata = cr_serialize($data);
 
         $compclass = $this->_customdata['compclass'];
-        $search = array('reportid' => $compclass->report->id, 'component' => $this->get_component_name());
+        $search = array('reportid' => $compclass->report->id, 'component' => $compclass->get_name());
         if ($record = $DB->get_record('block_configurable_reports_component', $search)){
             $record->configdata = $configdata;
             $DB->update_record('block_configurable_reports_component', $record);

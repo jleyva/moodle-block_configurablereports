@@ -29,11 +29,7 @@ if (!defined('MOODLE_INTERNAL')) {
 require_once($CFG->dirroot.'/blocks/configurable_reports/components/component_form.class.php');
 
 class columns_form extends component_form {
-    
-    function get_component_name(){
-        return 'columns';
-    }
-    
+
     function definition() {
         global $DB, $USER, $CFG;
 

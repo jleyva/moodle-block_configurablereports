@@ -30,10 +30,6 @@ require_once($CFG->dirroot.'/blocks/configurable_reports/components/component_fo
 
 class conditions_form extends component_form {
     
-    function get_component_name(){
-        return 'conditions';
-    }
-    
     function definition() {
         global $DB, $USER, $CFG;
 

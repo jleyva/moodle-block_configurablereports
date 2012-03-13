@@ -311,6 +311,7 @@ abstract class report_base {
 		
 		$rows = $this->get_rows($finalelements, $sqlorder);			
 	
+		//TODO: Figure out ordering
 		if(!$sqlorder && isset($classorder)){
 			$rows = $classorder->execute($rows,$orderingdata);
 		}
@@ -318,8 +319,11 @@ abstract class report_base {
 		$reporttable = array();
 		foreach($rows as $row){
 			foreach($colcomp->get_plugins() as $plugclass){
+			    if(! ($columns = $plugclass->get_instances())){
+			        continue;
+			    }
 			    $tempcols = array();
-			    foreach($plugclass->get_instances() as $column){			         
+			    foreach($columns as $column){			         
 				    $tempcols[] = $plugclass->execute($USER, $COURSE->id, $column, $row);
 			    }
 			    $reporttable[] = $tempcols;
@@ -327,43 +331,43 @@ abstract class report_base {
 			
 		}
 		
-		// EXPAND ROWS
-		$finaltable = array();
-		$newcols = array();
+// 		// EXPAND ROWS
+// 		$finaltable = array();
+// 		$newcols = array();
 		
-		foreach($reporttable as $row){
-			$col = array();
-			$multiple = false;
-			$nrows = 0;
-			$mrowsi = array();
+// 		foreach($reporttable as $row){
+// 			$col = array();
+// 			$multiple = false;
+// 			$nrows = 0;
+// 			$mrowsi = array();
 						
-			foreach($row as $key => $cell){
-				if (!is_array($cell)) {
-					$col[] = $cell;				
-				} else {
-					$multiple = true;
-					$nrows = count($cell);
-					$mrowsi[] = $key;
-				}				
-			}
-			if ($multiple) {
-				$newrows = array();
-				for($i=0; $i<$nrows; $i++){
-					$newrows[$i] = $row;
-					foreach($mrowsi as $index){
-						$newrows[$i][$index] = $row[$index][$i];
-					}
-				}
-				foreach($newrows as $r)
-					$finaltable[] = $r;
-			} else {
-				$finaltable[] = $col;
-			}
-		}
+// 			foreach($row as $key => $cell){
+// 				if (!is_array($cell)) {
+// 					$col[] = $cell;				
+// 				} else {
+// 					$multiple = true;
+// 					$nrows = count($cell);
+// 					$mrowsi[] = $key;
+// 				}				
+// 			}
+// 			if ($multiple) {
+// 				$newrows = array();
+// 				for($i=0; $i<$nrows; $i++){
+// 					$newrows[$i] = $row;
+// 					foreach($mrowsi as $index){
+// 						$newrows[$i][$index] = $row[$index][$i];
+// 					}
+// 				}
+// 				foreach($newrows as $r)
+// 					$finaltable[] = $r;
+// 			} else {
+// 				$finaltable[] = $col;
+// 			}
+// 		}
 		
 		$table = $this->create_table();
 		$table->id = 'reporttable';
-		$table->data = $finaltable;
+		$table->data = $reporttable;
 		$this->finalreport->table = $table;
 		
 		return true;
@@ -390,7 +394,7 @@ abstract class report_base {
 	            if (isset($columns) && in_array($pid, $columns)) {
 	                continue;
 	            }
-	            $table->head[] = $plugclass->summary($column);
+	            $table->head[] = $plugclass->get_fullname($column);
 	            list($align, $size, $wrap) = $plugclass->colformat($column);
 	            $table->align[] = $align;
 	            $table->size[] = $size;
