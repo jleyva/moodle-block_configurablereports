@@ -42,14 +42,15 @@ class plugin_ccoursefield extends conditions_plugin{
 	    }
 		global $DB;
 	
+		$params = array();
 		switch($data->operator){
-			case 'LIKE % %': 	
-				$params = array("%$data->value%");
-				$select = $DB->sql_like($data->field, reset($params));
+			case 'LIKE % %':
+			    $params['value'] = "%$data->value%";
+				$select = $DB->sql_like($data->field, ':value');
 				break;						
 			default:
-			    $params = array($data->value);
-			    $select = "$data->field $data->operator ?";
+			    $params['value'] = $data->value;
+			    $select = "$data->field $data->operator :value";
 				break;
 		}
 		

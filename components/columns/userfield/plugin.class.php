@@ -25,20 +25,18 @@
 require_once($CFG->dirroot.'/blocks/configurable_reports/components/columns/plugin.class.php');
 
 class plugin_userfield extends columns_plugin{
-	
-	function init(){
-		$this->fullname = get_string('userfield','block_configurable_reports');
-		$this->type = 'undefined';
-	}
-	
-	// data -> Plugin configuration data
-	// row -> Complet user row c->id, c->fullname, etc...
-	function execute($data,$row,$user,$courseid,$starttime=0,$endtime=0){
-		global $DB, $CFG;
+
+	function execute($user, $courseid, $instance, $row, $starttime=0, $endtime=0){
+	    if(! ($data = $instance->configdata)){
+	        return '';
+	    }
+    	global $DB;
 		
 		if(strpos($data->column,'profile_') === 0){
-			if($profiledata = $DB->get_records_sql("SELECT d.*, f.shortname, f.datatype FROM {user_info_data} d ,{user_info_field} f 
-							WHERE f.id = d.fieldid AND d.userid = ?", array($row->id))){
+		    $tables = '{user_info_data} d ,{user_info_field} f';
+		    $columns = 'd.*, f.shortname, f.datatype';
+		    $sql = "SELECT $columns FROM $tables WHERE f.id = d.fieldid AND d.userid = ?";
+			if($profiledata = $DB->get_records_sql($sql, array($user->id))){
 				foreach($profiledata as $p){
 					if($p->datatype == 'checkbox'){
 						$p->data = ($p->data)? get_string('yes') : get_string('no');
@@ -51,14 +49,17 @@ class plugin_userfield extends columns_plugin{
 			}			
 		}
 		
-		if(isset($row->{$data->column})){
+		$column = $row->{$data->column};
+		
+		if(isset($column)){
 			switch($data->column){
 				case 'firstaccess':
 				case 'lastaccess':
 				case 'currentlogin':
 				case 'timemodified':
-				case 'lastlogin': 	$row->{$data->column} = ($row->{$data->column})? userdate($row->{$data->column}): '--';
-									break;
+				case 'lastlogin': 	
+				    $column = ($column)? userdate($column): '--';
+					break;
 				case 'confirmed':
 				case 'policyagreed':
 				case 'maildigest':
@@ -67,11 +68,12 @@ class plugin_userfield extends columns_plugin{
 				case 'trackforums':
 				case 'screenreader':
 				case 'emailstop':
-									$row->{$data->column} = ($row->{$data->column})? get_string('yes') : get_string('no');
-									break;
+					$column = ($column)? get_string('yes') : get_string('no');
+					break;
 			}
 		}
-		return (isset($row->{$data->column}))? $row->{$data->column} : '';
+		
+		return isset($column) ? $column : '';
 	}
 	
 }

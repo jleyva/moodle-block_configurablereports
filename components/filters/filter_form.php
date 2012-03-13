@@ -36,7 +36,7 @@ class filter_form extends moodleform {
 
 		$this->_customdata->add_form_elements($mform);
 		
-		$mform->addElement('hidden', 'id', $this->_customdata->config->id);
+		$mform->addElement('hidden', 'id', $this->_customdata->report->id);
 		
         $this->add_action_buttons(true, get_string('add'));
     }

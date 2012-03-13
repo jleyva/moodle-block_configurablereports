@@ -280,7 +280,7 @@ abstract class report_base {
 	
 	// Returns a report object 	
 	function create_report(){
-		global $DB, $CFG;
+		global $USER, $COURSE;
 		
 		$finalelements = $this->get_elements_by_conditions();
 				
@@ -297,57 +297,34 @@ abstract class report_base {
 		$orderingdata = array();
 		$compclass = $this->get_component('ordering');
 		foreach($compclass->get_plugins() as $plugclass){
-		    if (!$plugclass->sql) {
-		        continue;
-		    }
-		    foreach($plugclass->get_instances as $order){
-				$sqlorder = $compclass->execute($order);
+// 		    // TODO: Need more info on the SQL var
+// 		    if (!$plugclass->sql) {
+// 		        continue;
+// 		    }
+		    foreach($plugclass->get_instances() as $order){
+				$sqlorder = $plugclass->execute($order);
 			}
 		}
 				
 		// COLUMNS - FIELDS
-		$columns = $this->get_component('columns');
+		$colcomp = $this->get_component('columns');
 		
-		$rows = $this->get_rows($finalelements,$sqlorder);			
+		$rows = $this->get_rows($finalelements, $sqlorder);			
 	
 		if(!$sqlorder && isset($classorder)){
 			$rows = $classorder->execute($rows,$orderingdata);
 		}
 	
 		$reporttable = array();
-		$tablehead = array();
-		$tablealign =array();
-		$tablesize = array();
-		$tablewrap = array();
-		$firstrow = true;
-	
-		if($rows){
-			foreach($rows as $r){
-				$tempcols = array();
-				foreach($columns as $c){
-					require_once($CFG->dirroot.'/blocks/configurable_reports/components/columns/'.$c['pluginname'].'/plugin.class.php');
-					$classname = 'plugin_'.$c['pluginname'];
-					if(!isset($pluginscache[$classname])){
-						$class = new $classname($this->config,$c);
-						$pluginscache[$classname] = $class;
-					}
-					else{
-						$class = $pluginscache[$classname];
-					}
-					
-					$tempcols[] = $class->execute($c['formdata'],$r,$this->currentuser,$this->currentcourseid,$this->starttime, $this->endtime);
-					if($firstrow){
-						$tablehead[] = $class->summary($c['formdata']);
-						list($align,$size,$wrap) = $class->colformat($c['formdata']);
-						$tablealign[] = $align;
-						$tablesize[] = $size;
-						$tablewrap[] = $wrap;
-					}
-				
-				}
-				$firstrow = false;
-				$reporttable[] = $tempcols;
+		foreach($rows as $row){
+			foreach($colcomp->get_plugins() as $plugclass){
+			    $tempcols = array();
+			    foreach($plugclass->get_instances() as $column){			         
+				    $tempcols[] = $plugclass->execute($USER, $COURSE->id, $column, $row);
+			    }
+			    $reporttable[] = $tempcols;
 			}
+			
 		}
 		
 		// EXPAND ROWS
@@ -360,19 +337,18 @@ abstract class report_base {
 			$nrows = 0;
 			$mrowsi = array();
 						
-			foreach($row as $key=>$cell){
-				if(!is_array($cell)){
+			foreach($row as $key => $cell){
+				if (!is_array($cell)) {
 					$col[] = $cell;				
-				}
-				else{
+				} else {
 					$multiple = true;
 					$nrows = count($cell);
 					$mrowsi[] = $key;
 				}				
 			}
-			if($multiple){
+			if ($multiple) {
 				$newrows = array();
-				for($i=0;$i<$nrows;$i++){
+				for($i=0; $i<$nrows; $i++){
 					$newrows[$i] = $row;
 					foreach($mrowsi as $index){
 						$newrows[$i][$index] = $row[$index][$i];
@@ -380,8 +356,7 @@ abstract class report_base {
 				}
 				foreach($newrows as $r)
 					$finaltable[] = $r;
-			}
-			else{
+			} else {
 				$finaltable[] = $col;
 			}
 		}
@@ -392,7 +367,6 @@ abstract class report_base {
 		$this->finalreport->table = $table;
 		
 		return true;
-	
 	}
 	
 	function add_jsordering(){
@@ -423,7 +397,7 @@ abstract class report_base {
 	            $table->wrap[] = $wrap;
 	        }
 	    }
-	    if (isset($config)) {
+	    if (!empty($config)) {
 	        $table->class = $config->class;
 	        $table->width = $config->tablewidth;
 	        $table->tablealign = $config->tablealign;
@@ -436,7 +410,7 @@ abstract class report_base {
 	
 	function print_using_template(){
 	    $compclass = $this->get_component('template');
-	    if (!isset($compclass->config) || !$compclass->config->enabled) {
+	    if (empty($compclass->config) || !$compclass->config->enabled) {
 	        return false;
 	    }
 	    

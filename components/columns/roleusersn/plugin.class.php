@@ -26,17 +26,8 @@ require_once($CFG->dirroot.'/blocks/configurable_reports/components/columns/plug
 
 class plugin_roleusersn extends columns_plugin{
 
-	function init(){
-		$this->fullname = get_string('roleusersn','block_configurable_reports');
-		$this->type = 'numeric';
-	}
-	
-	// data -> Plugin configuration data
-	// row -> Full course row c->id, c->fullname, etc...
-	function execute($data,$row,$user,$courseid,$starttime=0,$endtime=0){
-		$courseid = $row->id;
-		$context = get_context_instance(CONTEXT_COURSE,$courseid);
-		return count_role_users($data->roles,$context);
+	function execute($user, $courseid, $instance, $row, $starttime=0, $endtime=0){
+		return count_role_users($data->roles, context_course::instance($courseid));
 	}	
 	
 }

@@ -26,7 +26,7 @@ require_once($CFG->dirroot.'/blocks/configurable_reports/components/filters/plug
 
 class plugin_categories extends filters_plugin{
 	
-	function execute($finalelements, $data){
+	function execute($finalelements, $instance){
 		$filter = optional_param('filter_categories', 0, PARAM_INT);
 		if (!$filter) {
 			return $finalelements;

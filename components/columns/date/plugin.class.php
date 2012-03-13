@@ -26,21 +26,17 @@ require_once($CFG->dirroot.'/blocks/configurable_reports/components/columns/plug
 
 class plugin_date extends columns_plugin{
 
-	function init(){
-		$this->fullname = get_string('date','block_configurable_reports');
-		$this->type = 'undefined';
-	}
-	
-	// data -> Plugin configuration data
-	// row -> Complet course row c->id, c->fullname, etc...
-	function execute($data,$row,$user,$courseid,$starttime=0,$endtime=0){
-		$date = ($data->date == 'starttime')? $row->starttime: $row->endtime;
+	function execute($user, $courseid, $instance, $row, $starttime=0, $endtime=0){
+	    if(! ($data = $instance->configdata)){
+	        return '';
+	    }
+		$date = ($data->date == 'starttime') ? $row->starttime : $row->endtime;
 		
-		$format = (isset($data->dateformat))? $data->dateformat: '';
-		$format = ($data->dateformat == 'custom')? $data->customdateformat : $format;
-		$format = preg_replace('/[^a-zA-Z%]/i','', $format);
+		$format = isset($data->dateformat) ? $data->dateformat : '';
+		$format = ($data->dateformat == 'custom') ? $data->customdateformat : $format;
+		$format = preg_replace('/[^a-zA-Z%]/i', '', $format);
 		
-		return userdate($date,$format);
+		return userdate($date, $format);
 	}
 	
 }

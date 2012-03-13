@@ -25,16 +25,12 @@
 require_once($CFG->dirroot.'/blocks/configurable_reports/components/columns/plugin.class.php');
 
 class plugin_coursestats extends columns_plugin{
-
-	function init(){
-		$this->fullname = get_string('coursestats','block_configurable_reports');
-		$this->type = 'undefined';
-	}
 	
-	// data -> Plugin configuration data
-	// row -> Complet user row c->id, c->fullname, etc...
-	function execute($data,$row,$user,$courseid,$starttime=0,$endtime=0){
-		global $DB, $CFG;
+	function execute($user, $courseid, $instance, $row, $starttime=0, $endtime=0){
+	    if(! ($data = $instance->configdata)){
+	        return '';
+	    }
+		global $DB;
 		
 		$stat = '--';
 					
@@ -80,7 +76,7 @@ class plugin_coursestats extends columns_plugin{
 								$extrasql = " ORDER BY timeend DESC LIMIT 1";
 		}
 		$sql = "SELECT $total as total FROM {stats_daily} WHERE stattype = ? AND courseid = ?";
-		$params = array($stattype,$row->id);
+		$params = array($stattype, $row->id);
 		
 		if($starttime and $endtime){
 			$starttime = usergetmidnight($starttime) + 24*60*60;

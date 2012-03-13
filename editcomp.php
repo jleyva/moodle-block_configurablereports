@@ -58,7 +58,6 @@ $editurl = new moodle_url('/blocks/configurable_reports/editplugin.php', array('
 $PAGE->set_url($baseurl, $params);
 $PAGE->set_context($context);	
 $PAGE->set_pagelayout('incourse');
-$PAGE->requires->js('/blocks/configurable_reports/js/configurable_reports.js');
 	
 $reportclass = report_base::get($report);
 $compclass = $reportclass->get_component($comp);

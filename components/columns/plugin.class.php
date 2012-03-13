@@ -33,11 +33,13 @@ abstract class columns_plugin extends plugin_base{
     }
     
     function colformat($data){
-        $align = (isset($data->align)) ? $data->align : '';
-        $size = (isset($data->size)) ? $data->size : '';
-        $wrap = (isset($data->wrap)) ? $data->wrap : '';
+        $align = isset($data->align) ? $data->align : '';
+        $size  = isset($data->size)  ? $data->size : '';
+        $wrap  = isset($data->wrap)  ? $data->wrap : '';
         return array($align, $size, $wrap);
     }
+    
+    abstract function execute($user, $courseid, $instance, $row);
 }
 
 ?>

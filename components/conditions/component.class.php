@@ -72,10 +72,13 @@ class component_conditions extends component_base{
 	
 	function evaluate_expression($instances){
 	    global $CFG;
+	    if(!$this->config || ! ($expression = $this->config->conditionexpr)){
+	        return false;
+	    }
 	    
 	    require_once($CFG->dirroot.'/blocks/configurable_reports/components/conditions/evalwise.class.php');
 	    
-	    $logic = trim(strtolower($this->config->conditionexpr));
+	    $logic = trim(strtolower($expression));
 	    $logic = substr($logic, 0, count($instances) * 10);
 	    $logic = str_replace(array('or','and','not'), array('+','*','-'), $logic);
 	    $logic = preg_replace('/[^\*c\d\s\+\-()]/i', '', $logic);

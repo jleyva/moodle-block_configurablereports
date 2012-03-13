@@ -26,20 +26,16 @@ require_once($CFG->dirroot.'/blocks/configurable_reports/components/columns/plug
 
 class plugin_usermodactions extends columns_plugin{
 
-	function init(){
-		$this->fullname = get_string('usermodactions','block_configurable_reports');
-		$this->type = 'undefined';
-	}
-	
-	// data -> Plugin configuration data
-	// row -> Complet user row c->id, c->fullname, etc...
-	function execute($data,$row,$user,$courseid,$starttime=0,$endtime=0){
-		global $DB, $CFG;
+	function execute($user, $courseid, $instance, $row, $starttime=0, $endtime=0){
+	    if(! ($data = $instance->configdata)){
+	        return '';
+	    }
+		global $DB;
 		
 		$sql = "SELECT COUNT('x') AS numviews
               FROM {course_modules} cm                   
                    JOIN {log} l     ON l.cmid = cm.id
-             WHERE cm.id = $data->cmid AND l.userid = $row->id AND l.action LIKE 'view%'
+             WHERE cm.id = $data->cmid AND l.userid = $user->id AND l.action LIKE 'view%'
           GROUP BY cm.id";
 		if($views = $DB->get_record_sql($sql))
 			return $views->numviews;

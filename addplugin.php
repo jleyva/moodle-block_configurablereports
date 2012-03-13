@@ -96,6 +96,8 @@ if ($pluginclass->has_form()) {
 
 echo $OUTPUT->header();
 
+echo $OUTPUT->heading(get_string('report_'.$report->type, 'block_configurable_reports'));
+
 cr_print_tabs($reportclass, $comp);
 
 $editform->display();

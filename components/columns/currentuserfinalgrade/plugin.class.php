@@ -26,24 +26,14 @@ require_once($CFG->dirroot.'/blocks/configurable_reports/components/columns/plug
 
 class plugin_currentuserfinalgrade extends columns_plugin{
 
-	function init(){
-		$this->fullname = get_string('currentuserfinalgrade','block_configurable_reports');
-	}
-	
-	// data -> Plugin configuration data
-	// row -> Complet course row c->id, c->fullname, etc...
-	function execute($data,$row,$user,$courseid,$starttime=0,$endtime=0){
-		global $DB, $USER, $CFG;
-		
-		$courseid = $row->id;
+	function execute($user, $courseid, $instance, $row, $starttime=0, $endtime=0){
+		global $CFG;
 		require_once($CFG->libdir.'/gradelib.php');
 		require_once($CFG->dirroot.'/grade/querylib.php');
+
+		$grade = grade_get_course_grade($user->id, $courseid);
 		
-		if($grade = grade_get_course_grade($user->id, $courseid)){
-			return $grade->grade;
-		}
-		
-		return '';
+		return $grade ? $grade->grade : '';
 	}
 	
 }

@@ -47,8 +47,9 @@ class component_filters extends component_base{
 	}
 	
 	function print_to_report($return = false){
+	    global $CFG;
 	    $filters = $this->get_all_instances();
-	    if(!empty($filters)){
+	    if(empty($filters)){
 	        return;
 	    }
 	    require_once('filter_form.php');
@@ -61,7 +62,7 @@ class component_filters extends component_base{
             }
         }
         	
-        $filterform = new report_edit_form(null,$this);
+        $filterform = new filter_form(null, $this);
         $filterform->set_data($formdata);
     
         if($filterform->is_cancelled()){

@@ -38,14 +38,18 @@ class plugin_fuserfield extends filters_plugin{
 	    return true;
 	}
 	
-	function execute($finalelements,$data){
-		
-		$filter_fuserfield = optional_param('filter_fuserfield_'.$data->field,0,PARAM_RAW);		
+	function execute($finalelements, $instance){
+	    if(! ($data = $instance->configdata)){
+	        return $finalelements;
+	    }
+	    global $DB;
+		$filter_fuserfield = optional_param('filter_fuserfield_'.$data->field, 0, PARAM_RAW);	
+			
 		if($filter_fuserfield){
 			// addslashes is done in clean param
-			$filter = clean_param(base64_decode($filter_fuserfield),PARAM_CLEAN);
+			$filter = clean_param(base64_decode($filter_fuserfield), PARAM_CLEAN);
 			
-			if(strpos($data->field,'profile_') === 0){				
+			if (strpos($data->field,'profile_') === 0) {				
 				if($fieldid = $DB->get_field('user_info_field','id',array('shortname' => str_replace('profile_','', $data->field)))){
 				
 					list($usql, $params) = $DB->get_in_or_equal($finalelements);					
@@ -60,8 +64,7 @@ class plugin_fuserfield extends filters_plugin{
 						return $finalusersid;
 					}
 				}
-			}			
-			else{
+			} else {
 				list($usql, $params) = $DB->get_in_or_equal($finalelements);			
 				$sql = "$data->field = ? AND id $usql";
 				$params = array_merge(array($filter),$params);
@@ -70,6 +73,7 @@ class plugin_fuserfield extends filters_plugin{
 				}
 			}
 		}
+		
 		return $finalelements;
 	}
 	

@@ -45,8 +45,7 @@ abstract class ordering_plugin extends plugin_base{
     function has_form(){
         return true;
     }
-    
-	// data -> Plugin configuration data
+
 	function execute($instance){
 	    $data = $instance->configdata;
 		if($data->direction != 'asc' || $data->direction != 'desc'){

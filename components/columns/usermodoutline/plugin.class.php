@@ -26,11 +26,6 @@ require_once($CFG->dirroot.'/blocks/configurable_reports/components/columns/plug
 
 class plugin_usermodoutline extends columns_plugin{
 
-	function init(){
-		$this->fullname = get_string('usermodoutline','block_configurable_reports');
-		$this->type = 'undefined';
-	}
-	
 	function summary($instance){
 		global $DB;
 		// should be a better way to do this
@@ -43,10 +38,8 @@ class plugin_usermodoutline extends columns_plugin{
 		
 		return $data->columname;
 	}
-	
-	// data -> Plugin configuration data
-	// row -> Complet user row c->id, c->fullname, etc...
-	function execute($data,$row,$user,$courseid,$starttime=0,$endtime=0){
+
+	function execute($user, $courseid, $instance, $row, $starttime=0, $endtime=0){
 		global $DB, $CFG;
 		
 		$returndata = '';
@@ -79,6 +72,7 @@ class plugin_usermodoutline extends columns_plugin{
         		}
         	}
         }
+        
 		return '';
 	}
 	

@@ -25,31 +25,29 @@
 require_once($CFG->dirroot.'/blocks/configurable_reports/components/columns/plugin.class.php');
 
 class plugin_categoryfield extends columns_plugin{
-
-	function init(){
-		$this->fullname = get_string('categoryfield','block_configurable_reports');
-		$this->type = 'undefined';
-	}
 	
-	// data -> Plugin configuration data
-	// row -> Complet course row c->id, c->fullname, etc...
-	function execute($data,$row,$user,$courseid,$starttime=0,$endtime=0){
+	function execute($user, $courseid, $instance, $row, $starttime=0, $endtime=0){
+	    if(! ($data = $instance->configdata)){
+	        return '';
+	    }
 		global $DB;
 		
-		if(isset($row->{$data->column})){
+		$column = $row->{$data->column};
+		
+		if(isset($column)){
 			switch($data->column){
-				case 'timemodified': 	$row->{$data->column} = ($row->{$data->column})? userdate($row->{$data->column}): '--';
-									break;
+				case 'timemodified': 	
+				    $column = ($column) ? userdate($column) : '--';
+					break;
 				case 'visible':
-									$row->{$data->column} = ($row->{$data->column})? get_string('yes') : get_string('no');
-									break;
-									
+					$column = ($column) ? get_string('yes') : get_string('no');
+					break;
 				case 'parent':
-									$row->{$data->column} = $DB->get_field('course_categories','name',array('id' => $row->{$data->column}));
-									break;					
+					$column = $DB->get_field('course_categories','name',array('id' => $column));
+					break;					
 			}
 		}
-		return (isset($row->{$data->column}))? $row->{$data->column} : '';
+		return (isset($column)) ? $column : '';
 	}
 	
 }

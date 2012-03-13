@@ -38,9 +38,12 @@ class plugin_fcoursefield extends filters_plugin{
 	    return true;
 	}
 	
-	function execute($finalelements,$data){
+	function execute($finalelements, $instance){
+	    if(! ($data = $instance->configdata)){
+	        return $finalelements;
+	    }
+		$filter_fcoursefield = optional_param('filter_fcoursefield_'.$data->field, 0, PARAM_RAW);		
 		
-		$filter_fcoursefield = optional_param('filter_fcoursefield_'.$data->field,0,PARAM_RAW);		
 		if($filter_fcoursefield){
 			// addslashes is done in clean param
 			$filter = clean_param(base64_decode($filter_fcoursefield),PARAM_CLEAN);
@@ -51,6 +54,7 @@ class plugin_fcoursefield extends filters_plugin{
 				$finalelements = array_keys($elements);
 			}
 		}
+		
 		return $finalelements;
 	}
 	

@@ -23,16 +23,9 @@
   */ 
 
 require_once($CFG->dirroot.'/blocks/configurable_reports/components/columns/plugin.class.php');
-
+//TODO: Requires a lot more integrated API work
 class plugin_reportcolumn extends columns_plugin{
 
-	var $reportcache = array();
-
-	function init(){
-		$this->fullname = get_string('reportcolumn','block_configurable_reports');
-		$this->type = 'undefined';
-	}
-	
 	function get_user_reports(){
 		global $DB, $USER;
 		
@@ -99,7 +92,7 @@ class plugin_reportcolumn extends columns_plugin{
 	
 	// data -> Plugin configuration data
 	// row -> Complet course/user row c->id, c->fullname, etc...
-	function execute($data,$row,$user,$courseid,$starttime=0,$endtime=0){
+	function execute($user, $courseid, $instance, $row, $starttime=0, $endtime=0){
 		global $DB, $CFG;
 		
 		if(! $report = $DB->get_record('block_configurable_reports_report',array('id' => $data->reportid)))
