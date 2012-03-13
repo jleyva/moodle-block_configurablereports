@@ -22,17 +22,9 @@
   * @date: 2009
   */
 
-require_once($CFG->dirroot.'/blocks/configurable_reports/components/plugin.class.php');
+require_once($CFG->dirroot.'/blocks/configurable_reports/components/filters/plugin.class.php');
 
-class plugin_categories extends plugin_base{
-	
-	function init(){
-		$this->fullname = get_string('filtercategories','block_configurable_reports');
-	}
-	
-	function summary($instance){
-		return get_string('filtercategories_summary','block_configurable_reports');
-	}
+class plugin_categories extends filters_plugin{
 	
 	function execute($finalelements, $data){
 		$filter = optional_param('filter_categories', 0, PARAM_INT);
@@ -50,33 +42,26 @@ class plugin_categories extends plugin_base{
 	}
 	
 	function print_filter(&$mform){
-		global $DB, $CFG;
+		global $DB;
 		
-		$filter_categories = optional_param('filter_categories',0,PARAM_INT);
-		
+		$filter_categories = optional_param('filter_categories', 0, PARAM_INT);
 
-		$reportclass = report_base::get($this->report);
-		
+		// TODO: ???
 		if($this->report->type != 'sql'){
-			$components = cr_unserialize($this->report->components);		
-			$conditions = $components['conditions'];
-					
-			$categorieslist = $reportclass->elements_by_conditions($conditions);
-		}
-		else{
-			$categorieslist = array_keys($DB->get_records('course'));
+		    $reportclass = report_base::get($this->report);
+			$catids = $reportclass->elements_by_conditions();
+		} else {
+		    $catids = $DB->get_fieldset_select('course_categories', 'id', '');
 		}
 		
-		$courseoptions = array();
-		$courseoptions[0] = get_string('choose');
+		if(empty($catids)){
+		    return;
+		}   
 		
-		if(!empty($categorieslist)){
-			list($usql, $params) = $DB->get_in_or_equal($categorieslist);
-			$categories = $DB->get_records_select('course_categories',"id $usql",$params);
-			
-			foreach($categories as $c){
-				$courseoptions[$c->id] = format_string($c->name);				
-			}
+		$courseoptions = array(0 => get_string('choose'));
+		$categories = $DB->get_records_list('course_categories', 'id', $catids);
+		foreach($categories as $cat){
+			$courseoptions[$cat->id] = format_string($cat->name);				
 		}
 		
 		$mform->addElement('select', 'filter_categories', get_string('category'), $courseoptions);

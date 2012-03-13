@@ -24,6 +24,18 @@ require_once($CFG->dirroot.'/blocks/configurable_reports/components/plugin.class
 
 abstract class filters_plugin extends plugin_base{
     
+    function instance_allow_multiple(){
+        return false;
+    }
+    
+    function get_fullname($instance){
+        return get_string('filter'.$this->get_name(), 'block_configurable_reports');
+    }
+    
+    function summary($instance){
+        return get_string('filter'.$this->get_name().'_summary', 'block_configurable_reports');
+    }
+    
     function sql_elements($finalelements, $filter){
         $filtername = "FILTER_".strtoupper($this->get_name());
         if(preg_match("/%%$filtername:([^%]+)%%/i", $finalelements, $output)){
@@ -31,4 +43,7 @@ abstract class filters_plugin extends plugin_base{
             return str_replace("%%$filtername:$output[1]%%", $replace, $finalelements);
         }
     }
+    
+    abstract function execute($finalelements, $instance);
+    
 }

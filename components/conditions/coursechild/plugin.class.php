@@ -22,28 +22,30 @@
   * @date: 2009
   */ 
 
-require_once($CFG->dirroot.'/blocks/configurable_reports/components/plugin.class.php');
+require_once($CFG->dirroot.'/blocks/configurable_reports/components/conditions/plugin.class.php');
 
 class plugin_coursechild extends plugin_base{
 	
 	function summary($instance){
+	    if(! ($data = $instance->configdata)){
+	        return '';
+	    }
 		global $DB;
+		
 		$course = $DB->get_record('course',array('id' => $data->courseid));
 		if($course)
 			return get_string('coursechild','block_configurable_reports').' '.(format_string($course->fullname));
 		return '';
 	}
 	
-	// data -> Plugin configuration data
-	function execute($data,$user,$courseid){
+	function execute($userid, $courseid, $instance){
+	    if(! ($data = $instance->configdata)){
+	        return '';
+	    }
 		global $DB;
-		
-		$finalcourses = array();
-		if($courses = $DB->get_records('course_meta',array('child_course' => $data->courseid))){
-			foreach($courses as $c)
-				$finalcourses[] = $c->parent_course;
-		}
-		return $finalcourses;
+
+		$params = array('child_course' => $data->courseid);
+		return $DB->get_records_menu('course_meta', $params, 'parent_course', 'id, parent_course');
 	}
 	
 }

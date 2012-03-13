@@ -42,13 +42,14 @@ class plugin_puserfield extends plugin_base{
 	    return true;
 	}
 	
-	function execute($userid, $context, $data){
+	function execute($userid, $context, $instance){
 		global $DB;
 		
 		if (! ($user = $DB->get_record('user',array('id' => $userid)))) {
 			return false;
 		}
 		
+		$data = $instance->configdata;
 		if (strpos($data->field,'profile_') === 0) {
 		    $tables = '{user_info_data} d ,{user_info_field} f';
 		    $columns = 'd.*, f.shortname, f.datatype';

@@ -32,6 +32,43 @@ class component_calcs extends component_base{
 		        'sum'     => 'plugin_sum',
 		);
 	}
+	
+	function print_to_report($reportclass, $return = false){
+	    $calcs = $this->get_all_instances();
+	    if (empty($calcs)) {
+	        return;
+	    }
+	    
+	    /* Organize table data by column */
+	    $rows = array();
+	    foreach($reportclass->finaltable as $row){
+	        foreach($row as $column => $cell){
+	            $rows[$column][] = $cell;
+	        }
+	    }
+	    
+	    /* Perform calculations on rows */
+	    $finalcalcs = array();
+	    foreach($this->get_plugins() as $plugclass){
+	        $plugname = $plugclass->get_name();
+	        foreach($plugclass->get_instances() as $calc){
+	            $column = $calc->configdata->column;
+	            if (isset($rows[$column])) {
+	                $finalcalcs[$column][$plugname] = $plugclass->execute($rows[$column]);
+	            }
+	        }
+	    }
+	    ksort($finalcalcs);
+	    
+	    $table = $reportclass->create_table(array_keys($finalcalcs));
+	    $tabletitle = get_string("columncalculations", "block_configurable_reports");
+	    $output = html_writer::tag('div', "<b>$tabletitle</b>", array('class' => 'centerpara'));
+	    $output .= html_writer::table($table);
+	    if ($return) {
+	        return $output;
+	    }
+	    echo $output;
+	}
 }
 
 ?>

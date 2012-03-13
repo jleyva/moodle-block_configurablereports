@@ -84,6 +84,10 @@ abstract class component_base {
 	    }
 	}
 	
+	/**
+	 * Return all plugin class objects for this component.
+	 * @return plugin_base    Plugins for this component
+	 */
 	function get_plugins(){
 	    if (!isset($this->plugins)) {
 	        $this->_load_plugins();

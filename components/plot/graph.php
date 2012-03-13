@@ -52,7 +52,7 @@ if ($courseid == SITEID) {
 }
 
 $reportclass = report_base::get($report);
-if (!$reportclass->check_permissions($USER->id, $context)){
+if (!$reportclass->check_permissions($context)){
 	print_error("No permissions");
 }
 

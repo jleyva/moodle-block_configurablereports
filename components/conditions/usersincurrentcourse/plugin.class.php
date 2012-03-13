@@ -22,24 +22,17 @@
   * @date: 2009
   */
 
-require_once($CFG->dirroot.'/blocks/configurable_reports/components/plugin.class.php');
+require_once($CFG->dirroot.'/blocks/configurable_reports/components/conditions/plugin.class.php');
 
-class plugin_usersincurrentcourse extends plugin_base{
-	
-	function init(){
-		$this->fullname = get_string('usersincurrentcourse','block_configurable_reports');
-	}
-		
-	function summary($instance){
-		return get_string('usersincurrentcourse_summary','block_configurable_reports');
-		
-	}
-	
-	// data -> Plugin configuration data
-	function execute($data,$user,$courseid){
+class plugin_usersincurrentcourse extends conditions_plugin{
+
+	function execute($userid, $courseid, $instance){
+	    if(! ($data = $instance->configdata)){
+	        return '';
+	    }
 		global $DB;
 	
-		$context = get_context_instance(CONTEXT_COURSE,$courseid);
+		$context = context_course::instance($courseid);
 		if($users = get_role_users($data->roles, $context, false, 'u.id')){
 			return array_keys($users);
 		}

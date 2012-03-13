@@ -22,7 +22,7 @@
   * @date: 2009
   */ 
 
-require_once($CFG->dirroot.'/blocks/configurable_reports/components/plugin.class.php');
+require_once($CFG->dirroot.'/blocks/configurable_reports/components/conditions/plugin.class.php');
 
 class plugin_coursecategory extends plugin_base{
 	
@@ -39,14 +39,14 @@ class plugin_coursecategory extends plugin_base{
 			return get_string('category').' '.get_string('top');
 		}
 	}
-	
-	// data -> Plugin configuration data
-	function execute($data,$user,$courseid){
+
+	function execute($userid, $courseid, $instance){
+	    if(! ($data = $instance->configdata)){
+	        return '';
+	    }
 		global $DB;
-		$courses = $DB->get_records('course',array('category' => $data->categoryid));
-		if($courses)
-			return array_keys($courses);
-		return array();
+
+		return $DB->get_fieldset_select('course', 'id', 'category = ?', array('category' => $data->categoryid));
 	}
 	
 }

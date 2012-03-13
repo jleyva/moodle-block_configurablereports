@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -22,9 +21,9 @@
   * @date: 2009
   */ 
 
-require_once($CFG->dirroot.'/blocks/configurable_reports/components/plugin.class.php');
+require_once($CFG->dirroot.'/blocks/configurable_reports/components/conditions/plugin.class.php');
 
-class plugin_ccoursefield extends plugin_base{
+class plugin_ccoursefield extends conditions_plugin{
 		
 	function summary($instance){
 	    if(! ($data = $instance->configdata)){
@@ -37,27 +36,24 @@ class plugin_ccoursefield extends plugin_base{
 	    return true;
 	}
 	
-	// data -> Plugin configuration data
-	function execute($data,$user,$courseid){
+	function execute($userid, $courseid, $instance){
+	    if(! ($data = $instance->configdata)){
+	        return '';
+	    }
 		global $DB;
-		
-		$data->value = $data->value;
-		$ilike = " LIKE "; // TODO - Use $DB->sql_like()
 	
 		switch($data->operator){
-			case 'LIKE % %': 	$sql = "$data->field $ilike ?";
-								$params = array("%$data->value%");
-								break;						
-			default:	$sql = "$data->field $data->operator ?";
-						$params = array($data->value);
+			case 'LIKE % %': 	
+				$params = array("%$data->value%");
+				$select = $DB->sql_like($data->field, reset($params));
+				break;						
+			default:
+			    $params = array($data->value);
+			    $select = "$data->field $data->operator ?";
+				break;
 		}
 		
-		$courses = $DB->get_records_select('course',$sql, $params);
-
-		if($courses)
-			return array_keys($courses);
-
-		return array();
+		return $DB->get_fieldset_select('course', 'id', $select, $params);
 	}
 	
 }

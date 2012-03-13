@@ -22,15 +22,15 @@
   * @date: 2009
   */
 
-require_once($CFG->dirroot.'/blocks/configurable_reports/components/plugin.class.php');
+require_once($CFG->dirroot.'/blocks/configurable_reports/components/permissions/plugin.class.php');
 
-class plugin_reportscapabilities extends plugin_base{
+class plugin_reportscapabilities extends permissions_plugin{
 	
 	function summary($instance){
 		return get_string('reportscapabilities_summary','block_configurable_reports');
 	}
 	
-	function execute($userid, $context, $data){
+	function execute($userid, $context, $instance){
 		return has_capability('moodle/site:viewreports', context_system::instance(), $userid);
 	}
 	

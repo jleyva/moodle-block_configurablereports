@@ -88,7 +88,7 @@ abstract class plugin_base{
 	 * @return boolean
 	 */
 	function can_create_instance(){
-	    return count($this->instances) > 1 ? true : $this->instance_allow_multiple();
+	    return count($this->instances) > 1 ? $this->instance_allow_multiple() : true;
 	}
 	
 	function get_instance($id){
@@ -180,10 +180,6 @@ abstract class plugin_base{
 	    
 	    $DB->delete_records('block_configurable_reports_plugin', array('id' => $instanceid));
 	    unset($this->instances[$instanceid]);
-	}
-	
-	function execute(){
-	    return;
 	}
 }
 

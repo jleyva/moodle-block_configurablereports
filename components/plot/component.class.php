@@ -34,6 +34,25 @@ class component_plot extends component_base{
 	function has_ordering(){
 	    return true;
 	}
+	
+	function print_to_report($return = false){
+	    $graphs = array();
+	    
+	    $reportdata = $this->report->finalreport->table->data;
+	    foreach($this->get_plugins() as $plotclass){
+	        foreach($plotclass->get_instances() as $plot){
+	            $imgsrc = $plotclass->execute($plot, $reportdata);
+	            $img = html_writer::empty_tag('img', array('src' => $imgsrc, 'alt' => $plot->name));
+	            $graphs[] = html_writer::tag('div', $img, array('class' => 'centerpara'));
+	        }
+	    }
+	    
+	    $output = implode('<br>', $graphs);
+	    if ($return) {
+	        return $output;
+	    }
+	    echo $output;
+	}
 }
 
 ?>

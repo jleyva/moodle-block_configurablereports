@@ -27,12 +27,14 @@ if (!defined('MOODLE_INTERNAL')) {
 require_once($CFG->dirroot.'/blocks/configurable_reports/components/plugin_form.class.php');
 
 abstract class calcs_plugin_form extends plugin_form {
-    function get_used_columns(){
-        $plugclass = $this->_customdata['plugclass'];
-        
+    function get_used_columns(){        
         $columnsused = array();
+        
+        $plugclass = $this->_customdata['plugclass'];
         foreach($plugclass->component->get_all_instances() as $instance){
-            $configdata = cr_unserialize($instance->configdata);
+            if (! ($configdata = cr_unserialize($instance->configdata))) {
+                continue;
+            }
             $columnsused[] = $configdata->column;
         }
         

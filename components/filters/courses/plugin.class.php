@@ -22,17 +22,9 @@
   * @date: 2009
   */
 
-require_once($CFG->dirroot.'/blocks/configurable_reports/components/plugin.class.php');
+require_once($CFG->dirroot.'/blocks/configurable_reports/components/filters/plugin.class.php');
 
-class plugin_courses extends plugin_base{
-	
-	function init(){
-		$this->fullname = get_string('filtercourses','block_configurable_reports');
-	}
-	
-	function summary($instance){
-		return get_string('filtercourses_summary','block_configurable_reports');
-	}
+class plugin_courses extends filters_plugin{
 	
 	function execute($finalelements, $data){
 	    $filter = optional_param('filter_courses', 0, PARAM_INT);
@@ -50,33 +42,25 @@ class plugin_courses extends plugin_base{
 	}
 	
 	function print_filter(&$mform){
-		global $DB, $CFG;
+		global $DB;
 		
-		$filter_courses = optional_param('filter_courses',0,PARAM_INT);
+		$filter_courses = optional_param('filter_courses', 0, PARAM_INT);
 		
-		$reportclassname = 'report_'.$this->report->type;	
-		$reportclass = new $reportclassname($this->report);
-		
-		if($this->report->type != 'sql'){
-			$components = cr_unserialize($this->report->components);		
-			$conditions = $components['conditions'];
-					
-			$courselist = $reportclass->elements_by_conditions($conditions);
+		if ($this->report->type != 'sql') {
+		    $reportclass = report_base::get($this->report);	
+			$courseids = $reportclass->elements_by_conditions();
+		} else {
+			$courseids = $DB->get_fieldset_select('course', 'id', '');
 		}
-		else{
-			$courselist = array_keys($DB->get_records('course'));
+				
+		if(empty($courseids)){
+		    return;
 		}
-		
-		$courseoptions = array();
-		$courseoptions[0] = get_string('choose');
-		
-		if(!empty($courselist)){
-			list($usql, $params) = $DB->get_in_or_equal($courselist);			
-			$courses = $DB->get_records_select('course',"id $usql",$params);
-			
-			foreach($courses as $c){
-				$courseoptions[$c->id] = format_string($c->fullname);				
-			}
+				
+		$courseoptions = array(0 => get_string('choose'));
+		$courses = $DB->get_records_list('course', 'id', $courseids);
+		foreach($courses as $course){
+			$courseoptions[$course->id] = course_format_name($course->fullname);				
 		}
 		
 		$mform->addElement('select', 'filter_courses', get_string('course'), $courseoptions);

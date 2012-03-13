@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -16,24 +15,31 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /** Configurable Reports
-  * A Moodle block for creating customizable reports
-  * @package blocks
-  * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
-  * @date: 2009
-  */
+ * A Moodle block for creating customizable reports
+ * @package blocks
+ * @author: Nick Koeppen
+ */
 
-require_once($CFG->dirroot.'/blocks/configurable_reports/components/permissions/plugin.class.php');
+if (!defined('MOODLE_INTERNAL')) {
+    die('Direct access to this script is forbidden.');    ///  It must be included from a Moodle page
+}
 
-class plugin_anyone extends permissions_plugin{
+require_once($CFG->libdir.'/formslib.php');
 
-	function summary($instance){
-		return get_string('anyone_summary','block_configurable_reports');
-	}
-	
-	function execute($userid, $context, $instance){
-		return true;
-	}
-	
+class filter_form extends moodleform {
+    function definition() {
+        global $DB, $USER, $CFG;
+
+        $mform =& $this->_form;
+
+        $mform->addElement('header', 'general', get_string('filter', 'block_configurable_reports'));
+
+		$this->_customdata->add_form_elements($mform);
+		
+		$mform->addElement('hidden', 'id', $this->_customdata->config->id);
+		
+        $this->add_action_buttons(true, get_string('add'));
+    }
 }
 
 ?>

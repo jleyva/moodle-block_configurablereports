@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -22,43 +21,40 @@
   * @date: 2009
   */ 
 
-require_once($CFG->dirroot.'/blocks/configurable_reports/components/plugin.class.php');
+require_once($CFG->dirroot.'/blocks/configurable_reports/components/conditions/plugin.class.php');
 
-class plugin_parentcategory extends plugin_base{
-	
-	function init(){
-		$this->fullname = get_string('parentcategory','block_configurable_reports');
-		$this->type = 'text';
-	}
+class plugin_parentcategory extends conditions_plugin{
 	
 	function summary($instance){
+	    if(! ($data = $instance->configdata)){
+	        return '';
+	    }
 		global $DB;
 		
-		$cat = $DB->get_record('course_categories',array('id' => $data->categoryid));
-		if($cat)
+		if ($cat = $DB->get_record('course_categories', array('id' => $data->categoryid))) {
 			return format_string(get_string('category').' '.$cat->name);
-		else
+		} else {
 			return get_string('category').' '.get_string('top');
+		}
 	}
 	
-	// data -> Plugin configuration data
-	function execute($data,$user,$courseid){
+	function execute($userid, $courseid, $instance){
+	    if(! ($data = $instance->configdata)){
+	        return '';
+	    }
 		global $DB, $CFG;
-		
 		require_once($CFG->dirroot.'/course/lib.php');
 		
-		if(isset($data->includesubcats)){
-			if($category = $DB->get_record('course_categories',array('id' => $data->categoryid)))				
+		if (isset($data->includesubcats)) {
+			if ($category = $DB->get_record('course_categories', array('id' => $data->categoryid))) {				
 				make_categories_list($options, $parents, '', 0, $category);
-			else
+			} else {
 				make_categories_list($options, $parents);
+			}
 			unset($options[$data->categoryid]);			
 			return array_keys($options);
-		}
-		else{
-			$categories = $DB->get_records('course_categories',array('parent' => $data->categoryid));
-			if($categories)
-				return array_keys($categories);
+		} else {
+			return $DB->get_fieldset_select('course_categories', 'id', 'parent = ?', array($data->categoryid));
 		}
 		
 		return array();

@@ -50,8 +50,9 @@ class userstats_form extends columns_plugin_form {
 		global $CFG;
 		$errors = parent::validation($data, $files);
 		
-		if(!isset($CFG->enablestats) || !$CFG->enablestats)
+		if (!isset($CFG->enablestats) || !$CFG->enablestats) {
 			$errors['stat'] = get_string('globalstatsshouldbeenabled','block_configurable_reports');
+		}
 		
 		return $errors;
 	}

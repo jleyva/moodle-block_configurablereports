@@ -22,9 +22,9 @@
   * @date: 2009
   */
 
-require_once($CFG->dirroot.'/blocks/configurable_reports/components/plugin.class.php');
+require_once($CFG->dirroot.'/blocks/configurable_reports/components/permissions/plugin.class.php');
 
-class plugin_roleincourse extends plugin_base{
+class plugin_roleincourse extends permissions_plugin{
 	
 	function summary($instance){
 		global $DB;
@@ -39,7 +39,9 @@ class plugin_roleincourse extends plugin_base{
 	    return true;
 	}
 	
-	function execute($userid, $context, $data){
+	function execute($userid, $context, $instance){
+	    $data = $instance->configdata;
+	    
 		$roles = get_user_roles($context, $userid);
 		if(!empty($roles)){
 			foreach($roles as $rol){

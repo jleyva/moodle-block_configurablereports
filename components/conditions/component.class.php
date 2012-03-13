@@ -69,6 +69,29 @@ class component_conditions extends component_base{
 	
 	    return $cond;
 	}
+	
+	function evaluate_expression($instances){
+	    global $CFG;
+	    
+	    require_once($CFG->dirroot.'/blocks/configurable_reports/components/conditions/evalwise.class.php');
+	    
+	    $logic = trim(strtolower($this->config->conditionexpr));
+	    $logic = substr($logic, 0, count($instances) * 10);
+	    $logic = str_replace(array('or','and','not'), array('+','*','-'), $logic);
+	    $logic = preg_replace('/[^\*c\d\s\+\-()]/i', '', $logic);
+	    
+	    $orig = $dest = array();
+	    for($j = count($instances); $j > 0; $j--){
+	        $orig[] = 'c'.$j;
+	        $dest[] = $j;
+	    }
+	    $logic = str_replace($orig,$dest,$logic);
+	    
+	    $m = new EvalWise();
+	    $m->set_data($instances);
+	    
+	    return $m->evaluate($logic);
+	}
 }
 
 ?>

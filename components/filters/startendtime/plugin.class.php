@@ -22,18 +22,10 @@
   * @date: 2009
   */
 
-require_once($CFG->dirroot.'/blocks/configurable_reports/components/plugin.class.php');
+require_once($CFG->dirroot.'/blocks/configurable_reports/components/filters/plugin.class.php');
 
-class plugin_startendtime extends plugin_base{
-	
-	function init(){
-		$this->fullname = get_string('startendtime','block_configurable_reports');
-	}
-	
-	function summary($instance){
-		return get_string('filterstartendtime_summary','block_configurable_reports');
-	}
-	
+class plugin_startendtime extends filters_plugin{
+
 	function execute($finalelements, $data){
 	
 		if($this->report->type != 'sql')

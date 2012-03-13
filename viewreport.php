@@ -49,7 +49,7 @@ if (isset($courseid)) {
 }
 	
 $reportclass = report_base::get($report);
-if (!$reportclass->check_permissions($USER->id, $context)){
+if (!$reportclass->check_permissions($context)){
 	print_error("badpermissions",'block_configurable_reports');
 }
 
@@ -83,6 +83,7 @@ $PAGE->set_title($reportname);
 $PAGE->set_heading($reportname);
 echo $OUTPUT->header();
 
+// Show configuration navigation when user has capability
 if(has_capability('block/configurable_reports:managereports', $context) ||
         (has_capability('block/configurable_reports:manageownreports', $context)) && $report->ownerid == $USER->id ){
     cr_print_tabs($reportclass, 'viewreport');

@@ -1,5 +1,4 @@
 ﻿<?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -37,34 +36,9 @@ class report_edit_form extends moodleform {
         $courseid = $this->_customdata['courseid'];
         $reporttype = $this->_customdata['type'];
 
-        $mform->addElement('header', 'general', get_string('general', 'form'));
-
-		$mform->addElement('text', 'name', get_string('name'));
-		if (!empty($CFG->formatstringstriptags)) {
-            $mform->setType('name', PARAM_TEXT);
-        } else {
-            $mform->setType('name', PARAM_CLEAN);
-        }
-        $mform->addRule('name', null, 'required', null, 'client');
+        $this->general_options();
 		
-		$mform->addElement('htmleditor', 'summary', get_string('summary'));
-        $mform->setType('summary', PARAM_RAW);
- 
-		for ($i=0; $i<=100; $i++) {
-			$pagoptions[$i] = $i;
-		}
-		$mform->addElement('select', 'pagination', get_string("pagination",'block_configurable_reports'), $pagoptions);
-		$mform->setDefault('pagination',0);
-		$mform->addHelpButton('pagination','pagination', 'block_configurable_reports');
-		
-		$mform->addElement('checkbox','jsordering',get_string('ordering','block_configurable_reports'),get_string('enablejsordering','block_configurable_reports'));
-		$mform->addHelpButton('jsordering','jsordering', 'block_configurable_reports');
-		
-		$mform->addElement('header', 'exportoptions', get_string('exportoptions', 'block_configurable_reports'));
-		$options = cr_get_export_plugins();
-		foreach($options as $key=>$val){
-			$mform->addElement('checkbox','export_'.$key,null,$val);
-		}
+		$this->export_options();
 
 		$mform->addElement('hidden', 'type', $reporttype);
 		if (isset($courseid)) {
@@ -77,6 +51,43 @@ class report_edit_form extends moodleform {
 		} else {
 		    $this->add_action_buttons(true, get_string('add'));
 		}
+    }
+    
+    function general_options(){
+        $mform =& $this->_form;
+        
+        $mform->addElement('header', 'general', get_string('general', 'form'));
+        
+        $mform->addElement('text', 'name', get_string('name'));
+        if (!empty($CFG->formatstringstriptags)) {
+            $mform->setType('name', PARAM_TEXT);
+        } else {
+            $mform->setType('name', PARAM_CLEAN);
+        }
+        $mform->addRule('name', null, 'required', null, 'client');
+        
+        $mform->addElement('htmleditor', 'summary', get_string('summary'));
+        $mform->setType('summary', PARAM_RAW);
+        
+        for ($i=0; $i<=100; $i++) {
+            $pagoptions[$i] = $i;
+        }
+        $mform->addElement('select', 'pagination', get_string("pagination",'block_configurable_reports'), $pagoptions);
+        $mform->setDefault('pagination',0);
+        $mform->addHelpButton('pagination','pagination', 'block_configurable_reports');
+        
+        $mform->addElement('checkbox','jsordering',get_string('ordering','block_configurable_reports'),get_string('enablejsordering','block_configurable_reports'));
+        $mform->addHelpButton('jsordering','jsordering', 'block_configurable_reports');
+    }
+    
+    function export_options(){
+        $mform =& $this->_form;
+        
+        $mform->addElement('header', 'exportoptions', get_string('exportoptions', 'block_configurable_reports'));
+        $options = cr_get_export_plugins();
+        foreach($options as $type => $label){
+            $mform->addElement('checkbox', 'export_'.$type, null, $label);
+        }
     }
 	
 	function validation($data, $files){

@@ -58,8 +58,7 @@ $PAGE->set_context($context);
 $PAGE->set_pagelayout('incourse');
 	
 $importform = new import_form(null, $courseid);
-if (($data = $importform->get_data()) &&
-        ($xml = $mform->get_file_content('userfile'))) {
+if (($data = $importform->get_data()) && ($xml = $importform->get_file_content('userfile'))) {
 	require_once($CFG->dirroot.'/lib/xmlize.php');
 	$data = xmlize($xml, 1, 'UTF-8');
 	
@@ -132,19 +131,19 @@ if($reports = cr_get_my_reports($USER->id, $context)){
 
         $commands = array();
         $commands[] = $OUTPUT->action_icon($editurl, $icons['edit'], null, $pixattr);
-        $url = $editurl;
+        $url = clone($editurl);
         $url->param('delete', 1);
         $commands[] = $OUTPUT->action_icon($url, $icons['delete'], null, $pixattr);
         if (!empty($r->visible)) {
-            $url = $editurl;
+            $url = clone($editurl);
             $url->param('hide', 1);
             $commands[] = $OUTPUT->action_icon($url, $icons['hide'], null, $pixattr);
         } else {
-            $url = $editurl;
+            $url = clone($editurl);
             $url->param('show', 1);
             $commands[] = $OUTPUT->action_icon($url, $icons['show'], null, $pixattr);
         }
-        $url = $editurl;
+        $url = clone($editurl);
         $url->param('duplicate', 1);
         $commands[] = $OUTPUT->action_icon($url, $icons['duplicate'], null, $pixattr);
         $commands[] = $OUTPUT->action_icon($exporturl, $icons['export'], null, $pixattr);
@@ -153,7 +152,7 @@ if($reports = cr_get_my_reports($USER->id, $context)){
         $download = '';
         if(!empty($r->export)){
             foreach (explode(',', $r->export) as $e) {
-                $url = $viewurl;
+                $url = clone($viewurl);
                 $url->params(array('download' => 1, 'format' => $e));
                 $icon = '<img src="'.$CFG->wwwroot.'/blocks/configurable_reports/export/'.$e.'/pix.gif">';
                 $download .= html_writer::tag('a', $icon.'&nbsp;'.strtoupper($e), array('href' => $url));

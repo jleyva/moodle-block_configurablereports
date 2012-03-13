@@ -22,16 +22,20 @@
   * @date: 2009
   */
 
-require_once($CFG->dirroot.'/blocks/configurable_reports/components/plugin.class.php');
+require_once($CFG->dirroot.'/blocks/configurable_reports/components/filters/plugin.class.php');
 
-class plugin_fuserfield extends plugin_base{
+class plugin_fuserfield extends filters_plugin{
 	
-	function init(){
-		$this->fullname = get_string('fuserfield','block_configurable_reports');
+	function get_fullname($instance){
+		return get_string('fuserfield', 'block_configurable_reports');
 	}
 	
 	function summary($instance){
-		return $data->field;
+		return $instance->configdata->field;
+	}
+	
+	function has_form(){
+	    return true;
 	}
 	
 	function execute($finalelements,$data){

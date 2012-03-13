@@ -37,6 +37,47 @@ class component_filters extends component_base{
 	function has_ordering(){
 	    return true;
 	}
+	
+	function add_form_elements(&$mform){
+	    foreach($this->get_plugins() as $plugin){
+	        foreach($plugin->get_instances() as $filter){
+	            $finalelements = $plugin->print_filter($mform, $filter);
+	        }
+	    }
+	}
+	
+	function print_to_report($return = false){
+	    $filters = $this->get_all_instances();
+	    if(!empty($filters)){
+	        return;
+	    }
+	    require_once('filter_form.php');
+	    
+        $formdata = new stdclass;
+        $request = array_merge($_POST, $_GET);
+        foreach($request as $key => $val){
+            if (strpos($key,'filter_') !== false) {
+                $formdata->{$key} = $val;
+            }
+        }
+        	
+        $filterform = new report_edit_form(null,$this);
+        $filterform->set_data($formdata);
+    
+        if($filterform->is_cancelled()){
+            $params = array('id' => $this->report->id);
+            redirect(new moodle_url('blocks/configurable_reports/viewreport.php', $params));
+        }
+        
+        ob_start();
+        $filterform->display();
+        $output = ob_get_clean();
+        
+        if ($return) {
+            return $output;
+        }
+        echo $output;
+	}
 }
 
 ?>

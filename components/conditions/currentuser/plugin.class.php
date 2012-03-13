@@ -22,23 +22,12 @@
   * @date: 2009
   */ 
 
-require_once($CFG->dirroot.'/blocks/configurable_reports/components/plugin.class.php');
+require_once($CFG->dirroot.'/blocks/configurable_reports/components/conditions/plugin.class.php');
 
-class plugin_currentuser extends plugin_base{
-	
-	function init(){
-		$this->fullname = get_string('currentuser','block_configurable_reports');
-	}
-		
-	function summary($instance){
-		return get_string('currentuser_summary','block_configurable_reports');
-		
-	}
-	
-	// data -> Plugin configuration data
-	function execute($data,$user,$courseid){
-		global $DB;
-		return array($user->id);
+class plugin_currentuser extends conditions_plugin{
+
+	function execute($userid, $courseid, $instance){
+		return array($userid);
 	}
 	
 }

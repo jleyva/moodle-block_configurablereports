@@ -29,6 +29,7 @@ if (!defined('MOODLE_INTERNAL')) {
 require_once($CFG->dirroot.'/blocks/configurable_reports/components/component_form.class.php');
 
 class columns_form extends component_form {
+    
     function get_component_name(){
         return 'columns';
     }
@@ -70,8 +71,9 @@ class columns_form extends component_form {
 	function validation($data, $files){
 		$errors = parent::validation($data, $files);
 		
-		if(!preg_match("/^\d+%?$/i", trim($data['tablewidth'])))
+		if (!preg_match("/^\d+%?$/i", trim($data['tablewidth']))) {
 			$errors['tablewidth'] = get_string('badtablewidth','block_configurable_reports');
+		}
 		
 		return $errors;
 	}

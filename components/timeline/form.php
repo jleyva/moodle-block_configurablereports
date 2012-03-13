@@ -42,7 +42,10 @@ class timeline_form extends component_form {
 
         $mform =& $this->_form;
 
-		$options = array('previous'=>get_string('previousdays', 'block_configurable_reports'), 'fixeddate'=>get_string('fixeddate', 'block_configurable_reports'));
+		$options = array(
+		    'previous'=>get_string('previousdays', 'block_configurable_reports'), 
+		    'fixeddate'=>get_string('fixeddate', 'block_configurable_reports')
+		);
 		$mform->addElement('select', 'timemode', get_string('timemode', 'block_configurable_reports'),$options);
 		$mform->setDefault('timemode','previous');
 		
@@ -75,7 +78,8 @@ class timeline_form extends component_form {
 		$mform->addRule('interval', null, 'numeric', null, 'client');
 		$mform->addRule('interval', null, 'nonzero', null, 'client');
 				
-		$mform->addElement('select', 'ordering', get_string('ordering', 'block_configurable_reports'),array('asc'=>'ASC','desc'=>'DESC'));
+		$options = array('asc'=>'ASC','desc'=>'DESC');
+		$mform->addElement('select', 'ordering', get_string('ordering', 'block_configurable_reports'), $options);
 				
         $this->add_action_buttons();
     }

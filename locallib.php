@@ -149,6 +149,7 @@ function cr_get_my_reports($userid, $context){
         return urldecode_recursive(unserialize($var));
     } 
   
+    //TODO: CHECK
  function cr_check_report_permissions($report,$userid,$context){
 	global $DB, $CFG;
 	
@@ -178,15 +179,13 @@ function cr_get_my_reports($userid, $context){
  }
 
  function cr_get_export_plugins(){
- 
 	$exportoptions = array();
 	$plugins = get_list_of_plugins('blocks/configurable_reports/export');
+	foreach($plugins as $p){
+		$exportoptions[$p] = get_string('export_'.$p,'block_configurable_reports');
+	}
 	
-	if($plugins)
-		foreach($plugins as $p){
-			$pluginoptions[$p] = get_string('export_'.$p,'block_configurable_reports');
-		}
-	return $pluginoptions;
+	return $exportoptions;
  } 
  
 function cr_print_tabs($reportclass, $currenttab){
@@ -382,6 +381,17 @@ function table_to_excel($filename,$table){
 
 function cr_get_string($identifier, $component, $a){
     
+}
+
+function cr_print_link($reportid){
+    global $OUTPUT;
+    
+    echo html_writer::start_tag('div', array('class' => 'centerpara'));
+    $url = new moodle_url('/blocks/configurable_reports/print_report.php', array('id' => $reportid));
+    $printstr = get_string('printreport', 'block_configurable_reports');
+    $icon = $OUTPUT->pix_icon('print', $printstr, 'block_configurable_reports');
+    echo html_writer::tag('a', "$icon $printstr $icon", array('href' => $url));
+    echo html_writer::end_tag('div');
 }
  
 ?>

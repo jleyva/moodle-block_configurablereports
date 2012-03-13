@@ -38,6 +38,8 @@ abstract class calcs_plugin extends plugin_base{
 		
 		return $options[$data->column];
 	}
+	
+	abstract function execute($rows);
 }
 
 ?>
