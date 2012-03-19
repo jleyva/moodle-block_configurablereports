@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -22,48 +21,55 @@
   * @date: 2009
   */
 
-function export_report($report){
-	global $DB, $CFG;
-    require_once($CFG->dirroot.'/lib/odslib.class.php');
+require_once($CFG->dirroot.'/lib/odslib.class.php');
+require_once($CFG->dirroot.'/blocks/configurable_reports/components/export/plugin.class.php');
 
-    $table = $report->table;
-	$matrix = array();
-	$filename = 'report_'.(time()).'.ods';
-	
-    if (!empty($table->head)) {
-        $countcols = count($table->head);
-        $keys=array_keys($table->head);
-        $lastkey = end($keys);
-        foreach ($table->head as $key => $heading) {
-                $matrix[0][$key] = str_replace("\n",' ',htmlspecialchars_decode(strip_tags(nl2br($heading))));
-        }
+class plugin_export_ods extends export_plugin{
+
+    function get_name(){
+        return 'ods';
     }
-
-    if (!empty($table->data)) {
-        foreach ($table->data as $rkey => $row) {
-            foreach ($row as $key => $item) {
-                $matrix[$rkey + 1][$key] = str_replace("\n",' ',htmlspecialchars_decode(strip_tags(nl2br($item))));
+    
+    function execute(report_base $reportclass){
+        $matrix = array();
+        
+        $table = $reportclass->config->table;
+        $filename = 'report_'.(time()).'.ods';
+         
+        if (!empty($table->head)) {
+            $countcols = count($table->head);
+            $keys=array_keys($table->head);
+            $lastkey = end($keys);
+            foreach ($table->head as $key => $heading) {
+                $matrix[0][$key] = str_replace("\n",' ',htmlspecialchars_decode(strip_tags(nl2br($heading))));
             }
         }
-    }
-
-    $downloadfilename = clean_filename($filename);
-    /// Creating a workbook
-    $workbook = new MoodleODSWorkbook("-");
-    /// Sending HTTP headers
-    $workbook->send($downloadfilename);
-    /// Adding the worksheet
-    $myxls =& $workbook->add_worksheet($filename);     
-    
-    foreach($matrix as $ri=>$col){
-        foreach($col as $ci=>$cv){
-            $myxls->write_string($ri,$ci,$cv);
+        
+        if (!empty($table->data)) {
+            foreach ($table->data as $rkey => $row) {
+                foreach ($row as $key => $item) {
+                    $matrix[$rkey + 1][$key] = str_replace("\n",' ',htmlspecialchars_decode(strip_tags(nl2br($item))));
+                }
+            }
         }
+        
+        $downloadfilename = clean_filename($filename);
+        /// Creating a workbook
+        $workbook = new MoodleODSWorkbook("-");
+        /// Sending HTTP headers
+        $workbook->send($downloadfilename);
+        /// Adding the worksheet
+        $myxls =& $workbook->add_worksheet($filename);
+        
+        foreach($matrix as $ri=>$col){
+            foreach($col as $ci=>$cv){
+                $myxls->write_string($ri,$ci,$cv);
+            }
+        }
+        
+        $workbook->close();
+        exit;
     }
-    
-    $workbook->close();
-    exit;
-
 
 }
 

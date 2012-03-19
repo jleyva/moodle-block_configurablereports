@@ -44,6 +44,24 @@ abstract class component_form extends moodleform {
         return $configdata ? cr_unserialize($configdata) : new stdClass();
     }
     
+//     function set_data($instance){
+//         $data = cr_unserialize($instance->configdata);
+    
+//         parent::set_data($data);
+//     }
+    
+//     function save_data($data, $instanceid = null){
+//         global $DB;
+    
+//         $plugclass = $this->_customdata['plugclass'];
+//         if (isset($instanceid) && ($instance = $plugclass->get_instance($instanceid))) {
+//             $instance->configdata = $data;
+//             $plugclass->update_instance($instance);
+//         } else {
+//             $plugclass->add_instance($data);
+//         }
+//     }
+    
     function save_data($data){
         global $DB;
         

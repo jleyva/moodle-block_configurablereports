@@ -30,6 +30,7 @@ function xmldb_block_configurable_reports_upgrade($oldversion) {
 
     $dbman = $DB->get_manager();
 
+    /* Restructured components and plugins to a subplugin-like API */
     if ($oldversion < 2012030800) {
         $table = new xmldb_table('block_configurable_reports_report');
         // Change report courseid to allow NULL (site-wide report)
@@ -55,6 +56,34 @@ function xmldb_block_configurable_reports_upgrade($oldversion) {
         }
         
         upgrade_plugin_savepoint(true, 2012030800, 'block', 'configurable_reports');
+    }
+    
+    /* Moved export formats into component/plugin API */
+    if ($oldversion < 2012031902) {
+        require_once($CFG->dirroot.'/blocks/configurable_reports/locallib.php');
+        // Move export configuration data to plugin table        
+        $exports = array();
+        $reports = $DB->get_records('block_configurable_reports_report');
+        foreach($reports as $id => $report){
+            $exports[$id] = explode(',', $report->export);
+        }
+        
+        $compdata = new stdClass();
+        $compdata->component = 'export';
+        foreach($exports as $reportid => $exports){
+            $compdata->reportid = $reportid;
+            $compdata->configdata = cr_serialize($exports);
+            $DB->insert_record('block_configurable_reports_component', $compdata);
+        }
+        
+        // Drop old "exports" CSV field
+        $table = new xmldb_table('block_configurable_reports_report');
+        $field = new xmldb_field('export', XMLDB_TYPE_CHAR, '255', null, false, false, null, 'pagination');
+        if($dbman->field_exists($table, $field)){
+            $dbman->drop_field($table, $field);
+        }
+        
+        upgrade_plugin_savepoint(true, 2012031902, 'block', 'configurable_reports');
     }
 
     return true;

@@ -105,7 +105,8 @@ if($reports = cr_get_my_reports($USER->id, $context)){
     $divider = '&nbsp;&nbsp;';
     $pixattr = array('class'=>'iconsmall');
     
-    foreach($reports as $r){
+    foreach($reports as $report){
+        $r = $report->config;
         $editurl->params(array('id' => $r->id, 'sesskey' => $USER->sesskey));
         $exporturl->param('id', $r->id);
         $viewurl->param('id', $r->id);
@@ -150,14 +151,11 @@ if($reports = cr_get_my_reports($USER->id, $context)){
         $editcell = implode($divider, $commands);
 
         $download = '';
-        if(!empty($r->export)){
-            foreach (explode(',', $r->export) as $e) {
-                $url = clone($viewurl);
-                $url->params(array('download' => 1, 'format' => $e));
-                $icon = '<img src="'.$CFG->wwwroot.'/blocks/configurable_reports/export/'.$e.'/pix.gif">';
-                $download .= html_writer::tag('a', $icon.'&nbsp;'.strtoupper($e), array('href' => $url));
-                $download .= $divider;
-            }
+        $exportclass = $report->get_component('export');
+        $exports = $exportclass->get_export_options();
+        if (!empty($exports)) {
+            $options = implode(' ', $exports);
+            $download = html_writer::tag('div', $options, array('class' => 'centerpara'));
         }
 
         $table->data[] = array($reportname, $coursename, $reporttype, $owner, $editcell, $download);

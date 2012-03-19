@@ -122,7 +122,9 @@
 }
 
 function cr_get_my_reports($userid, $context){
-	global $DB;
+	global $CFG, $DB;
+	
+	require_once($CFG->dirroot.'/blocks/configurable_reports/reports/report.class.php');
 
 	$params = array();
 	if ($context instanceof context_course) {
@@ -132,22 +134,28 @@ function cr_get_my_reports($userid, $context){
 		$params['ownerid'] = $userid;
 	}
 	
-	return $DB->get_records('block_configurable_reports_report', $params, 'name ASC');
+	$reports = array();
+	$dbrecords = $DB->get_records('block_configurable_reports_report', $params, 'name ASC');
+	foreach($dbrecords as $id => $dbrecord){
+	    $reports[$id] = report_base::get($dbrecord);
+	}
+	
+	return $reports;
 }
   
-    function cr_serialize($var){
-        if (!is_object($var)) {
-            return $var;
-        }
-        return serialize(urlencode_recursive($var));
+function cr_serialize($var){
+    if (!is_object($var) && !is_array($var)) {
+        return $var;
     }
-    
-    function cr_unserialize($var){
-        if (!is_string($var)) {
-            return $var;
-        }
-        return urldecode_recursive(unserialize($var));
-    } 
+    return serialize(urlencode_recursive($var));
+}
+
+function cr_unserialize($var){
+    if (!is_string($var)) {
+        return $var;
+    }
+    return urldecode_recursive(unserialize($var));
+} 
   
     //TODO: CHECK
  function cr_check_report_permissions($report,$userid,$context){
@@ -178,16 +186,6 @@ function cr_get_my_reports($userid, $context){
 	return $pluginoptions;
  }
 
- function cr_get_export_plugins(){
-	$exportoptions = array();
-	$plugins = get_list_of_plugins('blocks/configurable_reports/export');
-	foreach($plugins as $p){
-		$exportoptions[$p] = get_string('export_'.$p,'block_configurable_reports');
-	}
-	
-	return $exportoptions;
- } 
- 
 function cr_print_tabs($reportclass, $currenttab){
     $params = array('id' => $reportclass->config->id);
     $editurl = new moodle_url('/blocks/configurable_reports/editreport.php', $params);

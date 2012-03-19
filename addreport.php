@@ -64,20 +64,17 @@ if($editform->is_cancelled()){
     $data->courseid = $courseid;
     $data->visible = 1;
     $data->jsordering = isset($data->jsordering) ? 1 : 0;
-    
-    $methods = array();
-	foreach($data as $elname => $value){
-		if(strpos($elname, 'export_') !== false){
-			$methods[] = str_replace('export_', '', $elname);
-		}
-	}
-	$data->export = implode(',', $methods);
 
     $newid = $DB->insert_record('block_configurable_reports_report', $data);
     $logcourse = isset($courseid) ? $courseid : $SITE->id;
     add_to_log($logcourse, 'configurable_reports', 'report created', $baseurl, $data->name);
     
     $reportclass = report_base::get($newid);
+    
+    foreach($reportclass->get_form_components() as $compclass){
+        $compclass->save_report_formdata($data);
+    }
+    
     $complist = $reportclass->component_classes();
     reset($complist);
     redirect($editurl->out(false, array('id' => $newid, 'comp' => key($complist))));

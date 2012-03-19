@@ -37,8 +37,8 @@ class report_edit_form extends moodleform {
         $reporttype = $this->_customdata['type'];
 
         $this->general_options();
-		
-		$this->export_options();
+        
+        $this->component_options();
 
 		$mform->addElement('hidden', 'type', $reporttype);
 		if (isset($courseid)) {
@@ -80,13 +80,17 @@ class report_edit_form extends moodleform {
         $mform->addHelpButton('jsordering','jsordering', 'block_configurable_reports');
     }
     
-    function export_options(){
+    function component_options(){
         $mform =& $this->_form;
         
-        $mform->addElement('header', 'exportoptions', get_string('exportoptions', 'block_configurable_reports'));
-        $options = cr_get_export_plugins();
-        foreach($options as $type => $label){
-            $mform->addElement('checkbox', 'export_'.$type, null, $label);
+        $report = new stdClass();
+        $report->id = $this->_customdata['id'];
+        $report->courseid = $this->_customdata['courseid'];
+        $report->type = $this->_customdata['type'];
+        $reportclass = report_base::get($report);
+        
+        foreach($reportclass->get_form_components() as $comp => $compclass){
+            $compclass->report_form_elements($mform);
         }
     }
 	

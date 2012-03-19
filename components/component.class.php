@@ -100,11 +100,14 @@ abstract class component_base {
 	    global $DB;
 	    
 	    $instances = array();
-	    
 	    $search = array('reportid' => $this->report->id, 'component' => $this->get_name());
 	    $records = $DB->get_records('block_configurable_reports_plugin', $search, 'sortorder');
 	    foreach($records as $record){
-	        $instances[$record->sortorder] = $record;
+	        if ($this->has_ordering()) {
+	            $instances[$record->sortorder] = $record;
+	        } else {
+	            $instance[$record->id] = $record;
+	        }
 	    }
 	    
 	    return $instances;
@@ -164,6 +167,32 @@ abstract class component_base {
 	    $formclassname = $component.'_form';
 	    $customdata['compclass'] = $this;
 	    return new $formclassname($action, $customdata);
+	}
+	
+	function add_instance($configdata = null){
+	    global $DB;
+
+	    $instance = new stdClass();
+	    $instance->reportid = $this->report->id;
+	    $instance->component = $this->component->get_name();
+	    $instance->configdata = $configdata;
+	    $instance->configdata = cr_serialize($instance->configdata);
+	
+	    $DB->insert_record('block_configurable_reports_component', $instance);
+	}
+	
+	function update_instance($instance){
+	    global $DB;
+	    
+	    $instance->configdata = cr_serialize($instance->configdata);
+	    $DB->update_record('block_configurable_reports_component', $instance);
+	}
+	
+	function delete_instance($instanceid){
+	    global $DB;
+	     
+	    $DB->delete_records('block_configurable_reports_component', array('id' => $instanceid));
+	    unset($this->instances[$instanceid]);
 	}
 }
 

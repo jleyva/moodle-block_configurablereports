@@ -38,6 +38,7 @@ if (! ($report = $DB->get_record('block_configurable_reports_report', array('id'
     print_error('reportdoesnotexists', 'block_configurable_reports');
 }
 $courseid = $report->courseid;
+$logcourse = isset($courseid) ? $courseid : $SITE->id;
 
 $params = array();
 if (isset($courseid)) {
@@ -77,8 +78,8 @@ $PAGE->navbar->add($title);
 // Common actions
 if(($show || $hide) && confirm_sesskey()){
 	$DB->set_field('block_configurable_reports_report', 'visible', $show, array('id' => $report->id));
-	$action = ($show) ? 'shown' : 'hidden';	
-	add_to_log($report->courseid, 'configurable_reports', 'report '.$action, '/block/configurable_reports/editreport.php?id='.$report->id, $report->id);	
+	$action = ($show) ? 'shown' : 'hidden';
+	add_to_log($logcourse, 'configurable_reports', 'report '.$action, '/block/configurable_reports/editreport.php?id='.$report->id, $report->id);	
 	
 	redirect($manageurl);
 }
@@ -89,7 +90,7 @@ if ($duplicate && confirm_sesskey()) {
 	$newreport->name = get_string('copyasnoun').' '.$newreport->name;
 	$newreport->summary = $newreport->summary;
 	$newreportid = $DB->insert_record('block_configurable_reports_report', $newreport);
-	add_to_log($newreport->courseid, 'configurable_reports', 'report duplicated', '/block/configurable_reports/editreport.php?id='.$newreportid, $id);
+	add_to_log($logcourse, 'configurable_reports', 'report duplicated', '/block/configurable_reports/editreport.php?id='.$newreportid, $id);
 	
 	redirect($manageurl);
 }
@@ -105,7 +106,7 @@ if ($delete && confirm_sesskey()){
 		echo $OUTPUT->footer();
 		exit;
 	} else if ($DB->delete_records('block_configurable_reports_report', array('id'=>$report->id))) {
-		add_to_log($report->courseid, 'configurable_reports', 'report deleted', '/block/configurable_reports/editreport.php?id='.$report->id, $report->id);
+		add_to_log($logcourse, 'configurable_reports', 'report deleted', '/block/configurable_reports/editreport.php?id='.$report->id, $report->id);
 	
 	    redirect($manageurl);
 	}
@@ -113,32 +114,18 @@ if ($delete && confirm_sesskey()){
 
 $reportparams = array('id' => $id, 'type' => $report->type, 'courseid' => $courseid);
 $editform = new report_edit_form($PAGE->url, $reportparams);
-$export = explode(',', $report->export);
-if (!empty($export)) {
-	foreach($export as $e){
-		$report->{'export_'.$e} = 1;
-	}
-}
 $editform->set_data($report);
 	
 if ($editform->is_cancelled()) {
 	redirect($manageurl);
 	
 } else if ($data = $editform->get_data()) {
-    $methods = array();
-	foreach($data as $elname => $value){
-		if(strpos($elname, 'export_') !== false){
-			$methods[] = str_replace('export_', '', $elname);
-		}
+	foreach($reportclass->get_form_components() as $compclass){
+	    $compclass->save_report_formdata($data);
 	}
-	$data->export = implode(',', $methods);
 	
 	$DB->update_record('block_configurable_reports_report', $data);
-	$logcourse = isset($courseid) ? $courseid : $SITE->id;
 	add_to_log($logcourse, 'configurable_reports', 'edit', '/block/configurable_reports/editreport.php?id='.$id, $report->name);
-	
-    $complist = $reportclass->component_classes();
-    redirect($editurl->out(false, array('comp' => key($complist))));
 }
 
 /* Display page */
@@ -147,6 +134,10 @@ echo $OUTPUT->header();
 echo $OUTPUT->heading(get_string('report_'.$report->type, 'block_configurable_reports'));
 
 cr_print_tabs($reportclass, 'report'); 
+
+if ($data) {
+    echo $OUTPUT->heading(get_string('changessaved'), 3, 'notifysuccess');
+}
 
 $editform->display();
 

@@ -27,6 +27,14 @@ abstract class plugin_base{
     var $component;
     var $instances;    // Current plugin instances in report
 
+    /**
+     * Retrieve the plugin class object.
+     * @param unknown_type $report
+     * @param unknown_type $component
+     * @param unknown_type $plugin
+     * @param unknown_type $classname
+     * @return plugin_base                Plugin class object
+     */
 	static function get($report, $component, $plugin, $classname){
 	    global $CFG;
 	    

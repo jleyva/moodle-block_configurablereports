@@ -58,20 +58,17 @@ $PAGE->set_pagelayout('report');
 $PAGE->set_url('/blocks/configurable_reports/viewreport.php', array('id'=>$id));
 
 $reportclass->create_report();
-	
-$download = ($download && $format && strpos($report->export,$format.',') !== false) ? true : false;
 
-$action = ($download)? 'download' : 'view';
+$action = ($download) ? 'download' : 'view';
 $logcourse = isset($courseid) ? $courseid : $SITE->id;
 add_to_log($logcourse, 'configurable_reports', $action, '/block/configurable_reports/viewreport.php?id='.$id, $report->name);
 
-if($download){
-    $exportplugin = $CFG->dirroot.'/blocks/configurable_reports/export/'.$format.'/export.php';
-    if(file_exists($exportplugin)){
-        require_once($exportplugin);
-        export_report($reportclass->finalreport);
+if($download && $format){
+    $compclass = $reportclass->get_component('export');
+    $plugclass = $compclass->get_plugin($format);
+    if (!isset($plugclass)) {
+        $plugclass->execute($reportclass);
     }
-    die;
 }
 
 // if(has_capability('block/configurable_reports:managereports', $context) || (has_capability('block/configurable_reports:manageownreports', $context)) && $report->ownerid == $USER->id )
@@ -81,6 +78,9 @@ $reportname = format_string($report->name);
 $PAGE->navbar->add($reportname);
 $PAGE->set_title($reportname);
 $PAGE->set_heading($reportname);
+
+/* Display page */
+
 echo $OUTPUT->header();
 
 // Show configuration navigation when user has capability

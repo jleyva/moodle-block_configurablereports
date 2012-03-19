@@ -34,6 +34,13 @@ abstract class report_base {
 	var $starttime = 0;
 	var $endtime = 0;
 	
+	/**
+	 * Retrieve a report class based on report record or report id.
+	 * 
+	 * @param mixed $reportorid    report DB record (stdClass) or id (int)
+	 * @throws moodle_exception
+	 * @return report_base         report class object
+	 */
 	static function get($reportorid){
 	    global $CFG, $DB;
 	    
@@ -59,36 +66,55 @@ abstract class report_base {
 	    return format_string($this->config->name);
 	}
 	
+	function form_components(){
+	    return array(
+	        'export'    => 'component_export',
+	    );
+	}
+	
 	function component_classes(){
 	    return array(
-		        'columns'     => 'component_columns',
-		        'conditions'  => 'component_conditions',
-		        'ordering'    => 'component_ordering',
-		        'filters'     => 'component_filters',
-		        'permissions' => 'component_permissions',
-		        'calcs'       => 'component_calcs',
-		        'plot'        => 'component_plot',
-		        'template'    => 'component_template',
+	        'columns'     => 'component_columns',
+	        'conditions'  => 'component_conditions',
+	        'ordering'    => 'component_ordering',
+	        'filters'     => 'component_filters',
+	        'permissions' => 'component_permissions',
+	        'calcs'       => 'component_calcs',
+	        'plot'        => 'component_plot',
+	        'template'    => 'component_template',
 		);
+	}
+	
+	function all_components(){
+	    return array_merge($this->component_classes(), $this->form_components());
 	}
 	
 	function _load_components(){
 	    $this->components = array();
-	    foreach($this->component_classes() as $comp => $classname){
+	    
+	    foreach($this->all_components() as $comp => $classname){
 	        $this->components[$comp] = component_base::get($this->config, $comp, $classname);
 	    }
 	}
 	
-	function get_components(){
+	function get_components($includeformcomps = false){
 	    if (!isset($this->components)) {
 	        $this->_load_components();
 	    }
 	    
-	    return $this->components;
+	    return array_intersect_key($this->components, $this->component_classes());
+	}
+	
+	function get_form_components(){
+	    if (!isset($this->components)) {
+	        $this->_load_components();
+	    }
+	     
+	    return array_intersect_key($this->components, $this->form_components());
 	}
 	
 	function has_component($compname){
-	    return array_key_exists($compname, $this->component_classes());
+	    return array_key_exists($compname, $this->all_components());
 	}
 	
 	/**
@@ -100,9 +126,11 @@ abstract class report_base {
 	    if (!$this->has_component($compname)) {
 	        return null;
 	    }
-	    $components = $this->get_components();
+	    if (!isset($this->components)) {
+	        $this->_load_components();
+	    }
 	    
-	    return $components[$compname];
+	    return $this->components[$compname];
 	}
 	
 	/* Core component integration */
@@ -212,46 +240,6 @@ abstract class report_base {
 		}
 		
 		return false;
-	} 
-	
-	//TODO: CHECK
-	
-	function print_export_options($return = false){
-		global $DB, $CFG;
-		
-		$params = array('id' => $this->config->id);
-		
-		$request = array_merge($_POST,$_GET);
-		if($request){
-			foreach($request as $key=>$val){									
-				if(is_array($val)){
-					foreach($val as $k=>$v)
-						$wwwpath .= "&amp;{$key}[$k]=".$v;
-				}	
-				else{
-					$wwwpath .= "&amp;$key=".$val;
-				}
-			}	
-		}
-		
-		$viewurl = new moodle_url('/blocks/configurable_reports/viewreport.php', $params);
-		
-		$output = '';
-		if(!empty($this->config->export)){
-		    $export = explode(',', $this->config->export);
-			$output .= '<br /><div class="centerpara">';
-			$output .= get_string('downloadreport','block_configurable_reports').': ';				
-			foreach($export as $e)
-				if($e){
-					$output .= '<a href="'.$wwwpath.'&amp;download=1&amp;format='.$e.'"><img src="'.$CFG->wwwroot.'/blocks/configurable_reports/export/'.$e.'/pix.gif" alt="'.$e.'">&nbsp;'.(strtoupper($e)).'</a>&nbsp;';
-				}
-			$output .= '</div>';
-		}
-		
-		if($return){
-			return $output;
-		}
-		echo $output;
 	}
 	
 	function get_elements_by_conditions(){
@@ -482,7 +470,8 @@ abstract class report_base {
     	    
 			echo html_writer::end_tag('div');
 			
-			$this->print_export_options();
+			$compclass = $this->get_component('export');
+			$compclass->print_to_report();
 		} else {
 		    $norecords = get_string('norecordsfound', 'block_configurable_reports');
 		    echo html_writer::tag('div', $norecords, array('class' => 'centerpara'));

@@ -76,11 +76,13 @@ class component_template extends component_base{
 	        '##calculationstable##',
 	        '##pagination##'
 	    );
+	    $plotclass = $this->get_component('plot');
+	    $exportclass = $this->get_component('export');
 	    $replace = array(
 	        format_string($reportclass->config->name),
 	        format_text($reportclass->config->summary),
-	        $reportclass->print_graphs(true),
-	        $reportclass->print_export_options(true),
+	        $plotclass->print_to_report(true),
+	        $exportclass->print_to_report(true),
 	        $calculations,
 	        $pagination
         );
