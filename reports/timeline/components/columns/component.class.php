@@ -19,21 +19,18 @@
   * @package blocks
   * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
   * @date: 2009
-  */  
+  */
 
-require_once($CFG->dirroot.'/blocks/configurable_reports/components/ordering/plugin.class.php');
+require_once($CFG->dirroot.'/blocks/configurable_reports/components/columns/component.class.php');
 
-class plugin_categoryfieldorder extends ordering_plugin{
-
-    function get_columns(){
-        global $DB;
-    
-        $columns = array();
-        foreach($DB->get_columns('course_categories') as $dbfield){
-            $columns[$dbfield->name] = $dbfield->name;
-        }
-        return $columns;
-    }
+class component_columns_timeline extends component_columns{
+	
+	function plugin_classes(){
+	    return array(
+	        'date'         => 'plugin_date',
+	        'reportcolumn' => 'plugin_reportcolumn',
+	    );
+	}
 }
 
 ?>

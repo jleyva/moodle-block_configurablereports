@@ -24,6 +24,19 @@
 
 class report_courses extends report_base{
 
+    function component_classes(){
+        return array(
+                'columns'     => 'component_columns',
+                'conditions'  => 'component_conditions',
+                'ordering'    => 'component_ordering_course',
+                'filters'     => 'component_filters_course',
+                'permissions' => 'component_permissions',
+                'calcs'       => 'component_calcs',
+                'plot'        => 'component_plot',
+                'template'    => 'component_template',
+        );
+    }
+    
 	function get_all_elements(){
 		global $DB;
 		

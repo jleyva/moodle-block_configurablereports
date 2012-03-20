@@ -72,18 +72,7 @@ abstract class report_base {
 	    );
 	}
 	
-	function component_classes(){
-	    return array(
-	        'columns'     => 'component_columns',
-	        'conditions'  => 'component_conditions',
-	        'ordering'    => 'component_ordering',
-	        'filters'     => 'component_filters',
-	        'permissions' => 'component_permissions',
-	        'calcs'       => 'component_calcs',
-	        'plot'        => 'component_plot',
-	        'template'    => 'component_template',
-		);
-	}
+	abstract function component_classes();
 	
 	function all_components(){
 	    return array_merge($this->component_classes(), $this->form_components());
@@ -280,33 +269,24 @@ abstract class report_base {
 		    }
 		}
 		
-		// ORDERING - only execute if SQL = true?
+		// ORDERING
 		$sqlorder = '';
 		$orderingdata = array();
 		$compclass = $this->get_component('ordering');
 		foreach($compclass->get_plugins() as $plugclass){
-// 		    // TODO: Need more info on the SQL var
-// 		    if (!$plugclass->sql) {
-// 		        continue;
-// 		    }
 		    foreach($plugclass->get_instances() as $order){
 				$sqlorder = $plugclass->execute($order);
 			}
 		}
-				
-		// COLUMNS - FIELDS
-		$colcomp = $this->get_component('columns');
 		
-		$rows = $this->get_rows($finalelements, $sqlorder);			
+		// RETRIEVE DATA ROWS
+		$rows = $this->get_rows($finalelements, $sqlorder);
 	
-		//TODO: Figure out ordering
-		if(!$sqlorder && isset($classorder)){
-			$rows = $classorder->execute($rows,$orderingdata);
-		}
-	
+		// COLUMNS - FIELDS
+		$compclass = $this->get_component('columns');
 		$reporttable = array();
 		foreach($rows as $row){
-			foreach($colcomp->get_plugins() as $plugclass){
+			foreach($compclass->get_plugins() as $plugclass){
 			    if(! ($columns = $plugclass->get_instances())){
 			        continue;
 			    }

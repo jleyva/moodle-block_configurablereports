@@ -19,21 +19,19 @@
   * @package blocks
   * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
   * @date: 2009
-  */  
+  */
 
-require_once($CFG->dirroot.'/blocks/configurable_reports/components/ordering/plugin.class.php');
+require_once($CFG->dirroot.'/blocks/configurable_reports/components/plot/component.class.php');
 
-class plugin_categoryfieldorder extends ordering_plugin{
+class component_plot_sql extends component_plot{
 
-    function get_columns(){
-        global $DB;
-    
-        $columns = array();
-        foreach($DB->get_columns('course_categories') as $dbfield){
-            $columns[$dbfield->name] = $dbfield->name;
-        }
-        return $columns;
-    }
+	function plugin_classes(){
+	    return array(
+            'line' => 'plugin_line',
+            'pie'  => 'plugin_pie',
+	    );
+	}
+	
 }
 
 ?>

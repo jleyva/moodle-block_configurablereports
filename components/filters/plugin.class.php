@@ -46,4 +46,6 @@ abstract class filters_plugin extends plugin_base{
     
     abstract function execute($finalelements, $instance);
     
+    abstract function print_filter(&$mform, $instance);
+    
 }

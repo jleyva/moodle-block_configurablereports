@@ -48,7 +48,7 @@ abstract class plugin_base{
 	    global $CFG;
 	     
 	    $basedir = "$CFG->dirroot/blocks/configurable_reports";
-	    $custompath = "report/$report->type";
+	    $custompath = "reports/$report->type";
 	    $filepath = "components/$component/$plugin";
 	    $file = "plugin.class.php";
 	     

@@ -26,11 +26,7 @@ class component_filters extends component_base{
 
 	function plugin_classes(){
 	    return array(
-	            'categories'   => 'plugin_categories',
-	            'courses'      => 'plugin_courses',
-	            'fcoursefield' => 'plugin_fcoursefield',
-	            'fuserfield'   => 'plugin_fuserfield',
-	            'startendtime' => 'plugin_startendtime',
+	        'startendtime' => 'plugin_startendtime',
 	    );
 	}
 	

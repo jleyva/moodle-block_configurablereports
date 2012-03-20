@@ -27,11 +27,11 @@ require_once($CFG->dirroot.'/blocks/configurable_reports/components/filters/plug
 class plugin_courses extends filters_plugin{
 	
 	function execute($finalelements, $data){
-	    $filter = optional_param('filter_courses', 0, PARAM_INT);
-	    if (!$filter) {
+	    if (! ($filter = optional_param('filter_courses', 0, PARAM_INT))) {
 	        return $finalelements;
 	    }
 	
+	    //TODO: Check logic
 	    if ($this->report->type == 'sql' && $sqlelements = $this->sql_elements($finalelements, $filter)) {
 	        return $sqlelements;
 	    } else {
@@ -41,7 +41,7 @@ class plugin_courses extends filters_plugin{
 	    return $finalelements;
 	}
 	
-	function print_filter(&$mform){
+	function print_filter(&$mform, $instance){
 		global $DB;
 		
 		$filter_courses = optional_param('filter_courses', 0, PARAM_INT);
@@ -60,7 +60,7 @@ class plugin_courses extends filters_plugin{
 		$courseoptions = array(0 => get_string('choose'));
 		$courses = $DB->get_records_list('course', 'id', $courseids);
 		foreach($courses as $course){
-			$courseoptions[$course->id] = course_format_name($course->fullname);				
+			$courseoptions[$course->id] = course_format_name($course);				
 		}
 		
 		$mform->addElement('select', 'filter_courses', get_string('course'), $courseoptions);

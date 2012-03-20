@@ -22,7 +22,7 @@
   * @date: 2009
   */
 
-class component_ordering extends component_base{
+abstract class component_ordering extends component_base{
     
 	function plugin_classes(){
 	    return array(

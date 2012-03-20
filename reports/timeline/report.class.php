@@ -27,11 +27,11 @@ class report_timeline extends report_base{
     function component_classes(){
         return array(
                 'timeline'    => 'component_timeline',
-                'columns'     => 'component_columns',
+                'columns'     => 'component_columns_timeline',
                 'filters'     => 'component_filters',
                 'permissions' => 'component_permissions',
                 'calcs'       => 'component_calcs',
-                'plot'        => 'component_plot',
+                'plot'        => 'component_plot_timeline',
                 'template'    => 'component_template',
         );
     }

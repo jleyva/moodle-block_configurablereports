@@ -29,10 +29,10 @@ class report_sql extends report_base{
     function component_classes(){
         return array(
                 'customsql'   => 'component_customsql',
-                'filters'     => 'component_filters',
+                'filters'     => 'component_filters_sql',
                 'permissions' => 'component_permissions',
                 'calcs'       => 'component_calcs',
-                'plot'        => 'component_plot',
+                'plot'        => 'component_plot_sql',
                 'template'    => 'component_template',
         );
     }

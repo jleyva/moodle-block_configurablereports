@@ -44,7 +44,7 @@ abstract class component_base {
 	    global $CFG;
 	    
 	    $basedir = "$CFG->dirroot/blocks/configurable_reports";
-	    $custompath = "report/$report->type";
+	    $custompath = "reports/$report->type";
 	    $filepath = "components/$component";
         $file = "component.class.php";
 	    
@@ -68,8 +68,14 @@ abstract class component_base {
 	    return get_string($this->get_name(), 'block_configurable_reports');
 	}
 	
+	/**
+	 * Retrieve the component name for this class definition.
+	 * FORMAT REQUIREMENT: component_XXX_EXTENDEDNAME where XXX is the component name
+	 * 
+	 * @return string    Component name
+	 */
 	function get_name(){
-	    $pieces = explode('component_', get_class($this));
+	    $pieces = explode('_', get_class($this));
 	    return $pieces[1];
 	}
 	

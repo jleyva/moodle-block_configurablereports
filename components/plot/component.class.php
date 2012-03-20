@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -26,8 +25,7 @@ class component_plot extends component_base{
 
 	function plugin_classes(){
 	    return array(
-	            'line' => 'plugin_line',
-	            'pie'  => 'plugin_pie',
+            'pie'  => 'plugin_pie',
 	    );
 	}
 	

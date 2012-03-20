@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -27,11 +26,11 @@ require_once($CFG->dirroot.'/blocks/configurable_reports/components/filters/plug
 class plugin_categories extends filters_plugin{
 	
 	function execute($finalelements, $instance){
-		$filter = optional_param('filter_categories', 0, PARAM_INT);
-		if (!$filter) {
+		if (! ($filter = optional_param('filter_categories', 0, PARAM_INT))) {
 			return $finalelements;
 		}
 		
+		// TODO: Check logic
 		if ($this->report->type == 'sql' && $sqlelements = $this->sql_elements($finalelements, $filter)) {
 		    return $sqlelements;
 		} else {
@@ -41,7 +40,7 @@ class plugin_categories extends filters_plugin{
 		return $finalelements;
 	}
 	
-	function print_filter(&$mform){
+	function print_filter(&$mform, $instance){
 		global $DB;
 		
 		$filter_categories = optional_param('filter_categories', 0, PARAM_INT);

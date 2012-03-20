@@ -1,4 +1,5 @@
 <?php
+
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -19,21 +20,17 @@
   * @package blocks
   * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
   * @date: 2009
-  */  
+  */
 
-require_once($CFG->dirroot.'/blocks/configurable_reports/components/ordering/plugin.class.php');
+require_once($CFG->dirroot.'/blocks/configurable_reports/components/ordering/component.class.php');
 
-class plugin_categoryfieldorder extends ordering_plugin{
-
-    function get_columns(){
-        global $DB;
+class component_ordering_user extends component_ordering{
     
-        $columns = array();
-        foreach($DB->get_columns('course_categories') as $dbfield){
-            $columns[$dbfield->name] = $dbfield->name;
-        }
-        return $columns;
-    }
+	function plugin_classes(){
+	    return array(
+            'userfieldorder'     => 'plugin_userfieldorder',
+	    );
+	}
 }
 
 ?>

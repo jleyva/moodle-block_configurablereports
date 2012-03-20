@@ -77,65 +77,70 @@ class plugin_fuserfield extends filters_plugin{
 		return $finalelements;
 	}
 	
-	function print_filter(&$mform, $data){
+	function print_filter(&$mform, $instance){
 		global $DB, $CFG;
+		
+		if (! ($data = $instance->configdata)) {
+		    return false;
+		}
 		
 		$columns = $DB->get_columns('user');
 		$filteroptions = array();
 		$filteroptions[''] = get_string('choose');
 		
 		$usercolumns = array();
-		foreach($columns as $c)
-			$usercolumns[$c->name] = $c->name;
-			
-		if($profile = $DB->get_records('user_info_field'))
-			foreach($profile as $p)
-				$usercolumns['profile_'.$p->shortname] = $p->name;		
+		foreach($columns as $c){
+		    $usercolumns[$c->name] = $c->name;
+		}
+		
+		if ($profile = $DB->get_records('user_info_field')) {
+			foreach($profile as $p){
+				$usercolumns['profile_'.$p->shortname] = $p->name;	
+			}
+		}	
 			
 		if(!isset($usercolumns[$data->field]))
 			print_error('nosuchcolumn');
 			
 		$reportclassname = 'report_'.$this->report->type;	
 		$reportclass = new $reportclassname($this->report);
-				
-		$components = cr_unserialize($this->report->components);		
-		$conditions = $components['conditions'];
-		$userlist = $reportclass->get_elements_by_conditions($conditions);
-						
-		if(!empty($userlist)){
-			if(strpos($data->field,'profile_') === 0){	
-				if($field = $DB->get_record('user_info_field',array('shortname' => str_replace('profile_','', $data->field)))){
-					$selectname = $field->name;
-					
-					list($usql, $params) = $DB->get_in_or_equal($userlist);					
-					$sql = "SELECT DISTINCT(data) as data FROM {user_info_data} WHERE fieldid = ? AND userid $usql";					
-					$params = array_merge(array($field->id),$params);
-					
-					if($infodata = $DB->get_records_sql($sql,$params)){
-						$finalusersid = array();
-						foreach($infodata as $d){
-							$filteroptions[base64_encode($d->data)] = $d->data;
-						}						
-					}
-				}
+		$userlist = $reportclass->get_elements_by_conditions();			
+		if(empty($userlist)){
+		    return false;
+		}
+		
+		if(strpos($data->field,'profile_') === 0){	
+		    $field = $DB->get_record('user_info_field', array('shortname' => str_replace('profile_','', $data->field)));
+			if (!$field) {
+			    continue;
 			}
-			else{
-				$selectname = get_string($data->field);
-				
-				list($usql, $params) = $DB->get_in_or_equal($userlist);
-				$sql = "SELECT DISTINCT(".$data->field.") as ufield FROM {user} WHERE id $usql ORDER BY ufield ASC";
-				if($rs = $DB->get_recordset_sql($sql, $params)){
-					foreach($rs as $u){				
-						$filteroptions[base64_encode($u->ufield)] = $u->ufield;
-					}
-					$rs->close();
+			$selectname = $field->name;
+			
+			list($usql, $params) = $DB->get_in_or_equal($userlist);					
+			$sql = "SELECT DISTINCT(data) as data FROM {user_info_data} WHERE fieldid = ? AND userid $usql";					
+			$params = array_merge(array($field->id),$params);
+			
+			if($infodata = $DB->get_records_sql($sql,$params)){
+				$finalusersid = array();
+				foreach($infodata as $d){
+					$filteroptions[base64_encode($d->data)] = $d->data;
+				}						
+			}
+		} else {
+			$selectname = get_string($data->field);
+			
+			list($usql, $params) = $DB->get_in_or_equal($userlist);
+			$sql = "SELECT DISTINCT(".$data->field.") as ufield FROM {user} WHERE id $usql ORDER BY ufield ASC";
+			if($rs = $DB->get_recordset_sql($sql, $params)){
+				foreach($rs as $u){				
+					$filteroptions[base64_encode($u->ufield)] = $u->ufield;
 				}
+				$rs->close();
 			}
 		}
 		
 		$mform->addElement('select', 'filter_fuserfield_'.$data->field, $selectname, $filteroptions);
 		$mform->setType('filter_courses', PARAM_INT);
-		
 	}	
 }
 

@@ -28,44 +28,43 @@ class plugin_startendtime extends filters_plugin{
 
 	function execute($finalelements, $data){
 	
-		if($this->report->type != 'sql')
+		if ($this->report->type != 'sql') {
 			return $finalelements;
+	    }
 		
-		$filter_starttime = optional_param('filter_starttime',0,PARAM_RAW);
-		$filter_endtime = optional_param('filter_endtime',0,PARAM_RAW);
-		if(!$filter_starttime || ! $filter_endtime)
+		$filterstart = optional_param('filter_starttime',0,PARAM_RAW);
+		$filterend = optional_param('filter_endtime',0,PARAM_RAW);
+		if(!$filterstart || ! $filterend)
 			return $finalelements;
 			
-		$filter_starttime = make_timestamp($filter_starttime['year'],$filter_starttime['month'],$filter_starttime['day']);
-		$filter_endtime = make_timestamp($filter_endtime['year'],$filter_endtime['month'],$filter_endtime['day']);
+		$filterstart = make_timestamp($filterstart['year'], $filterstart['month'], $filterstart['day']);
+		$filterend = make_timestamp($filterend['year'], $filterend['month'], $filterend['day']);
 				
 		$operators = array('<','>','<=','>=');
 		
-		if(preg_match("/%%FILTER_STARTTIME:([^%]+)%%/i",$finalelements,
-$output)){
-			list($field,$operator) = split(':',$output[1]);		
+		if(preg_match("/%%FILTER_STARTTIME:([^%]+)%%/i", $finalelements, $output)){
+			list($field,$operator) = explode(':',$output[1]);		
 			if(!in_array($operator,$operators))
 				print_error('nosuchoperator');
-			$replace = ' AND '.$field.' '.$operator.' '.$filter_starttime;			
+			$replace = ' AND '.$field.' '.$operator.' '.$filterstart;			
 			$finalelements = str_replace('%%FILTER_STARTTIME:'.$output[1].'%%',$replace,$finalelements);
 		}			
 		
-		if(preg_match("/%%FILTER_ENDTIME:([^%]+)%%/i",$finalelements,
-$output)){
-			list($field,$operator) = split(':',$output[1]);
+		if(preg_match("/%%FILTER_ENDTIME:([^%]+)%%/i", $finalelements, $output)){
+			list($field,$operator) = explode(':',$output[1]);
 			if(!in_array($operator,$operators))
 				print_error('nosuchoperator');
-			$replace = ' AND '.$field.' '.$operator.' '.$filter_endtime;			
+			$replace = ' AND '.$field.' '.$operator.' '.$filterend;			
 			$finalelements = str_replace('%%FILTER_ENDTIME:'.$output[1].'%%',$replace,$finalelements);
 		}
 		
-		$finalelements = str_replace('%STARTTIME%%',$filter_starttime,$finalelements);
-		$finalelements = str_replace('%ENDTIME%%',$filter_endtime,$finalelements);
+		$finalelements = str_replace('%STARTTIME%%',$filterstart,$finalelements);
+		$finalelements = str_replace('%ENDTIME%%',$filterend,$finalelements);
 		
 		return $finalelements;
 	}
 	
-	function print_filter(&$mform){
+	function print_filter(&$mform, $instance){
 		global $DB, $CFG;
 		
         $mform->addElement('date_selector', 'filter_starttime', get_string('starttime', 'block_configurable_reports'));
