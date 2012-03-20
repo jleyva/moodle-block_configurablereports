@@ -27,13 +27,15 @@ require_once($CFG->dirroot.'/blocks/configurable_reports/components/conditions/p
 class plugin_currentusercourses extends conditions_plugin{
 	
 	function execute($userid, $courseid, $instance){
-		global $DB, $CFG;
+		global $CFG;
+		
 		require_once($CFG->libdir.'/enrollib.php');
 		
 		$mycourses = enrol_get_users_courses($userid);
 		if (empty($mycourses)) {
 		    return array();
 		}
+		
 		return array_keys($mycourses);
 	}
 	

@@ -26,24 +26,22 @@ if (!defined('MOODLE_INTERNAL')) {
     die('Direct access to this script is forbidden.');    ///  It must be included from a Moodle page
 }
 
+require_once($CFG->dirroot.'/course/lib.php');
 require_once($CFG->dirroot.'/blocks/configurable_reports/components/plugin_form.class.php');
 
 class coursecategory_form extends plugin_form {
+    
     function definition() {
-        global $DB, $USER, $CFG;
-
         $mform =& $this->_form;
 
-        $mform->addElement('header', '', get_string('coursefield','block_configurable_reports'), '');
+        $mform->addElement('header', 'plughead', get_string('coursefield','block_configurable_reports'), '');
 
 		$options = array(get_string('top'));
         $parents = array();
 		make_categories_list($options, $parents);
 		$mform->addElement('select', 'categoryid', get_string('category'), $options);
-				
-        // buttons
-        $this->add_action_buttons();
 
+        $this->add_action_buttons();
     }
 
 }

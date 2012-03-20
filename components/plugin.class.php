@@ -189,6 +189,25 @@ abstract class plugin_base{
 	    $DB->delete_records('block_configurable_reports_plugin', array('id' => $instanceid));
 	    unset($this->instances[$instanceid]);
 	}
+	
+	function move_instance($instanceid, $shift){
+	    global $DB;
+	    
+	    if (! ($instance = $this->get_instance($instanceid))) {
+	        return false;
+	    }
+	    $oldorder = $instance->sortorder;
+	    $neworder = $oldorder + $shift;
+	    $instances =& $this->component->get_all_instances();
+	    if (! ($swapped = $instances[$neworder])) {
+	        return false;
+	    }
+	    
+	    // Move this instance
+	    $DB->set_field('block_configurable_reports_plugin', 'sortorder', $neworder, array('id' => $instanceid));
+	    // Swap with another instance
+	    $DB->set_field('block_configurable_reports_plugin', 'sortorder', $oldorder, array('id' => $swapped->id));
+	}
 }
 
 ?>

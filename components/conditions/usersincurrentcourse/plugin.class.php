@@ -26,6 +26,10 @@ require_once($CFG->dirroot.'/blocks/configurable_reports/components/conditions/p
 
 class plugin_usersincurrentcourse extends conditions_plugin{
 
+    function has_form(){
+        return true;
+    }
+    
 	function execute($userid, $courseid, $instance){
 	    if(! ($data = $instance->configdata)){
 	        return '';

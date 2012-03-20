@@ -33,7 +33,7 @@ abstract class columns_plugin_form extends plugin_form {
         
         $mform = $this->_form;
         
-        $mform->addElement('header', '', get_string('columnandcellproperties','block_configurable_reports'), '');
+        $mform->addElement('header', 'commoncolopts', get_string('columnandcellproperties','block_configurable_reports'), '');
         
         $mform->addElement('text', 'name', get_string('name'));
         if (!empty($CFG->formatstringstriptags)) {

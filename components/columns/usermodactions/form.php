@@ -35,7 +35,7 @@ class usermodactions_form extends columns_plugin_form {
 
         $mform =& $this->_form;
 
-        $mform->addElement('header', '', get_string('usermodactions','block_configurable_reports'), '');
+        $mform->addElement('header', 'plughead', get_string('usermodactions','block_configurable_reports'), '');
 		
 		$columns = $DB->get_columns('user');
 		

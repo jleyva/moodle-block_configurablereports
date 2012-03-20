@@ -48,7 +48,7 @@ class plugin_courses extends filters_plugin{
 		
 		if ($this->report->type != 'sql') {
 		    $reportclass = report_base::get($this->report);	
-			$courseids = $reportclass->elements_by_conditions();
+			$courseids = $reportclass->get_elements_by_conditions();
 		} else {
 			$courseids = $DB->get_fieldset_select('course', 'id', '');
 		}

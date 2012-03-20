@@ -33,7 +33,7 @@ class average_form extends calcs_plugin_form {
         $plugclass = $this->_customdata['plugclass'];
         $reportclass = report_base::get($plugclass->report);
 		
-        $mform->addElement('header', '', get_string('average','block_configurable_reports'), '');
+        $mform->addElement('header', 'plughead', get_string('average','block_configurable_reports'), '');
         $options = $reportclass->get_column_options($this->get_used_columns());
         $mform->addElement('select', 'column', get_string('column','block_configurable_reports'), $options);
         

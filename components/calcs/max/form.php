@@ -33,7 +33,7 @@ class max_form extends calcs_plugin_form {
         $plugclass = $this->_customdata['plugclass'];
         $reportclass = report_base::get($plugclass->report);
 
-        $mform->addElement('header', '', get_string('max','block_configurable_reports'), '');
+        $mform->addElement('header', 'plughead', get_string('max','block_configurable_reports'), '');
         $options = $reportclass->get_column_options();
         $mform->addElement('select', 'column', get_string('column','block_configurable_reports'), $options);
     

@@ -35,7 +35,7 @@ class parentcategory_form extends plugin_form {
 		
         $mform =& $this->_form;
 
-        $mform->addElement('header', '', get_string('coursefield','block_configurable_reports'), '');
+        $mform->addElement('header', 'plughead', get_string('coursefield','block_configurable_reports'), '');
 
 		$options = array(get_string('top'));
         $parents = array();

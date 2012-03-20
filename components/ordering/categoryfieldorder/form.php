@@ -33,7 +33,7 @@ class categoryfieldorder_form extends ordering_plugin_form {
     function definition() {
         $mform =& $this->_form;
     
-        $mform->addElement('header', '', get_string('categoryfieldorder', 'block_configurable_reports'));
+        $mform->addElement('header', 'plughead', get_string('categoryfieldorder', 'block_configurable_reports'));
         
         $this->common_form_elements();
     

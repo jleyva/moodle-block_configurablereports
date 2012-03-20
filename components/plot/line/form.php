@@ -36,7 +36,7 @@ class line_form extends plot_plugin_form {
         $reportclass = report_base::get($plugclass->report);
         $options = $reportclass->get_column_options();
         
-		$mform->addElement('header', '', get_string('line','block_configurable_reports'), '');
+		$mform->addElement('header', 'plughead', get_string('line','block_configurable_reports'), '');
 
 		$mform->addElement('select', 'xaxis', get_string('xaxis','block_configurable_reports'), $options);
 		$mform->addRule('xaxis', null, 'required', null, 'client');

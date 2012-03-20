@@ -39,6 +39,10 @@ class plugin_coursecategory extends plugin_base{
 			return get_string('category').' '.get_string('top');
 		}
 	}
+	
+	function has_form(){
+	    return true;
+	}
 
 	function execute($userid, $courseid, $instance){
 	    if(! ($data = $instance->configdata)){

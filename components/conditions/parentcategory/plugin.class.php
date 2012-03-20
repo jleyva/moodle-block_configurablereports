@@ -38,6 +38,10 @@ class plugin_parentcategory extends conditions_plugin{
 		}
 	}
 	
+	function has_form(){
+	    return true;
+	}
+	
 	function execute($userid, $courseid, $instance){
 	    if(! ($data = $instance->configdata)){
 	        return '';

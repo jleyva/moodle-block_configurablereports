@@ -38,6 +38,10 @@ class plugin_coursechild extends plugin_base{
 		return '';
 	}
 	
+	function has_form(){
+	    return true;
+	}
+	
 	function execute($userid, $courseid, $instance){
 	    if(! ($data = $instance->configdata)){
 	        return '';

@@ -75,12 +75,13 @@ if ( !($instance = $pluginclass->get_instance($instance->id))){
 }
 
 if ($delete && confirm_sesskey()) {
-    $pluginclass->delete_instance($id);    //TODO
+    $pluginclass->delete_instance($id);
     
     redirect($returnurl);
 }
 if (($moveup || $movedown) && confirm_sesskey()){
-    $pluginclass->move_instance($id);      //TODO
+    $shift = ($moveup) ? -1 : 1;
+    $pluginclass->move_instance($id, $shift);
     
     redirect($returnurl);
 }

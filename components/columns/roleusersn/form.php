@@ -34,7 +34,7 @@ class roleusersn_form extends columns_plugin_form {
 
         $mform =& $this->_form;
 
-        $mform->addElement('header', '', get_string('roleusersn','block_configurable_reports'), '');
+        $mform->addElement('header', 'plughead', get_string('roleusersn','block_configurable_reports'), '');
 
 		$roles = $DB->get_records('role');
 		

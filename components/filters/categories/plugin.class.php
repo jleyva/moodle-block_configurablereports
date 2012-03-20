@@ -49,7 +49,7 @@ class plugin_categories extends filters_plugin{
 		// TODO: ???
 		if($this->report->type != 'sql'){
 		    $reportclass = report_base::get($this->report);
-			$catids = $reportclass->elements_by_conditions();
+			$catids = $reportclass->get_elements_by_conditions();
 		} else {
 		    $catids = $DB->get_fieldset_select('course_categories', 'id', '');
 		}

@@ -33,7 +33,7 @@ class reportcolumn_form extends columns_plugin_form {
         global $DB, $USER, $CFG;
 
         $mform =& $this->_form;
-        $mform->addElement('header', '', get_string('reportcolumn','block_configurable_reports'), '');
+        $mform->addElement('header', 'plughead', get_string('reportcolumn','block_configurable_reports'), '');
 
 		$reportid = optional_param('reportid',0,PARAM_INT);
 		if($actualrid = $this->_customdata['plugclass']->get_current_report($this->_customdata['report']))

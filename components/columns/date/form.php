@@ -34,7 +34,7 @@ class date_form extends columns_plugin_form {
 
         $mform =& $this->_form;
 
-        $mform->addElement('header', '', get_string('date','block_configurable_reports'), '');
+        $mform->addElement('header', 'plughead', get_string('date','block_configurable_reports'), '');
 		
 		$mform->addElement('select', 'date', get_string('date','block_configurable_reports'), array('starttime'=>get_string('starttime','block_configurable_reports'),'endtime'=>get_string('endtime','block_configurable_reports')));
 		

@@ -31,7 +31,6 @@ class block_configurable_reports extends block_list {
      **/
     function init() {
         $this->title = get_string('blockname', 'block_configurable_reports');
-        $this->version = 2010060101;  // YYYYMMDDXX
     }
    
     /**

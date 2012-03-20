@@ -72,7 +72,7 @@ class component_export extends component_base{
     }
     
     function print_to_report($return = false){
-        $label = get_string('downloadreport','block_configurable_reports');
+        $label = get_string('downloadreport', 'block_configurable_reports');
         $options = implode(' ', $this->get_export_options());
         $output = html_writer::tag('div', $label.': '.$options, array('class' => 'centerpara'));
         if($return){

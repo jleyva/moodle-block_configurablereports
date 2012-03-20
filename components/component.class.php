@@ -106,7 +106,7 @@ abstract class component_base {
 	        if ($this->has_ordering()) {
 	            $instances[$record->sortorder] = $record;
 	        } else {
-	            $instance[$record->id] = $record;
+	            $instances[$record->id] = $record;
 	        }
 	    }
 	    
@@ -117,6 +117,11 @@ abstract class component_base {
 	    return array_key_exists($plugname, $this->plugin_classes());
 	}
 	
+	/**
+	 * Retrieve the plugin object given a plugin name.
+	 * @param string $plugname         Plugin name
+	 * @return NULL|plugin_base        Plugin object
+	 */
 	function get_plugin($plugname){
 	    if (!$this->has_plugin($plugname)) {
 	        return null;

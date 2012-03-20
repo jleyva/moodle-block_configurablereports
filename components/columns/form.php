@@ -35,7 +35,7 @@ class columns_form extends component_form {
 
         $mform =& $this->_form;
 
-		$mform->addElement('header', '', get_string('reporttable','block_configurable_reports'), '');
+		$mform->addElement('header', 'plughead', get_string('reporttable','block_configurable_reports'), '');
 		
 		$mform->addElement('text', 'tablewidth', get_string('tablewidth','block_configurable_reports'));
         $mform->setType('tablewidth', PARAM_CLEAN);

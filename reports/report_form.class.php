@@ -56,7 +56,7 @@ class report_edit_form extends moodleform {
     function general_options(){
         $mform =& $this->_form;
         
-        $mform->addElement('header', 'general', get_string('general', 'form'));
+        $mform->addElement('header', 'reportgeneral', get_string('general', 'form'));
         
         $mform->addElement('text', 'name', get_string('name'));
         if (!empty($CFG->formatstringstriptags)) {
@@ -66,7 +66,7 @@ class report_edit_form extends moodleform {
         }
         $mform->addRule('name', null, 'required', null, 'client');
         
-        $mform->addElement('htmleditor', 'summary', get_string('summary'));
+        $mform->addElement('htmleditor', 'summary', get_string('summary'), array('rows' => 15));
         $mform->setType('summary', PARAM_RAW);
         
         for ($i=0; $i<=100; $i++) {

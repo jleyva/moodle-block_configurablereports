@@ -77,7 +77,7 @@ class plugin_fcoursefield extends filters_plugin{
 				
 		$components = cr_unserialize($this->report->components);		
 		$conditions = $components['conditions'];
-		$courselist = $reportclass->elements_by_conditions($conditions);
+		$courselist = $reportclass->get_elements_by_conditions($conditions);
 				
 		if(!empty($courselist)){
 			if($rs = $DB->get_recordset_sql('SELECT DISTINCT('.$data->field.') as ufield FROM {course} WHERE '.$data->field.' <> "" ORDER BY ufield ASC', null)){

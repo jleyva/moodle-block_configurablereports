@@ -33,7 +33,7 @@ class puserfield_form extends plugin_form {
     function definition() {
         $mform =& $this->_form;
 
-        $mform->addElement('header', '', get_string('coursefield','block_configurable_reports'), '');
+        $mform->addElement('header', 'plughead', get_string('coursefield','block_configurable_reports'), '');
 		
 		$usercolumns = $this->get_user_columns();	
         $mform->addElement('select', 'field', get_string('column','block_configurable_reports'), $usercolumns);

@@ -34,7 +34,7 @@ class roleincourse_form extends plugin_form {
 
         $mform =& $this->_form;
 
-        $mform->addElement('header', '', get_string('roleincourse','block_configurable_reports'), '');
+        $mform->addElement('header', 'plughead', get_string('roleincourse','block_configurable_reports'), '');
 
 		$userroles = $DB->get_records_menu('role', null, 'name', 'id, name');
         $mform->addElement('select', 'roleid', get_string('roles'), $userroles);

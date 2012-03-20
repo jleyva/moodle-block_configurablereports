@@ -100,7 +100,7 @@ class plugin_fuserfield extends filters_plugin{
 				
 		$components = cr_unserialize($this->report->components);		
 		$conditions = $components['conditions'];
-		$userlist = $reportclass->elements_by_conditions($conditions);
+		$userlist = $reportclass->get_elements_by_conditions($conditions);
 						
 		if(!empty($userlist)){
 			if(strpos($data->field,'profile_') === 0){	

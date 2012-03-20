@@ -36,7 +36,7 @@ class cuserfield_form extends plugin_form {
 
         $mform =& $this->_form;
 
-        $mform->addElement('header', '', get_string('coursefield','block_configurable_reports'), '');
+        $mform->addElement('header', 'plughead', get_string('coursefield','block_configurable_reports'), '');
 
 		$columns = $DB->get_columns('user');
 		

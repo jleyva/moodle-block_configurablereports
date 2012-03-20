@@ -35,7 +35,7 @@ class usermodoutline_form extends columns_plugin_form {
 
         $mform =& $this->_form;
 
-        $mform->addElement('header', '', get_string('usermodoutline','block_configurable_reports'), '');
+        $mform->addElement('header', 'plughead', get_string('usermodoutline','block_configurable_reports'), '');
 		
 		$columns = $DB->get_columns('user');
 				

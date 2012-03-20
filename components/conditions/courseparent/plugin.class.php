@@ -35,6 +35,10 @@ class plugin_courseparent extends conditions_plugin{
 		return '';
 	}
 	
+	function has_form(){
+	    return true;
+	}
+	
 	function execute($userid, $courseid, $instance){
 	    if(! ($data = $instance->configdata)){
 	        return '';
