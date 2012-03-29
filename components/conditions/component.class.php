@@ -22,22 +22,11 @@
   * @date: 2009
   */
 
-class component_conditions extends component_base{
-	
-	function plugin_classes(){
-	    return array(
-	            'ccoursefield'         => 'plugin_ccoursefield',
-	            'coursecategory'       => 'plugin_coursecategory',
-	            'coursechild'          => 'plugin_coursechild',
-	            'courseparent'         => 'plugin_courseparent',
-	            'currentreportcourse'  => 'plugin_currentreportcourse',
-	            'currentuser'          => 'plugin_currentuser',
-	            'currentusercourses'   => 'plugin_currentusercourses',
-	            'cuserfield'           => 'plugin_cuserfield',
-	            'parentcategory'       => 'plugin_parentcategory',
-	            'usersincurrentcourse' => 'plugin_usersincurrentcourse',
-	    );
-	}
+abstract class component_conditions extends component_base{
+    
+    function plugin_classes(){
+        throw new Exception(get_string('mustdefineplugins', 'block_configurable_reports'));
+    }
 	
 	function has_form(){
 	    return true;

@@ -21,21 +21,21 @@
   * @date: 2009
   */
 
-class component_columns extends component_base{
+require_once($CFG->dirroot.'/blocks/configurable_reports/components/columns/component.class.php');
+
+class component_columns_user extends component_columns{
 	
-	function plugin_classes(){
-	    return array(
-    	    'reportcolumn' => 'plugin_reportcolumn',
+    function plugin_classes(){
+        $classes = array(
+    	    'userfield'        => 'plugin_userfield',
+    	    'usermodactions'   => 'plugin_usermodactions',
+    	    'usermodoutline'   => 'plugin_usermodoutline',
+    	    'userstats'        => 'plugin_userstats',
 	    );
-	}
+    
+        return array_merge(parent::plugin_classes(), $classes);
+    }
 	
-	function has_ordering(){
-	    return true;
-	}
-	
-	function has_form(){
-	    return true;
-	}
 }
 
 ?>

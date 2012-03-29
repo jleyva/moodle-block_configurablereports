@@ -29,7 +29,6 @@ class component_filters_user extends component_filters{
 	function plugin_classes(){
 	    $classes = array(
             'fuserfield'   => 'plugin_fuserfield',
-	        'startendtime' => 'plugin_startendtime',
 	    );
 	    
 	    return array_merge(parent::plugin_classes(), $classes);

@@ -30,7 +30,6 @@ class component_filters_sql extends component_filters{
 	    $classes = array(
             'categories'   => 'plugin_categories',
 	        'courses'      => 'plugin_courses',
-	        'startendtime' => 'plugin_startendtime',
 	    );
 	    
 	    return array_merge(parent::plugin_classes(), $classes);

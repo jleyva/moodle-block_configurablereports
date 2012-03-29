@@ -105,6 +105,9 @@ if (!empty($instances)) {
     $numinstances = count($instances);
     $plugins = $compclass->get_plugins();
     foreach($instances as $sortorder => $instance){
+        if (!$compclass->has_plugin($instance->plugin)) {
+            continue;    //Just in case dependency change TODO: throw Exception
+        }
         $editurl->params(array('id' => $instance->id));
         $pluginclass = $plugins[$instance->plugin];
     

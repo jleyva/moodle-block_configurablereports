@@ -26,14 +26,14 @@ class report_courses extends report_base{
 
     function component_classes(){
         return array(
-                'columns'     => 'component_columns',
-                'conditions'  => 'component_conditions',
-                'ordering'    => 'component_ordering_course',
-                'filters'     => 'component_filters_course',
-                'permissions' => 'component_permissions',
-                'calcs'       => 'component_calcs',
-                'plot'        => 'component_plot',
-                'template'    => 'component_template',
+            'columns'     => 'component_columns_course',
+            'conditions'  => 'component_conditions_course',
+            'ordering'    => 'component_ordering_course',
+            'filters'     => 'component_filters_course',
+            'permissions' => 'component_permissions',
+            'calcs'       => 'component_calcs',
+            'plot'        => 'component_plot',
+            'template'    => 'component_template',
         );
     }
     

@@ -26,10 +26,11 @@ require_once($CFG->dirroot.'/blocks/configurable_reports/components/columns/comp
 class component_columns_timeline extends component_columns{
 	
 	function plugin_classes(){
-	    return array(
+	    $classes = array(
 	        'date'         => 'plugin_date',
-	        'reportcolumn' => 'plugin_reportcolumn',
 	    );
+	     
+	    return array_merge(parent::plugin_classes(), $classes);
 	}
 }
 

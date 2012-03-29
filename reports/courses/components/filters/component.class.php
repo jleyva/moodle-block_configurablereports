@@ -30,7 +30,6 @@ class component_filters_course extends component_filters{
 	    $classes = array(
 	        'courses'      => 'plugin_courses',
 	        'fcoursefield' => 'plugin_fcoursefield',
-	        'startendtime' => 'plugin_startendtime',
 	    );
 	     
 	    return array_merge(parent::plugin_classes(), $classes);

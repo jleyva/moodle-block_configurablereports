@@ -34,19 +34,18 @@ abstract class component_base {
 	static function get($report, $component, $classname){
 	    global $CFG;
 	    
-	    $comppath = self::get_path($report, $component);
+	    $comppath = self::get_path($report, $component, "component.class.php");
 	    require_once("$comppath/component.class.php");
 	    
 	    return new $classname($report);
 	}
 	
-	static function get_path($report, $component){
+	static function get_path($report, $component, $file){
 	    global $CFG;
 	    
 	    $basedir = "$CFG->dirroot/blocks/configurable_reports";
 	    $custompath = "reports/$report->type";
 	    $filepath = "components/$component";
-        $file = "component.class.php";
 	    
 	    if (file_exists("$basedir/$custompath/$filepath/$file")) {
 	        return "$basedir/$custompath/$filepath";
@@ -172,7 +171,7 @@ abstract class component_base {
 	    
 	    global $CFG;
 	    $component = $this->get_name();
-	    $comppath = self::get_path($this->report, $component);
+	    $comppath = self::get_path($this->report, $component, "form.php");
 	    require_once("$comppath/form.php");
 	    
 	    $formclassname = $component.'_form';

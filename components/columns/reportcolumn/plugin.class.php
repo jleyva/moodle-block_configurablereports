@@ -65,7 +65,7 @@ class plugin_reportcolumn extends columns_plugin{
 		global $DB;
 		
 		$columns = array();
-		if(! $report = $DB->get_record('block_configurable_reports_report',array('id' => $reportid)))
+		if(! $report = $DB->get_record('block_configurable_reports_report', array('id' => $reportid)))
 			return $columns;
 			
 		$components = cr_unserialize($report->components);

@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -26,11 +25,12 @@ abstract class component_ordering extends component_base{
     
 	function plugin_classes(){
 	    return array(
-	            'categoryfieldorder' => 'plugin_categoryfieldorder',
-	            'coursefieldorder'   => 'plugin_coursefieldorder',
-	            'userfieldorder'     => 'plugin_userfieldorder',
+            'categoryfieldorder' => 'plugin_categoryfieldorder',
+            'coursefieldorder'   => 'plugin_coursefieldorder',
+            'userfieldorder'     => 'plugin_userfieldorder',
 	    );
 	}
+	
 }
 
 ?>

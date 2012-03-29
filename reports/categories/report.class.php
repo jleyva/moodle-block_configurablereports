@@ -26,8 +26,8 @@ class report_categories extends report_base{
 
     function component_classes(){
         return array(
-	        'columns'     => 'component_columns',
-	        'conditions'  => 'component_conditions',
+	        'columns'     => 'component_columns_category',
+	        'conditions'  => 'component_conditions_category',
             'ordering'    => 'component_ordering_category',
 	        'filters'     => 'component_filters_category',
 	        'permissions' => 'component_permissions',
