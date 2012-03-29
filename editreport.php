@@ -90,6 +90,18 @@ if ($duplicate && confirm_sesskey()) {
 	$newreport->name = get_string('copyasnoun').' '.$newreport->name;
 	$newreport->summary = $newreport->summary;
 	$newreportid = $DB->insert_record('block_configurable_reports_report', $newreport);
+	
+	$comps = $DB->get_records('block_configurable_reports_component', array('reportid' => $report->id));
+	foreach($comps as $comp){
+	    $comp->reportid = $newreportid;
+	    $DB->insert_record('block_configurable_reports_component', $comp);
+	}
+	$plugs = $DB->get_records('block_configurable_reports_plugin', array('reportid' => $report->id));
+	foreach($plugs as $plug){
+	    $plug->reportid = $newreportid;
+	    $DB->insert_record('block_configurable_reports_plugin', $plug);
+	}
+	
 	add_to_log($logcourse, 'configurable_reports', 'report duplicated', '/block/configurable_reports/editreport.php?id='.$newreportid, $id);
 	
 	redirect($manageurl);
