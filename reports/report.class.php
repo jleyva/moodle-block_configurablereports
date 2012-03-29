@@ -199,9 +199,11 @@ abstract class report_base {
 		
 		$i = 1;
 		$cond = array();
-		foreach($permissions as $permission){
-		    $cond[$i] = $permclass->execute($userid, $context, $permission);
-		    $i++;
+		foreach($permclass->get_plugins() as $plugclass){
+		    foreach($plugclass->get_instances() as $permission){
+    		    $cond[$i] = $plugclass->execute($userid, $context, $permission);
+    		    $i++;
+		    }
 		}
 		
 		if (count($cond) == 1) {
