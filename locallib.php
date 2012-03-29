@@ -157,19 +157,15 @@ function cr_unserialize($var){
     return urldecode_recursive(unserialize($var));
 } 
   
-    //TODO: CHECK
- function cr_check_report_permissions($report,$userid,$context){
-	global $DB, $CFG;
-	
-	require_once($CFG->dirroot.'/blocks/configurable_reports/report.class.php');
-	require_once($CFG->dirroot.'/blocks/configurable_reports/reports/'.$report->type.'/report.class.php');
-	
-	$classn = 'report_'.$report->type;
-	$classi = new $classn($report->id);
-	return $classi->check_permissions($userid,$context);
-	
-	return true;
- }
+function cr_check_report_permissions($report, $userid, $context){
+    global $CFG;
+    
+    require_once($CFG->dirroot.'/blocks/configurable_reports/reports/report.class.php');
+    
+    $reportclass = report_base::get($report);
+    
+    return $reportclass->check_permissions($context, $userid);
+}
  
  function cr_get_report_plugins($courseid = null){
  

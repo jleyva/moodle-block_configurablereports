@@ -176,8 +176,7 @@ abstract class report_base {
 		}
 		
 		// Management permissions
-		if ($this->config->ownerid == $userid &&
-		        has_capability('block/configurable_reports:manageownreports', $context, $userid)){
+		if ($this->config->ownerid == $userid && has_capability('block/configurable_reports:manageownreports', $context, $userid)){
 		    return true;
 		}
 		if (has_capability('block/configurable_reports:managereports', $context, $userid)) {

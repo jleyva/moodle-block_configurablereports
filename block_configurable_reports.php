@@ -82,28 +82,33 @@ class block_configurable_reports extends block_list {
 		require_once($CFG->dirroot."/blocks/configurable_reports/locallib.php");
 		
 		$course = $DB->get_record('course',array('id' => $COURSE->id));
-		
-		if(!$course)
+		if (!$course) {
 			print_error('coursedoesnotexists');
+		}
 		
-		if ($course->id == SITEID)
-			$context = get_context_instance(CONTEXT_SYSTEM);
-		else
-			$context = get_context_instance(CONTEXT_COURSE, $course->id);
-
-		$reports = $DB->get_records('block_configurable_reports_report',array('courseid' => $course->id),'name ASC');
+		$params = array();
+		if ($course->id == SITEID) {
+			$context = context_system::instance();
+		} else {
+			$context = context_course::instance($course->id);
+			$params['courseid'] = $course->id;
+		}
+		$reports = $DB->get_records('block_configurable_reports_report', $params, 'name ASC');
 		
 		if($reports){
+		    $url = new moodle_url('/blocks/configurable_reports/viewreport.php', $params);
 			foreach($reports as $report){
-				if($report->visible && cr_check_report_permissions($report,$USER->id,$context)){
-					$rname = format_string($report->name);
-					$this->content->items[] = '<a href= "'.$CFG->wwwroot.'/blocks/configurable_reports/viewreport.php?id='.$report->id.'&courseid='.$course->id.'" alt="'.$rname.'">'.$rname.'</a>';
+				if(!$report->visible || !cr_check_report_permissions($report, $USER->id, $context)){
+				    continue;
 				}
+				$this->content->items[] = html_writer::link($url->out(true, array('id' => $report->id)), format_string($report->name));
 			}
 		}
 		
-		if(has_capability('block/configurable_reports:managereports', $context) || has_capability('block/configurable_reports:manageownreports', $context)){
-			$this->content->items[] = '<a href="'.$CFG->wwwroot.'/blocks/configurable_reports/managereport.php?courseid='.$course->id.'">'.(get_string('managereports','block_configurable_reports')).'</a>';
+		if(has_capability('block/configurable_reports:managereports', $context) || 
+		        has_capability('block/configurable_reports:manageownreports', $context)) {
+		    $url = new moodle_url('/blocks/configurable_reports/managereport.php', $params);
+			$this->content->items[] = html_writer::link($url, get_string('managereports','block_configurable_reports'));
 		}
 				
         return $this->content;
