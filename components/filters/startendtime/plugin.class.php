@@ -28,7 +28,7 @@ class plugin_startendtime extends filters_plugin{
 
 	function execute($finalelements, $data){
 	
-		if ($this->report->type != 'sql') {
+		if ($this->report->config->type != 'sql') {
 			return $finalelements;
 	    }
 		

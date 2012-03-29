@@ -32,7 +32,7 @@ class plugin_courses extends filters_plugin{
 	    }
 	
 	    //TODO: Check logic
-	    if ($this->report->type == 'sql' && $sqlelements = $this->sql_elements($finalelements, $filter)) {
+	    if ($this->report->config->type == 'sql' && $sqlelements = $this->sql_elements($finalelements, $filter)) {
 	        return $sqlelements;
 	    } else {
 	        return array($filter);
@@ -46,9 +46,8 @@ class plugin_courses extends filters_plugin{
 		
 		$filter_courses = optional_param('filter_courses', 0, PARAM_INT);
 		
-		if ($this->report->type != 'sql') {
-		    $reportclass = report_base::get($this->report);	
-			$courseids = $reportclass->get_elements_by_conditions();
+		if ($this->report->config->type != 'sql') {
+			$courseids = $this->report->get_elements_by_conditions();
 		} else {
 			$courseids = $DB->get_fieldset_select('course', 'id', '');
 		}

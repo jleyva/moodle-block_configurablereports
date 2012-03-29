@@ -32,6 +32,8 @@ abstract class plot_plugin extends plugin_base{
     
     abstract function graph($series);
     
+    abstract function execute($instance, $finalreport);
+    
     function get_graphurl($params){
         return new moodle_url('/blocks/configurable_reports/components/plot/graph.php', $params);
     }

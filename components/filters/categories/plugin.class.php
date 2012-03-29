@@ -31,7 +31,7 @@ class plugin_categories extends filters_plugin{
 		}
 		
 		// TODO: Check logic
-		if ($this->report->type == 'sql' && $sqlelements = $this->sql_elements($finalelements, $filter)) {
+		if ($this->report->config->type == 'sql' && $sqlelements = $this->sql_elements($finalelements, $filter)) {
 		    return $sqlelements;
 		} else {
 		    return array($filter);
@@ -46,7 +46,7 @@ class plugin_categories extends filters_plugin{
 		$filter_categories = optional_param('filter_categories', 0, PARAM_INT);
 
 		// TODO: ???
-		if($this->report->type != 'sql'){
+		if($this->report->config->type != 'sql'){
 		    $reportclass = report_base::get($this->report);
 			$catids = $reportclass->get_elements_by_conditions();
 		} else {

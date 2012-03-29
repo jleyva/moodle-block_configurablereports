@@ -33,8 +33,7 @@ abstract class calcs_plugin extends plugin_base{
 		    return '';
 		}
 		
-		$reportclass = report_base::get($this->report);
-		$options = $reportclass->get_column_options();
+		$options = $this->report->get_column_options();
 		
 		return $options[$data->column];
 	}

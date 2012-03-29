@@ -29,10 +29,16 @@ class plugin_reportcolumn extends columns_plugin{
 	function get_user_reports(){
 		global $DB, $USER;
 		
-		$supported = array('courses'=>array('users'), 'users'=>array('courses'), 'timeline'=>array('users','courses','sql'), 'categories' => array('courses'));
+		$supported = array(
+		    'courses'=>array('users'), 
+		    'users'=>array('courses'), 
+		    'timeline'=>array('users','courses','sql'), 
+		    'categories' => array('courses')
+		);
+		$reportconfig = $this->report->config;
 		
-		if (isset($this->report->courseid)) {
-		    $context = context_course::instance($this->report->courseid);
+		if (isset($reportconfig->courseid)) {
+		    $context = context_course::instance($reportconfig->courseid);
 		} else {
 		    $context = context_system::instance();
 		}
@@ -40,7 +46,7 @@ class plugin_reportcolumn extends columns_plugin{
 		$reports = cr_get_my_reports($USER->id, $context);
 		if($reports){
 			foreach($reports as $key=>$val){
-				if(!in_array($val->type,$supported[$this->report->type]))
+				if(!in_array($val->type,$supported[$reportconfig->type]))
 					unset($reports[$key]);
 			}
 		}
@@ -95,7 +101,7 @@ class plugin_reportcolumn extends columns_plugin{
 	function execute($user, $courseid, $instance, $row, $starttime=0, $endtime=0){
 		global $DB, $CFG;
 		
-		if(! $report = $DB->get_record('block_configurable_reports_report',array('id' => $data->reportid)))
+		if(! $report = $DB->get_record('block_configurable_reports_report', array('id' => $data->reportid)))
 			print_error('reportdoesnotexists','block_configurable_reports');
 	
 		if(!isset($this->reportcache[$row->id])){

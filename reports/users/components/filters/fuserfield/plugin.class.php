@@ -102,9 +102,7 @@ class plugin_fuserfield extends filters_plugin{
 		if(!isset($usercolumns[$data->field]))
 			print_error('nosuchcolumn');
 			
-		$reportclassname = 'report_'.$this->report->type;	
-		$reportclass = new $reportclassname($this->report);
-		$userlist = $reportclass->get_elements_by_conditions();			
+		$userlist = $this->report->get_elements_by_conditions();			
 		if(empty($userlist)){
 		    return false;
 		}
@@ -120,7 +118,7 @@ class plugin_fuserfield extends filters_plugin{
 			$sql = "SELECT DISTINCT(data) as data FROM {user_info_data} WHERE fieldid = ? AND userid $usql";					
 			$params = array_merge(array($field->id),$params);
 			
-			if($infodata = $DB->get_records_sql($sql,$params)){
+			if($infodata = $DB->get_records_sql($sql, $params)){
 				$finalusersid = array();
 				foreach($infodata as $d){
 					$filteroptions[base64_encode($d->data)] = $d->data;

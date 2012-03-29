@@ -85,6 +85,7 @@ class component_export extends component_base{
         $params = array('id' => $this->report->id, 'download' => 1);
         
         // TODO: REVIEW $params func parameter?
+        $wwwpath = '';
         $request = array_merge($_POST,$_GET);
         if($request){
             foreach($request as $key=>$val){
@@ -107,7 +108,7 @@ class component_export extends component_base{
             $exportclass = $this->get_plugin($export);
             $icon = $exportclass->get_icon();
             $fullname = $exportclass->get_fullname(null);
-            $attr = array('href' => $viewurl->out(true, array('format' => $exportclass->get_name())));
+            $attr = array('href' => $viewurl->out(false, array('format' => $exportclass->get_name())));
             $options[] = html_writer::tag('a', "$icon $fullname", $attr);
         }
         

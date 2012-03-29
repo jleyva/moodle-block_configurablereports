@@ -71,9 +71,7 @@ class plugin_fcoursefield extends filters_plugin{
 		if(!isset($coursecolumns[$data->field]))
 			print_error('nosuchcolumn');
 			
-		$reportclassname = 'report_'.$this->report->type;	
-		$reportclass = new $reportclassname($this->report);
-		$courselist = $reportclass->get_elements_by_conditions();	
+		$courselist = $this->report->get_elements_by_conditions();	
 		if(empty($courselist)){
 		    return false;
 		}

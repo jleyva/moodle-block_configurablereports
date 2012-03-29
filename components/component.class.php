@@ -25,26 +25,39 @@
 require_once($CFG->dirroot.'/blocks/configurable_reports/components/plugin.class.php');
  
 abstract class component_base {
-    var $report;     // Report configuration (DB record)
+    var $report;     // Report class
     var $config;     // Component configuration (DB record if exists)
 	var $plugins;    // Plugin objects
 	
-	var $help = '';
-	
-	static function get($report, $component, $classname){
+	/**
+	 * Retrieve a component class object.
+	 * @param report_base     $report
+	 * @param string          $component
+	 * @param string          $classname
+	 * @return component_base Component class object
+	 */
+	static function get(report_base $report, $component, $classname){
 	    global $CFG;
 	    
-	    $comppath = self::get_path($report, $component, "component.class.php");
-	    require_once("$comppath/component.class.php");
+	    $file = 'component.class.php';
+	    $comppath = self::get_path($report->config->type, $component, $file);
+	    require_once("$comppath/$file");
 	    
 	    return new $classname($report);
 	}
 	
-	static function get_path($report, $component, $file){
+	/**
+	 * Get path of component file.
+	 * @param string $reporttype    Report type
+	 * @param string $component     Component name
+	 * @param string $file          File name
+	 * @return string               Full path to file directory (i.e. PATH/$file is the absolute dir)
+	 */
+	static function get_path($reporttype, $component, $file){
 	    global $CFG;
 	    
 	    $basedir = "$CFG->dirroot/blocks/configurable_reports";
-	    $custompath = "reports/$report->type";
+	    $custompath = "reports/$reporttype";
 	    $filepath = "components/$component";
 	    
 	    if (file_exists("$basedir/$custompath/$filepath/$file")) {
@@ -54,11 +67,11 @@ abstract class component_base {
 	    return "$basedir/$filepath";
 	}
 	
-	function __construct($report) {
+	function __construct(report_base $report) {
 		global $DB, $CFG;
 		
 		$this->report = $report;
-		$search = array('reportid' => $report->id, 'component' => $this->get_name());
+		$search = array('reportid' => $report->config->id, 'component' => $this->get_name());
 		$configdata = $DB->get_field('block_configurable_reports_component', 'configdata', $search);
 		$this->config = cr_unserialize($configdata);
 	}
@@ -85,7 +98,7 @@ abstract class component_base {
 	function _load_plugins(){
 	    $this->plugins = array();
 	    foreach($this->plugin_classes() as $plug => $classname){
-	        $this->plugins[$plug] = plugin_base::get($this->report, $this->get_name(), $plug, $classname);
+	        $this->plugins[$plug] = plugin_base::get($this->report, $this, $plug, $classname);
 	    }
 	}
 	
@@ -171,7 +184,7 @@ abstract class component_base {
 	    
 	    global $CFG;
 	    $component = $this->get_name();
-	    $comppath = self::get_path($this->report, $component, "form.php");
+	    $comppath = self::get_path($this->report->config->type, $component, "form.php");
 	    require_once("$comppath/form.php");
 	    
 	    $formclassname = $component.'_form';

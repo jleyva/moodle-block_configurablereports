@@ -34,9 +34,10 @@ class plugin_line extends plot_plugin{
 		return get_string('linesummary','block_configurable_reports');
 	}
 	
-	// data -> Plugin configuration data
-	function execute($id, $data, $finalreport){
-		global $DB, $CFG;
+	function execute($instance, $finalreport){
+		if(! ($data = $instance->configdata)){
+		    return '';
+		}
 
 		$series = array();
 		$data->xaxis--;
@@ -56,9 +57,10 @@ class plugin_line extends plot_plugin{
 			}			
 		}
 
-		$i = 0;
+		$id = $instance->id;
 		$params = compact('id', 'min', 'max');
-		foreach($series as $h=>$s){
+		$i = 0;
+		foreach($series as $h => $s){
 		    $params['serie'.$i] = $sname[$h].'||'.implode(',',$s);
 			$i++;
 		}
@@ -71,10 +73,10 @@ class plugin_line extends plot_plugin{
 	    
 		$series = array();
 		foreach($instance->configdata as $series => $values){
-			if(strpos($key,'serie') !== false){
-				$id = (int) str_replace('serie','',$key);
-				list($name, $values) = explode('||',base64_decode($val));
-				$series[$id] = array('serie'=> explode(',',$values), 'name'=> $name);
+			if(strpos($series,'serie') !== false){
+				$id = (int) str_replace('serie', '', $series);
+				list($name, $values) = explode('||', base64_decode($values));
+				$series[$id] = array('serie'=> explode(',', $values), 'name'=> $name);
 			}
 		}
 		

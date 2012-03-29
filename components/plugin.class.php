@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -28,29 +27,37 @@ abstract class plugin_base{
     var $instances;    // Current plugin instances in report
 
     /**
-     * Retrieve the plugin class object.
-     * @param unknown_type $report
-     * @param unknown_type $component
-     * @param unknown_type $plugin
-     * @param unknown_type $classname
-     * @return plugin_base                Plugin class object
+     * Retrieve a plugin class object.
+     * @param report_base     $report
+     * @param component_base  $component
+     * @param string          $plugin
+     * @param string          $classname
+     * @return plugin_base    Plugin class object
      */
-	static function get($report, $component, $plugin, $classname){
+	static function get(report_base $report, component_base $component, $plugin, $classname){
 	    global $CFG;
 	    
-	    $plugpath = self::get_path($report, $component, $plugin);
-	    require_once("$plugpath/plugin.class.php");
+	    $file = 'plugin.class.php';
+	    $plugpath = self::get_path($report->config->type, $component->get_name(), $plugin, $file);
+	    require_once("$plugpath/$file");
 	    
 	    return new $classname($report, $component);
 	}
 	
-	static function get_path($report, $component, $plugin){
+	/**
+	 * Get path of plugin file.
+	 * @param string $reporttype     Report type
+	 * @param string $component      Component name
+	 * @param string $plugin         Plugin name
+	 * @param string $file           File name  
+	 * @return string                Full path to file directory (i.e. PATH/$file is the absolute dir)
+	 */
+	static function get_path($reporttype, $component, $plugin, $file){
 	    global $CFG;
 	     
 	    $basedir = "$CFG->dirroot/blocks/configurable_reports";
-	    $custompath = "reports/$report->type";
+	    $custompath = "reports/$reporttype";
 	    $filepath = "components/$component/$plugin";
-	    $file = "plugin.class.php";
 	     
 	    if (file_exists("$basedir/$custompath/$filepath/$file")) {
 	        return "$basedir/$custompath/$filepath";
@@ -59,12 +66,16 @@ abstract class plugin_base{
 	    return "$basedir/$filepath";
 	}
 	
-	function __construct($report, $component){
+	/**
+	 * Construct a new plugin type instance.
+	 * @param report_base    $report
+	 * @param component_base $component
+	 */
+	function __construct(report_base $report, component_base $component){
 	    global $DB, $CFG;
 		
 		$this->report = $report;
-		$reportclass = report_base::get($report);
-		$this->component = $reportclass->get_component($component);
+		$this->component = $component;
 	}
 	
 	function get_name(){
@@ -138,15 +149,15 @@ abstract class plugin_base{
 	}
 	
 	function get_form($action = null, $customdata = array()){
+	    global $CFG;
 		if (!$this->has_form()) {
 	        return null;
 	    }
 	    
-	    global $CFG;
 	    $plugin = $this->get_name();
-	    $compclass = $this->component;
-	    $plugpath = self::get_path($this->report, $compclass->get_name(), $plugin);
-	    require_once("$plugpath/form.php");
+	    $file = 'form.php';
+	    $plugpath = self::get_path($this->report->config->type, $this->component->get_name(), $plugin, $file);
+	    require_once("$plugpath/$file");
 	     
 	    $classname = $plugin.'_form';
 	    $customdata['plugclass'] = $this;

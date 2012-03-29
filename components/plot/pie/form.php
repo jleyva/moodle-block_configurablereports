@@ -33,8 +33,7 @@ class pie_form extends plot_plugin_form {
         $mform =& $this->_form;
 
         $plugclass = $this->_customdata['plugclass'];
-        $reportclass = report_base::get($plugclass->report);
-        $options = $reportclass->get_column_options();
+        $options = $plugclass->report->get_column_options();
 		
 		$mform->addElement('header', 'plughead', get_string('pie','block_configurable_reports'), '');
 

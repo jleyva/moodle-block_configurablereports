@@ -26,8 +26,9 @@ require_once($CFG->dirroot.'/lib/evalmath/evalmath.class.php');
 require_once($CFG->dirroot.'/blocks/configurable_reports/components/component.class.php');
 
 abstract class report_base {
-    var $config;        // Report configuration (DB record)
-	var $components;    // Component objects (and therefore plugin objects)
+    public  $id;         // Report id
+    public  $config;     // Report configuration (DB record)
+	private $components; // Component objects (and therefore plugin objects)
 	
 	var $finalreport;
 	var $totalrecords = 0;
@@ -58,7 +59,8 @@ abstract class report_base {
 	    return new $reportclassname($report);
 	}
 	
-	function __construct($report){
+	function __construct(stdClass $report){
+	    $this->id = $report->id;
 		$this->config = $report;
 	}
 	
@@ -82,7 +84,7 @@ abstract class report_base {
 	    $this->components = array();
 	    
 	    foreach($this->all_components() as $comp => $classname){
-	        $this->components[$comp] = component_base::get($this->config, $comp, $classname);
+	        $this->components[$comp] = component_base::get($this, $comp, $classname);
 	    }
 	}
 	
@@ -423,7 +425,7 @@ abstract class report_base {
 		
 			cr_print_table($finaltable);
 
-    	    if($reportclass->config->pagination){
+    	    if($this->config->pagination){
     	        $params = array('id' => $this->config->id);
     	        $request = array_merge($_POST, $_GET);
                 foreach($request as $key => $val){
@@ -438,9 +440,9 @@ abstract class report_base {
     	            }
                 }
     	    
-    	        $reportclass->totalrecords = count($reportclass->finalreport->table->data);
+    	        $this->totalrecords = count($this->finalreport->table->data);
     	        $baseurl = new moodle_url('viewreport.php', $params);
-    	        $pagingbar = new paging_bar($reportclass->totalrecords, $page, $reportclass->config->pagination, $baseurl, 'page');
+    	        $pagingbar = new paging_bar($this->totalrecords, $page, $this->config->pagination, $baseurl, 'page');
     	        $pagination =  $OUTPUT->render($pagingbar);
     	    }
 		

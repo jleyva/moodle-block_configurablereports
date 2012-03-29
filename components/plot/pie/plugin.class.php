@@ -35,8 +35,10 @@ class plugin_pie extends plot_plugin{
 	}
 	
 	// data -> Plugin configuration data
-	function execute($id, $data, $finalreport){
-		global $DB;
+	function execute($instance, $finalreport){
+		if(! ($data = $instance->configdata)){
+		    return '';
+		}
 
 		$series = array();
 		if($finalreport){
@@ -67,11 +69,11 @@ class plugin_pie extends plot_plugin{
 			}
 		}
 		
-		$serie0 = base64_encode(implode(',',$series[0]));
-		$serie1 = base64_encode(implode(',',$series[1]));
+		$id = $instance->id;
+		$serie0 = base64_encode(implode(',', $series[0]));
+		$serie1 = base64_encode(implode(',', $series[1]));
 		
-		$params = compact('id', 'serie0', 'serie1');
-		return $this->get_graphurl($params);
+		return $this->get_graphurl(compact('id', 'serie0', 'serie1'));
 	}
 	
 	function get_series($instanceid){

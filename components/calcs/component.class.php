@@ -41,7 +41,7 @@ class component_calcs extends component_base{
 	    
 	    /* Organize table data by column */
 	    $rows = array();
-	    foreach($reportclass->finaltable as $row){
+	    foreach($reportclass->finalreport->table->data as $row){
 	        foreach($row as $column => $cell){
 	            $rows[$column][] = $cell;
 	        }

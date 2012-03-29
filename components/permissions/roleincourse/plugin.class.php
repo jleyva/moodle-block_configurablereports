@@ -31,7 +31,7 @@ class plugin_roleincourse extends permissions_plugin{
 		
 		$data = $instance->configdata;
 		$rolename = $DB->get_field('role', 'name', array('id' => $data->roleid));
-		$coursename = $DB->get_field('course', 'fullname', array('id' => $this->report->courseid));
+		$coursename = $DB->get_field('course', 'fullname', array('id' => $this->report->config->courseid));
 		return $rolename.' '.$coursename;
 	}
 
