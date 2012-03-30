@@ -84,6 +84,8 @@ if($reports = cr_get_my_reports($USER->id, $context)){
     
     $table = new html_table();
     $table->id = 'reportslist';
+    $table->width = '80%';
+    $table->tablealign = 'center';
     $table->head = array(
             get_string('name'),
             get_string('course'),
@@ -173,16 +175,12 @@ echo $OUTPUT->header();
 
 if ($reports) {
     cr_add_jsordering("#reportslist");
-    cr_print_table($table);
-    //echo html_writer::table($table);
+    echo html_writer::table($table);
 } else {
     echo $OUTPUT->heading(get_string('noreportsavailable', 'block_configurable_reports'));
 }
 
 $typeoptions = cr_get_report_plugins($courseid);
-if (!has_capability('block/configurable_reports:managesqlreports', $context)) {
-    unset($typeoptions['sql']);    //TODO: Make more general with specific capabilities (subplugins)
-}
 $typeurls = array();
 foreach($typeoptions as $type => $typename){
     $typeurls[$addurl->out(false, array('type' => $type))] = $typename;

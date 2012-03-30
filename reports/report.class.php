@@ -64,8 +64,19 @@ abstract class report_base {
 		$this->config = $report;
 	}
 	
+	/**
+	 * Retrieve the report name for this class definition.
+	 * FORMAT REQUIREMENT: report_XXX_YYY where XXX is the report name
+	 *
+	 * @return string    Report name
+	 */
 	function get_name(){
-	    return format_string($this->config->name);
+	    $pieces = explode('_', get_class($this));
+	    return $pieces[1];
+	}
+	
+	function get_typename(){
+	    return get_string('report_'.$this->get_name(), 'block_configurable_reports');
 	}
 	
 	function form_components(){
@@ -355,11 +366,10 @@ abstract class report_base {
 	 * @return html_table
 	 */
 	function create_table(array $columns = null){
-	    $colcomp = $this->get_component('columns');
-	    $config = $colcomp->config;
-	    
 	    $table = new html_table();
 	    $table->summary = $this->config->summary;
+	    
+	    $colcomp = $this->get_component('columns');
 	    foreach($colcomp->get_plugins() as $plugclass){
 	        foreach($plugclass->get_instances() as $pid => $column){
 	            if (isset($columns) && in_array($pid, $columns)) {
@@ -372,12 +382,17 @@ abstract class report_base {
 	            $table->wrap[] = $wrap;
 	        }
 	    }
+	    
+	    $config = $colcomp->config;
 	    if (!empty($config)) {
 	        $table->class = $config->class;
 	        $table->width = $config->tablewidth;
 	        $table->tablealign = $config->tablealign;
 	        $table->cellpadding = $config->cellpadding;
 	        $table->cellspacing = $config->cellspacing;
+	    } else {
+	        $table->width = '80%';
+	        $table->tablealign = 'center';
 	    }
 	    
 	    return $table;
@@ -425,7 +440,7 @@ abstract class report_base {
 				$finaltable->data = array_slice($finaltable->data, $items, $this->config->pagination);
 			}
 		
-			cr_print_table($finaltable);
+			echo html_writer::table($finaltable);
 
     	    if($this->config->pagination){
     	        $params = array('id' => $this->config->id);

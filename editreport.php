@@ -109,6 +109,7 @@ if ($duplicate && confirm_sesskey()) {
 if ($delete && confirm_sesskey()){
 	if (!$confirm) {
 		echo $OUTPUT->header();		
+		echo $OUTPUT->heading(get_string('deletereport', 'block_configurable_reports'));
 		$message = get_string('confirmdeletereport', 'block_configurable_reports');
 		$confirmurl = $baseurl;
 		$confirmurl->params(array('id'=>$report->id, 'delete'=>$delete, 'sesskey'=>sesskey(), 'confirm'=>1));

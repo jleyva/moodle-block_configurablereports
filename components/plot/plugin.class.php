@@ -35,6 +35,8 @@ abstract class plot_plugin extends plugin_base{
     abstract function execute($instance, $finalreport);
     
     function get_graphurl($params){
+        // Add report id to parameters
+        $params['reportid'] = $this->report->config->id;
         return new moodle_url('/blocks/configurable_reports/components/plot/graph.php', $params);
     }
 }

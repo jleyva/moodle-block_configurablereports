@@ -65,7 +65,7 @@ if (!isset($compclass)) {
     print_error('badcomponent');
 }
 
-$title = $reportclass->get_name().' '.$compclass->get_name();    //TODO: Display names
+$title = format_string($reportclass->config->name).' '.$compclass->get_name();    //TODO: Display names
 navigation_node::override_active_url($manageurl);
 $PAGE->navbar->add($title);
 $PAGE->set_title($title);
@@ -89,8 +89,15 @@ if($compclass->has_form()){
 $instances = $compclass->get_all_instances();
 
 if (!empty($instances)) {
-    $table = new stdclass;
-    $table->head = array(get_string('idnumber'), get_string('name'), get_string('summary'), get_string('edit'));
+    $table = new html_table();
+    $table->width = '80%';
+    $table->tablealign = 'center';
+    $table->head = array(
+            get_string('idnumber'),
+            get_string('name'), 
+            get_string('summary'), 
+            get_string('edit')
+    );
     
     $icons = array(
             'edit'      => new pix_icon('t/edit', get_string('edit')),
@@ -151,7 +158,7 @@ if ($helpicon = $compclass->get_help_icon()) {
 }
 
 if (!empty($instances)) {
-	cr_print_table($table);
+	echo html_writer::table($table);
 } else if ($compclass->plugins) {
 	echo $OUTPUT->heading(get_string('no'.$comp.'yet', 'block_configurable_reports'));
 }

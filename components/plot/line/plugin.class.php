@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -84,6 +83,7 @@ class plugin_line extends plot_plugin{
 	}
 	
 	function graph($series){
+	    global $CFG;
 	    $min = optional_param('min',0,PARAM_INT);
 	    $max = optional_param('max',0,PARAM_INT);
 	    $abcise  = optional_param('abcise',-1,PARAM_INT);

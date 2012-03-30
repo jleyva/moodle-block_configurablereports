@@ -65,7 +65,7 @@ if (!isset($compclass)) {
 }
 $pluginclass = $compclass->get_plugin($plug);
 
-$title = $reportclass->get_name().' '.$compclass->get_name();
+$title = format_string($reportclass->config->name).' '.$compclass->get_name();
 $PAGE->set_title($title);
 $PAGE->set_heading($title);
 

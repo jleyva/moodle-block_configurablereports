@@ -34,7 +34,6 @@ class plugin_pie extends plot_plugin{
 		return get_string('piesummary','block_configurable_reports');
 	}
 	
-	// data -> Plugin configuration data
 	function execute($instance, $finalreport){
 		if(! ($data = $instance->configdata)){
 		    return '';
@@ -84,6 +83,7 @@ class plugin_pie extends plot_plugin{
 	}
 	
 	function graph($series){
+	    global $CFG;
 	    // Dataset definition
 	    $DataSet = new pData;
 	    

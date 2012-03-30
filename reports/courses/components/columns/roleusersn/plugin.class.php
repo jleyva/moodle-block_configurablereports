@@ -27,6 +27,9 @@ require_once($CFG->dirroot.'/blocks/configurable_reports/components/columns/plug
 class plugin_roleusersn extends columns_plugin{
 
 	function execute($user, $courseid, $instance, $row, $starttime=0, $endtime=0){
+	    if(! ($data = $instance->configdata)){
+	        return '';
+	    }
 		return count_role_users($data->roles, context_course::instance($courseid));
 	}	
 	

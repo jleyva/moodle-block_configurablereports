@@ -78,8 +78,14 @@ abstract class plugin_base{
 		$this->component = $component;
 	}
 	
+	/**
+	 * Retrieve the plugin name for this class definition.
+	 * FORMAT REQUIREMENT: plugin_XXX_YYY where XXX is the plugin name
+	 *
+	 * @return string    Plugin name
+	 */
 	function get_name(){
-	    $pieces = explode('plugin_', get_class($this));
+	    $pieces = explode('_', get_class($this));
 	    return $pieces[1];
 	}
 	

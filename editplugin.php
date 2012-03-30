@@ -86,7 +86,7 @@ if (($moveup || $movedown) && confirm_sesskey()){
     redirect($returnurl);
 }
 
-$title = $reportclass->get_name().' '.$compclass->get_name();
+$title = format_string($reportclass->config->name).' '.$compclass->get_name();
 $PAGE->set_title($title);
 $PAGE->set_heading($title);
 navigation_node::override_active_url($returnurl);

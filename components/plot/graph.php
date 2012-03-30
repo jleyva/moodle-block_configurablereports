@@ -22,50 +22,42 @@
   */
 
 require_once("../../../../config.php");
-require_once($CFG->dirroot."/blocks/configurable_reports/locallib.php");
+require_once($CFG->dirroot."/blocks/configurable_reports/reports/report.class.php");
 require_once($CFG->dirroot."/blocks/configurable_reports/lib/pChart/pData.class");
 require_once($CFG->dirroot."/blocks/configurable_reports/lib/pChart/pChart.class");
 
 require_login(); 
 
 error_reporting(0);
-ini_set('display_erros', false);
+ini_set('display_errors', false);
  
 $id = required_param('id', PARAM_ALPHANUM);
 $reportid = required_param('reportid', PARAM_INT);
 
-if (! ($report = $DB->get_record('block_configurable_reports_report', array('id' => $id)))) {
-    print_error('reportdoesnotexists', 'block_configurable_reports');
-}
-if (! ($course = $DB->get_record("course", array( "id" =>  $report->courseid)))) {
-    print_error('invalidcourseid');
-}
-$courseid = $course->id;
+$reportclass = report_base::get($reportid);
+$courseid = $reportclass->config->courseid;
 
-// Force user login in course (SITE or Course)
-if ($courseid == SITEID) {
-    require_login();
-    $context = context_system::instance();
-} else {
+if (isset($courseid)) {
     require_login($courseid);
     $context = context_course::instance($courseid);
+} else {
+    require_login();
+    $context = context_system::instance();
 }
 
-$reportclass = report_base::get($report);
 if (!$reportclass->check_permissions($context)){
 	print_error("No permissions");
 }
 
-$compclass = $reportclass->get_component('plot');
-
+/* Find series */
 $series = array();
-foreach($compclass->get_plugins() as $plugin => $pluginclass){
-    if ($plot = $pluginclass->get_instance($id)) {
-        $series = $pluginclass->get_series($plot);
+$compclass = $reportclass->get_component('plot');
+foreach($compclass->get_plugins() as $plotplug){
+    if ($plot = $plotplug->get_instance($id)) {
+        $series = $plotplug->get_series($plot);
+        $plotplug->graph($series);
         break;
     }
 }
-
-$pluginclass->graph($series);
 
 ?>

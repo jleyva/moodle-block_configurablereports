@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -73,6 +72,21 @@
 	<?php 
   }
 
+  /* TODO: Review need for encoding functions */
+  function cr_serialize($var){
+      if (!is_object($var) && !is_array($var)) {
+          return $var;
+      }
+      return serialize(urlencode_recursive($var));
+  }
+  
+  function cr_unserialize($var){
+      if (!is_string($var)) {
+          return $var;
+      }
+      return urldecode_recursive(unserialize($var));
+  }
+  
   function urlencode_recursive($var) {
     if (is_object($var)) {
         $new_var = new object();
@@ -142,21 +156,7 @@ function cr_get_my_reports($userid, $context){
 	
 	return $reports;
 }
-  
-function cr_serialize($var){
-    if (!is_object($var) && !is_array($var)) {
-        return $var;
-    }
-    return serialize(urlencode_recursive($var));
-}
 
-function cr_unserialize($var){
-    if (!is_string($var)) {
-        return $var;
-    }
-    return urldecode_recursive(unserialize($var));
-} 
-  
 function cr_check_report_permissions($report, $userid, $context){
     global $CFG;
     
@@ -167,20 +167,21 @@ function cr_check_report_permissions($report, $userid, $context){
     return $reportclass->check_permissions($context, $userid);
 }
  
- function cr_get_report_plugins($courseid = null){
- 
-	$pluginoptions = array();
-	$context = isset($courseid) ? context_course::instance($courseid) : context_system::instance();
-	$plugins = get_list_of_plugins('blocks/configurable_reports/reports');
-	
-	if($plugins)
-		foreach($plugins as $p){
-			if($p == 'sql' && !has_capability('block/configurable_reports:managesqlreports',$context))
-				continue;
-			$pluginoptions[$p] = get_string('report_'.$p,'block_configurable_reports');
+//TODO: Capabilities and displayed type name to report class
+function cr_get_report_plugins($courseid = null){
+    $context = isset($courseid) ? context_course::instance($courseid) : context_system::instance();
+          
+    $pluginoptions = array();
+	foreach(get_list_of_plugins('blocks/configurable_reports/reports') as $p){
+	    //TODO: Make more general with specific capabilities (subplugins)
+		if ($p == 'sql' && !has_capability('block/configurable_reports:managesqlreports',$context)) {
+			continue;
 		}
-	return $pluginoptions;
- }
+		$pluginoptions[$p] = get_string('report_'.$p, 'block_configurable_reports');
+	}
+	
+    return $pluginoptions;
+}
 
 function cr_print_tabs($reportclass, $currenttab){
     $params = array('id' => $reportclass->config->id);
@@ -196,181 +197,6 @@ function cr_print_tabs($reportclass, $currenttab){
     $top[] = new tabobject('viewreport', $viewurl, get_string('viewreport','block_configurable_reports'));
     
     print_tabs(array($top), $currenttab);
-}
- 
- function cr_print_table($table, $return=false) {
-    $output = '';
-
-    if (isset($table->align)) {
-        foreach ($table->align as $key => $aa) {
-            if ($aa) {
-                $align[$key] = ' text-align:'. fix_align_rtl($aa) .';';  // Fix for RTL languages
-            } else {
-                $align[$key] = '';
-            }
-        }
-    }
-    if (isset($table->size)) {
-        foreach ($table->size as $key => $ss) {
-            if ($ss) {
-                $size[$key] = ' width:'. $ss .';';
-            } else {
-                $size[$key] = '';
-            }
-        }
-    }
-    if (isset($table->wrap)) {
-        foreach ($table->wrap as $key => $ww) {
-            if ($ww) {
-                $wrap[$key] = ' white-space:nowrap;';
-            } else {
-                $wrap[$key] = '';
-            }
-        }
-    }
-
-    if (empty($table->width)) {
-        $table->width = '80%';
-    }
-
-    if (empty($table->tablealign)) {
-        $table->tablealign = 'center';
-    }
-
-    if (!isset($table->cellpadding)) {
-        $table->cellpadding = '5';
-    }
-
-    if (!isset($table->cellspacing)) {
-        $table->cellspacing = '1';
-    }
-
-    if (empty($table->class)) {
-        $table->class = 'generaltable';
-    }
-
-    $tableid = empty($table->id) ? '' : 'id="'.$table->id.'"';
-
-    $output .= '<table width="'.$table->width.'" ';
-    if (!empty($table->summary)) {
-        $output .= " summary=\"$table->summary\"";
-    }
-    $output .= " cellpadding=\"$table->cellpadding\" cellspacing=\"$table->cellspacing\" class=\"$table->class boxalign$table->tablealign\" $tableid>\n";
-
-    $countcols = 0;
-    
-    if (!empty($table->head)) {
-        $countcols = count($table->head);
-        $output .= '<thead><tr>';
-        $keys=array_keys($table->head);
-        $lastkey = end($keys);
-        foreach ($table->head as $key => $heading) {
-
-            if (!isset($size[$key])) {
-                $size[$key] = '';
-            }
-            if (!isset($align[$key])) {
-                $align[$key] = '';
-            }
-            if ($key == $lastkey) {
-                $extraclass = ' lastcol';
-            } else {
-                $extraclass = '';
-            }
-
-            $output .= '<th style="vertical-align:top;'. $align[$key].$size[$key] .';white-space:nowrap;" class="header c'.$key.$extraclass.'" scope="col">'. $heading .'</th>';
-        }
-        $output .= '</tr></thead>'."\n";
-    }
-
-    if (!empty($table->data)) {
-        $oddeven = 1;
-        $keys=array_keys($table->data);
-        $lastrowkey = end($keys);
-        foreach ($table->data as $key => $row) {
-            $oddeven = $oddeven ? 0 : 1;
-            if (!isset($table->rowclass[$key])) {
-                $table->rowclass[$key] = '';
-            }
-            if ($key == $lastrowkey) {
-                $table->rowclass[$key] .= ' lastrow';
-            }
-            $output .= '<tr class="r'.$oddeven.' '.$table->rowclass[$key].'">'."\n";
-            if ($row == 'hr' and $countcols) {
-                $output .= '<td colspan="'. $countcols .'"><div class="tabledivider"></div></td>';
-            } else {  /// it's a normal row of data
-                $keys2=array_keys($row);
-                $lastkey = end($keys2);
-                foreach ($row as $key => $item) {
-                    if (!isset($size[$key])) {
-                        $size[$key] = '';
-                    }
-                    if (!isset($align[$key])) {
-                        $align[$key] = '';
-                    }
-                    if (!isset($wrap[$key])) {
-                        $wrap[$key] = '';
-                    }
-                    if ($key == $lastkey) {
-                      $extraclass = ' lastcol';
-                    } else {
-                      $extraclass = '';
-                    }
-                    $output .= '<td style="'. $align[$key].$size[$key].$wrap[$key] .'" class="cell c'.$key.$extraclass.'">'. $item .'</td>';
-                }
-            }
-            $output .= '</tr>'."\n";
-        }
-    }
-    $output .= '</table>'."\n";
-
-    if ($return) {
-        return $output;
-    }
-
-    echo $output;
-    return true;
-}            
-
-function table_to_excel($filename,$table){
-    global $DB, $CFG;
-    
-    require_once($CFG->dirroot.'/lib/excellib.class.php');
-
-    
-    if (!empty($table->head)) {
-        $countcols = count($table->head);
-        $keys=array_keys($table->head);
-        $lastkey = end($keys);
-        foreach ($table->head as $key => $heading) {
-                $matrix[0][$key] = str_replace("\n",' ',htmlspecialchars_decode(strip_tags(nl2br($heading))));
-        }
-    }
-
-    if (!empty($table->data)) {
-        foreach ($table->data as $rkey => $row) {
-            foreach ($row as $key => $item) {
-                $matrix[$rkey + 1][$key] = str_replace("\n",' ',htmlspecialchars_decode(strip_tags(nl2br($item))));
-            }
-        }
-    }
-
-    $downloadfilename = clean_filename($filename);
-    /// Creating a workbook
-    $workbook = new MoodleExcelWorkbook("-");
-    /// Sending HTTP headers
-    $workbook->send($downloadfilename);
-    /// Adding the worksheet
-    $myxls =& $workbook->add_worksheet($filename);     
-    
-    foreach($matrix as $ri=>$col){
-        foreach($col as $ci=>$cv){
-            $myxls->write_string($ri,$ci,$cv);
-        }
-    }
-    
-    $workbook->close();
-    exit;
 }
 
 function cr_get_string($identifier, $component, $a){

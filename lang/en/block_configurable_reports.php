@@ -23,6 +23,7 @@ $string['type'] = "Type of report";
 $string['columncalculations'] = "Column Calculations";
 $string['newreport'] = "New report";
 $string['column'] = "Column";
+$string['deletereport'] = 'Delete report';
 $string['confirmdeletereport'] = "Are you sure you want to delete this report?";
 $string['noreportsavailable'] = "No reports available";
 $string['downloadreport'] = "Download report";

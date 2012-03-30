@@ -23,6 +23,7 @@
   */
 
 require_once($CFG->dirroot.'/blocks/configurable_reports/components/plugin.class.php');
+require_once($CFG->dirroot."/blocks/configurable_reports/locallib.php");    //cr_unserialize
  
 abstract class component_base {
     var $report;     // Report class
@@ -82,7 +83,7 @@ abstract class component_base {
 	
 	/**
 	 * Retrieve the component name for this class definition.
-	 * FORMAT REQUIREMENT: component_XXX_EXTENDEDNAME where XXX is the component name
+	 * FORMAT REQUIREMENT: component_XXX_YYY where XXX is the component name
 	 * 
 	 * @return string    Component name
 	 */
