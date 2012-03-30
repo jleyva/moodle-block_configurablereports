@@ -82,6 +82,8 @@ if($reports = cr_get_my_reports($USER->id, $context)){
     $sitestr = get_string('site');
     $delstr = get_string('deleted');
     
+    $PAGE->requires->js_init_call('M.block_configurable_reports.setupTable', array('reportslist'));
+    
     $table = new html_table();
     $table->id = 'reportslist';
     $table->width = '80%';
@@ -174,7 +176,6 @@ $PAGE->set_heading($title);
 echo $OUTPUT->header();
 
 if ($reports) {
-    cr_add_jsordering("#reportslist");
     echo html_writer::table($table);
 } else {
     echo $OUTPUT->heading(get_string('noreportsavailable', 'block_configurable_reports'));

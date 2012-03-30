@@ -75,9 +75,6 @@ class report_edit_form extends moodleform {
         $mform->addElement('select', 'pagination', get_string("pagination",'block_configurable_reports'), $pagoptions);
         $mform->setDefault('pagination',0);
         $mform->addHelpButton('pagination','pagination', 'block_configurable_reports');
-        
-        $mform->addElement('checkbox','jsordering',get_string('ordering','block_configurable_reports'),get_string('enablejsordering','block_configurable_reports'));
-        $mform->addHelpButton('jsordering','jsordering', 'block_configurable_reports');
     }
     
     function component_options(){

@@ -20,57 +20,6 @@
   * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
   * @date: 2009
   */
-  
-  function cr_print_js_function(){
-	?>
-		<script type="text/javascript">
-			function printDiv(id){
-				var cdiv, tmpw;
-			 
-				cdiv = document.getElementById(id);				   
-				tmpw = window.open(" ","Print");
-			   
-				tmpw.document.open();
-				tmpw.document.write('<html><body>');
-				tmpw.document.write(cdiv.innerHTML);
-				tmpw.document.write('</body></html>');
-				tmpw.document.close();
-				tmpw.print();
-				tmpw.close();
-			}
-		</script>
-	<?php
-  }
-  
-  function cr_add_jsordering($cssid){
-	global $DB, $CFG, $OUTPUT;
-    echo html_writer::script(false, new moodle_url('/blocks/configurable_reports/js/jquery-latest.js'));
-    echo html_writer::script(false, new moodle_url('/blocks/configurable_reports/js/jquery.tablesorter.min.js'));
-    $script = '$(document).ready(function() {
-        // call the tablesorter plugin
-        $("'.$cssid.'").tablesorter();
-    });';
-    echo html_writer::script($script);
-	?>
-
-		<style type="text/css">
-		<?php echo $cssid; ?> th.header{
-			background-image:url(<?php echo $OUTPUT->pix_url('normal', 'block_configurable_reports'); ?>);
-			background-position:right center;
-			background-repeat:no-repeat;
-			cursor:pointer;
-		}
-
-		<?php echo $cssid; ?> th.headerSortUp{
-		 background-image:url(<?php echo $OUTPUT->pix_url('asc', 'block_configurable_reports');?>);
-		}
-
-		<?php echo $cssid; ?> th.headerSortDown{
-		 background-image:url(<?php echo $OUTPUT->pix_url('desc', 'block_configurable_reports');?>);
-		}    
-		</style>		
-	<?php 
-  }
 
   /* TODO: Review need for encoding functions */
   function cr_serialize($var){
@@ -201,17 +150,6 @@ function cr_print_tabs($reportclass, $currenttab){
 
 function cr_get_string($identifier, $component, $a){
     
-}
-
-function cr_print_link($reportid){
-    global $OUTPUT;
-    
-    echo html_writer::start_tag('div', array('class' => 'centerpara'));
-    $url = new moodle_url('/blocks/configurable_reports/print_report.php', array('id' => $reportid));
-    $printstr = get_string('printreport', 'block_configurable_reports');
-    $icon = $OUTPUT->pix_icon('print', $printstr, 'block_configurable_reports');
-    echo html_writer::tag('a', "$icon $printstr $icon", array('href' => $url));
-    echo html_writer::end_tag('div');
 }
  
 ?>

@@ -355,10 +355,6 @@ abstract class report_base {
 		return true;
 	}
 	
-	function add_jsordering(){
-		cr_add_jsordering('#reporttable');
-	}
-	
 	/**
 	 * Create report table.
 	 * 
@@ -409,9 +405,7 @@ abstract class report_base {
 	}
 	
 	function print_report_page(){
-	    global $OUTPUT;
-	    
-		cr_print_js_function();
+	    global $PAGE, $OUTPUT;
 		
 		if ($this->print_using_template()) {
 			return true;
@@ -421,17 +415,14 @@ abstract class report_base {
 		
 	    $compclass = $this->get_component('filters');
 	    $compclass->print_to_report();
-		
+			    
 		$finaltable = $this->finalreport->table;
 		if ($finaltable && !empty($finaltable->data[0])) {
+		    $PAGE->requires->js_init_call('M.block_configurable_reports.setupTable', array('reporttable'));
 			echo html_writer::start_tag('div', array('id' => 'printablediv'));
 			
 			$compclass = $this->get_component('plot');
 			$compclass->print_to_report();
-			
-			if($this->config->jsordering){
-				$this->add_jsordering();				
-			}
 		
 			if($this->config->pagination){
 				$page = optional_param('page',0,PARAM_INT);
@@ -475,7 +466,20 @@ abstract class report_base {
 		    echo html_writer::tag('div', $norecords, array('class' => 'centerpara'));
 		}		
 		
-		cr_print_link($this->config->id);
+		$this->print_report_link();
+    }
+    
+    function print_report_link($printablediv = 'printablediv'){
+        global $PAGE, $OUTPUT;
+    
+        $PAGE->requires->js_init_call('M.block_configurable_reports.printDiv', array('printreport', $printablediv));
+        
+        echo html_writer::start_tag('div', array('id' => 'printreport', 'class' => 'centerpara'));
+        $url = new moodle_url('/blocks/configurable_reports/printreport.php', array('id' => $this->config->id));
+        $printstr = get_string('printreport', 'block_configurable_reports');
+        $icon = $OUTPUT->pix_icon('print', $printstr, 'block_configurable_reports');
+        echo html_writer::tag('a', "$icon $printstr $icon", array('href' => $url));
+        echo html_writer::end_tag('div');
     }
 }
 

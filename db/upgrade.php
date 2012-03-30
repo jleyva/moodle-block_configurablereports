@@ -85,6 +85,16 @@ function xmldb_block_configurable_reports_upgrade($oldversion) {
         
         upgrade_plugin_savepoint(true, 2012031902, 'block', 'configurable_reports');
     }
+    
+    /* Implement JS using graceful degradation - no need for option */
+    if ($oldversion < 2012033000) {
+        $table = new xmldb_table('block_configurable_reports_report');
+        // Drop jsordering field        
+        $field = new xmldb_field('jsordering', XMLDB_TYPE_INTEGER, '4', true, false, null, null, 'pagination');
+        if($dbman->field_exists($table, $field)){
+            $dbman->drop_field($table, $field);
+        }
+    }
 
     return true;
 }

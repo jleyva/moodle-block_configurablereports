@@ -13,8 +13,7 @@
         <FIELD NAME="name" TYPE="char" LENGTH="128" NOTNULL="true" SEQUENCE="false"  PREVIOUS="visible" NEXT="summary"/>
         <FIELD NAME="summary" TYPE="text" LENGTH="small" NOTNULL="false" SEQUENCE="false"  PREVIOUS="name" NEXT="type"/>
         <FIELD NAME="type" TYPE="char" LENGTH="128" NOTNULL="true" SEQUENCE="false"  PREVIOUS="summary" NEXT="pagination"/>
-		<FIELD NAME="pagination" TYPE="int" LENGTH="4" NOTNULL="false" UNSIGNED="true" SEQUENCE="false"  PREVIOUS="type" NEXT="jsordering"/>
-        <FIELD NAME="jsordering" TYPE="int" LENGTH="4" NOTNULL="false" UNSIGNED="true" SEQUENCE="false"  PREVIOUS="pagination]"/>
+		<FIELD NAME="pagination" TYPE="int" LENGTH="4" NOTNULL="false" UNSIGNED="true" SEQUENCE="false"  PREVIOUS="type"/>
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id" NEXT="course"/>

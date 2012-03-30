@@ -29,7 +29,7 @@ class component_template extends component_base{
 	}
 	
 	function print_report($reportclass){
-	    global $DB, $CFG, $OUTPUT;
+	    global $OUTPUT;
 	    
 	    $page = optional_param('page', 0, PARAM_INT);
 	    
@@ -68,13 +68,14 @@ class component_template extends component_base{
 	        $pagination =  $OUTPUT->render($pagingbar);
 	    }
 	    
+	    /* Add report elements */
 	    $search = array(
-	        '##reportname##',
-	        '##reportsummary##',
-	        '##graphs##',
-	        '##exportoptions##',
-	        '##calculationstable##',
-	        '##pagination##'
+	            '##reportname##',
+	            '##reportsummary##',
+	            '##graphs##',
+	            '##exportoptions##',
+	            '##calculationstable##',
+	            '##pagination##'
 	    );
 	    $plotclass = $this->get_component('plot');
 	    $exportclass = $this->get_component('export');
@@ -86,25 +87,26 @@ class component_template extends component_base{
 	        $calculations,
 	        $pagination
         );
-	    
 	    foreach($page_contents as $key=>$p){
 	        if($p){
-	            $page_contents[$key] = str_ireplace($search,$replace,$p);
+	            $page_contents[$key] = str_ireplace($search, $replace, $p);
 	        }
 	    }
 	    
-	    if($reportclass->config->jsordering){
-	        $reportclass->add_jsordering();
-	    }
+	    /* Print report */
 	    $reportclass->print_filters();
+	    
+	    //TODO: Need to actually have a table somewhere
+	    $PAGE->requires->js_init_call('M.block_configurable_reports.setupTable', array('reporttable'));
 	    
 	    echo html_writer::start_tag('div', array('id' => 'printablediv'));
 	    echo format_text($page_contents['header'], FORMAT_HTML);
 	    
 	    if($recordtpl){
 	        if($reportclass->config->pagination){
+	            $rowsperpage = $reportclass->config->pagination;
 	            $reportclass->totalrecords = count($reportclass->finalreport->table->data);
-	            $reportclass->finalreport->table->data = array_slice($reportclass->finalreport->table->data,$page * $reportclass->config->pagination, $reportclass->config->pagination);
+	            $reportclass->finalreport->table->data = array_slice($reportclass->finalreport->table->data, $page * $rowsperpage, $rowsperpage);
 	        }
 	        	
 	        foreach($reportclass->finalreport->table->data as $r){
@@ -119,7 +121,7 @@ class component_template extends component_base{
 	    echo format_text($page_contents['footer'], FORMAT_HTML);
 	    echo html_writer::end_tag('div');
 	    
-	    cr_print_link($report->config->id);
+	    $this->report->print_report_link();
 	}
 }
 
