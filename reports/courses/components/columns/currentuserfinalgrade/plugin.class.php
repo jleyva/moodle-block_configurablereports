@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -26,12 +25,12 @@ require_once($CFG->dirroot.'/blocks/configurable_reports/components/columns/plug
 
 class plugin_currentuserfinalgrade extends columns_plugin{
 
-	function execute($user, $courseid, $instance, $row, $starttime=0, $endtime=0){
-		global $CFG;
+	function execute($instance, $row, $starttime=0, $endtime=0){
+		global $CFG, $COURSE, $USER;
 		require_once($CFG->libdir.'/gradelib.php');
 		require_once($CFG->dirroot.'/grade/querylib.php');
 
-		$grade = grade_get_course_grade($user->id, $courseid);
+		$grade = grade_get_course_grade($USER->id, $COURSE->id);
 		
 		return $grade ? $grade->grade : '';
 	}

@@ -86,11 +86,11 @@ if (($moveup || $movedown) && confirm_sesskey()){
     redirect($returnurl);
 }
 
-$title = format_string($reportclass->config->name).' '.$compclass->get_name();
+$title = format_string($reportclass->config->name).' '.$compclass->get_type();
 $PAGE->set_title($title);
 $PAGE->set_heading($title);
 navigation_node::override_active_url($returnurl);
-$PAGE->navbar->add($pluginclass->get_name());
+$PAGE->navbar->add($pluginclass->get_type());
 
 $editform = $pluginclass->get_form($PAGE->url, array('id' => $id));		
 $editform->set_data($instance);

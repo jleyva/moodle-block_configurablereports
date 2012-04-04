@@ -36,23 +36,13 @@ class plugin_ccoursefield extends conditions_plugin{
 	    return true;
 	}
 	
-	function execute($userid, $courseid, $instance){
+	function execute($instance){
 	    if(! ($data = $instance->configdata)){
 	        return '';
 	    }
 		global $DB;
 	
-		$params = array();
-		switch($data->operator){
-			case 'LIKE % %':
-			    $params['value'] = "%$data->value%";
-				$select = $DB->sql_like($data->field, ':value');
-				break;						
-			default:
-			    $params['value'] = $data->value;
-			    $select = "$data->field $data->operator :value";
-				break;
-		}
+		list($select, $params) = $this->operator_sql($data);
 		
 		return $DB->get_fieldset_select('course', 'id', $select, $params);
 	}

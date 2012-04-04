@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -26,11 +25,12 @@ require_once($CFG->dirroot.'/blocks/configurable_reports/components/columns/plug
 
 class plugin_roleusersn extends columns_plugin{
 
-	function execute($user, $courseid, $instance, $row, $starttime=0, $endtime=0){
+	function execute($instance, $row, $starttime=0, $endtime=0){
 	    if(! ($data = $instance->configdata)){
 	        return '';
 	    }
-		return count_role_users($data->roles, context_course::instance($courseid));
+
+		return count_role_users($data->roles, context_course::instance($row->id));
 	}	
 	
 }

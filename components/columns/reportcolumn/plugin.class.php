@@ -35,8 +35,8 @@ class plugin_reportcolumn extends columns_plugin{
 		    'timeline'=>array('users','courses','sql'), 
 		    'categories' => array('courses')
 		);
-		$reportconfig = $this->report->config;
 		
+		$reportconfig = $this->report->config;
 		if (isset($reportconfig->courseid)) {
 		    $context = context_course::instance($reportconfig->courseid);
 		} else {
@@ -51,20 +51,6 @@ class plugin_reportcolumn extends columns_plugin{
 			}
 		}
 		return $reports;
-	}
-	
-	function get_current_report($report){
-		$components = cr_unserialize($report->components);
-			
-		if(!is_array($components) || empty($components['columns']['elements']))
-			return false;
-
-		$elements = $components['columns']['elements'];
-		foreach($elements as $e){
-			if($e['pluginname'] == 'reportcolumn' && $e['formdata']->reportid)
-				return $e['formdata']->reportid;
-		}
-		return 0;
 	}
 	
 	function get_report_columns($reportid){
@@ -96,9 +82,8 @@ class plugin_reportcolumn extends columns_plugin{
 		}
 	}
 	
-	// data -> Plugin configuration data
 	// row -> Complet course/user row c->id, c->fullname, etc...
-	function execute($user, $courseid, $instance, $row, $starttime=0, $endtime=0){
+	function execute($instance, $row, $starttime=0, $endtime=0){
 		global $DB, $CFG;
 		
 		if(! $report = $DB->get_record('block_configurable_reports_report', array('id' => $data->reportid)))

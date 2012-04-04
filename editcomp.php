@@ -65,7 +65,7 @@ if (!isset($compclass)) {
     print_error('badcomponent');
 }
 
-$title = format_string($reportclass->config->name).' '.$compclass->get_name();    //TODO: Display names
+$title = format_string($reportclass->config->name).' '.$compclass->get_type();    //TODO: Display names
 navigation_node::override_active_url($manageurl);
 $PAGE->navbar->add($title);
 $PAGE->set_title($title);

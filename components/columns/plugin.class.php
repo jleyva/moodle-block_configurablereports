@@ -39,7 +39,7 @@ abstract class columns_plugin extends plugin_base{
         return array($align, $size, $wrap);
     }
     
-    abstract function execute($user, $courseid, $instance, $row);
+    abstract function execute($instance, $row);
 }
 
 ?>

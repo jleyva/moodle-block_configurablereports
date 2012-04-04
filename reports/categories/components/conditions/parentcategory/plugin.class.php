@@ -42,13 +42,14 @@ class plugin_parentcategory extends conditions_plugin{
 	    return true;
 	}
 	
-	function execute($userid, $courseid, $instance){
+	function execute($instance){
 	    if(! ($data = $instance->configdata)){
 	        return '';
 	    }
 		global $DB, $CFG;
 		require_once($CFG->dirroot.'/course/lib.php');
 		
+		$catids = array();
 		if (isset($data->includesubcats)) {
 			if ($category = $DB->get_record('course_categories', array('id' => $data->categoryid))) {				
 				make_categories_list($options, $parents, '', 0, $category);
@@ -56,12 +57,12 @@ class plugin_parentcategory extends conditions_plugin{
 				make_categories_list($options, $parents);
 			}
 			unset($options[$data->categoryid]);			
-			return array_keys($options);
+			$catids = array_keys($options);
 		} else {
-			return $DB->get_fieldset_select('course_categories', 'id', 'parent = ?', array($data->categoryid));
+			$catids = $DB->get_fieldset_select('course_categories', 'id', 'parent = ?', array($data->categoryid));
 		}
 		
-		return array();
+		return $catids;
 	}
 	
 }

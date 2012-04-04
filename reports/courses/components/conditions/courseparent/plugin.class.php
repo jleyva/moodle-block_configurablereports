@@ -39,14 +39,14 @@ class plugin_courseparent extends conditions_plugin{
 	    return true;
 	}
 	
-	function execute($userid, $courseid, $instance){
+	function execute($instance){
 	    if(! ($data = $instance->configdata)){
 	        return '';
 	    }
 		global $DB;
 		
-		$params = array('parent_course' => $data->courseid);
-		return $DB->get_records_menu('course_meta', $params, 'child_course', 'id, child_course');
+		$params = array('enrol' => 'meta', 'courseid' => $data->courseid);
+		return $DB->get_records_menu('enrol', $params, 'customint1', 'courseid, customint1');
 	}
 	
 }

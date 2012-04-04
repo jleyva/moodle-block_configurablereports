@@ -26,7 +26,7 @@ require_once($CFG->dirroot.'/blocks/configurable_reports/components/export/plugi
 
 class plugin_export_ods extends export_plugin{
 
-    function get_name(){
+    function get_type(){
         return 'ods';
     }
     

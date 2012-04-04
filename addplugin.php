@@ -65,12 +65,12 @@ if (!isset($compclass)) {
 }
 $pluginclass = $compclass->get_plugin($plug);
 
-$title = format_string($reportclass->config->name).' '.$compclass->get_name();
+$title = format_string($reportclass->config->name).' '.$compclass->get_type();
 $PAGE->set_title($title);
 $PAGE->set_heading($title);
 
 navigation_node::override_active_url($returnurl);
-$PAGE->navbar->add($pluginclass->get_name());
+$PAGE->navbar->add($pluginclass->get_type());
 
 if ($pluginclass->has_form()) {
     $editform = $pluginclass->get_form($PAGE->url);

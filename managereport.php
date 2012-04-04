@@ -82,7 +82,7 @@ if($reports = cr_get_my_reports($USER->id, $context)){
     $sitestr = get_string('site');
     $delstr = get_string('deleted');
     
-    $PAGE->requires->js_init_call('M.block_configurable_reports.setupTable', array('reportslist'));
+    $PAGE->requires->js_init_call('M.block_configurable_reports.setup_html_table', array('reportslist'));
     
     $table = new html_table();
     $table->id = 'reportslist';

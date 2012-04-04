@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -26,12 +25,12 @@ require_once($CFG->dirroot.'/blocks/configurable_reports/components/conditions/p
 
 class plugin_currentusercourses extends conditions_plugin{
 	
-	function execute($userid, $courseid, $instance){
-		global $CFG;
+	function execute($instance){
+		global $CFG, $USER;
 		
 		require_once($CFG->libdir.'/enrollib.php');
 		
-		$mycourses = enrol_get_users_courses($userid);
+		$mycourses = enrol_get_users_courses($USER->id);
 		if (empty($mycourses)) {
 		    return array();
 		}

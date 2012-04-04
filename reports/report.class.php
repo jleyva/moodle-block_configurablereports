@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -65,58 +64,194 @@ abstract class report_base {
 	}
 	
 	/**
-	 * Retrieve the report name for this class definition.
-	 * FORMAT REQUIREMENT: report_XXX_YYY where XXX is the report name
-	 *
-	 * @return string    Report name
+	 * Retrieve a component class object.
+	 * @param string          $component    Component type
+	 * @param string          $classname    Component classname
+	 * @return component_base               Component class object
 	 */
-	function get_name(){
-	    $pieces = explode('_', get_class($this));
-	    return $pieces[1];
+	private function _create_component($component, $classname){
+	    global $CFG;
+	
+	    $file = 'component.class.php';
+	    $comppath = $this->get_component_path($component, $file);
+	    require_once("$comppath/$file");
+	
+	    return new $classname($this);
 	}
 	
-	function get_typename(){
-	    return get_string('report_'.$this->get_name(), 'block_configurable_reports');
+	/**
+	 * Load components objects for this report.
+	 */
+	private function _load_components(){
+	    $this->components = array();
+	     
+	    foreach($this->all_components() as $comp => $classname){
+	        $this->components[$comp] = $this->_create_component($comp, $classname);
+	    }
 	}
 	
 	function form_components(){
 	    return array(
-	        'export'    => 'component_export',
+	        'export' => 'component_export',
 	    );
+	}
+	
+	function check_permissions($context, $userid = null){
+	    global $USER;
+	    if (!isset($userid)) {
+	        $userid = $USER->id;
+	    }
+	
+	    // Management permissions
+	    if ($this->config->ownerid == $userid && has_capability('block/configurable_reports:manageownreports', $context, $userid)){
+	        return true;
+	    }
+	    if (has_capability('block/configurable_reports:managereports', $context, $userid)) {
+	        return true;
+	    }
+	    	
+	    // Visibility
+	    if (empty($this->config->visible)) {
+	        return false;
+	    }
+	
+	    // Custom permissions
+	    $permclass = $this->get_component('permissions');
+	    $permissions = $permclass->get_all_instances();
+	    if (empty($permissions)) {
+	        return has_capability('block/configurable_reports:viewreports', $context);
+	    }
+	
+	    $i = 1;
+	    $cond = array();
+	    foreach($permclass->get_plugins() as $plugclass){
+	        foreach($plugclass->get_instances() as $permission){
+	            $cond[$i] = $plugclass->execute($userid, $context, $permission);
+	            $i++;
+	        }
+	    }
+	
+	    if (count($cond) == 1) {
+	        return $cond[1];
+	    } else if (isset($permclass->config) && isset($permclass->config->conditionexpr)) {
+	        $logic = trim($permclass->config->conditionexpr);
+	
+	        $m = new EvalMath;
+	        $orig = $dest = array();
+	
+	        // Security
+	        // No more than conditions * 10 chars
+	        $logic = substr($logic, 0, count($permissions['elements']) * 10);
+	        $logic = str_replace(array('and','or'), array('&&','||'), strtolower($logic));
+	        // Only allowed chars
+	        $logic = preg_replace('/[^&c\d\s|()]/i', '', $logic);
+	        //$logic = str_replace('c','$c',$logic);
+	        $logic = str_replace(array('&&','||'), array('*','+'), $logic);
+	         
+	        for($j = $i -1; $j > 0; $j--){
+	            $orig[] = 'c'.$j;
+	            $dest[] = ($cond[$j]) ? 1 : 0;
+	        }
+	         
+	        return $m->evaluate(str_replace($orig, $dest, $logic));
+	    }
+	
+	    return false;
 	}
 	
 	abstract function component_classes();
 	
-	function all_components(){
-	    return array_merge($this->component_classes(), $this->form_components());
-	}
+	// Returns a report object
+	function create_report(){
+	    $finalelements = $this->get_elements_by_conditions();
 	
-	function _load_components(){
-	    $this->components = array();
-	    
-	    foreach($this->all_components() as $comp => $classname){
-	        $this->components[$comp] = component_base::get($this, $comp, $classname);
+	    // FILTERS    execute(finalelements, $instance)
+	    $compclass = $this->get_component('filters');
+	    foreach($compclass->get_plugins() as $plugclass){
+	        foreach($plugclass->get_instances() as $filter){
+	            $finalelements = $plugclass->execute($finalelements, $filter);
+	        }
 	    }
-	}
 	
-	function get_components($includeformcomps = false){
-	    if (!isset($this->components)) {
-	        $this->_load_components();
+	    // ORDERING
+	    $sqlorder = '';
+	    $orderingdata = array();
+	    $compclass = $this->get_component('ordering');
+	    foreach($compclass->get_plugins() as $plugclass){
+	        foreach($plugclass->get_instances() as $order){
+	            $sqlorder = $plugclass->execute($order);
+	        }
 	    }
-	    
-	    return array_intersect_key($this->components, $this->component_classes());
+	
+	    // RETRIEVE DATA ROWS
+	    $rows = $this->get_rows($finalelements, $sqlorder);
+	
+	    // COLUMNS - FIELDS
+	    $compclass = $this->get_component('columns');
+	    $reporttable = array();
+	    foreach($rows as $row){
+	        $tempcols = array();
+	        foreach($compclass->get_plugins() as $plugclass){
+	            if(! ($columns = $plugclass->get_instances())){
+	                continue;
+	            }
+	            foreach($columns as $column){
+	                $tempcols[] = $plugclass->execute($column, $row);
+	            }
+	        }
+	        $reporttable[] = $tempcols;
+	    }
+	
+	    $table = $this->create_table();
+	    $table->id = 'reporttable';
+	    $table->data = $reporttable;
+	    $this->finalreport->table = $table;
+	
+	    return true;
 	}
 	
-	function get_form_components(){
-	    if (!isset($this->components)) {
-	        $this->_load_components();
+	/**
+	 * Create report table.
+	 *
+	 * @param array $columns    Optional array of column instance ids
+	 * @return html_table
+	 */
+	function create_table(array $columns = null){
+	    $table = new html_table();
+	    $table->summary = $this->config->summary;
+	     
+	    $colcomp = $this->get_component('columns');
+	    foreach($colcomp->get_plugins() as $plugclass){
+	        foreach($plugclass->get_instances() as $pid => $column){
+	            if (isset($columns) && !in_array($pid, $columns)) {
+	                continue;
+	            }
+	            $table->head[] = $plugclass->get_fullname($column);
+	            list($align, $size, $wrap) = $plugclass->colformat($column);
+	            $table->align[] = $align;
+	            $table->size[] = $size;
+	            $table->wrap[] = $wrap;
+	        }
 	    }
 	     
-	    return array_intersect_key($this->components, $this->form_components());
+	    $config = $colcomp->config;
+	    if (!empty($config)) {
+	        $table->class = $config->class;
+	        $table->width = $config->tablewidth;
+	        $table->tablealign = $config->tablealign;
+	        $table->cellpadding = $config->cellpadding;
+	        $table->cellspacing = $config->cellspacing;
+	    } else {
+	        $table->width = '80%';
+	        $table->tablealign = 'center';
+	    }
+	     
+	    return $table;
 	}
 	
-	function has_component($compname){
-	    return array_key_exists($compname, $this->all_components());
+	
+	function all_components(){
+	    return array_merge($this->component_classes(), $this->form_components());
 	}
 	
 	/**
@@ -131,129 +266,88 @@ abstract class report_base {
 	    if (!isset($this->components)) {
 	        $this->_load_components();
 	    }
-	    
+	     
 	    return $this->components[$compname];
 	}
 	
-	/* Core component integration */
+	function get_components($includeformcomps = false){
+	    if (!isset($this->components)) {
+	        $this->_load_components();
+	    }
+	    
+	    return array_intersect_key($this->components, $this->component_classes());
+	}
+	
+	/**
+	 * Get path of component file.
+	 * @param string $component    Component type
+	 * @param string $file         File name
+	 * @param string $reportclass  Optional report class name
+	 * @return string              Full path to file directory (i.e. PATH/$file is the absolute dir)
+	 */
+	public function get_component_path($component, $file, $reportclass = null){
+	    global $CFG;
+	
+	    if (!isset($reportclass)) {
+	        $reportclass = get_class($this);
+	    }
+	     
+	    $basedir = "$CFG->dirroot/blocks/configurable_reports";
+	    $filepath = "components/$component";
+	    if (! ($parentclass = get_parent_class($reportclass))) {
+	        if (file_exists("$basedir/$filepath/$file")) {
+	            return "$basedir/$filepath";
+	        } else {
+	            throw new Exception(get_string('nosuchcomponent', 'block_configurable_reports'));
+	        }
+	    }
+	
+	    $custompath = "reports/".$this->get_type($reportclass);
+	    if (file_exists("$basedir/$custompath/$filepath/$file")) {
+	        return "$basedir/$custompath/$filepath";
+	    } else {
+	        return $this->get_component_path($component, $file, $parentclass);
+	    }
+    }
+	
+	function get_form_components(){
+	    if (!isset($this->components)) {
+	        $this->_load_components();
+	    }
+	     
+	    return array_intersect_key($this->components, $this->form_components());
+	}
 	
 	function get_column_options($ignore = array()){
 	    $options = array();
-	    if ($this->config->type != 'sql') {
-	        $columnclass = $this->get_component('columns');
-	        if(!isset($columnclass)){
-	            return null;
+	    
+	    $columnclass = $this->get_component('columns');
+	    if(!isset($columnclass)){
+	        return $options;
+	    }
+	    $instances = $columnclass->get_all_instances();
+	    if (empty($instances)) {
+	        return $options;
+	    }
+	    
+	    $i = 0;
+	    foreach($instances as $instance){
+	        if(!in_array($i, $ignore) && isset($instance->summary)){
+	            $options[$i] = $instance->summary;
 	        }
-	        $instances = $columnclass->get_all_instances();
-	        if (empty($instances)) {
-	            //print_error('nocolumns');
-	        }
-	
-	        $i = 0;
-	        foreach($instances as $instance){
-	            if(!in_array($i, $ignore) && isset($instance->summary)){
-	                $options[$i] = $instance->summary;
-	            }
-	            $i++;
-	        }
-	    } else {
-	        $customsqlclass = $this->get_component('customsql');
-	        if(!isset($customsqlclass)){
-	            return null;
-	        }
-	        $config = $customsqlclass->config;
-	
-	        if(isset($config->querysql)){
-	            $sql = $this->prepare_sql($config->querysql);
-	            if($rs = $this->execute_query($sql)){
-	                foreach ($rs as $row) {
-	                    $i = 0;
-	                    foreach($row as $colname=>$value){
-	                        $options[$i] = str_replace('_', ' ', $colname);
-	                        $i++;
-	                    }
-	                    break;
-	                }
-	                $rs->close();
-	            }
-	        }
+	        $i++;
 	    }
 	
 	    return $options;
 	}
 	
-	function check_permissions($context, $userid = null){
-		global $USER;
-		if (!isset($userid)) {
-		    $userid = $USER->id;
-		}
-		
-		// Management permissions
-		if ($this->config->ownerid == $userid && has_capability('block/configurable_reports:manageownreports', $context, $userid)){
-		    return true;
-		}
-		if (has_capability('block/configurable_reports:managereports', $context, $userid)) {
-			return true;
-		}
-			
-		// Visibility
-		if (empty($this->config->visible)) {
-			return false;
-		}
-		
-		// Custom permissions
-		$permclass = $this->get_component('permissions');
-		$permissions = $permclass->get_all_instances();
-		if (empty($permissions)) {
-		    return has_capability('block/configurable_reports:viewreports', $context);
-		}
-		
-		$i = 1;
-		$cond = array();
-		foreach($permclass->get_plugins() as $plugclass){
-		    foreach($plugclass->get_instances() as $permission){
-    		    $cond[$i] = $plugclass->execute($userid, $context, $permission);
-    		    $i++;
-		    }
-		}
-		
-		if (count($cond) == 1) {
-		    return $cond[1];
-		} else if (isset($permclass->config) && isset($permclass->config->conditionexpr)) {
-		    $logic = trim($permclass->config->conditionexpr);
-		    
-		    $m = new EvalMath;
-		    $orig = $dest = array();
-		    
-		    // Security
-		    // No more than conditions * 10 chars
-		    $logic = substr($logic, 0, count($permissions['elements']) * 10);
-		    $logic = str_replace(array('and','or'), array('&&','||'), strtolower($logic));
-		    // Only allowed chars
-		    $logic = preg_replace('/[^&c\d\s|()]/i', '', $logic);
-		    //$logic = str_replace('c','$c',$logic);
-		    $logic = str_replace(array('&&','||'), array('*','+'), $logic);
-		    	
-		    for($j = $i -1; $j > 0; $j--){
-		        $orig[] = 'c'.$j;
-		        $dest[] = ($cond[$j]) ? 1 : 0;
-		    }
-		    	
-		    return $m->evaluate(str_replace($orig, $dest, $logic));
-		}
-		
-		return false;
-	}
-	
 	function get_elements_by_conditions(){
-		global $USER, $COURSE;
-		
 		$i = 1;
 		$finalelements = array();
 		$condcomp = $this->get_component('conditions');
 		foreach($condcomp->get_plugins() as $plugclass){
 		    foreach($plugclass->get_instances() as $condition){
-    			$elements[$i] = $plugclass->execute($USER->id, $COURSE->id, $condition);
+    			$elements[$i] = $plugclass->execute($condition);
     			$i++;
 		    }
 		}
@@ -269,129 +363,26 @@ abstract class report_base {
 		return $finalelements;
 	}
 	
-	// Returns a report object 	
-	function create_report(){
-		global $USER, $COURSE;
-		
-		$finalelements = $this->get_elements_by_conditions();
-				
-		// FILTERS    execute(finalelements, $instance)
-		$compclass = $this->get_component('filters');
-		foreach($compclass->get_plugins() as $plugclass){
-		    foreach($plugclass->get_instances() as $filter){
-		        $finalelements = $plugclass->execute($finalelements, $filter);
-		    }
-		}
-		
-		// ORDERING
-		$sqlorder = '';
-		$orderingdata = array();
-		$compclass = $this->get_component('ordering');
-		foreach($compclass->get_plugins() as $plugclass){
-		    foreach($plugclass->get_instances() as $order){
-				$sqlorder = $plugclass->execute($order);
-			}
-		}
-		
-		// RETRIEVE DATA ROWS
-		$rows = $this->get_rows($finalelements, $sqlorder);
-	
-		// COLUMNS - FIELDS
-		$compclass = $this->get_component('columns');
-		$reporttable = array();
-		foreach($rows as $row){
-			foreach($compclass->get_plugins() as $plugclass){
-			    if(! ($columns = $plugclass->get_instances())){
-			        continue;
-			    }
-			    $tempcols = array();
-			    foreach($columns as $column){			         
-				    $tempcols[] = $plugclass->execute($USER, $COURSE->id, $column, $row);
-			    }
-			    $reporttable[] = $tempcols;
-			}
-			
-		}
-		
-// 		// EXPAND ROWS
-// 		$finaltable = array();
-// 		$newcols = array();
-		
-// 		foreach($reporttable as $row){
-// 			$col = array();
-// 			$multiple = false;
-// 			$nrows = 0;
-// 			$mrowsi = array();
-						
-// 			foreach($row as $key => $cell){
-// 				if (!is_array($cell)) {
-// 					$col[] = $cell;				
-// 				} else {
-// 					$multiple = true;
-// 					$nrows = count($cell);
-// 					$mrowsi[] = $key;
-// 				}				
-// 			}
-// 			if ($multiple) {
-// 				$newrows = array();
-// 				for($i=0; $i<$nrows; $i++){
-// 					$newrows[$i] = $row;
-// 					foreach($mrowsi as $index){
-// 						$newrows[$i][$index] = $row[$index][$i];
-// 					}
-// 				}
-// 				foreach($newrows as $r)
-// 					$finaltable[] = $r;
-// 			} else {
-// 				$finaltable[] = $col;
-// 			}
-// 		}
-		
-		$table = $this->create_table();
-		$table->id = 'reporttable';
-		$table->data = $reporttable;
-		$this->finalreport->table = $table;
-		
-		return true;
+	/**
+	 * Retrieve the report type for this class definition.
+	 * FORMAT REQUIREMENT: report_XXX_YYY where XXX is the report type
+	 * @param string  Optional report class name
+	 * @return string Report type
+	 */
+	function get_type($reportclass = null){
+	    if (!isset($reportclass)) {
+	        $reportclass = get_class($this);
+	    }
+	    $pieces = explode('_', $reportclass);
+	    return $pieces[1];
 	}
 	
-	/**
-	 * Create report table.
-	 * 
-	 * @param array $columns    Optional array of column instance ids
-	 * @return html_table
-	 */
-	function create_table(array $columns = null){
-	    $table = new html_table();
-	    $table->summary = $this->config->summary;
-	    
-	    $colcomp = $this->get_component('columns');
-	    foreach($colcomp->get_plugins() as $plugclass){
-	        foreach($plugclass->get_instances() as $pid => $column){
-	            if (isset($columns) && in_array($pid, $columns)) {
-	                continue;
-	            }
-	            $table->head[] = $plugclass->get_fullname($column);
-	            list($align, $size, $wrap) = $plugclass->colformat($column);
-	            $table->align[] = $align;
-	            $table->size[] = $size;
-	            $table->wrap[] = $wrap;
-	        }
-	    }
-	    
-	    $config = $colcomp->config;
-	    if (!empty($config)) {
-	        $table->class = $config->class;
-	        $table->width = $config->tablewidth;
-	        $table->tablealign = $config->tablealign;
-	        $table->cellpadding = $config->cellpadding;
-	        $table->cellspacing = $config->cellspacing;
-	    } else {
-	        $table->width = '80%';
-	        $table->tablealign = 'center';
-	    }
-	    
-	    return $table;
+	function get_typename(){
+	    return get_string('report_'.$this->get_type(), 'block_configurable_reports');
+	}
+	
+	function has_component($compname){
+	    return array_key_exists($compname, $this->all_components());
 	}
 	
 	function print_using_template(){
@@ -418,7 +409,7 @@ abstract class report_base {
 			    
 		$finaltable = $this->finalreport->table;
 		if ($finaltable && !empty($finaltable->data[0])) {
-		    $PAGE->requires->js_init_call('M.block_configurable_reports.setupTable', array('reporttable'));
+		    $PAGE->requires->js_init_call('M.block_configurable_reports.setup_data_table', array('reporttable'));
 			echo html_writer::start_tag('div', array('id' => 'printablediv'));
 			
 			$compclass = $this->get_component('plot');

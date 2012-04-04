@@ -24,7 +24,7 @@
 
 require_once($CFG->dirroot.'/blocks/configurable_reports/components/conditions/plugin.class.php');
 
-class plugin_cuserfield extends plugin_base{
+class plugin_cuserfield extends conditions_plugin{
 		
 	function summary($instance){
 	    if(! ($data = $instance->configdata)){
@@ -37,59 +37,36 @@ class plugin_cuserfield extends plugin_base{
 			$name = $DB->get_field('user_info_field', 'name', $params);
 			return $name .' '.$data->operator.' '.$data->value;
 		}
-		return get_string($data->field).' '.$data->operator.' '.$data->value;
 		
+		return get_string($data->field).' '.$data->operator.' '.$data->value;
 	}
 	
 	function has_form(){
 	    return true;
 	}
 	
-	function execute($userid, $courseid, $instance){
+	function execute($instance){
 	    if(! ($data = $instance->configdata)){
 	        return '';
 	    }
 		global $DB;
 		
-		if(strpos($data->field,'profile_') === 0){
-			
-			if($fieldid = $DB->get_field('user_info_field','id',array('shortname' => str_replace('profile_','', $data->field)))){
-			
-			    $select = 'fieldid = ? AND ';
-			    $params = array($fieldid);
-			    switch($data->operator){
-			        case 'LIKE % %':
-			            $select .= $DB->sql_like($data->field, "%$data->value%");
-			            break;
-			        default:
-			            $params = array($data->value);
-			            $select .= "data $data->operator ?";
-			            break;
-			    }
+		list($sql, $params) = $this->operator_sql($data, $params);
+		
+		$userids = array();
+		if (strpos($data->field, 'profile_') === 0) {
+		    $search = array('shortname' => str_replace('profile_','', $data->field));
+			if ($fieldid = $DB->get_field('user_info_field', 'id', $search)) {
+			    $sql .= " AND fieldid = :fieldid";
+			    $params['fieldid'] = $fieldid;
 
-				if($infodata = $DB->get_records_select('user_info_data', $select, $params)){
-					$finalusersid = array();
-					foreach($infodata as $d){
-						$finalusersid[] = $d->userid;
-					}
-					return $finalusersid;
-				}
+				$userids = $DB->get_fieldset_select('user_info_data', 'userid', $sql, $params);
 			}
-		} else {						
-			switch($data->operator){
-				case 'LIKE % %': 	$sql = "$data->field $ilike ?";
-									$params = array("%$data->value%");
-									break;
-				default:	$sql = "$data->field $data->operator ?";
-							$params = array($data->value);
-			}
-
-			$users = $DB->get_records_select('user',$sql,$params);			
-			if($users)
-				return array_keys($users);
+		} else if ($users = $DB->get_records_select('user', $sql, $params)) {
+            $userids =  array_keys($users);
 		}
 				
-		return array();
+		return $userids;
 	}
 	
 }

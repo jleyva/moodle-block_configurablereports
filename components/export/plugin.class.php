@@ -29,13 +29,13 @@ abstract class export_plugin extends plugin_base{
     }
     
     function get_fullname($instance){
-        return strtoupper($this->get_name());
+        return strtoupper($this->get_type());
     }
     
     function get_icon(){
         global $OUTPUT;
         
-        $name = $this->get_name();
+        $name = $this->get_type();
         
         $url = new moodle_url("/blocks/configurable_reports/components/export/$name/pix/icon.gif");
         $attributes = array('src' => $url, 'class' => 'smallicon');

@@ -26,7 +26,7 @@ require_once($CFG->dirroot.'/blocks/configurable_reports/components/columns/plug
 
 class plugin_coursefield extends columns_plugin{
 
-	function execute($user, $courseid, $instance, $row, $starttime=0, $endtime=0){
+	function execute($instance, $row, $starttime=0, $endtime=0){
 	    if(! ($data = $instance->configdata)){
 	        return '';
 	    }
@@ -38,7 +38,7 @@ class plugin_coursefield extends columns_plugin{
 			switch($data->column){
 				case 'enrolstartdate':
 				case 'enrolenddate':
-				case 'startdate': 	
+				case 'startdate':
 				    $column = ($column) ? userdate($column): '--';
 					break;
 				case 'visible':

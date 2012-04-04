@@ -29,6 +29,7 @@ if (!defined('MOODLE_INTERNAL')) {
 require_once($CFG->dirroot.'/blocks/configurable_reports/components/plugin_form.class.php');
 
 class coursechild_form extends plugin_form {
+    
     function definition() {
         global $DB, $USER, $CFG;
 
@@ -36,20 +37,22 @@ class coursechild_form extends plugin_form {
 
         $mform->addElement('header', 'plughead', get_string('coursechild','block_configurable_reports'), '');
 
-		$options = array();
-		$options[0] = get_string('choose');
-		
-		if($courses = $DB->get_records_sql('SELECT c.id, fullname FROM {course} c, {course_meta} cm WHERE c.id = cm.child_course GROUP BY (child_course)')){
-			foreach($courses as $c){
-				$options[$c->id] = format_string($c->fullname);
-			}
-		}
+        $field = $DB->sql_compare_text('e.enrol', 20);
+        $var = $DB->sql_compare_text(':metaenrol', 20);
+        $params = array('metaenrol' => 'meta');
+        $tables = "{course} c JOIN {enrol} e ON $field = $var AND c.id = e.customint1";
+        $sql = "SELECT c.id, c.fullname FROM $tables GROUP BY (c.id)";
+        $courses = $DB->get_records_sql($sql, $params);
+        
+        $options = array();
+        $options[0] = get_string('choose');
+        foreach($courses as $c){
+            $options[$c->id] = format_string($c->fullname);
+        }
 		
 		$mform->addElement('select', 'courseid', get_string('course'), $options);
-				
-        // buttons
-        $this->add_action_buttons();
 
+        $this->add_action_buttons();
     }
 
 }

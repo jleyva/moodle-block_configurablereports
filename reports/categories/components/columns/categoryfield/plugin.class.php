@@ -26,7 +26,7 @@ require_once($CFG->dirroot.'/blocks/configurable_reports/components/columns/plug
 
 class plugin_categoryfield extends columns_plugin{
 	
-	function execute($user, $courseid, $instance, $row, $starttime=0, $endtime=0){
+	function execute($instance, $row, $starttime=0, $endtime=0){
 	    if(! ($data = $instance->configdata)){
 	        return '';
 	    }

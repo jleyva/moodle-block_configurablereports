@@ -24,7 +24,7 @@ require_once($CFG->dirroot.'/blocks/configurable_reports/components/plugin.class
 
 abstract class ordering_plugin extends plugin_base{
     function get_fullname($instance){
-        $fieldtype = strstr($this->get_name(), 'order', true);
+        $fieldtype = strstr($this->get_type(), 'order', true);
         return get_string($fieldtype, 'block_configurable_reports');
     }
     

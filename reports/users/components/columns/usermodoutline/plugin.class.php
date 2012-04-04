@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -39,41 +38,45 @@ class plugin_usermodoutline extends columns_plugin{
 		return $data->columname;
 	}
 
-	function execute($user, $courseid, $instance, $row, $starttime=0, $endtime=0){
-		global $DB, $CFG;
+	function execute($instance, $row, $starttime=0, $endtime=0){
+	    if(! ($data = $instance->configdata)){
+	        return '';
+	    }
+	    global $DB, $CFG;
 		
 		$returndata = '';
 		
-		if (! ($cm = $DB->get_record('course_modules',array('id' => $data->cmid)))) {
+		if (! ($cm = $DB->get_record('course_modules', array('id' => $data->cmid)))) {
 		    return $returndata;
 		}
-		$mod = $DB->get_record('modules',array('id' => $cm->module));
-		
-		if (! ($instance = $DB->get_record("$mod->name",array('id' => $cm->instance)))) {
+		$mod = $DB->get_record('modules', array('id' => $cm->module));
+		if (! ($instance = $DB->get_record("$mod->name", array('id' => $cm->instance)))) {
 		    return $returndata;
 		}
 		
         $libfile = "$CFG->dirroot/mod/$mod->name/lib.php";
         if (file_exists($libfile)) {
         	require_once($libfile);
+        	
         	$user_outline = $mod->name."_user_outline";
         	if (function_exists($user_outline)) {
-        		if($course = $DB->get_record('course',array('id' => $this->report->courseid))){
-        			$result = $user_outline($course, $row, $mod, $instance);
-        			if($result){
-        				
-        				if (isset($result->info)) 
-        					$returndata .= $result->info.' ';
-        				
-        				if ((!isset($data->donotshowtime) || !$data->donotshowtime) && !empty($result->time)) 
-        					$returndata .= userdate($result->time);
-        				return $returndata;
-        			}
-        		}
+    	        $course = $DB->get_record('course', array('id' => $this->report->courseid));
+    			$result = $user_outline($course, $row, $mod, $instance);
+    			if($result){
+    				if (isset($result->info)) {
+    					$returndata .= $result->info.' ';
+    				}
+    				
+    				if ((!isset($data->donotshowtime) || !$data->donotshowtime) && !empty($result->time)) {
+    				    $returndata .= userdate($result->time);
+    				}
+    					
+    				return $returndata;
+    			}
         	}
         }
         
-		return '';
+		return $returndata;
 	}
 	
 }

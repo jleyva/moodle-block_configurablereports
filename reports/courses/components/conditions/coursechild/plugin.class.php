@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -24,7 +23,7 @@
 
 require_once($CFG->dirroot.'/blocks/configurable_reports/components/conditions/plugin.class.php');
 
-class plugin_coursechild extends plugin_base{
+class plugin_coursechild extends conditions_plugin{
 	
 	function summary($instance){
 	    if(! ($data = $instance->configdata)){
@@ -32,9 +31,9 @@ class plugin_coursechild extends plugin_base{
 	    }
 		global $DB;
 		
-		$course = $DB->get_record('course',array('id' => $data->courseid));
-		if($course)
+		if ($course = $DB->get_record('course', array('id' => $data->courseid))) {
 			return get_string('coursechild','block_configurable_reports').' '.(format_string($course->fullname));
+		}
 		return '';
 	}
 	
@@ -42,14 +41,14 @@ class plugin_coursechild extends plugin_base{
 	    return true;
 	}
 	
-	function execute($userid, $courseid, $instance){
+	function execute($instance){
 	    if(! ($data = $instance->configdata)){
 	        return '';
 	    }
 		global $DB;
 
-		$params = array('child_course' => $data->courseid);
-		return $DB->get_records_menu('course_meta', $params, 'parent_course', 'id, parent_course');
+		$params = array('enrol' => 'meta', 'customint1' => $data->courseid);
+		return $DB->get_records_menu('enrol', $params, 'courseid', 'customint1, courseid');
 	}
 	
 }

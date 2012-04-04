@@ -38,7 +38,7 @@ abstract class component_form extends moodleform {
         global $DB;
         
         $compclass = $this->_customdata['compclass'];
-        $search = array('reportid' => $compclass->report->id, 'component' => $compclass->get_name());
+        $search = array('reportid' => $compclass->report->id, 'component' => $compclass->get_type());
         $configdata = $DB->get_field('block_configurable_reports_component', 'configdata', $search);
         
         return $configdata ? cr_unserialize($configdata) : new stdClass();
@@ -68,7 +68,7 @@ abstract class component_form extends moodleform {
         $configdata = cr_serialize($data);
 
         $compclass = $this->_customdata['compclass'];
-        $search = array('reportid' => $compclass->report->id, 'component' => $compclass->get_name());
+        $search = array('reportid' => $compclass->report->id, 'component' => $compclass->get_type());
         if ($record = $DB->get_record('block_configurable_reports_component', $search)){
             $record->configdata = $configdata;
             $DB->update_record('block_configurable_reports_component', $record);

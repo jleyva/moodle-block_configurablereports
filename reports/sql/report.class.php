@@ -42,7 +42,7 @@ class report_sql extends report_base{
 		
 		$sql = str_replace('%%USERID%%', $USER->id, $sql);
 		// See http://en.wikipedia.org/wiki/Year_2038_problem
-		$sql = str_replace(array('%%STARTTIME%%','%%ENDTIME%%'),array('0','2145938400'),$sql);
+		$sql = str_replace(array('%%STARTTIME%%','%%ENDTIME%%'), array('0','2145938400'), $sql);
 		$sql = preg_replace('/%{2}[^%]+%{2}/i','',$sql);
 		return $sql;
 	}
@@ -53,6 +53,33 @@ class report_sql extends report_base{
 		$sql = preg_replace('/\bprefix_(?=\w+)/i', $CFG->prefix, $sql);
 
 		return  $DB->get_recordset_sql($sql, null, 0, $limitnum);
+	}
+	
+	function get_column_options($ignore = array()){
+	    $options = array();
+	    
+	    $customsqlclass = $this->get_component('customsql');
+	    if(!isset($customsqlclass)){
+	        return null;
+	    }
+	    $config = $customsqlclass->config;
+	    
+	    if(isset($config->querysql)){
+	        $sql = $this->prepare_sql($config->querysql);
+	        if($rs = $this->execute_query($sql)){
+	            foreach ($rs as $row) {
+	                $i = 0;
+	                foreach($row as $colname=>$value){
+	                    $options[$i] = str_replace('_', ' ', $colname);
+	                    $i++;
+	                }
+	                break;
+	            }
+	            $rs->close();
+	        }
+	    }
+	    
+	    return $options;
 	}
 	
 	function create_report(){

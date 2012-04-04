@@ -25,9 +25,49 @@ require_once($CFG->dirroot.'/blocks/configurable_reports/components/plugin.class
 abstract class conditions_plugin extends plugin_base{
     
     function summary($instance){
-        return get_string($this->get_name().'_summary', 'block_configurable_reports');
+        return get_string($this->get_type().'_summary', 'block_configurable_reports');
     }
 
-    abstract function execute($userid, $courseid, $instance);
+    function get_operators(){
+        return array(
+            '=' => '=',
+            '>' => '>',
+            '<' => '<',
+            '>=' => '>=',
+            '<=' => '<=',
+            '<>' => '<>',
+            'LIKE'         => 'LIKE',
+            'LIKE % %'     => 'LIKE % %',
+            'NOT LIKE'     => 'NOT LIKE',
+            'NOT LIKE % %' => 'NOT LIKE % %'
+        );
+    }
+    
+    function operator_sql($data, $params = array()){
+        global $DB;
+        
+        switch($data->operator){
+            case 'NOT LIKE % %':
+                $data->value = "%$data->value%";
+            case 'NOT LIKE':
+                $params['value'] = $data->value;
+                $sql = $DB->sql_like($data->field, ':value', true, true, true);
+                break;
+            case 'LIKE % %':
+                $data->value = "%$data->value%";
+            case 'LIKE':
+                $params['value'] = $data->value;
+                $sql = $DB->sql_like($data->field, ':value');
+                break;
+            default:
+                $params['value'] = $data->value;
+                $sql = "$data->field $data->operator :value";
+                break;
+        }
+        
+        return array($sql, $params);
+    }
+    
+    abstract function execute($instance);
     
 }

@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -30,13 +29,24 @@ require_once($CFG->dirroot.'/blocks/configurable_reports/components/columns/plug
 
 class coursestats_form extends columns_plugin_form {
     function definition() {
-        global $DB, $USER, $CFG;
+        global $DB, $CFG, $OUTPUT;
 
         $mform =& $this->_form;
 
+        $statsdisabled = !isset($CFG->enablestats) || !$CFG->enablestats;
+        if ($statsdisabled) {
+            $staterr = get_string('globalstatsshouldbeenabled', 'block_configurable_reports');
+            $mform->addElement('html', $OUTPUT->notification($staterr));
+        }
+        
         $mform->addElement('header', 'plughead', get_string('coursestats','block_configurable_reports'), '');
 
-        $coursestats = array('totalenrolments'=>get_string('statstotalenrolments','block_configurable_reports'),'activeenrolments'=>get_string('statsactiveenrolments','block_configurable_reports'),'activityview'=>get_string('activityview','block_configurable_reports'),'activitypost'=>get_string('activitypost','block_configurable_reports'));
+        $coursestats = array(
+            'totalenrolments'  => get_string('statstotalenrolments','block_configurable_reports'),
+            'activeenrolments' => get_string('statsactiveenrolments','block_configurable_reports'),
+            'activityview'     => get_string('activityview','block_configurable_reports'),
+            'activitypost'     => get_string('activitypost','block_configurable_reports')
+        );
 		$mform->addElement('select', 'stat', get_string('stat','block_configurable_reports'), $coursestats);
 		
 		$roles = $DB->get_records('role');
@@ -50,15 +60,14 @@ class coursestats_form extends columns_plugin_form {
 
         $this->common_column_options();
         
-        $this->add_action_buttons();
+        if (!$statsdisabled) {
+            $this->add_action_buttons();
+        }
     }
 
 	function validation($data, $files){
 		global $CFG;
 		$errors = parent::validation($data, $files);
-		
-		if(!isset($CFG->enablestats) || !$CFG->enablestats)
-			$errors['stat'] = get_string('globalstatsshouldbeenabled', 'block_configurable_reports');
 			
 		if(($data['stat'] == 'activityview' || $data['stat'] == 'activitypost') && !isset($data['roles'])){
 			$errors['roles'] = get_string('youmustselectarole', 'block_configurable_reports');

@@ -26,7 +26,7 @@ require_once($CFG->dirroot.'/blocks/configurable_reports/components/columns/plug
 
 class plugin_coursestats extends columns_plugin{
 	
-	function execute($user, $courseid, $instance, $row, $starttime=0, $endtime=0){
+	function execute($instance, $row, $starttime=0, $endtime=0){
 	    if(! ($data = $instance->configdata)){
 	        return '';
 	    }
@@ -34,8 +34,9 @@ class plugin_coursestats extends columns_plugin{
 		
 		$stat = '--';
 					
-		$filter_starttime = optional_param('filter_starttime',0,PARAM_RAW);
-		$filter_endtime = optional_param('filter_endtime',0,PARAM_RAW);
+		//TODO: Move to filters and utilize with API
+		$filter_starttime = optional_param_array('filter_starttime', 0, PARAM_RAW);
+		$filter_endtime = optional_param_array('filter_endtime', 0, PARAM_RAW);
 		
 		// Do not apply filters in timeline report (filters yet applied)
 		if($starttime && $endtime){
@@ -48,51 +49,53 @@ class plugin_coursestats extends columns_plugin{
 			$filter_endtime = make_timestamp($filter_endtime['year'],$filter_endtime['month'],$filter_endtime['day']);
 		}
 		
-		$starttime = ($filter_starttime)? $filter_starttime : $starttime;
-		$endtime = ($filter_endtime)? $filter_endtime : $endtime;
+		$starttime = ($filter_starttime) ? $filter_starttime : $starttime;
+		$endtime = ($filter_endtime) ? $filter_endtime : $endtime;
 		
 		$extrasql = "";
-		
+		$params = array();
 		switch($data->stat){
 			case 'activityview':
-								$total = 'SUM(stat1)';
-								$stattype = 'activity';
-								$extrasql = " AND roleid IN (".implode(',',$data->roles).")";
-								break;
+				$total = 'SUM(stat1)';
+				$stattype = 'activity';
+				list($rolesql, $params) = $DB->get_in_or_equal($data->roles, SQL_PARAMS_NAMED);
+				$extrasql = " AND roleid $rolesql";
+				break;
 			case 'activitypost':
-								$total = 'SUM(stat2)';
-								$stattype = 'activity';
-								$extrasql = " AND roleid IN (".implode(',',$data->roles).")";
-								break;
+				$total = 'SUM(stat2)';
+				$stattype = 'activity';
+				list($rolesql, $params) = $DB->get_in_or_equal($data->roles, SQL_PARAMS_NAMED);
+				$extrasql = " AND roleid $rolesql";
+				break;
 			case 'activeenrolments':			
-								$total = 'stat2';
-								$stattype = 'enrolments';
-								$extrasql = " ORDER BY timeend DESC LIMIT 1";
-								break;
+				$total = 'stat2';
+				$stattype = 'enrolments';
+				$extrasql = " ORDER BY timeend DESC LIMIT 1";
+				break;
 			case 'totalenrolments':
 			default:
-								$total = 'stat1';
-								$stattype = 'enrolments';
-								$extrasql = " ORDER BY timeend DESC LIMIT 1";
+				$total = 'stat1';
+				$stattype = 'enrolments';
+				$extrasql = " ORDER BY timeend DESC LIMIT 1";
 		}
-		$sql = "SELECT $total as total FROM {stats_daily} WHERE stattype = ? AND courseid = ?";
-		$params = array($stattype, $row->id);
+		$sql = "SELECT $total as total FROM {stats_daily} WHERE stattype = :stattype AND courseid = :courseid";
+		$params['stattype'] = $stattype;
+		$params['courseid'] = $row->id;
 		
-		if($starttime and $endtime){
+		if ($starttime and $endtime) {
 			$starttime = usergetmidnight($starttime) + 24*60*60;
 			$endtime = usergetmidnight($endtime) + 24*60*60;
-			$sql .= " AND timeend >= ? AND timeend <= ?";
-			$params = array_merge($params, array($starttime,$endtime));
-		}			
-
-		$sql .= $extrasql;		
+			$sql .= " AND timeend >= :timestart AND timeend <= :timeend";
+			$params = array_merge($params, array('timestart' => $starttime, 'timeend' => $endtime));
+		}	
 		
-		if($res = $DB->get_records_sql($sql,$params)){
+		if($res = $DB->get_records_sql($sql.$extrasql, $params)){
 			$res = array_shift($res);
-			if($res->total != NULL)
+			if ($res->total != NULL) {
 				return $res->total;
-			else
+			} else {
 				return 0;
+			}
 		}
 		
 		return $stat;

@@ -28,25 +28,29 @@ if (!defined('MOODLE_INTERNAL')) {
 require_once($CFG->libdir.'/formslib.php');
 
 class report_edit_form extends moodleform {
+    private $id;
+    private $course;
+    private $type;
+    
     function definition() {
         global $DB, $USER, $CFG;
 
         $mform =& $this->_form;
-        $id = $this->_customdata['id'];
-        $courseid = $this->_customdata['courseid'];
-        $reporttype = $this->_customdata['type'];
+        $this->id     = isset($this->_customdata['id']) ? $this->_customdata['id'] : null;
+        $this->course = isset($this->_customdata['courseid']) ? $this->_customdata['courseid'] : null;
+        $this->type   = $this->_customdata['type'];
 
         $this->general_options();
         
         $this->component_options();
 
-		$mform->addElement('hidden', 'type', $reporttype);
+		$mform->addElement('hidden', 'type', $this->type);
 		if (isset($courseid)) {
-		    $mform->addElement('hidden', 'courseid', $courseid);
+		    $mform->addElement('hidden', 'courseid', $this->course);
 		}
 		
-		if ($id) {
-			$mform->addElement('hidden', 'id', $id);
+		if ($this->id) {
+			$mform->addElement('hidden', 'id', $this->id);
 			$this->add_action_buttons();
 		} else {
 		    $this->add_action_buttons(true, get_string('add'));
@@ -81,9 +85,9 @@ class report_edit_form extends moodleform {
         $mform =& $this->_form;
         
         $report = new stdClass();
-        $report->id = $this->_customdata['id'];
-        $report->courseid = $this->_customdata['courseid'];
-        $report->type = $this->_customdata['type'];
+        $report->id       = $this->id;
+        $report->courseid = $this->course;
+        $report->type     = $this->type;
         $reportclass = report_base::get($report);
         
         foreach($reportclass->get_form_components() as $comp => $compclass){
@@ -96,11 +100,7 @@ class report_edit_form extends moodleform {
 		
 		// SQL report has special permissions due to full DB access
 		if ($data['type'] == 'sql') {
-		    if ($this->_customdata['courseid']) {
-		        $context = context_course::instance($this->_customdata['courseid']);
-		    } else {
-		        $context = context_system::instance();
-		    }
+		    $context = $this->course ? context_course::instance($this->course) : context_system::instance();
     		if (!has_capability('block/configurable_reports:managesqlreports', $context)) {
 		        $errors[] = 'nosqlpermissions';
 		    }

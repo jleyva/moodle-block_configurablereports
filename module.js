@@ -3,46 +3,91 @@
  */
 
 M.block_configurable_reports = {
-	/* Table */
-	setupTable : function (Y, tableid){
-		var table_data = this.parseHTMLTable(Y, "#"+tableid);
+	/* Tables */
+	setup_html_table : function (Y, tableid){
+		var tableNode = Y.one('#'+tableid);
 		
 		Y.use("datatable-sort", function (Y) {
-	        dt = new Y.DataTable.Base({
-	            columnset: table_data.cols,
-	            recordset: table_data.data
-	        }).plug(Y.Plugin.DataTableSort).render("#"+tableid);
+			var cols   = [];
+	        var fields = [];
+	        var sortField = function (a, b, desc){
+	        	console.log(a);
+	        	var aa = a.get('lastName') + a.get('firstName'),
+	        	bb = a.get('lastName') + b.get('firstName'),
+	        	order = (aa > bb) ? 1 : -(aa < bb);
+	        	return desc ? -order : order;
+	        };
+
+		    //Get columnset
+	        tableNode.all("th").each(function(thNode){
+	        	var col = thNode.get("text");
+	            cols.push( {key: col, label: col, sortable:true, sortFn: sortField} );
+	        });
+	        
+	        //Get recordset
+	        tableNode.all("tbody tr").each(function(item){
+	        	var field = {};
+	            item.all("td").each( function(titem, tindex){
+	                field[ cols[tindex].key ] = titem.getContent();
+	            });
+	            fields.push( field );
+	        });
+	        
+        	var dt = new Y.DataTable.Base({columnset: cols, recordset: fields});
+        	dt.plug(Y.Plugin.DataTableSort);
+	        
+	        //Hide HTML content with JS content
+	        tableNode.all('thead').setAttribute('style', 'display:none;');
+	        tableNode.all('tbody').setAttribute('style', 'display:none;');
+	        dt.render('#'+tableid);
 		});
     },
-	parseHTMLTable : function (Y, table_id) {
-        var tnode = Y.one( table_id ),
-            thead = [],
-            tr    = [];
+    setup_data_table : function (Y, tableid){
+		var tableNode = Y.one('#'+tableid);
+		
+		Y.use("datatype", "datasource-xmlschema", "datasource-local", 
+				"datatable-datasource", "datatable-sort", function (Y) {
+			var cols   = [];
+	        var fields = [];
+	        
+	        // Each record is held in a TR
+	        schema = {resultListLocator:"tr"};
+	        // Each field name is held in a TH
+	        thList = tableNode.all("th");
+	
+		    // Generate field definitions based on TH
+		    thList.each(function(thNode, i){
+		    	var text = thNode.get("text");
+		    	cols.push({key: text, label: text, sortable: true});
+		        // Note that the XPath indexes are 1-based!
+		        fields.push({
+		        	key: text, 
+		        	locator: "td["+(i+1)+"]", 
+		        	//FIXME Custom parser used until YUI adds parsers (3.6?) 
+		        	parser: function(val) { 
+		        		if(isFinite(String(val))){
+		        			return Number(val);
+		        		}
+		        		return val;
+	        		}
+		        });
+		    });
+		    schema.resultFields = fields;
+		    
+	        console.log();
 
-    	//Get table columns   
-        tnode.all("th").each(function(item){
-        	var col = item.getContent();
-            thead.push( {key: col, label: col, sortable:true} );
-        });
-        
-        //Get table data
-        tnode.all("tbody tr").each(function(item){
-        	var tr_obj = {};
-            item.all("td").each( function(titem, tindex){
-            	var content = titem.getContent();
-            	// Hacky method to allow sorting of links
-            	if(link = titem.all('a')){
-            		content = '<span style="display:none;">' + link.getContent() + '</span>' + content;
-            	}
-                tr_obj[ thead[tindex].key ] = content;                
-            });
-            tr.push( tr_obj );
-        });
-        
-        //Remove old data
-        tnode.setContent('');
-        
-        return { cols:thead, data:tr };        
+		    var ds = new Y.DataSource.Local({source: Y.Node.getDOMNode(tableNode.one('tbody'))});
+			ds.plug(Y.Plugin.DataSourceXMLSchema, {schema: schema});
+				
+	        var dt = new Y.DataTable.Base({columnset: cols});
+	        dt.plug(Y.Plugin.DataTableDataSource, {datasource: ds, initialRequest: ""});
+	        dt.plug(Y.Plugin.DataTableSort);
+	        
+	        //Hide HTML content with JS content
+	        tableNode.all('thead').setAttribute('style', 'display:none;');
+	        tableNode.all('tbody').setAttribute('style', 'display:none;');
+	        dt.render('#'+tableid);
+		});
     },
     
     /* Printable */

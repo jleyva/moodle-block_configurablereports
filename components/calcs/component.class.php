@@ -34,6 +34,8 @@ class component_calcs extends component_base{
 	}
 	
 	function print_to_report($reportclass, $return = false){
+	    global $PAGE;
+	    
 	    $calcs = $this->get_all_instances();
 	    if (empty($calcs)) {
 	        return;
@@ -49,18 +51,21 @@ class component_calcs extends component_base{
 	    
 	    /* Perform calculations on rows */
 	    $finalcalcs = array();
+	    $columns = array();
 	    foreach($this->get_plugins() as $plugclass){
-	        $plugname = $plugclass->get_name();
-	        foreach($plugclass->get_instances() as $calc){
+	        $plugname = $plugclass->get_type();
+	        foreach($plugclass->get_instances() as $pid => $calc){
 	            $column = $calc->configdata->column;
 	            if (isset($rows[$column])) {
 	                $finalcalcs[$column][$plugname] = $plugclass->execute($rows[$column]);
 	            }
 	        }
 	    }
-	    ksort($finalcalcs);
 	    
-	    $table = $reportclass->create_table(array_keys($finalcalcs));
+	    $table = $reportclass->create_table($columns);
+	    $table->id = 'calctable';
+	    $PAGE->requires->js_init_call('M.block_configurable_reports.setup_data_table', array('calctable'));
+	    
 	    $tabletitle = get_string("columncalculations", "block_configurable_reports");
 	    $output = html_writer::tag('div', "<b>$tabletitle</b>", array('class' => 'centerpara'));
 	    $output .= html_writer::table($table);

@@ -92,6 +92,8 @@ if(has_capability('block/configurable_reports:managereports', $context) ||
     cr_print_tabs($reportclass, 'viewreport');
 }
 
+echo '<div id="dtable"></div>';
+
 $reportclass->print_report_page($context);
 
 echo $OUTPUT->footer();

@@ -56,7 +56,7 @@ class report_courses extends report_base{
 		
 		if(!empty($elements)){
 			list($usql, $params) = $DB->get_in_or_equal($elements);
-			return $DB->get_records_select('course',"id $usql", $params, $sqlorder);
+			return $DB->get_records_select('course', "id $usql", $params, $sqlorder);
 		}	
 		
 		return $finalelements;

@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -35,9 +34,8 @@ class reportcolumn_form extends columns_plugin_form {
         $mform =& $this->_form;
         $mform->addElement('header', 'plughead', get_string('reportcolumn','block_configurable_reports'), '');
 
-		$reportid = optional_param('reportid',0,PARAM_INT);
-		if($actualrid = $this->_customdata['plugclass']->get_current_report($this->_customdata['report']))
-			$reportid = $actualrid;
+		$reportid = optional_param('reportid', 0, PARAM_INT);
+		$actualrid = $this->_customdata['plugclass']->report->config->id;
 		
 		$reports = $this->_customdata['plugclass']->get_user_reports(); 
         $reportoptions = array(0=>get_string('choose'));

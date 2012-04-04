@@ -218,7 +218,7 @@ $string['statslogins'] = 'Logins in the platform';
 $string['activityview'] = 'Activity views';
 $string['activitypost'] = 'Activity posts';
 $string[''] = '';
-$string['globalstatsshouldbeenabled'] = 'Site statistics must be enabled. Go to Admin -> Server -> Statistics';
+$string['globalstatsshouldbeenabled'] = 'Site statistics must be enabled. Go to Site administration -> Advanced features';
 
 $string['xaxis'] = 'X Axis';
 $string['yaxis'] = 'Y Axis';

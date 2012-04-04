@@ -26,8 +26,10 @@ require_once($CFG->dirroot.'/blocks/configurable_reports/components/conditions/p
 
 class plugin_currentreportcourse extends conditions_plugin{
 	
-	function execute($userid, $courseid, $instance){
-		return array($courseid);
+	function execute($instance){
+	    global $COURSE;
+	    
+		return array($COURSE->id);
 	}
 	
 }

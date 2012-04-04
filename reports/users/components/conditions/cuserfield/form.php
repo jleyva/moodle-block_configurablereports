@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -29,8 +28,8 @@ if (!defined('MOODLE_INTERNAL')) {
 require_once($CFG->dirroot.'/blocks/configurable_reports/components/plugin_form.class.php');
 
 class cuserfield_form extends plugin_form {
-	var $allowedops =  array('='=>'=','>'=>'>','<'=>'<','>='=>'>=','<='=>'<=','<>'=>'<>','LIKE'=>'LIKE','NOT LIKE'=>'NOT LIKE','LIKE % %'=>'LIKE % %');
-
+    private $columns;
+    
     function definition() {
         global $DB, $USER, $CFG;
 
@@ -38,54 +37,51 @@ class cuserfield_form extends plugin_form {
 
         $mform->addElement('header', 'plughead', get_string('coursefield','block_configurable_reports'), '');
 
-		$columns = $DB->get_columns('user');
+        $mform->addElement('select', 'field', get_string('column','block_configurable_reports'), $this->get_columns());
+        
+        $plugclass = $this->_customdata['plugclass'];
+		$mform->addElement('select', 'operator', get_string('operator','block_configurable_reports'), $plugclass->get_operators());
 		
-		$usercolumns = array();
-		foreach($columns as $c)
-			$usercolumns[$c->name] = $c->name;
-			
-		if($profile = $DB->get_records('user_info_field'))
-			foreach($profile as $p)
-				$usercolumns['profile_'.$p->shortname] = $p->name;	
-			
-        $mform->addElement('select', 'field', get_string('column','block_configurable_reports'), $usercolumns);
-		
-		$mform->addElement('select', 'operator', get_string('operator','block_configurable_reports'), $this->allowedops);
-		$mform->addElement('text','value',get_string('value','block_configurable_reports'));		
-		
-        // buttons
-        $this->add_action_buttons();
+		$mform->addElement('text','value',get_string('value', 'block_configurable_reports'));		
 
+        $this->add_action_buttons();
     }
 	
 	function validation($data,$files){
-		global $DB, $db, $CFG;
-		
 		$errors = parent::validation($data, $files);
 		
-		if(!in_array($data['operator'],$this->allowedops)){
-			$errors['operator'] = get_string('error_operator','block_configurable_reports');
-		}
-	
-		$columns = $DB->get_columns('user');	
-		$usercolumns = array();
-		foreach($columns as $c)
-			$usercolumns[$c->name] = $c->name;
-		if($profile = $DB->get_records('user_info_field'))
-			foreach($profile as $p)
-				$usercolumns['profile_'.$p->shortname] = 'profile_'.$p->shortname;	
-			
-		if(!in_array($data['field'],$usercolumns)){
-			$errors['field'] = get_string('error_field','block_configurable_reports');
+		if (!in_array($data['field'], $this->get_columns())) {
+		    $errors['field'] = get_string('error_field', 'block_configurable_reports');
 		}
 		
-		if(!is_numeric($data['value']) && preg_match('/^(<|>)[^(<|>)]/i',$data['operator'])){
+		$plugclass = $this->_customdata['plugclass'];
+		if (!in_array($data['operator'], $plugclass->get_operators())) {
+			$errors['operator'] = get_string('error_operator', 'block_configurable_reports');
+		}
+		
+		if (!is_numeric($data['value']) && preg_match('/^(<|>)[^(<|>)]/i', $data['operator'])) {
 			$errors['value'] = get_string('error_value_expected_integer','block_configurable_reports');
 		}
 		
 		return $errors;
 	}
 
+	function get_columns(){
+	    global $DB;
+	    
+	    if (!isset($this->columns)) {
+    	    $this->columns = array();
+    	    foreach($DB->get_columns('user') as $c){
+    	        $this->columns[$c->name] = $c->name;
+    	    }
+    	    $customfields = $DB->get_fieldset_select('user_info_field', 'shortname', '');
+    	    foreach($customfields as $field){
+    	        $this->columns['profile_'.$field] = 'profile_'.$field;
+    	    }
+	    }
+	    
+	    return $this->columns;
+	}
 }
 
 ?>

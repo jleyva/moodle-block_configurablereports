@@ -29,15 +29,15 @@ abstract class filters_plugin extends plugin_base{
     }
     
     function get_fullname($instance){
-        return get_string('filter'.$this->get_name(), 'block_configurable_reports');
+        return get_string('filter'.$this->get_type(), 'block_configurable_reports');
     }
     
     function summary($instance){
-        return get_string('filter'.$this->get_name().'_summary', 'block_configurable_reports');
+        return get_string('filter'.$this->get_type().'_summary', 'block_configurable_reports');
     }
     
     function sql_elements($finalelements, $filter){
-        $filtername = "FILTER_".strtoupper($this->get_name());
+        $filtername = "FILTER_".strtoupper($this->get_type());
         if(preg_match("/%%$filtername:([^%]+)%%/i", $finalelements, $output)){
             $replace = ' AND '.$output[1].' = '.$filter;
             return str_replace("%%$filtername:$output[1]%%", $replace, $finalelements);

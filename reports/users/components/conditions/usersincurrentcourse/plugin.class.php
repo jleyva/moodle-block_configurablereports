@@ -30,13 +30,13 @@ class plugin_usersincurrentcourse extends conditions_plugin{
         return true;
     }
     
-	function execute($userid, $courseid, $instance){
+	function execute($instance){
 	    if(! ($data = $instance->configdata)){
 	        return '';
 	    }
-		global $DB;
+		global $DB, $COURSE;
 	
-		$context = context_course::instance($courseid);
+		$context = context_course::instance($COURSE->id);
 		if($users = get_role_users($data->roles, $context, false, 'u.id')){
 			return array_keys($users);
 		}

@@ -26,7 +26,7 @@ require_once($CFG->dirroot.'/blocks/configurable_reports/components/columns/plug
 
 class plugin_userfield extends columns_plugin{
 
-	function execute($user, $courseid, $instance, $row, $starttime=0, $endtime=0){
+	function execute($instance, $row, $starttime=0, $endtime=0){
 	    if(! ($data = $instance->configdata)){
 	        return '';
 	    }
@@ -39,7 +39,7 @@ class plugin_userfield extends columns_plugin{
 			if($profiledata = $DB->get_records_sql($sql, array($user->id))){
 				foreach($profiledata as $p){
 					if($p->datatype == 'checkbox'){
-						$p->data = ($p->data)? get_string('yes') : get_string('no');
+						$p->data = ($p->data) ? get_string('yes') : get_string('no');
 					}
 					if($p->datatype == 'datetime'){
 						$p->data = userdate($p->data);
@@ -51,15 +51,14 @@ class plugin_userfield extends columns_plugin{
 		
 		$column = $row->{$data->column};
 		
-		if(isset($column)){
+		if (isset($column)) {
 			switch($data->column){
 				case 'firstaccess':
 				case 'lastaccess':
 				case 'currentlogin':
 				case 'timemodified':
 				case 'lastlogin': 	
-				    $column = ($column)? userdate($column): '--';
-					break;
+				    return ($column) ? userdate($column): '--';
 				case 'confirmed':
 				case 'policyagreed':
 				case 'maildigest':
@@ -68,12 +67,13 @@ class plugin_userfield extends columns_plugin{
 				case 'trackforums':
 				case 'screenreader':
 				case 'emailstop':
-					$column = ($column)? get_string('yes') : get_string('no');
-					break;
+					return ($column) ? get_string('yes') : get_string('no');
+				default:
+				    return $column;
 			}
 		}
 		
-		return isset($column) ? $column : '';
+		return '';
 	}
 	
 }

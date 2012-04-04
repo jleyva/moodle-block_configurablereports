@@ -58,7 +58,7 @@ class component_export extends component_base{
         //TODO: Should have some save_instance functions for general config handling
         $search = array(
 	        'reportid'  => $this->report->id, 
-	        'component' => $this->get_name(),
+	        'component' => $this->get_type(),
 	    );
         if ($record = $DB->get_record('block_configurable_reports_component', $search)) {
             $method = 'update_record';
@@ -108,7 +108,7 @@ class component_export extends component_base{
             $exportclass = $this->get_plugin($export);
             $icon = $exportclass->get_icon();
             $fullname = $exportclass->get_fullname(null);
-            $attr = array('href' => $viewurl->out(false, array('format' => $exportclass->get_name())));
+            $attr = array('href' => $viewurl->out(false, array('format' => $exportclass->get_type())));
             $options[] = html_writer::tag('a', "$icon $fullname", $attr);
         }
         

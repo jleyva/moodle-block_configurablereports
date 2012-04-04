@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -26,13 +25,11 @@ require_once($CFG->dirroot.'/blocks/configurable_reports/components/columns/plug
 
 class plugin_userstats extends columns_plugin{
 
-	function execute($user, $courseid, $instance, $row, $starttime=0, $endtime=0){
-		global $DB, $CFG;
-		
-		$stat = '--';
+	function execute($instance, $row, $starttime=0, $endtime=0){
+		global $DB, $COURSE;
 					
-		$filter_starttime = optional_param('filter_starttime',0,PARAM_RAW);
-		$filter_endtime = optional_param('filter_endtime',0,PARAM_RAW);
+		$filter_starttime = optional_param_array('filter_starttime', 0, PARAM_RAW);
+		$filter_endtime = optional_param_array('filter_endtime', 0, PARAM_RAW);
 		
 		// Do not apply filters in timeline report (filters yet applied)
 		if($starttime && $endtime){
@@ -52,9 +49,9 @@ class plugin_userstats extends columns_plugin{
 			$sql = "userid = ?";
 			$params =  array($row->id);
 			
-			if($courseid != 1){
+			if($COURSE->id != 1){
 				$sql .= " AND course = ?";
-				$params = array_merge($params, array($courseid));
+				$params = array_merge($params, array($COURSE->id));
 			}
 				
 			if($starttime and $endtime){
@@ -84,28 +81,30 @@ class plugin_userstats extends columns_plugin{
 
                 $dedication = $previouslogtime - $sessionstart;
                 $totaldedication += $dedication;
+                
 				return format_time($totaldedication);
 			}
+			
 			// Code from Course Dedication Block
 			return 0;
 		}		
 		
 		switch($data->stat){
 			case 'activityview':
-								$total = 'statsreads';
-								$stattype = 'activity';
-								break;
+    			$total = 'statsreads';
+    			$stattype = 'activity';
+    			break;
 			case 'activitypost':
-								$total = 'statswrites';
-								$stattype = 'activity';
-								break;
+				$total = 'statswrites';
+				$stattype = 'activity';
+				break;
 			case 'logins':			
 			default:
-								$total = 'statsreads';
-								$stattype = 'logins';
+				$total = 'statsreads';
+				$stattype = 'logins';
 		}
 		$sql = "SELECT SUM($total) as total FROM {stats_user_daily} WHERE stattype = ? AND userid = ?";
-		$params = array($stattype,$row->id);
+		$params = array($stattype, $row->id);
 		
 		if($starttime and $endtime){
 			$starttime = usergetmidnight($starttime) + 24*60*60;
@@ -116,13 +115,14 @@ class plugin_userstats extends columns_plugin{
 		
 		if($res = $DB->get_records_sql($sql, $params)){				
 			$res = array_shift($res);
-			if($res->total != NULL)
+			if ($res->total != NULL) {
 				return $res->total;
-			else
+			} else {
 				return 0;
+			}
 		}		
 		
-		return $stat;
+		return '--';
 	}	
 }
 
