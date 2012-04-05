@@ -21,7 +21,7 @@
   * @date: 2009
   */
 
-require_once($CFG->dirroot.'/blocks/configurable_reports/components/filters/plugin.class.php');
+require_once($CFG->dirroot.'/blocks/configurable_reports/components/filters/courses/plugin.class.php');
 
 class plugin_courses_sql extends plugin_courses{
 	

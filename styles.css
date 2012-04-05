@@ -2,17 +2,17 @@
 	width: 100%;
 }
 
-.yui3-datatable th.header{
+.yui3-skin-sam th.yui3-datatable-sortable .yui3-datatable-liner{
 	background-image:url([[pix:block_configurable_reports|normal]]);
 	background-position:right center;
 	background-repeat:no-repeat;
 	cursor:pointer;
 }
 
-.yui3-datatable th.yui3-datatable-asc{
+.yui3-skin-sam th.yui3-datatable-asc .yui3-datatable-liner{
 	background-image:url([[pix:block_configurable_reports|asc]]);
 }
 
-.yui3-datatable th.yui3-datatable-desc{
+.yui3-skin-sam th.yui3-datatable-desc .yui3-datatable-liner{
 	background-image:url([[pix:block_configurable_reports|desc]]);
 }    
