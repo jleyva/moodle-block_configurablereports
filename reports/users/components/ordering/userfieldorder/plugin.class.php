@@ -32,8 +32,10 @@ class plugin_userfieldorder extends ordering_plugin{
         foreach($DB->get_columns('user') as $dbfield){
             $columns[$dbfield->name] = $dbfield->name;
         }
+        
         return $columns;
 	}
+	
 }
 
 ?>

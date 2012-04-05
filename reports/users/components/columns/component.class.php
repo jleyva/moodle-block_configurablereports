@@ -27,10 +27,11 @@ class component_columns_user extends component_columns{
 	
     function plugin_classes(){
         $classes = array(
-    	    'userfield'        => 'plugin_userfield',
-    	    'usermodactions'   => 'plugin_usermodactions',
-    	    'usermodoutline'   => 'plugin_usermodoutline',
-    	    'userstats'        => 'plugin_userstats',
+            'reportcolumn'   => 'plugin_reportcolumn_user',
+    	    'userfield'      => 'plugin_userfield',
+    	    'usermodactions' => 'plugin_usermodactions',
+    	    'usermodoutline' => 'plugin_usermodoutline',
+    	    'userstats'      => 'plugin_userstats',
 	    );
     
         return array_merge(parent::plugin_classes(), $classes);

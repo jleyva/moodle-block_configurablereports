@@ -21,18 +21,22 @@
   * @date: 2009
   */
 
-require_once($CFG->dirroot.'/blocks/configurable_reports/components/columns/component.class.php');
+require_once($CFG->dirroot.'/blocks/configurable_reports/components/filters/plugin.class.php');
 
-class component_columns_category extends component_columns{
+class plugin_courses_sql extends plugin_courses{
 	
-    function plugin_classes(){
-        $classes = array(
-            'categoryfield' => 'plugin_categoryfield',
-            'reportcolumn'  => 'plugin_reportcolumn_category',
-	    );
-    
-        return array_merge(parent::plugin_classes(), $classes);
-    }
+	function filter_elements($finalelements, $filter){
+    	if ($sqlelements = $this->sql_elements($finalelements, $filter)) {
+    	    return $sqlelements;
+    	}
+    	
+    	return $finalelements;
+	}
+	
+	function get_course_ids(){
+	    global $DB;
+	    return $DB->get_fieldset_select('course', 'id', '');
+	}
 	
 }
 

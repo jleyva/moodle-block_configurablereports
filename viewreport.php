@@ -87,7 +87,7 @@ echo $OUTPUT->header();
 if(has_capability('block/configurable_reports:managereports', $context) ||
         (has_capability('block/configurable_reports:manageownreports', $context)) && $report->ownerid == $USER->id ){
     
-    echo $OUTPUT->heading(get_string('report_'.$report->type, 'block_configurable_reports'));
+    echo $OUTPUT->heading($reportclass->get_typename());
     
     cr_print_tabs($reportclass, 'viewreport');
 }

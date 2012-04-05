@@ -30,29 +30,23 @@ class plugin_categories extends filters_plugin{
 			return $finalelements;
 		}
 		
-		// TODO: Check logic
-		if ($this->report->config->type == 'sql' && $sqlelements = $this->sql_elements($finalelements, $filter)) {
-		    return $sqlelements;
-		} else {
-		    return array($filter);
-		}
-			
-		return $finalelements;
+		return $this->filter_elements($finalelements, $filter);
+	}
+	
+	function filter_elements($finalelements, $filter){
+	    return array($filter);
+	}
+	
+	function get_category_ids(){
+	    return $this->report->get_elements_by_conditions();
 	}
 	
 	function print_filter(&$mform, $instance){
 		global $DB;
 		
 		$filter_categories = optional_param('filter_categories', 0, PARAM_INT);
-
-		// TODO: ???
-		if($this->report->config->type != 'sql'){
-		    $reportclass = report_base::get($this->report);
-			$catids = $reportclass->get_elements_by_conditions();
-		} else {
-		    $catids = $DB->get_fieldset_select('course_categories', 'id', '');
-		}
 		
+		$catids = $this->get_category_ids();
 		if(empty($catids)){
 		    return;
 		}   

@@ -116,7 +116,7 @@ if($reports = cr_get_my_reports($USER->id, $context)){
         $viewurl->param('id', $r->id);
         
         $reportname = html_writer::tag('a', $r->name, array('href' => $viewurl));
-        $reporttype = get_string('report_'.$r->type, 'block_configurable_reports');
+        $reporttype = $report->get_typename();
         
         if(!isset($r->courseid)) {
             $coursename = html_writer::tag('a', $sitestr, array('href' => $CFG->wwwroot));

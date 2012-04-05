@@ -3,7 +3,7 @@
 $string['blockname'] = "Informes personalizados";
 $string['report_courses'] = "Informe de cursos";
 $string['report_users'] = "Informes de usuarios";
-$string['report_sql'] = "Informe SQL";
+$string['report_customsql'] = "Informe SQL";
 $string['managereports'] = "Gestionar informes";
 
 $string['report'] = "Informe";

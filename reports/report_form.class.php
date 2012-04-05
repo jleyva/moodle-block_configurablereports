@@ -28,29 +28,30 @@ if (!defined('MOODLE_INTERNAL')) {
 require_once($CFG->libdir.'/formslib.php');
 
 class report_edit_form extends moodleform {
-    private $id;
-    private $course;
-    private $type;
     
     function definition() {
-        global $DB, $USER, $CFG;
-
         $mform =& $this->_form;
-        $this->id     = isset($this->_customdata['id']) ? $this->_customdata['id'] : null;
-        $this->course = isset($this->_customdata['courseid']) ? $this->_customdata['courseid'] : null;
-        $this->type   = $this->_customdata['type'];
+        
+        $reportclass = $this->_customdata['reportclass'];
+        if (isset($reportclass)) {
+            $type = $reportclass->config->type;
+            $courseid = $reportclass->config->courseid;
+        } else {
+            $type = $this->_customdata['type'];
+            $courseid = $this->_customdata['courseid'];
+        }
 
         $this->general_options();
         
         $this->component_options();
 
-		$mform->addElement('hidden', 'type', $this->type);
+		$mform->addElement('hidden', 'type', $type);
 		if (isset($courseid)) {
-		    $mform->addElement('hidden', 'courseid', $this->course);
+		    $mform->addElement('hidden', 'courseid', $courseid);
 		}
 		
-		if ($this->id) {
-			$mform->addElement('hidden', 'id', $this->id);
+		if (isset($reportclass)) {
+			$mform->addElement('hidden', 'id', $reportclass->id);
 			$this->add_action_buttons();
 		} else {
 		    $this->add_action_buttons(true, get_string('add'));
@@ -58,17 +59,18 @@ class report_edit_form extends moodleform {
     }
     
     function general_options(){
+        global $CFG;
         $mform =& $this->_form;
         
         $mform->addElement('header', 'reportgeneral', get_string('general', 'form'));
         
         $mform->addElement('text', 'name', get_string('name'));
+        $mform->addRule('name', null, 'required', null, 'client');
         if (!empty($CFG->formatstringstriptags)) {
             $mform->setType('name', PARAM_TEXT);
         } else {
             $mform->setType('name', PARAM_CLEAN);
         }
-        $mform->addRule('name', null, 'required', null, 'client');
         
         $mform->addElement('htmleditor', 'summary', get_string('summary'), array('rows' => 15));
         $mform->setType('summary', PARAM_RAW);
@@ -76,38 +78,19 @@ class report_edit_form extends moodleform {
         for ($i=0; $i<=100; $i++) {
             $pagoptions[$i] = $i;
         }
-        $mform->addElement('select', 'pagination', get_string("pagination",'block_configurable_reports'), $pagoptions);
-        $mform->setDefault('pagination',0);
+        $mform->addElement('select', 'pagination', get_string("pagination", 'block_configurable_reports'), $pagoptions);
         $mform->addHelpButton('pagination','pagination', 'block_configurable_reports');
+        $mform->setDefault('pagination', 0);
     }
     
     function component_options(){
         $mform =& $this->_form;
         
-        $report = new stdClass();
-        $report->id       = $this->id;
-        $report->courseid = $this->course;
-        $report->type     = $this->type;
-        $reportclass = report_base::get($report);
-        
+        $reportclass = $this->_customdata['reportclass'];
         foreach($reportclass->get_form_components() as $comp => $compclass){
             $compclass->report_form_elements($mform);
         }
     }
-	
-	function validation($data, $files){
-		$errors = parent::validation($data, $files);
-		
-		// SQL report has special permissions due to full DB access
-		if ($data['type'] == 'sql') {
-		    $context = $this->course ? context_course::instance($this->course) : context_system::instance();
-    		if (!has_capability('block/configurable_reports:managesqlreports', $context)) {
-		        $errors[] = 'nosqlpermissions';
-		    }
-	    }
-		
-		return $errors;
-	}
 }
 
 ?>

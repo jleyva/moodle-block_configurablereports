@@ -23,6 +23,7 @@
 require_once($CFG->dirroot.'/blocks/configurable_reports/components/plugin.class.php');
 
 abstract class ordering_plugin extends plugin_base{
+    
     function get_fullname($instance){
         $fieldtype = strstr($this->get_type(), 'order', true);
         return get_string($fieldtype, 'block_configurable_reports');
@@ -47,8 +48,10 @@ abstract class ordering_plugin extends plugin_base{
     }
 
 	function execute($instance){
-	    $data = $instance->configdata;
-		if($data->direction != 'asc' || $data->direction != 'desc'){
+        if(! ($data = $instance->configdata)){
+            return '';
+        }
+		if($data->direction != 'asc' && $data->direction != 'desc'){
 		    return '';
 		}
 		$columns = $this->get_columns();

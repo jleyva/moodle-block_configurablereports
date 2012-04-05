@@ -28,8 +28,8 @@ class component_filters_sql extends component_filters{
 
 	function plugin_classes(){
 	    $classes = array(
-            'categories'   => 'plugin_categories',
-	        'courses'      => 'plugin_courses',
+            'categories'   => 'plugin_categories_sql',
+	        'courses'      => 'plugin_courses_sql',
 	    );
 	    
 	    return array_merge(parent::plugin_classes(), $classes);

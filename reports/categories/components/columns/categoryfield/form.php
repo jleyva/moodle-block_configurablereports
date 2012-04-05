@@ -29,6 +29,7 @@ if (!defined('MOODLE_INTERNAL')) {
 require_once($CFG->dirroot.'/blocks/configurable_reports/components/columns/plugin_form.class.php');
 
 class categoryfield_form extends columns_plugin_form {
+    
     function definition() {
         global $DB, $USER, $CFG;
 
@@ -48,6 +49,7 @@ class categoryfield_form extends columns_plugin_form {
         
         $this->add_action_buttons();
     }
+    
 }
 
 ?>

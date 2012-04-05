@@ -28,6 +28,7 @@ if (!defined('MOODLE_INTERNAL')) {
 require_once($CFG->dirroot.'/blocks/configurable_reports/components/columns/plugin_form.class.php');
 
 class reportcolumn_form extends columns_plugin_form {
+    
     function definition() {
         global $DB, $USER, $CFG;
 
@@ -35,22 +36,21 @@ class reportcolumn_form extends columns_plugin_form {
         $mform->addElement('header', 'plughead', get_string('reportcolumn','block_configurable_reports'), '');
 
 		$reportid = optional_param('reportid', 0, PARAM_INT);
-		$actualrid = $this->_customdata['plugclass']->report->config->id;
+		$actualrid = $this->_customdata['plugclass']->report->id;
 		
 		$reports = $this->_customdata['plugclass']->get_user_reports(); 
         $reportoptions = array(0=>get_string('choose'));
-		
-		if($reports)
-			foreach($reports as $r)
-				$reportoptions[$r->id] = format_string($r->name);
+		foreach($reports as $r) {
+			$reportoptions[$r->id] = format_string($r->name);
+		}
 		
 		$furl = "$CFG->wwwroot/blocks/configurable_reports/editplugin.php?id=".$this->_customdata['report']->id."&comp=columns&pname=reportcolumn";
 		$options = array('onchange'=>'location.href="'.$furl.'&reportid="+document.getElementById("id_reportid").value');
-		if($actualrid)
+		if ($actualrid) {
 			$options['disabled'] = 'disabled';
-		
+		}
 		$mform->addElement('select', 'reportid', get_string('report','block_configurable_reports'), $reportoptions, $options);
-		$mform->setDefault('reportid',$reportid);
+		$mform->setDefault('reportid', $reportid);
 						
 		$columnsoptions = $this->_customdata['plugclass']->get_report_columns($reportid);
 		$mform->addElement('select', 'column', get_string('column','block_configurable_reports'), $columnsoptions);
@@ -63,11 +63,13 @@ class reportcolumn_form extends columns_plugin_form {
 	function validation($data, $files){
 		$errors = parent::validation($data, $files);
 		
-		if(!$data['reportid'])
+		if (!$data['reportid']) {
 			$errors['reportid'] = get_string('missingcolumn','block_configurable_reports');
+		}
 			
-		if(!isset($data['column']))
+		if (!isset($data['column'])) {
 			$errors['column'] = get_string('missingcolumn','block_configurable_reports');
+		}
 				
 		return $errors;
 	}	

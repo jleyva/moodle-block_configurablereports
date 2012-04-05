@@ -15,25 +15,24 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /** Configurable Reports
-  * A Moodle block for creating customizable reports
+  * A Moodle block for creating Configurable Reports
   * @package blocks
   * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
   * @date: 2009
   */
 
-require_once($CFG->dirroot.'/blocks/configurable_reports/components/columns/component.class.php');
+require_once($CFG->dirroot.'/blocks/configurable_reports/reports/report.class.php');
 
-class component_columns_category extends component_columns{
-	
-    function plugin_classes(){
-        $classes = array(
-            'categoryfield' => 'plugin_categoryfield',
-            'reportcolumn'  => 'plugin_reportcolumn_category',
-	    );
+abstract class report_sql_base extends report_base{
     
-        return array_merge(parent::plugin_classes(), $classes);
-    }
-	
+    /**
+     * Execute compiled SQL query to retrieve dataset.
+     * @param string $sql          SQL statement
+     * @param int $limitnum        Record limit
+     * @return moodle_recordset    Report recordset
+     */
+    abstract function execute_query($sql, $limitnum);
+    
+    abstract function prepare_sql($sql);
+    
 }
-
-?>

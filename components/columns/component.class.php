@@ -24,9 +24,7 @@
 class component_columns extends component_base{
 	
 	function plugin_classes(){
-	    return array(
-    	    'reportcolumn' => 'plugin_reportcolumn',
-	    );
+	    return array();
 	}
 	
 	function has_ordering(){

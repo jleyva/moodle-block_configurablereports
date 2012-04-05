@@ -3,7 +3,7 @@
 $string['blockname'] = "מעצב דוחות";
 $string['report_courses'] = "דוח קורסים";
 $string['report_users'] = "דוח משתמשים";
-$string['report_sql'] = "SQL דוח";
+$string['report_customsql'] = "SQL דוח";
 $string['managereports'] = "נהל דוחות";
 
 $string['report'] = "דוח";

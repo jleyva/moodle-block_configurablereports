@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -22,7 +21,9 @@
   * @date: 2009
   */
 
-class report_courses extends report_base{
+require_once("$CFG->dirroot/blocks/configurable_reports/reports/report_dataset.class.php");
+
+class report_courses extends report_dataset_base{
 
     function component_classes(){
         return array(
@@ -50,16 +51,14 @@ class report_courses extends report_base{
 	}
 	
 	function get_rows($elements, $sqlorder = ''){
-		global $DB, $CFG;
+		global $DB;
 		
-		$finalelements = array();
+		if (empty($elements)) {
+		    return array();
+		}
+		list($usql, $params) = $DB->get_in_or_equal($elements);
 		
-		if(!empty($elements)){
-			list($usql, $params) = $DB->get_in_or_equal($elements);
-			return $DB->get_records_select('course', "id $usql", $params, $sqlorder);
-		}	
-		
-		return $finalelements;
+		return $DB->get_records_select('course', "id $usql", $params, $sqlorder);
 	}
 	
 }

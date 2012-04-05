@@ -21,7 +21,6 @@
   * @date: 2009
   */
 
-require_once($CFG->dirroot.'/lib/evalmath/evalmath.class.php');
 require_once($CFG->dirroot.'/blocks/configurable_reports/components/component.class.php');
 
 abstract class report_base {
@@ -31,8 +30,6 @@ abstract class report_base {
 	
 	var $finalreport;
 	var $totalrecords = 0;
-	var $starttime = 0;
-	var $endtime = 0;
 	
 	/**
 	 * Retrieve a report class based on report record or report id.
@@ -97,13 +94,16 @@ abstract class report_base {
 	}
 	
 	function check_permissions($context, $userid = null){
-	    global $USER;
+	    global $CFG, $USER;
+	    
+	    require_once($CFG->dirroot.'/lib/evalmath/evalmath.class.php');
+	    
 	    if (!isset($userid)) {
 	        $userid = $USER->id;
 	    }
 	
 	    // Management permissions
-	    if ($this->config->ownerid == $userid && has_capability('block/configurable_reports:manageownreports', $context, $userid)){
+	    if ($this->config->ownerid == $userid && has_capability('block/configurable_reports:manageownreports', $context, $userid)) {
 	        return true;
 	    }
 	    if (has_capability('block/configurable_reports:managereports', $context, $userid)) {
@@ -161,57 +161,10 @@ abstract class report_base {
 	
 	abstract function component_classes();
 	
-	// Returns a report object
-	function create_report(){
-	    $finalelements = $this->get_elements_by_conditions();
-	
-	    // FILTERS    execute(finalelements, $instance)
-	    $compclass = $this->get_component('filters');
-	    foreach($compclass->get_plugins() as $plugclass){
-	        foreach($plugclass->get_instances() as $filter){
-	            $finalelements = $plugclass->execute($finalelements, $filter);
-	        }
-	    }
-	
-	    // ORDERING
-	    $sqlorder = '';
-	    $orderingdata = array();
-	    $compclass = $this->get_component('ordering');
-	    foreach($compclass->get_plugins() as $plugclass){
-	        foreach($plugclass->get_instances() as $order){
-	            $sqlorder = $plugclass->execute($order);
-	        }
-	    }
-	
-	    // RETRIEVE DATA ROWS
-	    $rows = $this->get_rows($finalelements, $sqlorder);
-	
-	    // COLUMNS - FIELDS
-	    $compclass = $this->get_component('columns');
-	    $reporttable = array();
-	    foreach($rows as $row){
-	        $tempcols = array();
-	        foreach($compclass->get_plugins() as $plugclass){
-	            if(! ($columns = $plugclass->get_instances())){
-	                continue;
-	            }
-	            foreach($columns as $column){
-	                $tempcols[] = $plugclass->execute($column, $row);
-	            }
-	        }
-	        $reporttable[] = $tempcols;
-	    }
-	
-	    $table = $this->create_table();
-	    $table->id = 'reporttable';
-	    $table->data = $reporttable;
-	    $this->finalreport->table = $table;
-	
-	    return true;
-	}
+	abstract function create_report();
 	
 	/**
-	 * Create report table.
+	 * Create report table using the columns component.
 	 *
 	 * @param array $columns    Optional array of column instance ids
 	 * @return html_table
@@ -219,7 +172,7 @@ abstract class report_base {
 	function create_table(array $columns = null){
 	    $table = new html_table();
 	    $table->summary = $this->config->summary;
-	     
+	
 	    $colcomp = $this->get_component('columns');
 	    foreach($colcomp->get_plugins() as $plugclass){
 	        foreach($plugclass->get_instances() as $pid => $column){
@@ -233,7 +186,7 @@ abstract class report_base {
 	            $table->wrap[] = $wrap;
 	        }
 	    }
-	     
+	
 	    $config = $colcomp->config;
 	    if (!empty($config)) {
 	        $table->class = $config->class;
@@ -245,10 +198,9 @@ abstract class report_base {
 	        $table->width = '80%';
 	        $table->tablealign = 'center';
 	    }
-	     
+	
 	    return $table;
 	}
-	
 	
 	function all_components(){
 	    return array_merge($this->component_classes(), $this->form_components());
@@ -270,7 +222,7 @@ abstract class report_base {
 	    return $this->components[$compname];
 	}
 	
-	function get_components($includeformcomps = false){
+	function get_components(){
 	    if (!isset($this->components)) {
 	        $this->_load_components();
 	    }
@@ -339,28 +291,6 @@ abstract class report_base {
 	    }
 	
 	    return $options;
-	}
-	
-	function get_elements_by_conditions(){
-		$i = 1;
-		$finalelements = array();
-		$condcomp = $this->get_component('conditions');
-		foreach($condcomp->get_plugins() as $plugclass){
-		    foreach($plugclass->get_instances() as $condition){
-    			$elements[$i] = $plugclass->execute($condition);
-    			$i++;
-		    }
-		}
-		
-		if (empty($elements)) {
-		    return $this->get_all_elements();
-		} else if(count($elements) == 1){
-			$finalelements = $elements[1];
-		}else{
-			$finalelements = $condcomp->evaluate_expression($elements);
-		}
-				
-		return $finalelements;
 	}
 	
 	/**

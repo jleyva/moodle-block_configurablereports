@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -22,32 +21,46 @@
   * @date: 2009
   */
 
-define('REPORT_CUSTOMSQL_MAX_RECORDS', 5000);
+require_once("$CFG->dirroot/blocks/configurable_reports/reports/report_sql.class.php");
 
-class report_sql extends report_base{
-	
+class report_customsql extends report_sql_base{
+	const max_records = 5000;
+    
     function component_classes(){
         return array(
-                'customsql'   => 'component_customsql',
-                'filters'     => 'component_filters_sql',
-                'permissions' => 'component_permissions',
-                'calcs'       => 'component_calcs',
-                'plot'        => 'component_plot_sql',
-                'template'    => 'component_template',
+            'customsql'   => 'component_customsql',
+            'filters'     => 'component_filters_sql',
+            'permissions' => 'component_permissions',
+            'calcs'       => 'component_calcs',
+            'plot'        => 'component_plot_sql',
+            'template'    => 'component_template',
         );
     }
     
-	function prepare_sql($sql) {
-		global $DB, $USER;
-		
-		$sql = str_replace('%%USERID%%', $USER->id, $sql);
-		// See http://en.wikipedia.org/wiki/Year_2038_problem
-		$sql = str_replace(array('%%STARTTIME%%','%%ENDTIME%%'), array('0','2145938400'), $sql);
-		$sql = preg_replace('/%{2}[^%]+%{2}/i','',$sql);
-		return $sql;
-	}
+    function create_report(){
+        $table = new html_table();
+        $table->id = 'reporttable';
+        $table->width = '80%';
+        $table->tablealign = 'center';
+    
+        $compclass = $this->get_component('customsql');
+        if (isset($compclass) && isset($compclass->config->querysql)) {
+            $sql = $this->prepare_sql($compclass->config->querysql);
+            $rs = $this->execute_query($sql);
+            foreach ($rs as $row) {
+                if(empty($table->data)){
+                    foreach($row as $colname => $value){
+                        $table->head[] = str_replace('_', ' ', $colname);
+                    }
+                }
+                $table->data[] = array_values((array) $row);
+            }
+        }
+
+        $this->finalreport->table = $table;
+    }
 	
-	function execute_query($sql, $limitnum = REPORT_CUSTOMSQL_MAX_RECORDS) {
+	function execute_query($sql, $limitnum = self::max_records) {
 		global $DB, $CFG;
 
 		$sql = preg_replace('/\bprefix_(?=\w+)/i', $CFG->prefix, $sql);
@@ -58,87 +71,42 @@ class report_sql extends report_base{
 	function get_column_options($ignore = array()){
 	    $options = array();
 	    
-	    $customsqlclass = $this->get_component('customsql');
-	    if(!isset($customsqlclass)){
-	        return null;
-	    }
-	    $config = $customsqlclass->config;
-	    
-	    if(isset($config->querysql)){
+	    $compclass = $this->get_component('customsql');
+	    if (isset($compclass) && isset($compclass->config->querysql)) {
 	        $sql = $this->prepare_sql($config->querysql);
-	        if($rs = $this->execute_query($sql)){
-	            foreach ($rs as $row) {
-	                $i = 0;
-	                foreach($row as $colname=>$value){
-	                    $options[$i] = str_replace('_', ' ', $colname);
-	                    $i++;
-	                }
-	                break;
-	            }
-	            $rs->close();
-	        }
+	        
+	        $rs = $this->execute_query($sql);
+            foreach ($rs as $row) {
+                $i = 0;
+                foreach($row as $colname => $value){
+                    $options[$i] = str_replace('_', ' ', $colname);
+                    $i++;
+                }
+                break;
+            }
+            $rs->close();
 	    }
 	    
 	    return $options;
 	}
 	
-	function create_report(){
-		global $DB, $CFG;
-		
-		$components = cr_unserialize($this->config->components);
-		
-		$filters = (isset($components['filters']['elements']))? $components['filters']['elements'] : array();
-		$calcs = (isset($components['calcs']['elements']))? $components['calcs']['elements'] : array();
-		
-		$tablehead = array();
-		$finalcalcs = array();
-		$finaltable = array();
-		$tablehead = array();
-		
-		$components = cr_unserialize($this->config->components);
-		$config = (isset($components['customsql']['config']))? $components['customsql']['config'] : new stdclass;	
-		
-		if(isset($config->querysql)){
-			// FILTERS
-			$sql = $config->querysql;
-			if(!empty($filters)){
-				foreach($filters as $f){
-					require_once($CFG->dirroot.'/blocks/configurable_reports/components/filters/'.$f['pluginname'].'/plugin.class.php');
-					$classname = 'plugin_'.$f['pluginname'];
-					$class = new $classname($this->config);
-					$sql = $class->execute($sql, $f['formdata']);
-				}
-			}
-			
-			$sql = $this->prepare_sql($sql);
-			if($rs = $this->execute_query($sql))
-		        foreach ($rs as $row) {
-					if(empty($finaltable)){
-						foreach($row as $colname=>$value){
-							$tablehead[] = str_replace('_', ' ', $colname);
-						}
-					}
-					$finaltable[] = array_values((array) $row);
-				}
-		}
-		
-		// Calcs
-		
-		$finalcalcs = $this->get_calcs($finaltable,$tablehead);
-		
-		$table = new stdclass;
-		$table->id = 'reporttable';
-		$table->data = $finaltable;
-		$table->head = $tablehead;		
+	function prepare_sql($sql) {
+	    global $USER;
+	    
+	    // APPLY FILTERS
+	    if ($compclass = $this->get_component('filters')) {
+    	    foreach($compclass->get_plugins() as $plugclass){
+    	        foreach($plugclass->get_instances() as $filter){
+    	            $sql = $plugclass->execute($sql, $filter);
+    	        }
+    	    }
+	    }
 	
-		$calcs = new stdclass;
-		$calcs->data = array($finalcalcs);
-		$calcs->head = $tablehead;
-		
-		$this->finalreport->table = $table;
-		$this->finalreport->calcs = $calcs;
-		
-		return true;	
+	    $sql = str_replace('%%USERID%%', $USER->id, $sql);
+	    // See http://en.wikipedia.org/wiki/Year_2038_problem
+	    $sql = str_replace(array('%%STARTTIME%%','%%ENDTIME%%'), array('0','2145938400'), $sql);
+	    $sql = preg_replace('/%{2}[^%]+%{2}/i','',$sql);
+	    return $sql;
 	}
 	
 }

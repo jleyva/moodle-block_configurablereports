@@ -30,15 +30,16 @@ class plugin_courses extends filters_plugin{
 	    if (! ($filter = optional_param('filter_courses', 0, PARAM_INT))) {
 	        return $finalelements;
 	    }
+
+	    return $this->filter_elements($finalelements, $filter);
+	}
 	
-	    //TODO: Check logic
-	    if ($this->report->config->type == 'sql' && $sqlelements = $this->sql_elements($finalelements, $filter)) {
-	        return $sqlelements;
-	    } else {
-	        return array($filter);
-	    }
-	    	
-	    return $finalelements;
+	function filter_elements($finalelements, $filter){
+	    return array($filter);
+	}
+	
+	function get_course_ids(){
+	    return $this->report->get_elements_by_conditions();
 	}
 	
 	function print_filter(&$mform, $instance){
@@ -46,12 +47,7 @@ class plugin_courses extends filters_plugin{
 		
 		$filter_courses = optional_param('filter_courses', 0, PARAM_INT);
 		
-		if ($this->report->config->type != 'sql') {
-			$courseids = $this->report->get_elements_by_conditions();
-		} else {
-			$courseids = $DB->get_fieldset_select('course', 'id', '');
-		}
-				
+	    $courseids = $this->get_course_ids();
 		if(empty($courseids)){
 		    return;
 		}

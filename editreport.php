@@ -125,8 +125,7 @@ if ($delete && confirm_sesskey()){
 	}
 }
 
-$reportparams = array('id' => $id, 'type' => $report->type, 'courseid' => $courseid);
-$editform = new report_edit_form($PAGE->url, $reportparams);
+$editform = new report_edit_form($PAGE->url, array('reportclass' => $reportclass));
 $editform->set_data($report);
 	
 if ($editform->is_cancelled()) {
@@ -144,7 +143,7 @@ if ($editform->is_cancelled()) {
 /* Display page */
 echo $OUTPUT->header();
 
-echo $OUTPUT->heading(get_string('report_'.$report->type, 'block_configurable_reports'));
+echo $OUTPUT->heading($reportclass->get_typename());
 
 cr_print_tabs($reportclass, 'report'); 
 

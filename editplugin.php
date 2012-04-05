@@ -111,7 +111,7 @@ if ($editform->is_cancelled()) {
 
 echo $OUTPUT->header();
 
-echo $OUTPUT->heading(get_string('report_'.$report->type, 'block_configurable_reports'));
+echo $OUTPUT->heading($reportclass->get_typename());
 
 cr_print_tabs($reportclass, $instance->component);
 

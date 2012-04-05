@@ -4,7 +4,7 @@ $string['pluginname'] = "Configurable Reports";
 $string['blockname'] = "Configurable Reports";
 $string['report_courses'] = "Courses report";
 $string['report_users'] = "Users report";
-$string['report_sql'] = "SQL Report";
+$string['report_customsql'] = "SQL Report";
 $string['managereports'] = "Manage reports";
 
 $string['report'] = "Report";

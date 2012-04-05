@@ -3,7 +3,7 @@
 $string['blockname'] = "Vlastné správy";
 $string['report_courses'] = "Správy kurzov";
 $string['report_users'] = "Správy užívateľov";
-$string['report_sql'] = "SQL Správy";
+$string['report_customsql'] = "SQL Správy";
 $string['managereports'] = "Riadiť správy";
 
 $string['report'] = "Správa";

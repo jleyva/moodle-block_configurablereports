@@ -19,21 +19,31 @@
   * @package blocks
   * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
   * @date: 2009
-  */
+  */ 
 
-require_once($CFG->dirroot.'/blocks/configurable_reports/components/columns/component.class.php');
+require_once($CFG->dirroot.'/blocks/configurable_reports/components/columns/reportcolumn/plugin.class.php');
 
-class component_columns_category extends component_columns{
+class plugin_reportcolumn_timeline extends plugin_reportcolumn{
 	
-    function plugin_classes(){
-        $classes = array(
-            'categoryfield' => 'plugin_categoryfield',
-            'reportcolumn'  => 'plugin_reportcolumn_category',
-	    );
-    
-        return array_merge(parent::plugin_classes(), $classes);
-    }
+	function set_report_data(&$report, $instance, $row){
+	    if(! ($data = $instance->configdata)){
+	        return;
+	    }
+
+	    $report->starttime = $row->starttime;
+        $report->endtime = $row->endtime;
+	}
 	
+	function is_report_supported(report_base $report){
+	    switch($report->get_type()){
+	        case 'users':
+	        case 'courses':
+	        case 'sql':
+	            return true;
+	    }
+	    
+	    return false;
+	}
 }
 
 ?>

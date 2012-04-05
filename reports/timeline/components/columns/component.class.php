@@ -28,6 +28,7 @@ class component_columns_timeline extends component_columns{
 	function plugin_classes(){
 	    $classes = array(
 	        'date'         => 'plugin_date',
+	        'reportcolumn' => 'plugin_reportcolumn_timeline',
 	    );
 	     
 	    return array_merge(parent::plugin_classes(), $classes);

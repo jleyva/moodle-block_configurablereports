@@ -28,7 +28,7 @@ class component_ordering_user extends component_ordering{
     
 	function plugin_classes(){
 	    return array(
-            'userfieldorder'     => 'plugin_userfieldorder',
+            'userfieldorder' => 'plugin_userfieldorder',
 	    );
 	}
 }

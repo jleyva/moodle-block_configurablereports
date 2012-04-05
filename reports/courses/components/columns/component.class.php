@@ -30,6 +30,7 @@ class component_columns_course extends component_columns{
             'coursefield'           => 'plugin_coursefield',
             'coursestats'           => 'plugin_coursestats',
             'currentuserfinalgrade' => 'plugin_currentuserfinalgrade',
+    	    'reportcolumn'          => 'plugin_reportcolumn_course',
     	    'roleusersn'            => 'plugin_roleusersn',
 	    );
     
