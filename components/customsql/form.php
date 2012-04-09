@@ -69,9 +69,8 @@ class customsql_form extends component_form {
 		// Now try running the SQL, and ensure it runs without errors.
         } else {
             $compclass = $this->_customdata['compclass'];
-            $reportclass = report_base::get($compclass->report);
-			$sql = $reportclass->prepare_sql($sql);
-            $rs = $reportclass->execute_query($sql, 2);
+			$sql = $compclass->report->prepare_sql($sql);
+            $rs = $compclass->report->execute_query($sql, 2);
             if (!$rs) {
                 $errors['querysql'] = get_string('queryfailed', 'block_configurable_reports', $db->ErrorMsg());
             } else if (!empty($data['singlerow']) && rs_EOF($rs)) {

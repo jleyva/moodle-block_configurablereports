@@ -26,14 +26,14 @@ class component_calcs extends component_base{
 	
 	function plugin_classes(){
 		return array(
-		        'average' => 'plugin_average',
-		        'max'     => 'plugin_max',
-		        'min'     => 'plugin_min',
-		        'sum'     => 'plugin_sum',
+	        'average' => 'plugin_average',
+	        'max'     => 'plugin_max',
+	        'min'     => 'plugin_min',
+	        'sum'     => 'plugin_sum',
 		);
 	}
 	
-	function print_to_report($reportclass, $return = false){
+	function print_to_report($return = false){
 	    global $PAGE;
 	    
 	    $calcs = $this->get_all_instances();
@@ -43,7 +43,7 @@ class component_calcs extends component_base{
 	    
 	    /* Organize table data by column */
 	    $rows = array();
-	    foreach($reportclass->finalreport->table->data as $row){
+	    foreach($this->report->finalreport->table->data as $row){
 	        foreach($row as $column => $cell){
 	            $rows[$column][] = $cell;
 	        }
@@ -62,7 +62,7 @@ class component_calcs extends component_base{
 	        }
 	    }
 	    
-	    $table = $reportclass->create_table($columns);
+	    $table = $this->report->create_table(get_string('calcs', 'block_configurable_reports'), $columns);
 	    $table->id = 'calctable';
 	    $PAGE->requires->js_init_call('M.block_configurable_reports.setup_data_table', array('calctable'));
 	    

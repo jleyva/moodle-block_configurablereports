@@ -25,7 +25,7 @@ require_once($CFG->dirroot.'/blocks/configurable_reports/components/columns/repo
 
 class plugin_reportcolumn_course extends plugin_reportcolumn{
 	
-	function set_report_data($report, $instance, $row){
+	function set_report_data(report_base &$report, $instance, $row){
 	    global $DB;
 	    if(! ($data = $instance->configdata)){
 	        return;

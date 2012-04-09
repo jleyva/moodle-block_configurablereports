@@ -33,7 +33,11 @@ M.block_configurable_reports = {
 	            fields.push( field );
 	        });
 	        
-        	var dt = new Y.DataTable.Base({columnset: cols, recordset: fields});
+        	var dt = new Y.DataTable.Base({
+        		columnset: cols, 
+    			recordset: fields,
+    			summary: tableNode.getAttribute('summary')
+			 });
         	dt.plug(Y.Plugin.DataTableSort);
 	        
 	        //Hide HTML content with JS content
@@ -79,7 +83,10 @@ M.block_configurable_reports = {
 		    var ds = new Y.DataSource.Local({source: Y.Node.getDOMNode(tableNode.one('tbody'))});
 			ds.plug(Y.Plugin.DataSourceXMLSchema, {schema: schema});
 				
-	        var dt = new Y.DataTable.Base({columnset: cols});
+	        var dt = new Y.DataTable.Base({
+	        	columnset: cols, 
+	        	summary: tableNode.getAttribute('summary')
+        	});
 	        dt.plug(Y.Plugin.DataTableDataSource, {datasource: ds, initialRequest: ""});
 	        dt.plug(Y.Plugin.DataTableSort);
 	        

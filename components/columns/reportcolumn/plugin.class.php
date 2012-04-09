@@ -67,8 +67,7 @@ abstract class plugin_reportcolumn extends columns_plugin{
     function get_report_columns($reportid){
         $columns = array();
     
-        $reportclass = report_base::get($reportid);
-        $compclass = $reportclass->get_component('columns');
+        $compclass = $this->report->get_component('columns');
         foreach($compclass->get_plugins() as $plugclass){
             foreach($plugclass->get_instances() as $column){
                 $columns[] = $plugclass->summary($column);

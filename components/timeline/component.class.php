@@ -27,6 +27,11 @@ class component_timeline extends component_base{
 	function has_form(){
 	    return true;
 	}
+	
+	function get_help_icon(){
+	    return '';
+	}
+	
 }
 
 ?>

@@ -36,12 +36,11 @@ class template_form extends component_form {
         $mform =& $this->_form;
 
 		$optionsenabled = array(
-		    0=>get_string('disabled','block_configurable_reports'),
-		    1=>get_string('enabled','block_configurable_reports')
+		    0 => get_string('disabled','block_configurable_reports'),
+		    1 => get_string('enabled','block_configurable_reports')
 		);
-		
-		$mform->addElement('select','enabled',get_string('template','block_configurable_reports'),$optionsenabled);
-		$mform->setDefault('enabled',0);
+		$mform->addElement('select','enabled',get_string('template','block_configurable_reports'), $optionsenabled);
+		$mform->setDefault('enabled', 0);
 			
 		$mform->addElement('htmleditor', 'header', get_string('header', 'block_configurable_reports'));
 		$mform->disabledIf('header', 'enabled', 'eq', 0);
@@ -49,8 +48,7 @@ class template_form extends component_form {
 		
 		$availablemarksrec = '';
 		$compclass = $this->_customdata['compclass'];
-		$reportclass = report_base::get($compclass->report);
-		foreach($reportclass->get_column_options() as $o) {
+		foreach($compclass->report->get_column_options() as $o) {
 			$availablemarksrec .= "[[$o]] => $o <br />";
 		}
 		$mform->addElement('static','statictext',get_string('availablemarks','block_configurable_reports'), $availablemarksrec);

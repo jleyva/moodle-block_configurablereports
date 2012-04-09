@@ -51,7 +51,7 @@ class report_categories extends report_dataset_base{
 		return $elements;
 	}
 	
-	function get_rows($elements, $sqlorder = ''){
+	function get_rows(array $elements, $sqlorder = ''){
 		global $DB, $CFG;
 		
 		if (empty($elements)) {

@@ -26,7 +26,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 function xmldb_block_configurable_reports_upgrade($oldversion) {
-    global $CFG, $DB, $OUTPUT;
+    global $CFG, $DB, $OUTPUT, $SITE;
 
     $dbman = $DB->get_manager();
 
@@ -94,6 +94,35 @@ function xmldb_block_configurable_reports_upgrade($oldversion) {
         if($dbman->field_exists($table, $field)){
             $dbman->drop_field($table, $field);
         }
+        
+        upgrade_plugin_savepoint(true, 2012033000, 'block', 'configurable_reports');
+    }
+    
+    /* Convert courseid field to a contextid field */
+    if ($oldversion < 2012040600) {
+        $table = new xmldb_table('block_configurable_reports_report');
+        // Drop courseid key
+        $key = new xmldb_key('course', XMLDB_KEY_FOREIGN, array('courseid'), 'course', array('id'));
+        $dbman->drop_key($table, $key);
+        // Convert entries from courseid to contextid
+        $records = $DB->get_records('block_configurable_reports_report');
+        $syscontext = context_system::instance();
+        foreach($records as $record){
+            if (!isset($record->courseid) || $record->courseid == $SITE->id) {
+                $context = $syscontext;
+            } else {
+                $context = context_course::instance($record->courseid);
+            }
+            $DB->set_field('block_configurable_reports_report', 'courseid', $context->id);
+        }
+        // Rename courseid field
+        $field = new xmldb_field('courseid', XMLDB_TYPE_INTEGER, '10', XMLDB_UNSIGNED, !XMLDB_NOTNULL, null, null, 'id');
+        $dbman->rename_field($table, $field, 'contextid');
+        // Add contextid key
+        $key = new xmldb_key('context', XMLDB_KEY_FOREIGN, array('contextid'), 'context', array('id'));
+        $dbman->add_key($table, $key);
+        
+        upgrade_plugin_savepoint(true, 2012040600, 'block', 'configurable_reports');
     }
 
     return true;

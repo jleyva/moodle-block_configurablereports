@@ -31,6 +31,7 @@ class report_users extends report_dataset_base{
             'conditions'  => 'component_conditions_user',
             'ordering'    => 'component_ordering_user',
             'filters'     => 'component_filters_user',
+            'contexts'    => 'component_contexts_user',
             'permissions' => 'component_permissions',
             'calcs'       => 'component_calcs',
             'plot'        => 'component_plot',
@@ -51,7 +52,7 @@ class report_users extends report_dataset_base{
 		return $elements;
 	}
 	
-	function get_rows($elements, $sqlorder = ''){
+	function get_rows(array $elements, $sqlorder = ''){
 		global $DB;
 	
 		if (empty($elements)) {

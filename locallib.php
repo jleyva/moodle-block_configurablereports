@@ -121,12 +121,16 @@ function cr_get_report_plugins($courseid = null){
     $context = isset($courseid) ? context_course::instance($courseid) : context_system::instance();
           
     $pluginoptions = array();
+    $report = new stdClass();
+    $report->id = null;
 	foreach(get_list_of_plugins('blocks/configurable_reports/reports') as $p){
 	    //TODO: Make more general with specific capabilities (subplugins)
 		if ($p == 'sql' && !has_capability('block/configurable_reports:managesqlreports',$context)) {
 			continue;
 		}
-		$pluginoptions[$p] = get_string('report_'.$p, 'block_configurable_reports');
+		$report->type = $p;
+		$reportclass = report_base::get($report);
+		$pluginoptions[$p] = $reportclass->get_typename();
 	}
 	
     return $pluginoptions;
@@ -141,7 +145,7 @@ function cr_print_tabs($reportclass, $currenttab){
     $top = array();
     $top[] = new tabobject('report', $editurl, get_string('report','block_configurable_reports'));
     foreach($reportclass->get_components() as $comp => $compclass){
-        $top[] = new tabobject($comp, $compurl->out(true, array('comp' => $comp)), get_string($comp,'block_configurable_reports'));
+        $top[] = new tabobject($comp, $compurl->out(true, array('comp' => $comp)), $compclass->get_typename());
     }
     $top[] = new tabobject('viewreport', $viewurl, get_string('viewreport','block_configurable_reports'));
     

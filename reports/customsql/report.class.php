@@ -36,36 +36,12 @@ class report_customsql extends report_sql_base{
             'template'    => 'component_template',
         );
     }
-    
-    function create_report(){
-        $table = new html_table();
-        $table->id = 'reporttable';
-        $table->width = '80%';
-        $table->tablealign = 'center';
-    
-        $compclass = $this->get_component('customsql');
-        if (isset($compclass) && isset($compclass->config->querysql)) {
-            $sql = $this->prepare_sql($compclass->config->querysql);
-            $rs = $this->execute_query($sql);
-            foreach ($rs as $row) {
-                if(empty($table->data)){
-                    foreach($row as $colname => $value){
-                        $table->head[] = str_replace('_', ' ', $colname);
-                    }
-                }
-                $table->data[] = array_values((array) $row);
-            }
-        }
-
-        $this->finalreport->table = $table;
-    }
 	
 	function execute_query($sql, $limitnum = self::max_records) {
 		global $DB, $CFG;
-
+		
 		$sql = preg_replace('/\bprefix_(?=\w+)/i', $CFG->prefix, $sql);
-
-		return  $DB->get_recordset_sql($sql, null, 0, $limitnum);
+		return $DB->get_recordset_sql($sql, null, 0, $limitnum);
 	}
 	
 	function get_column_options($ignore = array()){

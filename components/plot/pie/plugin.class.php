@@ -93,7 +93,8 @@ class plugin_pie extends plot_plugin{
 	    $DataSet->SetAbsciseLabelSerie("Serie2");
 	    
 	    // Initialise the graph
-	    $Test = new pChart(450,200 + (count($series[0]) * 10));
+	    $pad = (count($series[0]) * 10);
+	    $Test = new pChart(450, 200);    //+$pad
 	    $Test->drawFilledRoundedRectangle(7,7,293,193,5,240,240,240);
 	    $Test->drawRoundedRectangle(5,5,295,195,5,230,230,230);
 	    

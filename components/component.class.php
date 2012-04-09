@@ -39,7 +39,7 @@ abstract class component_base {
 	}
 	
 	function __toString(){
-	    return get_string($this->get_type(), 'block_configurable_reports');
+	    return $this->get_typename();
 	}
 	
 	/**
@@ -187,6 +187,10 @@ abstract class component_base {
 	function get_type(){
 	    $pieces = explode('_', get_class($this));
 	    return $pieces[1];
+	}
+	
+	function get_typename(){
+	    return get_string($this->get_type(), 'block_configurable_reports');
 	}
 	
 	function has_ordering(){

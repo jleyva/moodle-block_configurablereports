@@ -166,12 +166,13 @@ abstract class report_base {
 	/**
 	 * Create report table using the columns component.
 	 *
-	 * @param array $columns    Optional array of column instance ids
+	 * @param string $tblsummary Table summary
+	 * @param array  $columns    Optional array of column instance ids
 	 * @return html_table
 	 */
-	function create_table(array $columns = null){
+	function create_table($tblsummary, array $columns = null){
 	    $table = new html_table();
-	    $table->summary = $this->config->summary;
+	    $table->summary = $tblsummary;
 	
 	    $colcomp = $this->get_component('columns');
 	    foreach($colcomp->get_plugins() as $plugclass){
@@ -284,8 +285,8 @@ abstract class report_base {
 	    
 	    $i = 0;
 	    foreach($instances as $instance){
-	        if(!in_array($i, $ignore) && isset($instance->summary)){
-	            $options[$i] = $instance->summary;
+	        if(!in_array($i, $ignore) && isset($instance->name)){
+	            $options[$i] = $instance->name;
 	        }
 	        $i++;
 	    }
@@ -333,9 +334,14 @@ abstract class report_base {
 		}
 				
 	    echo html_writer::tag('div', format_text($this->config->summary), array('class' => 'centerpara'));
-		
-	    $compclass = $this->get_component('filters');
-	    $compclass->print_to_report();
+
+	    if ($compclass = $this->get_component('contexts')) {
+	        $compclass->print_to_report();
+	    }
+	    
+	    if ($compclass = $this->get_component('filters')) {
+	        $compclass->print_to_report();
+	    }
 			    
 		$finaltable = $this->finalreport->table;
 		if ($finaltable && !empty($finaltable->data[0])) {
@@ -346,42 +352,42 @@ abstract class report_base {
 			$compclass->print_to_report();
 		
 			if($this->config->pagination){
-				$page = optional_param('page',0,PARAM_INT);
-				$items = $page * $this->config->pagination;
+				$page = optional_param('page', 0, PARAM_INT);
+				$perpage = $this->config->pagination;
 				$this->totalrecords = count($finaltable->data);
-				$finaltable->data = array_slice($finaltable->data, $items, $this->config->pagination);
+				$finaltable->data = array_slice($finaltable->data, $page * $perpage, $this->config->pagination);
+				
+				$params = array('id' => $this->config->id);
+				$request = array_merge($_POST, $_GET);
+				foreach($request as $key => $val){
+				    if(strpos($key,'filter_') !== false){
+				        if(is_array($val)){
+				            foreach($val as $k => $v){
+				                $params[$key][$k] = $v;    //TODO: moodle_url doesn't accept array params
+				            }
+				        } else {
+				            $params[$key] = $val;
+				        }
+				    }
+				}
+				
+				$baseurl = new moodle_url('viewreport.php', $params);
+				$pagingbar = new paging_bar($this->totalrecords, $page, $perpage, $baseurl, 'page');
+				$pagebar = $OUTPUT->render($pagingbar);
+				echo html_writer::tag('div', $pagebar, array('class' => 'boxaligncenter', 'style' => 'margin:15px'));
 			}
 		
 			echo html_writer::table($finaltable);
-
-    	    if($this->config->pagination){
-    	        $params = array('id' => $this->config->id);
-    	        $request = array_merge($_POST, $_GET);
-                foreach($request as $key => $val){
-    	            if(strpos($key,'filter_') !== false){
-        	            if(is_array($val)){
-        	                foreach($val as $k => $v){
-        	                    $params[$key][$k] = $v;    //TODO: moodle_url doesn't accept array params
-        	                }
-        	            } else {
-        	                $params[$key] = $val;
-        	            }
-    	            }
-                }
-    	    
-    	        $this->totalrecords = count($this->finalreport->table->data);
-    	        $baseurl = new moodle_url('viewreport.php', $params);
-    	        $pagingbar = new paging_bar($this->totalrecords, $page, $this->config->pagination, $baseurl, 'page');
-    	        $pagination =  $OUTPUT->render($pagingbar);
-    	    }
 		
-    	    $compclass = $this->get_component('calcs');
-    	    $compclass->print_to_report($this);
+    	    if ($compclass = $this->get_component('calcs')) {
+    	        $compclass->print_to_report();
+    	    }
     	    
 			echo html_writer::end_tag('div');
 			
-			$compclass = $this->get_component('export');
-			$compclass->print_to_report();
+			if ($compclass = $this->get_component('export')) {
+			    $compclass->print_to_report();
+			}
 		} else {
 		    $norecords = get_string('norecordsfound', 'block_configurable_reports');
 		    echo html_writer::tag('div', $norecords, array('class' => 'centerpara'));

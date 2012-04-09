@@ -33,24 +33,17 @@ class report_edit_form extends moodleform {
         $mform =& $this->_form;
         
         $reportclass = $this->_customdata['reportclass'];
-        if (isset($reportclass)) {
-            $type = $reportclass->config->type;
-            $courseid = $reportclass->config->courseid;
-        } else {
-            $type = $this->_customdata['type'];
-            $courseid = $this->_customdata['courseid'];
-        }
 
         $this->general_options();
         
         $this->component_options();
 
-		$mform->addElement('hidden', 'type', $type);
+		$mform->addElement('hidden', 'type', $reportclass->config->type);
 		if (isset($courseid)) {
-		    $mform->addElement('hidden', 'courseid', $courseid);
+		    $mform->addElement('hidden', 'courseid', $reportclass->config->courseid);
 		}
 		
-		if (isset($reportclass)) {
+		if (isset($reportclass->id)) {
 			$mform->addElement('hidden', 'id', $reportclass->id);
 			$this->add_action_buttons();
 		} else {

@@ -50,7 +50,7 @@ abstract class report_dataset_base extends report_base{
         // RETRIEVE DATA ROWS
         $rows = $this->get_rows($finalelements, $sqlorder);
     
-        $table = $this->create_table();
+        $table = $this->create_table(get_string('report'));
         $table->id = 'reporttable';
         
         // COLUMNS
@@ -78,14 +78,15 @@ abstract class report_dataset_base extends report_base{
     abstract function get_all_elements();
     
     function get_elements_by_conditions(){
-        $finalelements = array();
-        
-        $i = 1;
-        $condcomp = $this->get_component('conditions');
-        foreach($condcomp->get_plugins() as $plugclass){
-            foreach($plugclass->get_instances() as $condition){
-                $elements[$i] = $plugclass->execute($condition);
-                $i++;
+        $elements = array();
+
+        if ($condcomp = $this->get_component('conditions')) {
+            $i = 1;
+            foreach($condcomp->get_plugins() as $plugclass){
+                foreach($plugclass->get_instances() as $condition){
+                    $elements[$i] = $plugclass->execute($condition);
+                    $i++;
+                }
             }
         }
     

@@ -85,7 +85,7 @@ class report_timeline extends report_dataset_base{
 		return $elements;
 	}
 	
-	function get_rows($elements, $sqlorder = ''){
+	function get_rows(array $elements, $sqlorder = ''){
 	    $finaltimeline = array();
 		foreach($elements as $e){
 			$finaltimeline[] = $this->timeline[$e];

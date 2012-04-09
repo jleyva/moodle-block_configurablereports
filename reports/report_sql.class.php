@@ -25,6 +25,30 @@ require_once($CFG->dirroot.'/blocks/configurable_reports/reports/report.class.ph
 
 abstract class report_sql_base extends report_base{
     
+    function create_report(){
+        $table = new html_table();
+        $table->id = 'reporttable';
+        $table->summary = get_string('report');
+        $table->width = '80%';
+        $table->tablealign = 'center';
+    
+        $compclass = $this->get_component('customsql');
+        if (isset($compclass) && isset($compclass->config->querysql)) {
+            $sql = $this->prepare_sql($compclass->config->querysql);
+            $rs = $this->execute_query($sql);
+            foreach ($rs as $row) {
+                if(empty($table->data)){
+                    foreach($row as $colname => $value){
+                        $table->head[] = str_replace('_', ' ', $colname);
+                    }
+                }
+                $table->data[] = array_values((array) $row);
+            }
+        }
+    
+        $this->finalreport->table = $table;
+    }
+    
     /**
      * Execute compiled SQL query to retrieve dataset.
      * @param string $sql          SQL statement

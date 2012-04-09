@@ -55,7 +55,13 @@ $PAGE->navbar->add($title);
 $PAGE->set_title($title);
 $PAGE->set_heading($title);
 
-$editform = new report_edit_form($PAGE->url, $params);
+$newreport = new stdClass();
+$newreport->id = null;
+$newreport->type = $type;
+$newreport->courseid = $courseid;
+$reportclass = report_base::get($newreport);
+
+$editform = new report_edit_form($PAGE->url, array('reportclass' => $reportclass));
 if($editform->is_cancelled()){
     redirect(new moodle_url('/blocks/configurable_reports/managereport.php'));
     
@@ -82,6 +88,8 @@ if($editform->is_cancelled()){
 
 /* Display page */
 echo $OUTPUT->header();
+
+echo $OUTPUT->heading($reportclass->get_typename());
 
 $editform->display();
 

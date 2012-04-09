@@ -32,7 +32,7 @@ class plugin_userfield extends columns_plugin{
 	    }
     	global $DB;
 		
-		if(strpos($data->column,'profile_') === 0){
+		if (strpos($data->column,'profile_') === 0) {
 		    $tables = '{user_info_data} d ,{user_info_field} f';
 		    $columns = 'd.*, f.shortname, f.datatype';
 		    $sql = "SELECT $columns FROM $tables WHERE f.id = d.fieldid AND d.userid = ?";

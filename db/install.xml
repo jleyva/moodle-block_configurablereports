@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<XMLDB PATH="blocks/configurable_reports/db" VERSION="2012031900" COMMENT="XMLDB file for Moodle blocks/configurable_reports"
+<XMLDB PATH="blocks/configurable_reports/db" VERSION="2012040600" COMMENT="XMLDB file for Moodle blocks/configurable_reports"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="../../../lib/xmldb/xmldb.xsd"
 >
   <TABLES>
     <TABLE NAME="block_configurable_reports_report" COMMENT="Report configuration" NEXT="block_configurable_reports_component">
       <FIELDS>
-        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="true"  NEXT="courseid"/>
-        <FIELD NAME="courseid" TYPE="int" LENGTH="10" NOTNULL="false" UNSIGNED="true" SEQUENCE="false"  PREVIOUS="id" NEXT="ownerid"/>
-        <FIELD NAME="ownerid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false"  PREVIOUS="courseid" NEXT="visible"/>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="true"  NEXT="contextid"/>
+        <FIELD NAME="contextid" TYPE="int" LENGTH="10" NOTNULL="false" UNSIGNED="true" SEQUENCE="false"  PREVIOUS="id" NEXT="ownerid"/>
+        <FIELD NAME="ownerid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false"  PREVIOUS="contextid" NEXT="visible"/>
         <FIELD NAME="visible" TYPE="int" LENGTH="4" NOTNULL="true" UNSIGNED="true" SEQUENCE="false"  PREVIOUS="ownerid" NEXT="name"/>
         <FIELD NAME="name" TYPE="char" LENGTH="128" NOTNULL="true" SEQUENCE="false"  PREVIOUS="visible" NEXT="summary"/>
         <FIELD NAME="summary" TYPE="text" LENGTH="small" NOTNULL="false" SEQUENCE="false"  PREVIOUS="name" NEXT="type"/>
@@ -16,9 +16,9 @@
 		<FIELD NAME="pagination" TYPE="int" LENGTH="4" NOTNULL="false" UNSIGNED="true" SEQUENCE="false"  PREVIOUS="type"/>
       </FIELDS>
       <KEYS>
-        <KEY NAME="primary" TYPE="primary" FIELDS="id" NEXT="course"/>
-        <KEY NAME="course"  TYPE="foreign" FIELDS="courseid" REFTABLE="course" REFFIELDS="id" PREVIOUS="primary" NEXT="owner"/>
-        <KEY NAME="owner"   TYPE="foreign" FIELDS="ownerid" REFTABLE="user" REFFIELDS="id" PREVIOUS="course"/>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id" NEXT="context"/>
+        <KEY NAME="context"  TYPE="foreign" FIELDS="contextid" REFTABLE="context" REFFIELDS="id" PREVIOUS="primary" NEXT="owner"/>
+        <KEY NAME="owner"   TYPE="foreign" FIELDS="ownerid" REFTABLE="user" REFFIELDS="id" PREVIOUS="context"/>
       </KEYS>
     </TABLE>
     <TABLE NAME="block_configurable_reports_component" COMMENT="Report component configuration" PREVIOUS="block_configurable_reports_report" NEXT="block_configurable_reports_plugin">

@@ -21,14 +21,18 @@
   * @date: 2009
   */
 
-require_once($CFG->dirroot.'/blocks/configurable_reports/components/plot/component.class.php');
+require_once($CFG->dirroot.'/blocks/configurable_reports/components/contexts/component.class.php');
 
-class component_plot_timeline extends component_plot{
+class component_contexts_user extends component_contexts{
 
-	function plugin_classes(){
+	function get_allowed_context_types(){
 	    return array(
-            'line' => 'plugin_line',
-            'pie'  => 'plugin_pie',
+	        CONTEXT_SYSTEM    => 'context_system', 
+	        CONTEXT_USER      => 'context_user',
+	        CONTEXT_COURSECAT => 'context_coursecat', 
+	        CONTEXT_COURSE    => 'context_course', 
+	        CONTEXT_MODULE    => 'context_module', 
+	        CONTEXT_BLOCK     => 'context_block',
 	    );
 	}
 	
