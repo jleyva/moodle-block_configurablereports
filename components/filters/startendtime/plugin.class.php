@@ -38,12 +38,19 @@ class plugin_startendtime extends plugin_base{
 	}
 	
 	function execute($finalelements, $data){
+		global $CFG;
+
 	
 		if($this->report->type != 'sql')
 			return $finalelements;
-		
-		$filter_starttime = optional_param('filter_starttime',0,PARAM_RAW);
-		$filter_endtime = optional_param('filter_endtime',0,PARAM_RAW);
+
+		if ($CFG->version < 2011120100) {
+            $filter_starttime = optional_param('filter_starttime',0,PARAM_RAW);
+            $filter_endtime = optional_param('filter_endtime',0,PARAM_RAW);
+		} else {
+            $filter_starttime = optional_param_array('filter_starttime',0,PARAM_RAW);
+            $filter_endtime = optional_param_array('filter_endtime',0,PARAM_RAW);			
+		}
 		if(!$filter_starttime || ! $filter_endtime)
 			return $finalelements;
 			
