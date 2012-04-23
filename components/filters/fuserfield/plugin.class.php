@@ -38,6 +38,7 @@ class plugin_fuserfield extends plugin_base{
 	}
 	
 	function execute($finalelements,$data){
+		global $DB, $CFG;
 		
 		$filter_fuserfield = optional_param('filter_fuserfield_'.$data->field,0,PARAM_RAW);		
 		if($filter_fuserfield){
