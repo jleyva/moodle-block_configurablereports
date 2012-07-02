@@ -33,7 +33,7 @@
 		global $DB, $CFG;
 		
 		if(is_numeric($report))
-			$this->config = $DB->get_record('block_configurable_reports_report',array('id' => $report));
+			$this->config = $DB->get_record('block_configurable_reports',array('id' => $report));
 		else
 			$this->config = $report;
 		$this->init();

@@ -92,7 +92,7 @@ class block_configurable_reports extends block_list {
 		else
 			$context = get_context_instance(CONTEXT_COURSE, $course->id);
 
-		$reports = $DB->get_records('block_configurable_reports_report',array('courseid' => $course->id),'name ASC');
+		$reports = $DB->get_records('block_configurable_reports',array('courseid' => $course->id),'name ASC');
 		
 		if($reports){
 			foreach($reports as $report){

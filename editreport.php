@@ -61,7 +61,7 @@
 
 		
 	if($id){
-		if(! $report = $DB->get_record('block_configurable_reports_report',array('id' => $id)))
+		if(! $report = $DB->get_record('block_configurable_reports',array('id' => $id)))
 			print_error('reportdoesnotexists','block_configurable_reports');
 				
 		if(! has_capability('block/configurable_reports:managereports', $context) && $report->ownerid != $USER->id)
@@ -98,7 +98,7 @@
 	// Common actions
 	if(($show || $hide) && confirm_sesskey()){
 		$visible = ($show)? 1 : 0;
-		if(!$DB->set_field('block_configurable_reports_report','visible',$visible,array('id' => $report->id)))
+		if(!$DB->set_field('block_configurable_reports','visible',$visible,array('id' => $report->id)))
 			print_error('cannotupdatereport','block_configurable_reports');
 		$action = ($visible)? 'showed' : 'hidden';	
 		add_to_log($report->courseid, 'configurable_reports', 'report '.$action, '/block/configurable_reports/editreport.php?id='.$report->id, $report->id);	
@@ -112,7 +112,7 @@
 		unset($newreport->id);
 		$newreport->name = get_string('copyasnoun').' '.$newreport->name;
 		$newreport->summary = $newreport->summary;
-		if(! $newreportid = $DB->insert_record('block_configurable_reports_report',$newreport))
+		if(! $newreportid = $DB->insert_record('block_configurable_reports',$newreport))
 			print_error('cannotduplicate','block_configurable_reports');
 		add_to_log($newreport->courseid, 'configurable_reports', 'report duplicated', '/block/configurable_reports/editreport.php?id='.$newreportid, $id);
 		header("Location: $CFG->wwwroot/blocks/configurable_reports/managereport.php?courseid=$courseid");
@@ -136,7 +136,7 @@
 			exit;
 		}
 		else{
-			if($DB->delete_records('block_configurable_reports_report',array('id'=>$report->id)))
+			if($DB->delete_records('block_configurable_reports',array('id'=>$report->id)))
 				add_to_log($report->courseid, 'configurable_reports', 'report deleted', '/block/configurable_reports/editreport.php?id='.$report->id, $report->id);
 			header("Location: $CFG->wwwroot/blocks/configurable_reports/managereport.php?courseid=$courseid");
 			die;
@@ -194,7 +194,7 @@
 			if($data->type == 'sql' && !has_capability('block/configurable_reports:managesqlreports',$context))
 				print_error('nosqlpermissions');
 						
-			if(! $lastid = $DB->insert_record('block_configurable_reports_report',$data)){
+			if(! $lastid = $DB->insert_record('block_configurable_reports',$data)){
 				print_error('errorsavingreport','block_configurable_reports');
 			}else{
 				add_to_log($courseid, 'configurable_reports', 'report created', '/block/configurable_reports/editreport.php?id='.$lastid, $data->name);
@@ -206,7 +206,7 @@
 			add_to_log($report->courseid, 'configurable_reports', 'edit', '/block/configurable_reports/editreport.php?id='.$id, $report->name);
 			$reportclass = new $reportclassname($data->id);
 			$data->type = $report->type;
-			if(! $DB->update_record('block_configurable_reports_report',$data)){
+			if(! $DB->update_record('block_configurable_reports',$data)){
 				print_error('errorsavingreport','block_configurable_reports');
 			}else{
 				redirect($CFG->wwwroot.'/blocks/configurable_reports/editcomp.php?id='.$data->id.'&comp='.$reportclass->components[0]);

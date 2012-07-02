@@ -44,7 +44,7 @@ class component_permissions extends component_base{
 				$components['permissions']['config']->conditionexpr = $this->add_missing_conditions($components['permissions']['config']->conditionexpr);
 			}
 			$this->config->components = cr_serialize($components);
-			$DB->update_record('block_configurable_reports_report',$this->config);
+			$DB->update_record('block_configurable_reports',$this->config);
 		}
 	}
 	
@@ -95,7 +95,7 @@ class component_permissions extends component_base{
 			
 			$components['permissions']['config']->conditionexpr = $fdata->conditionexpr;
 			$this->config->components = cr_serialize($components);
-			$DB->update_record('block_configurable_reports_report',$this->config);
+			$DB->update_record('block_configurable_reports',$this->config);
 			
 			
 			$cform->set_data($fdata);			

@@ -76,7 +76,7 @@ class component_columns extends component_base{
 			$components = cr_unserialize($this->config->components);
 			$components['columns']['config'] = $data;			
 			$this->config->components = cr_serialize($components);
-			$DB->update_record('block_configurable_reports_report',$this->config);
+			$DB->update_record('block_configurable_reports',$this->config);
 		}
 	}
 	

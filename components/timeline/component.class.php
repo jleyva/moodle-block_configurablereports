@@ -38,7 +38,7 @@ class component_timeline extends component_base{
 			$components = cr_unserialize($this->config->components);
 			$components['timeline']['config'] = $data;
 			$this->config->components = cr_serialize($components);
-			$DB->update_record('block_configurable_reports_report',$this->config);
+			$DB->update_record('block_configurable_reports',$this->config);
 		}
 	}
 	

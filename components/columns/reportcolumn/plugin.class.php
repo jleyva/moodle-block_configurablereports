@@ -80,7 +80,7 @@ class plugin_reportcolumn extends plugin_base{
 		global $DB;
 		
 		$columns = array();
-		if(! $report = $DB->get_record('block_configurable_reports_report',array('id' => $reportid)))
+		if(! $report = $DB->get_record('block_configurable_reports',array('id' => $reportid)))
 			return $columns;
 			
 		$components = cr_unserialize($report->components);
@@ -110,7 +110,7 @@ class plugin_reportcolumn extends plugin_base{
 	function execute($data,$row,$user,$courseid,$starttime=0,$endtime=0){
 		global $DB, $CFG;
 		
-		if(! $report = $DB->get_record('block_configurable_reports_report',array('id' => $data->reportid)))
+		if(! $report = $DB->get_record('block_configurable_reports',array('id' => $data->reportid)))
 			print_error('reportdoesnotexists','block_configurable_reports');
 		
 		require_once($CFG->dirroot.'/blocks/configurable_reports/report.class.php');

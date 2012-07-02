@@ -41,7 +41,7 @@
 		exit;
 	}
 	
-	if(! $report = $DB->get_record('block_configurable_reports_report',array('id' => $id)))
+	if(! $report = $DB->get_record('block_configurable_reports',array('id' => $id)))
 		print_error('reportdoesnotexists');
 
 	if (! $course = $DB->get_record("course",array( "id" =>  $report->courseid)) ) {
@@ -113,7 +113,7 @@
 			}
 			$components[$comp]['elements'] = $elements;
 			$report->components = cr_serialize($components);
-			$DB->update_record('block_configurable_reports_report',$report);
+			$DB->update_record('block_configurable_reports',$report);
 			redirect(new moodle_url('/blocks/configurable_reports/editcomp.php', array('id' => $id, 'comp' => $comp)));
 			exit;
 		}
@@ -176,7 +176,7 @@
 				$allelements[$comp]['elements'] = $elements;
 				
 				$report->components = cr_serialize($allelements);
-				if(!$DB->update_record('block_configurable_reports_report',$report)){
+				if(!$DB->update_record('block_configurable_reports',$report)){
 					print_error('errorsaving');
 				}
 				else{
@@ -198,7 +198,7 @@
 				
 				$allelements[$comp]['elements'][] = $cdata;
 				$report->components = cr_serialize($allelements, false);
-				if(!$DB->update_record('block_configurable_reports_report',$report)){
+				if(!$DB->update_record('block_configurable_reports',$report)){
 					print_error('errorsaving');
 				}
 				else{
@@ -220,7 +220,7 @@
 		
 		$allelements[$comp]['elements'][] = $cdata;
 		$report->components = cr_serialize($allelements);
-		if(!$DB->update_record('block_configurable_reports_report',$report)){
+		if(!$DB->update_record('block_configurable_reports',$report)){
 			print_error('errorsaving');
 		}
 		else{

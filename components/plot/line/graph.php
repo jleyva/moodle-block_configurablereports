@@ -33,7 +33,7 @@
 	$id = required_param('id', PARAM_ALPHANUM);
 	$reportid = required_param('reportid', PARAM_INT);
 	 
-	if(! $report = $DB->get_record('block_configurable_reports_report',array('id' => $reportid)))
+	if(! $report = $DB->get_record('block_configurable_reports',array('id' => $reportid)))
 		print_error('reportdoesnotexists');
 
 	$courseid = $report->courseid;

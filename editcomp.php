@@ -32,7 +32,7 @@
 	$id = required_param('id', PARAM_INT);
 	$comp = required_param('comp', PARAM_ALPHA);
 
-	if(! $report = $DB->get_record('block_configurable_reports_report',array('id' => $id)))
+	if(! $report = $DB->get_record('block_configurable_reports',array('id' => $id)))
 		print_error('reportdoesnotexists');
 
 	
