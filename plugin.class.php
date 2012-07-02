@@ -37,7 +37,7 @@ class plugin_base{
 		global $DB, $CFG;
 		
 		if(is_numeric($report))
-			$this->report = $DB->get_record('block_configurable_reports_report',array('id' => $report));
+			$this->report = $DB->get_record('block_configurable_reports',array('id' => $report));
 		else
 			$this->report = $report;
 		$this->init();

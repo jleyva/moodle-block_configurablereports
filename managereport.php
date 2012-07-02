@@ -65,7 +65,7 @@
 				}
 				$newreport->courseid = $course->id;
 				$newreport->ownerid = $USER->id;
-				if(!$DB->insert_record('block_configurable_reports_report',$newreport))
+				if(!$DB->insert_record('block_configurable_reports',$newreport))
 					print_error('errorimporting');
 				header("Location: $CFG->wwwroot/blocks/configurable_reports/managereport.php?courseid={$course->id}");
 				die;

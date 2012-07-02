@@ -134,12 +134,12 @@ function cr_get_my_reports($courseid, $userid, $allcourses=true){
 
 	if(has_capability('block/configurable_reports:managereports', $context, $userid)){
 		if($courseid == SITEID && $allcourses)
-			$reports = $DB->get_records('block_configurable_reports_report',null,'name ASC');
+			$reports = $DB->get_records('block_configurable_reports',null,'name ASC');
 		else
-			$reports = $DB->get_records('block_configurable_reports_report',array('courseid' => $courseid),'name ASC');
+			$reports = $DB->get_records('block_configurable_reports',array('courseid' => $courseid),'name ASC');
 	}
 	else{		
-		$reports = $DB->get_records_select('block_configurable_reports_report','ownerid = ? AND courseid = ? ORDER BY name ASC',array($userid,$courseid));		
+		$reports = $DB->get_records_select('block_configurable_reports','ownerid = ? AND courseid = ? ORDER BY name ASC',array($userid,$courseid));		
 	}
 	return $reports;
 }

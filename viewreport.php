@@ -29,7 +29,7 @@
 	$download = optional_param('download',false,PARAM_BOOL);
 	$format = optional_param('format','',PARAM_ALPHA);
 	
-	if(! $report = $DB->get_record('block_configurable_reports_report',array('id' => $id)))
+	if(! $report = $DB->get_record('block_configurable_reports',array('id' => $id)))
 		print_error('reportdoesnotexists','block_configurable_reports');
 
 	$courseid = $report->courseid;
