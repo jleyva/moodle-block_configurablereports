@@ -32,7 +32,7 @@ function xmldb_block_configurable_reports_upgrade($oldversion) {
 
     if ($oldversion < 2011040103) {
         
-        $table = new xmldb_table('block_configurable_reports');
+        $table = new xmldb_table('block_configurable_reports_report');
         $dbman->rename_table($table, 'block_configurable_reports');
         upgrade_plugin_savepoint(true, 2011040103, 'block', 'configurable_reports');
     }
