@@ -1,5 +1,5 @@
 <?php
-    $plugin->version = 2011040103;
+    $plugin->version = 2011040104;
     // Moodle version required
     $plugin->requires = 2010112400;
     $plugin->maturity = MATURITY_STABLE;
