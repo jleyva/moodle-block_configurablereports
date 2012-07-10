@@ -69,6 +69,7 @@ class component_columns extends component_base{
 	}
 
 	function form_process_data(&$cform){
+		global $DB;
 		if($this->form){
 			$data = $cform->get_data();
 			// cr_serialize() will add slashes
