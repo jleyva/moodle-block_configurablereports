@@ -34,7 +34,7 @@ abstract class component_base {
 		
 		$this->report = $report;
 		$search = array('reportid' => $report->config->id, 'component' => $this->get_type());
-		$configdata = $DB->get_field('block_configurable_reports_component', 'configdata', $search);
+		$configdata = $DB->get_field('block_cr_component', 'configdata', $search);
 		$this->config = cr_unserialize($configdata);
 	}
 	
@@ -77,13 +77,13 @@ abstract class component_base {
         $instance->configdata = $configdata;
         $instance->configdata = cr_serialize($instance->configdata);
     
-        $DB->insert_record('block_configurable_reports_component', $instance);
+        $DB->insert_record('block_cr_component', $instance);
     }
     
     function delete_instance($instanceid){
         global $DB;
     
-        $DB->delete_records('block_configurable_reports_component', array('id' => $instanceid));
+        $DB->delete_records('block_cr_component', array('id' => $instanceid));
         unset($this->instances[$instanceid]);
     }
 	
@@ -92,7 +92,7 @@ abstract class component_base {
 	    
 	    $instances = array();
 	    $search = array('reportid' => $this->report->id, 'component' => $this->get_type());
-	    $records = $DB->get_records('block_configurable_reports_plugin', $search, 'sortorder');
+	    $records = $DB->get_records('block_cr_plugin', $search, 'sortorder');
 	    foreach($records as $record){
 	        if ($this->has_ordering()) {
 	            $instances[$record->sortorder] = $record;
@@ -213,7 +213,7 @@ abstract class component_base {
 	    global $DB;
 	    
 	    $instance->configdata = cr_serialize($instance->configdata);
-	    $DB->update_record('block_configurable_reports_component', $instance);
+	    $DB->update_record('block_cr_component', $instance);
 	}
 
 }

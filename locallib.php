@@ -98,7 +98,7 @@ function cr_get_my_reports($userid, $context){
 	}
 	
 	$reports = array();
-	$dbrecords = $DB->get_records('block_configurable_reports_report', $params, 'name ASC');
+	$dbrecords = $DB->get_records('block_cr_report', $params, 'name ASC');
 	foreach($dbrecords as $id => $dbrecord){
 	    $reports[$id] = report_base::get($dbrecord);
 	}

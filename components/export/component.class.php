@@ -60,7 +60,7 @@ class component_export extends component_base{
 	        'reportid'  => $this->report->id, 
 	        'component' => $this->get_type(),
 	    );
-        if ($record = $DB->get_record('block_configurable_reports_component', $search)) {
+        if ($record = $DB->get_record('block_cr_component', $search)) {
             $method = 'update_record';
         } else {
             $record = (object) $search;
@@ -68,7 +68,7 @@ class component_export extends component_base{
         }
         
         $record->configdata = $configdata;
-        $DB->$method('block_configurable_reports_component', $record);
+        $DB->$method('block_cr_component', $record);
     }
     
     function print_to_report($return = false){

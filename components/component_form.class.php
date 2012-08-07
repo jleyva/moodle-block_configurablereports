@@ -39,7 +39,7 @@ abstract class component_form extends moodleform {
         
         $compclass = $this->_customdata['compclass'];
         $search = array('reportid' => $compclass->report->id, 'component' => $compclass->get_type());
-        $configdata = $DB->get_field('block_configurable_reports_component', 'configdata', $search);
+        $configdata = $DB->get_field('block_cr_component', 'configdata', $search);
         
         return $configdata ? cr_unserialize($configdata) : new stdClass();
     }
@@ -69,13 +69,13 @@ abstract class component_form extends moodleform {
 
         $compclass = $this->_customdata['compclass'];
         $search = array('reportid' => $compclass->report->id, 'component' => $compclass->get_type());
-        if ($record = $DB->get_record('block_configurable_reports_component', $search)){
+        if ($record = $DB->get_record('block_cr_component', $search)){
             $record->configdata = $configdata;
-            $DB->update_record('block_configurable_reports_component', $record);
+            $DB->update_record('block_cr_component', $record);
         } else {
             $record = (object)$search;
             $record->configdata = $configdata;
-            $DB->insert_record('block_configurable_reports_component', $record);
+            $DB->insert_record('block_cr_component', $record);
         }
     }
 }
