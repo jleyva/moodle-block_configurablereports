@@ -1,10 +1,10 @@
 ﻿<?php
 
-$string['blockname'] = "מעצב דוחות";
+$string['blockname'] = "דוחות מתקדמים";
 $string['report_courses'] = "דוח קורסים";
 $string['report_users'] = "דוח משתמשים";
 $string['report_customsql'] = "SQL דוח";
-$string['managereports'] = "נהל דוחות";
+$string['managereports'] = "ניהול דוחות";
 
 $string['report'] = "דוח";
 $string['reports'] = "דוחות";
@@ -12,11 +12,11 @@ $string['reports'] = "דוחות";
 $string['columns'] = "עמודות";
 $string['conditions'] = "התניות";
 $string['permissions'] = "הרשאות";
-$string['plot'] = "צייר גרפים";
-$string['filters'] = "פילטרים	";
+$string['plot'] = "גרפים";
+$string['filters'] = "מסננים";
 $string['calcs'] = "חישובים";
 $string['ordering'] = "סידור";
-$string['customsql'] = "מותאם SQL";
+$string['customsql'] = "שאילתת SQL";
 $string['addreport'] = "הוסף דוח";
 $string['type'] = "סוג הדוח";
 $string['columncalculations'] = "חישובי עמודה";
@@ -24,11 +24,11 @@ $string['newreport'] = "דוח חדש";
 $string['column'] = "עמודה";
 $string['confirmdeletereport'] = "האם אתה בטוח שברצונך למחוק את הדוח ?";
 $string['noreportsavailable'] = "לא נמצאו דוחות";
-$string['downloadreport'] = "דוח הורדות";
+$string['downloadreport'] = "שמירת דוח במחשב";
 
-$string['configurable_reports:manageownreports'] = "נהל דוחות אישיים";
-$string['configurable_reports:managereports'] = "נהל דוחות";
-$string['configurable_reports:managesqlreports'] = "SQL נהל דוחות";
+$string['configurable_reports:manageownreports'] = "ניהול דוחות אישיים";
+$string['configurable_reports:managereports'] = "ניהול דוחות";
+$string['configurable_reports:managesqlreports'] = "SQL ניהול דוחות";
 $string['configurable_reports:viewreports'] = "צפה בדוחות";
 
 $string['exportoptions'] = "ייצא אפשרויות";
@@ -38,8 +38,8 @@ $string['field'] = "שדה";
 $string['typeofreport'] = "סוג הדוח";
 $string['enablejsordering'] = "JavaScript אפשר סידור";
 $string['enablejspagination'] = "JavaScript אפשר עימוד";
-$string['export_ods'] = "ODS ייצא בפורמט";
-$string['export_xls'] = "XLS ייצא בפורמט";
+$string['export_ods'] = "ODS ייצא בתסדיר";
+$string['export_xls'] = "XLS ייצא בתסדיר";
 $string['viewreport'] = "צפה בדוח";
 $string['norecordsfound'] = "לא נמצאו רשומות";
 
@@ -47,8 +47,8 @@ $string['norecordsfound'] = "לא נמצאו רשומות";
 $string['column'] = "עמודה";
 $string['nocolumnsyet'] = "עדיין אין עמודות";
 $string['tablealign'] = "יישור טבלה";
-$string['tablecellspacing'] = "ריווח מילים בטבלא - CellSpacing";
-$string['tablecellpadding'] = "ריווח תאים בטבלא - CellPadding";
+$string['tablecellspacing'] = "ריווח מילים בטבלה - CellSpacing";
+$string['tablecellpadding'] = "ריווח תאים בטבלה - CellPadding";
 $string['tableclass'] = "Table class";
 $string['tablewidth'] = "רוחב הטבלה";
 $string['cellalign'] = "יישור התא";
@@ -64,10 +64,10 @@ $string['operator'] = "אופרטור";
 $string['value'] = "ערך";
 
 // Filter
-$string['filter'] = "פילטר";
-$string['nofilteryet'] = "לא הוגדרו פילטרים";
+$string['filter'] = "מסנן";
+$string['nofilteryet'] = "לא הוגדרו מסננים";
 $string['courses'] = "קורסים";
-$string['nofiltersyet'] = "לא הוגדרו פילטרים";
+$string['nofiltersyet'] = "לא הוגדרו מסננים";
 
 // Calcs
 $string['nocalcsyet'] = "לא הוגדרו חישובים";
@@ -90,7 +90,7 @@ $string['ccoursefield'] = "תנאי שדה קורס";
 $string['roleusersn'] = "מספר משתמשים בעלי תפקיד ...";
 $string['coursecategory'] = "קורסים בקטוגוריה";
 $string['filtercourses'] = "קורסים";
-$string['filtercourses_summary'] = "פילטר זה מציג רשימה של קורסים , ניתן לבחור רק קורס אחד באותו זמן";
+$string['filtercourses_summary'] = "מסנן זה מציג רשימה של קורסים , ניתן לבחור רק קורס אחד באותו זמן";
 $string['roleincourse'] = "משתמש עם תפקיד בדוח הקורס הנוכחי";
 $string['reportscapabilities'] = "יכולות דיווח";
 $string['reportscapabilities_summary'] = "משתמשים שיכולת צפייה בדוחות מאופשרת";
@@ -125,11 +125,11 @@ $string['currentreportcourse_summary'] = "הקורס בו נוצר הדוח";
 
 $string['coursefieldorder'] = "סידור השדות בקורס";
 
-$string['fcoursefield'] = "פילטר שדות בקורס";
+$string['fcoursefield'] = "מסנן שדות בקורס";
 $string['usersincoursereport'] = "משתמש כלשהו בדוח הקורס הנוכחי";
 
 $string['groupvalues'] = "ערכים זהים בקבוצה - סכום";
-$string['fuserfield'] = "פילטר שדה של משמש";
+$string['fuserfield'] = "מסנן שדה של משמש";
 
 $string['module'] = "מודול";
 
@@ -146,7 +146,7 @@ $string['currentuser_summary'] = "המשתמש הצופה בדוח";
 $string['puserfield'] = "ערך שדה משתמש";
 $string['puserfield_summary'] = "משתמש בעל ערך נבחר בשדה הנבחר";
 
-$string['startendtime'] = "פילטר תאריך התחלה-סיום";
+$string['startendtime'] = "מסנן תאריך התחלה-סיום";
 $string['starttime'] = "תאריך התחלה";
 $string['endtime'] = "תאריך סיום";
 
@@ -156,10 +156,10 @@ $string['header'] = "כותרת עליונה";
 $string['footer'] = "כותרת תחתונה";
 $string['templaterecord'] = "תבנית רשומה";
 $string['querysql'] = "SQL שאילתת";
-$string['filterstartendtime_summary'] = "פילטר תאריך התחלה-סיוםr";
+$string['filterstartendtime_summary'] = "מסנן תאריך התחלה-סיוםr";
 
 $string['pagination'] = "עימוד";
-$string['disabled'] = "מנוטרל";
+$string['disabled'] = "אינו-זמין";
 $string['enabled'] = "מאופשר";
 
 $string['reportcolumn'] = "עמודת דוח שונה";
@@ -183,7 +183,7 @@ $string['noexplicitprefix'] = "אין קידומת מפורשת";
 $string['queryfailed'] = "שאילתא נכשלה";
 $string['norowsreturned'] = "לא הוחזרו שורות";
 
-$string['listofsqlreports'] = '<a href=\"http://docs.moodle.org/en/ad-hoc_contributed_reports\" target=\"_blank\">List of SQL Contributed reports</a>';
+$string['listofsqlreports'] = '<a href="http://docs.moodle.org/en/ad-hoc_contributed_reports" target="_blank">List of SQL Contributed reports</a>';
 
 $string['usersincoursereport_summary'] = "משתמש כלשהו בדוח הקורס הנוכחי";
 
@@ -233,11 +233,9 @@ $string['categoryfield'] = 'שדה קטגוריה';
 $string['categoryfieldorder'] = 'סדר שדה הקטגוריה';
 $string['categories'] = 'קטגוריות';
 $string['parentcategory'] = 'קטגוריית הורה';
-$string['filtercategories'] = 'קטגוריות פילטר';
+$string['filtercategories'] = 'קטגוריות מסנן';
 $string['filtercategories_summary'] = 'מיין לפי קטגוריה';
 
 $string['includesubcats'] = 'הכלל תת קטגוריות';
 
 $string['coursededicationtime'] = 'זמן השקעה בקורס';
-
-?>
