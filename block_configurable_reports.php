@@ -93,7 +93,7 @@ class block_configurable_reports extends block_list {
 			$context = context_course::instance($course->id);
 			$params['courseid'] = $course->id;
 		}
-		$reports = $DB->get_records('block_configurable_reports_report', $params, 'name ASC');
+		$reports = $DB->get_records('block_cr_report', $params, 'name ASC');
 		
 		if($reports){
 		    $url = new moodle_url('/blocks/configurable_reports/viewreport.php', $params);

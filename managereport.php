@@ -72,7 +72,7 @@ if (($data = $importform->get_data()) && ($xml = $importform->get_file_content('
 		}
 		$newreport->courseid = $course->id;
 		$newreport->ownerid = $USER->id;
-		$DB->insert_record('block_configurable_reports_report', $newreport);
+		$DB->insert_record('block_cr_report', $newreport);
 
 		redirect($PAGE->url);
 	}

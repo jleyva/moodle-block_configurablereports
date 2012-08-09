@@ -42,7 +42,7 @@ abstract class report_base {
 	    global $CFG, $DB;
 	    
 	    if (is_numeric($reportorid)) {
-	        $report = $DB->get_record('block_configurable_reports_report', array('id' => $reportorid));
+	        $report = $DB->get_record('block_cr_report', array('id' => $reportorid));
 	    } else if($reportorid instanceof stdClass) {
 	        $report = $reportorid;
 	    } else {

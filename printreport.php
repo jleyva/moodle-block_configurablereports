@@ -27,7 +27,7 @@ require_once($CFG->dirroot.'/blocks/configurable_reports/reports/report.class.ph
 
 $id = required_param('id', PARAM_INT);
 
-if (! ($report = $DB->get_record('block_configurable_reports_report', array('id' => $id)))) {
+if (! ($report = $DB->get_record('block_cr_report', array('id' => $id)))) {
     print_error('reportdoesnotexists', 'block_configurable_reports');
 }
 $courseid = $report->courseid;

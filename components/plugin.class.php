@@ -42,7 +42,7 @@ abstract class plugin_base{
 	    global $DB;
 	     
 	    $search = array('reportid' => $this->report->id, 'plugin' => $this->get_type());
-	    $this->instances = $DB->get_records('block_configurable_reports_plugin', $search);
+	    $this->instances = $DB->get_records('block_cr_plugin', $search);
 	     
 	    foreach($this->instances as $id => $instance){
 	        $this->instances[$id]->configdata = cr_unserialize($instance->configdata);
@@ -63,11 +63,11 @@ abstract class plugin_base{
 	    $instance->reportid = $search['reportid'];
 	    $instance->component = $search['component'];
 	    $instance->plugin = $this->get_type();
-	    $last = $DB->get_field('block_configurable_reports_plugin', 'COALESCE(MAX(sortorder), -1)', $search);
+	    $last = $DB->get_field('block_cr_plugin', 'COALESCE(MAX(sortorder), -1)', $search);
 	    $instance->sortorder = $last + 1;
 	    $instance->configdata = cr_serialize($instance->configdata);
 	
-	    $DB->insert_record('block_configurable_reports_plugin', $instance);
+	    $DB->insert_record('block_cr_plugin', $instance);
 	}
 	
 	/**
@@ -81,7 +81,7 @@ abstract class plugin_base{
 	function delete_instance($instanceid){
 	    global $DB;
 	
-	    $DB->delete_records('block_configurable_reports_plugin', array('id' => $instanceid));
+	    $DB->delete_records('block_cr_plugin', array('id' => $instanceid));
 	    unset($this->instances[$instanceid]);
 	}
 	
@@ -170,9 +170,9 @@ abstract class plugin_base{
 	    }
 	     
 	    // Move this instance
-	    $DB->set_field('block_configurable_reports_plugin', 'sortorder', $neworder, array('id' => $instanceid));
+	    $DB->set_field('block_cr_plugin', 'sortorder', $neworder, array('id' => $instanceid));
 	    // Swap with another instance
-	    $DB->set_field('block_configurable_reports_plugin', 'sortorder', $oldorder, array('id' => $swapped->id));
+	    $DB->set_field('block_cr_plugin', 'sortorder', $oldorder, array('id' => $swapped->id));
 	}
 	
 	abstract function summary($instance);
@@ -183,7 +183,7 @@ abstract class plugin_base{
 	    $instance->name = $this->get_fullname($instance);
 	    $instance->summary = $this->summary($instance);
 	    $instance->configdata = cr_serialize($instance->configdata);
-	    $DB->update_record('block_configurable_reports_plugin', $instance);
+	    $DB->update_record('block_cr_plugin', $instance);
 	}
 	
 }

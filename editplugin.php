@@ -32,7 +32,7 @@ $moveup = optional_param('moveup', 0, PARAM_INT);
 $movedown = optional_param('movedown', 0, PARAM_INT);
 $delete = optional_param('delete', 0, PARAM_INT);
 
-if (! ($instance = $DB->get_record('block_configurable_reports_plugin', array('id' => $id)))) {
+if (! ($instance = $DB->get_record('block_cr_plugin', array('id' => $id)))) {
     print_error('instancedoesnotexist');
 }
 if (! ($reportclass = report_base::get($instance->reportid))) {

@@ -71,7 +71,7 @@ if($editform->is_cancelled()){
     $data->visible = 1;
     $data->jsordering = isset($data->jsordering) ? 1 : 0;
 
-    $newid = $DB->insert_record('block_configurable_reports_report', $data);
+    $newid = $DB->insert_record('block_cr_report', $data);
     $logcourse = isset($courseid) ? $courseid : $SITE->id;
     add_to_log($logcourse, 'configurable_reports', 'report created', $baseurl, $data->name);
     
