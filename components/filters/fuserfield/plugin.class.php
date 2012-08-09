@@ -104,7 +104,7 @@ class plugin_fuserfield extends plugin_base{
 					$selectname = $field->name;
 					
 					list($usql, $params) = $DB->get_in_or_equal($userlist);					
-					$sql = "SELECT DISTINCT(data) as data FROM {user_info_data} WHERE fieldid = ? AND userid $usql";					
+					$sql = "SELECT data FROM {user_info_data} WHERE fieldid = ? AND userid $usql";					
 					$params = array_merge(array($field->id),$params);
 					
 					if($infodata = $DB->get_records_sql($sql,$params)){
@@ -119,7 +119,7 @@ class plugin_fuserfield extends plugin_base{
 				$selectname = get_string($data->field);
 				
 				list($usql, $params) = $DB->get_in_or_equal($userlist);
-				$sql = "SELECT DISTINCT(".$data->field.") as ufield FROM {user} WHERE id $usql ORDER BY ufield ASC";
+				$sql = "SELECT ".$data->field." as ufield FROM {user} WHERE id $usql ORDER BY ufield ASC";
 				if($rs = $DB->get_recordset_sql($sql, $params)){
 					foreach($rs as $u){				
 						$filteroptions[base64_encode($u->ufield)] = $u->ufield;
