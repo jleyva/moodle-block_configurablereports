@@ -38,7 +38,7 @@ class plugin_usermodoutline extends plugin_base{
 		// should be a better way to do this
 		if($cm = $DB->get_record('course_modules',array('id' => $data->cmid))){
 			$modname = $DB->get_field('modules','name',array('id' => $cm->module));
-			if($name = $DB->get_field("$modname",'name',array('id' => $data->cmid))){
+			if($name = $DB->get_field("$modname",'name',array('id' => $cm->instance))){
 				return $data->columname.' ('.$name.')';
 			}
 		}		
