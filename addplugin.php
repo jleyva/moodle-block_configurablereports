@@ -30,7 +30,7 @@ $id   = required_param('id', PARAM_INT);        // Report id
 $comp = required_param('comp', PARAM_ALPHA);    // Component name
 $plug = required_param('plug', PARAM_ALPHA);    // Plugin name
 
-if (! ($report = $DB->get_record('block_configurable_reports_report', array('id' => $id)))) {
+if (! ($report = $DB->get_record('block_cr_report', array('id' => $id)))) {
     print_error('reportdoesnotexists');
 }
 $courseid = $report->courseid;
@@ -74,21 +74,21 @@ $PAGE->navbar->add($pluginclass->get_type());
 
 if ($pluginclass->has_form()) {
     $editform = $pluginclass->get_form($PAGE->url);
-		
+
 	if ($editform->is_cancelled()) {
 		redirect($returnurl);
-		
-	} else if ($data = $editform->get_data()) {	
+
+	} else if ($data = $editform->get_data()) {
 	    $logcourse = isset($courseid) ? $courseid : $SITE->id;
 		add_to_log($logcourse, 'configurable_reports', 'edit', '', $report->name);
-		
+
 		$editform->save_data($data);
-		
+
 		redirect($returnurl);
 	}
 } else {
     $pluginclass->add_instance();
-    
+
 	redirect($returnurl);
 }
 

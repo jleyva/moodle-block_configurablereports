@@ -28,7 +28,7 @@ require_once($CFG->dirroot."/blocks/configurable_reports/locallib.php");
 
 $id = required_param('id', PARAM_INT);
 
-if(! $report = $DB->get_record('block_configurable_reports_report',array('id' => $id)))
+if(! $report = $DB->get_record('block_cr_report',array('id' => $id)))
 	print_error('reportdoesnotexists','block_configurable_reports');
 
 
@@ -40,9 +40,9 @@ if (! $course = $DB->get_record("course",array( "id" =>  $report->courseid)) ) {
 if ($course->id == SITEID){
 	require_login();
 	$context = get_context_instance(CONTEXT_SYSTEM);
-}	
+}
 else{
-	require_login($course->id);		
+	require_login($course->id);
 	$context = get_context_instance(CONTEXT_COURSE, $course->id);
 }
 
@@ -50,10 +50,10 @@ $PAGE->set_context($context);
 
 if(!has_capability('block/configurable_reports:managereports', $context) && ! (has_capability('block/configurable_reports:manageownreports', $context) && $report->ownerid == $USER->id))
 	print_error('badpermissions','block_configurable_reports');
-	
-if(!confirm_sesskey())	
+
+if(!confirm_sesskey())
 	print_error('badpermissions','block_configurable_reports');
-	
+
 $downloadfilename = clean_filename(format_string($report->name)).'.xml';
 $version = $DB->get_field('block','version',array('name' => 'configurable_reports'));
 if(!$version)
@@ -86,6 +86,6 @@ if (strpos($CFG->wwwroot, 'https://') === 0) { //https sites - watch out for IE!
 header("Content-type: text/xml; charset=UTF-8");
 header("Content-Disposition: attachment; filename=\"$downloadfilename\"");
 
-print($data);		
+print($data);
 
 ?>

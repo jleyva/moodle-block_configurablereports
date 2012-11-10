@@ -28,14 +28,14 @@
       }
       return serialize(urlencode_recursive($var));
   }
-  
+
   function cr_unserialize($var){
       if (!is_string($var)) {
           return $var;
       }
       return urldecode_recursive(unserialize($var));
   }
-  
+
   function urlencode_recursive($var) {
     if (is_object($var)) {
         $new_var = new object();
@@ -59,7 +59,7 @@
 
     return $new_var;
   }
-  
+
   function urldecode_recursive($var) {
     if (is_object($var)) {
         $new_var = new object();
@@ -86,40 +86,40 @@
 
 function cr_get_my_reports($userid, $context){
 	global $CFG, $DB;
-	
+
 	require_once($CFG->dirroot.'/blocks/configurable_reports/reports/report.class.php');
 
 	$params = array();
 	if ($context instanceof context_course) {
 	    $params['courseid'] = $context->instanceid;
 	}
-	if (!has_capability('block/configurable_reports:managereports', $context, $userid)) {		
+	if (!has_capability('block/configurable_reports:managereports', $context, $userid)) {
 		$params['ownerid'] = $userid;
 	}
-	
+
 	$reports = array();
-	$dbrecords = $DB->get_records('block_configurable_reports_report', $params, 'name ASC');
+	$dbrecords = $DB->get_records('block_cr_report', $params, 'name ASC');
 	foreach($dbrecords as $id => $dbrecord){
 	    $reports[$id] = report_base::get($dbrecord);
 	}
-	
+
 	return $reports;
 }
 
 function cr_check_report_permissions($report, $userid, $context){
     global $CFG;
-    
+
     require_once($CFG->dirroot.'/blocks/configurable_reports/reports/report.class.php');
-    
+
     $reportclass = report_base::get($report);
-    
+
     return $reportclass->check_permissions($context, $userid);
 }
- 
+
 //TODO: Capabilities and displayed type name to report class
 function cr_get_report_plugins($courseid = null){
     $context = isset($courseid) ? context_course::instance($courseid) : context_system::instance();
-          
+
     $pluginoptions = array();
     $report = new stdClass();
     $report->id = null;
@@ -132,7 +132,7 @@ function cr_get_report_plugins($courseid = null){
 		$reportclass = report_base::get($report);
 		$pluginoptions[$p] = $reportclass->get_typename();
 	}
-	
+
     return $pluginoptions;
 }
 
@@ -141,19 +141,19 @@ function cr_print_tabs($reportclass, $currenttab){
     $editurl = new moodle_url('/blocks/configurable_reports/editreport.php', $params);
     $compurl = new moodle_url('/blocks/configurable_reports/editcomp.php', $params);
     $viewurl = new moodle_url('/blocks/configurable_reports/viewreport.php', $params);
-    
+
     $top = array();
     $top[] = new tabobject('report', $editurl, get_string('report','block_configurable_reports'));
     foreach($reportclass->get_components() as $comp => $compclass){
         $top[] = new tabobject($comp, $compurl->out(true, array('comp' => $comp)), $compclass->get_typename());
     }
     $top[] = new tabobject('viewreport', $viewurl, get_string('viewreport','block_configurable_reports'));
-    
+
     print_tabs(array($top), $currenttab);
 }
 
 function cr_get_string($identifier, $component, $a){
-    
+
 }
- 
+
 ?>

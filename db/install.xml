@@ -4,10 +4,10 @@
     xsi:noNamespaceSchemaLocation="../../../lib/xmldb/xmldb.xsd"
 >
   <TABLES>
-    <TABLE NAME="block_configurable_reports_report" COMMENT="Report configuration" NEXT="block_configurable_reports_component">
+    <TABLE NAME="block_cr_report" COMMENT="Report configuration" NEXT="block_cr_component">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="true"  NEXT="contextid"/>
-        <FIELD NAME="contextid" TYPE="int" LENGTH="10" NOTNULL="false" UNSIGNED="true" SEQUENCE="false"  PREVIOUS="id" NEXT="ownerid"/>
+        <FIELD NAME="courseid" TYPE="int" LENGTH="10" NOTNULL="false" UNSIGNED="true" SEQUENCE="false"  PREVIOUS="id" NEXT="ownerid"/>
         <FIELD NAME="ownerid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false"  PREVIOUS="contextid" NEXT="visible"/>
         <FIELD NAME="visible" TYPE="int" LENGTH="4" NOTNULL="true" UNSIGNED="true" SEQUENCE="false"  PREVIOUS="ownerid" NEXT="name"/>
         <FIELD NAME="name" TYPE="char" LENGTH="128" NOTNULL="true" SEQUENCE="false"  PREVIOUS="visible" NEXT="summary"/>
@@ -21,7 +21,7 @@
         <KEY NAME="owner"   TYPE="foreign" FIELDS="ownerid" REFTABLE="user" REFFIELDS="id" PREVIOUS="context"/>
       </KEYS>
     </TABLE>
-    <TABLE NAME="block_configurable_reports_component" COMMENT="Report component configuration" PREVIOUS="block_configurable_reports_report" NEXT="block_configurable_reports_plugin">
+    <TABLE NAME="block_cr_component" COMMENT="Report component configuration" PREVIOUS="block_cr_report" NEXT="block_cr_plugin">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="true"  NEXT="reportid"/>
         <FIELD NAME="reportid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false"  PREVIOUS="id" NEXT="component"/>
@@ -30,10 +30,10 @@
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id" NEXT="report"/>
-        <KEY NAME="report"  TYPE="foreign" FIELDS="reportid" REFTABLE="block_configurable_reports_report" REFFIELDS="id" PREVIOUS="primary"/>
+        <KEY NAME="report"  TYPE="foreign" FIELDS="reportid" REFTABLE="block_cr_report" REFFIELDS="id" PREVIOUS="primary"/>
       </KEYS>
     </TABLE>
-    <TABLE NAME="block_configurable_reports_plugin" COMMENT="Report plugin configuration" PREVIOUS="block_configurable_reports_component">
+    <TABLE NAME="block_cr_plugin" COMMENT="Report plugin configuration" PREVIOUS="block_cr_component">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="true"  NEXT="reportid"/>
         <FIELD NAME="reportid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false"  PREVIOUS="id" NEXT="component"/>
@@ -46,7 +46,7 @@
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id" NEXT="report"/>
-        <KEY NAME="report"  TYPE="foreign" FIELDS="reportid" REFTABLE="block_configurable_reports_report" REFFIELDS="id" PREVIOUS="primary"/>
+        <KEY NAME="report"  TYPE="foreign" FIELDS="reportid" REFTABLE="block_cr_report" REFFIELDS="id" PREVIOUS="primary"/>
       </KEYS>
     </TABLE>
   </TABLES>

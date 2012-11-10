@@ -15,4 +15,6 @@
 
 .yui3-skin-sam th.yui3-datatable-desc .yui3-datatable-liner{
 	background-image:url([[pix:block_configurable_reports|desc]]);
-}    
+}
+
+#id_querysql {direction: ltr; text-align: left;}

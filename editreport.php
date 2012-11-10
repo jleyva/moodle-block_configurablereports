@@ -34,7 +34,7 @@ $show = optional_param('show', 0, PARAM_BOOL);
 $hide = optional_param('hide', 0, PARAM_BOOL);
 $duplicate = optional_param('duplicate', 0, PARAM_BOOL);
 
-if (! ($report = $DB->get_record('block_configurable_reports_report', array('id' => $id)))) {
+if (! ($report = $DB->get_record('block_cr_report', array('id' => $id)))) {
     print_error('reportdoesnotexists', 'block_configurable_reports');
 }
 $courseid = $report->courseid;
@@ -77,10 +77,10 @@ $PAGE->navbar->add($title);
 
 // Common actions
 if(($show || $hide) && confirm_sesskey()){
-	$DB->set_field('block_configurable_reports_report', 'visible', $show, array('id' => $report->id));
+	$DB->set_field('block_cr_report', 'visible', $show, array('id' => $report->id));
 	$action = ($show) ? 'shown' : 'hidden';
-	add_to_log($logcourse, 'configurable_reports', 'report '.$action, '/block/configurable_reports/editreport.php?id='.$report->id, $report->id);	
-	
+	add_to_log($logcourse, 'configurable_reports', 'report '.$action, '/block/configurable_reports/editreport.php?id='.$report->id, $report->id);
+
 	redirect($manageurl);
 }
 if ($duplicate && confirm_sesskey()) {
@@ -89,26 +89,26 @@ if ($duplicate && confirm_sesskey()) {
 	unset($newreport->id);
 	$newreport->name = get_string('copyasnoun').' '.$newreport->name;
 	$newreport->summary = $newreport->summary;
-	$newreportid = $DB->insert_record('block_configurable_reports_report', $newreport);
-	
-	$comps = $DB->get_records('block_configurable_reports_component', array('reportid' => $report->id));
+	$newreportid = $DB->insert_record('block_cr_report', $newreport);
+
+	$comps = $DB->get_records('block_cr_component', array('reportid' => $report->id));
 	foreach($comps as $comp){
 	    $comp->reportid = $newreportid;
-	    $DB->insert_record('block_configurable_reports_component', $comp);
+	    $DB->insert_record('block_cr_component', $comp);
 	}
-	$plugs = $DB->get_records('block_configurable_reports_plugin', array('reportid' => $report->id));
+	$plugs = $DB->get_records('block_cr_plugin', array('reportid' => $report->id));
 	foreach($plugs as $plug){
 	    $plug->reportid = $newreportid;
-	    $DB->insert_record('block_configurable_reports_plugin', $plug);
+	    $DB->insert_record('block_cr_plugin', $plug);
 	}
-	
+
 	add_to_log($logcourse, 'configurable_reports', 'report duplicated', '/block/configurable_reports/editreport.php?id='.$newreportid, $id);
-	
+
 	redirect($manageurl);
 }
 if ($delete && confirm_sesskey()){
 	if (!$confirm) {
-		echo $OUTPUT->header();		
+		echo $OUTPUT->header();
 		echo $OUTPUT->heading(get_string('deletereport', 'block_configurable_reports'));
 		$message = get_string('confirmdeletereport', 'block_configurable_reports');
 		$confirmurl = $baseurl;
@@ -118,25 +118,25 @@ if ($delete && confirm_sesskey()){
 		echo $OUTPUT->confirm($message, $buttoncontinue, $buttoncancel);
 		echo $OUTPUT->footer();
 		exit;
-	} else if ($DB->delete_records('block_configurable_reports_report', array('id'=>$report->id))) {
+	} else if ($DB->delete_records('block_cr_report', array('id'=>$report->id))) {
 		add_to_log($logcourse, 'configurable_reports', 'report deleted', '/block/configurable_reports/editreport.php?id='.$report->id, $report->id);
-	
+
 	    redirect($manageurl);
 	}
 }
 
 $editform = new report_edit_form($PAGE->url, array('reportclass' => $reportclass));
 $editform->set_data($report);
-	
+
 if ($editform->is_cancelled()) {
 	redirect($manageurl);
-	
+
 } else if ($data = $editform->get_data()) {
 	foreach($reportclass->get_form_components() as $compclass){
 	    $compclass->save_report_formdata($data);
 	}
-	
-	$DB->update_record('block_configurable_reports_report', $data);
+
+	$DB->update_record('block_cr_report', $data);
 	add_to_log($logcourse, 'configurable_reports', 'edit', '/block/configurable_reports/editreport.php?id='.$id, $report->name);
 }
 
@@ -145,7 +145,7 @@ echo $OUTPUT->header();
 
 echo $OUTPUT->heading($reportclass->get_typename());
 
-cr_print_tabs($reportclass, 'report'); 
+cr_print_tabs($reportclass, 'report');
 
 if ($data) {
     echo $OUTPUT->heading(get_string('changessaved'), 3, 'notifysuccess');

@@ -21,7 +21,7 @@
   * @date: 2009
   */
 
-require_once("../../config.php");	
+require_once("../../config.php");
 require_once($CFG->dirroot."/blocks/configurable_reports/locallib.php");
 require_once($CFG->dirroot."/blocks/configurable_reports/import_form.php");
 
@@ -33,15 +33,15 @@ if (isset($courseid)) {
     	print_error("nosuchcourseid", 'block_configurable_reports');
     }
     $params['courseid'] = $courseid;
-    
+
     require_login($courseid);
     $context = context_course::instance($courseid);
 } else {
     require_login();
     $context = context_system::instance();
 }
-// Capability check	
-if(!has_capability('block/configurable_reports:managereports', $context) && 
+// Capability check
+if(!has_capability('block/configurable_reports:managereports', $context) &&
         !has_capability('block/configurable_reports:manageownreports', $context)){
 	print_error('badpermissions');
 }
@@ -56,12 +56,12 @@ $userurl = new moodle_url('/user/view.php');
 $PAGE->set_url($baseurl, $params);
 $PAGE->set_context($context);
 $PAGE->set_pagelayout('incourse');
-	
+
 $importform = new import_form(null, $courseid);
 if (($data = $importform->get_data()) && ($xml = $importform->get_file_content('userfile'))) {
 	require_once($CFG->dirroot.'/lib/xmlize.php');
 	$data = xmlize($xml, 1, 'UTF-8');
-	
+
 	if(isset($data['report']['@']['version'])){
 		$newreport = new stdclass;
 		foreach($data['report']['#'] as $key=>$val){
@@ -72,18 +72,18 @@ if (($data = $importform->get_data()) && ($xml = $importform->get_file_content('
 		}
 		$newreport->courseid = $course->id;
 		$newreport->ownerid = $USER->id;
-		$DB->insert_record('block_configurable_reports_report', $newreport);
+		$DB->insert_record('block_cr_report', $newreport);
 
 		redirect($PAGE->url);
 	}
-}	
+}
 
 if($reports = cr_get_my_reports($USER->id, $context)){
     $sitestr = get_string('site');
     $delstr = get_string('deleted');
-    
+
     $PAGE->requires->js_init_call('M.block_configurable_reports.setup_html_table', array('reportslist'));
-    
+
     $table = new html_table();
     $table->id = 'reportslist';
     $table->width = '80%';
@@ -97,7 +97,7 @@ if($reports = cr_get_my_reports($USER->id, $context)){
             get_string('download', 'block_configurable_reports')
     );
     $table->align = array('left','left','left','left','center','center');
- 
+
     $icons = array(
         'edit'       => new pix_icon('t/edit', get_string('edit')),
         'delete'     => new pix_icon('t/delete', get_string('delete')),
@@ -108,16 +108,16 @@ if($reports = cr_get_my_reports($USER->id, $context)){
     );
     $divider = '&nbsp;&nbsp;';
     $pixattr = array('class'=>'iconsmall');
-    
+
     foreach($reports as $report){
         $r = $report->config;
         $editurl->params(array('id' => $r->id, 'sesskey' => $USER->sesskey));
         $exporturl->param('id', $r->id);
         $viewurl->param('id', $r->id);
-        
+
         $reportname = html_writer::tag('a', $r->name, array('href' => $viewurl));
         $reporttype = $report->get_typename();
-        
+
         if(!isset($r->courseid)) {
             $coursename = html_writer::tag('a', $sitestr, array('href' => $CFG->wwwroot));
         } else if (! ($coursename = $DB->get_field('course', 'fullname', array('id' => $r->courseid)))) {
@@ -126,7 +126,7 @@ if($reports = cr_get_my_reports($USER->id, $context)){
             $url = $courseurl->out(true, array('courseid' => $r->courseid));
             $coursename = html_writer::tag('a', $coursename, array('href' => $url));
         }
-        
+
         if($owneruser = $DB->get_record('user', array('id' => $r->ownerid))){
             $url = $userurl->out(true, array('id' => $r->ownerid));
             $owner = html_writer::tag('a', fullname($owneruser), array('href' => $url));
@@ -192,7 +192,7 @@ $selector->set_label(get_string('add'));
 echo $OUTPUT->render($selector);
 
 $importform->display();
-			
+
 echo $OUTPUT->footer();
 
 ?>
