@@ -31,7 +31,7 @@ $id = required_param('id', PARAM_INT);
 $download = optional_param('download', false, PARAM_BOOL);
 $format = optional_param('format', '', PARAM_ALPHA);
 
-if (! ($report = $DB->get_record('block_configurable_reports_report', array('id' => $id)))) {
+if (! ($report = $DB->get_record('block_cr_report', array('id' => $id)))) {
     print_error('reportdoesnotexists', 'block_configurable_reports');
 }
 $courseid = $report->courseid;
@@ -47,7 +47,7 @@ if (isset($courseid)) {
     require_login();
     $context = context_system::instance();
 }
-	
+
 $reportclass = report_base::get($report);
 if (!$reportclass->check_permissions($context)){
 	print_error("badpermissions",'block_configurable_reports');
@@ -73,7 +73,7 @@ if($download && $format){
 
 // if(has_capability('block/configurable_reports:managereports', $context) || (has_capability('block/configurable_reports:manageownreports', $context)) && $report->ownerid == $USER->id )
 // 	$navlinks[] = array('name' => get_string('managereports','block_configurable_reports'), 'link' => $CFG->wwwroot.'/blocks/configurable_reports/managereport.php?courseid='.$report->courseid, 'type' => 'title');
-	
+
 $reportname = format_string($report->name);
 $PAGE->navbar->add($reportname);
 $PAGE->set_title($reportname);
@@ -86,9 +86,9 @@ echo $OUTPUT->header();
 // Show configuration navigation when user has capability
 if(has_capability('block/configurable_reports:managereports', $context) ||
         (has_capability('block/configurable_reports:manageownreports', $context)) && $report->ownerid == $USER->id ){
-    
+
     echo $OUTPUT->heading($reportclass->get_typename());
-    
+
     cr_print_tabs($reportclass, 'viewreport');
 }
 

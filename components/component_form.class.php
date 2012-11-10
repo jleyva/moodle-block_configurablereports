@@ -18,7 +18,7 @@
  * A Moodle block for creating customizable reports
  * @package blocks
  * @author Nick Koeppen
- */ 
+ */
 
 if (!defined('MOODLE_INTERNAL')) {
     die('Direct access to this script is forbidden.');
@@ -27,32 +27,32 @@ if (!defined('MOODLE_INTERNAL')) {
 require_once($CFG->libdir.'/formslib.php');
 
 abstract class component_form extends moodleform {
-    
+
     function set_data(){
         $data = $this->get_config_data();
-        
+
         parent::set_data($data);
     }
-    
+
     function get_config_data(){
         global $DB;
-        
+
         $compclass = $this->_customdata['compclass'];
         $search = array('reportid' => $compclass->report->id, 'component' => $compclass->get_type());
-        $configdata = $DB->get_field('block_configurable_reports_component', 'configdata', $search);
-        
+        $configdata = $DB->get_field('block_cr_component', 'configdata', $search);
+
         return $configdata ? cr_unserialize($configdata) : new stdClass();
     }
-    
+
 //     function set_data($instance){
 //         $data = cr_unserialize($instance->configdata);
-    
+
 //         parent::set_data($data);
 //     }
-    
+
 //     function save_data($data, $instanceid = null){
 //         global $DB;
-    
+
 //         $plugclass = $this->_customdata['plugclass'];
 //         if (isset($instanceid) && ($instance = $plugclass->get_instance($instanceid))) {
 //             $instance->configdata = $data;
@@ -61,21 +61,21 @@ abstract class component_form extends moodleform {
 //             $plugclass->add_instance($data);
 //         }
 //     }
-    
+
     function save_data($data){
         global $DB;
-        
+
         $configdata = cr_serialize($data);
 
         $compclass = $this->_customdata['compclass'];
         $search = array('reportid' => $compclass->report->id, 'component' => $compclass->get_type());
-        if ($record = $DB->get_record('block_configurable_reports_component', $search)){
+        if ($record = $DB->get_record('block_cr_component', $search)){
             $record->configdata = $configdata;
-            $DB->update_record('block_configurable_reports_component', $record);
+            $DB->update_record('block_cr_component', $record);
         } else {
             $record = (object)$search;
             $record->configdata = $configdata;
-            $DB->insert_record('block_configurable_reports_component', $record);
+            $DB->insert_record('block_cr_component', $record);
         }
     }
 }

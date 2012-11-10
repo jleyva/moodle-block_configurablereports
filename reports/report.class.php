@@ -27,39 +27,39 @@ abstract class report_base {
     public  $id;         // Report id
     public  $config;     // Report configuration (DB record)
 	private $components; // Component objects (and therefore plugin objects)
-	
+
 	var $finalreport;
 	var $totalrecords = 0;
-	
+
 	/**
 	 * Retrieve a report class based on report record or report id.
-	 * 
+	 *
 	 * @param mixed $reportorid    report DB record (stdClass) or id (int)
 	 * @throws moodle_exception
 	 * @return report_base         report class object
 	 */
 	static function get($reportorid){
 	    global $CFG, $DB;
-	    
+
 	    if (is_numeric($reportorid)) {
-	        $report = $DB->get_record('block_configurable_reports_report', array('id' => $reportorid));
+	        $report = $DB->get_record('block_cr_report', array('id' => $reportorid));
 	    } else if($reportorid instanceof stdClass) {
 	        $report = $reportorid;
 	    } else {
 	        throw new moodle_exception('invalidreport');    //TODO
 	    }
-	    
+
 	    require_once("$CFG->dirroot/blocks/configurable_reports/reports/$report->type/report.class.php");
-	    
+
 	    $reportclassname = 'report_'.$report->type;
 	    return new $reportclassname($report);
 	}
-	
+
 	function __construct(stdClass $report){
 	    $this->id = $report->id;
 		$this->config = $report;
 	}
-	
+
 	/**
 	 * Retrieve a component class object.
 	 * @param string          $component    Component type
@@ -68,40 +68,40 @@ abstract class report_base {
 	 */
 	private function _create_component($component, $classname){
 	    global $CFG;
-	
+
 	    $file = 'component.class.php';
 	    $comppath = $this->get_component_path($component, $file);
 	    require_once("$comppath/$file");
-	
+
 	    return new $classname($this);
 	}
-	
+
 	/**
 	 * Load components objects for this report.
 	 */
 	private function _load_components(){
 	    $this->components = array();
-	     
+
 	    foreach($this->all_components() as $comp => $classname){
 	        $this->components[$comp] = $this->_create_component($comp, $classname);
 	    }
 	}
-	
+
 	function form_components(){
 	    return array(
 	        'export' => 'component_export',
 	    );
 	}
-	
+
 	function check_permissions($context, $userid = null){
 	    global $CFG, $USER;
-	    
+
 	    require_once($CFG->dirroot.'/lib/evalmath/evalmath.class.php');
-	    
+
 	    if (!isset($userid)) {
 	        $userid = $USER->id;
 	    }
-	
+
 	    // Management permissions
 	    if ($this->config->ownerid == $userid && has_capability('block/configurable_reports:manageownreports', $context, $userid)) {
 	        return true;
@@ -109,19 +109,19 @@ abstract class report_base {
 	    if (has_capability('block/configurable_reports:managereports', $context, $userid)) {
 	        return true;
 	    }
-	    	
+
 	    // Visibility
 	    if (empty($this->config->visible)) {
 	        return false;
 	    }
-	
+
 	    // Custom permissions
 	    $permclass = $this->get_component('permissions');
 	    $permissions = $permclass->get_all_instances();
 	    if (empty($permissions)) {
 	        return has_capability('block/configurable_reports:viewreports', $context);
 	    }
-	
+
 	    $i = 1;
 	    $cond = array();
 	    foreach($permclass->get_plugins() as $plugclass){
@@ -130,15 +130,15 @@ abstract class report_base {
 	            $i++;
 	        }
 	    }
-	
+
 	    if (count($cond) == 1) {
 	        return $cond[1];
 	    } else if (isset($permclass->config) && isset($permclass->config->conditionexpr)) {
 	        $logic = trim($permclass->config->conditionexpr);
-	
+
 	        $m = new EvalMath;
 	        $orig = $dest = array();
-	
+
 	        // Security
 	        // No more than conditions * 10 chars
 	        $logic = substr($logic, 0, count($permissions['elements']) * 10);
@@ -147,22 +147,22 @@ abstract class report_base {
 	        $logic = preg_replace('/[^&c\d\s|()]/i', '', $logic);
 	        //$logic = str_replace('c','$c',$logic);
 	        $logic = str_replace(array('&&','||'), array('*','+'), $logic);
-	         
+
 	        for($j = $i -1; $j > 0; $j--){
 	            $orig[] = 'c'.$j;
 	            $dest[] = ($cond[$j]) ? 1 : 0;
 	        }
-	         
+
 	        return $m->evaluate(str_replace($orig, $dest, $logic));
 	    }
-	
+
 	    return false;
 	}
-	
+
 	abstract function component_classes();
-	
+
 	abstract function create_report();
-	
+
 	/**
 	 * Create report table using the columns component.
 	 *
@@ -173,7 +173,7 @@ abstract class report_base {
 	function create_table($tblsummary, array $columns = null){
 	    $table = new html_table();
 	    $table->summary = $tblsummary;
-	
+
 	    $colcomp = $this->get_component('columns');
 	    foreach($colcomp->get_plugins() as $plugclass){
 	        foreach($plugclass->get_instances() as $pid => $column){
@@ -187,7 +187,7 @@ abstract class report_base {
 	            $table->wrap[] = $wrap;
 	        }
 	    }
-	
+
 	    $config = $colcomp->config;
 	    if (!empty($config)) {
 	        $table->class = $config->class;
@@ -199,14 +199,14 @@ abstract class report_base {
 	        $table->width = '80%';
 	        $table->tablealign = 'center';
 	    }
-	
+
 	    return $table;
 	}
-	
+
 	function all_components(){
 	    return array_merge($this->component_classes(), $this->form_components());
 	}
-	
+
 	/**
 	 * Return the component class object for this report.
 	 * @param string $compname    Component name
@@ -219,18 +219,18 @@ abstract class report_base {
 	    if (!isset($this->components)) {
 	        $this->_load_components();
 	    }
-	     
+
 	    return $this->components[$compname];
 	}
-	
+
 	function get_components(){
 	    if (!isset($this->components)) {
 	        $this->_load_components();
 	    }
-	    
+
 	    return array_intersect_key($this->components, $this->component_classes());
 	}
-	
+
 	/**
 	 * Get path of component file.
 	 * @param string $component    Component type
@@ -240,11 +240,11 @@ abstract class report_base {
 	 */
 	public function get_component_path($component, $file, $reportclass = null){
 	    global $CFG;
-	
+
 	    if (!isset($reportclass)) {
 	        $reportclass = get_class($this);
 	    }
-	     
+
 	    $basedir = "$CFG->dirroot/blocks/configurable_reports";
 	    $filepath = "components/$component";
 	    if (! ($parentclass = get_parent_class($reportclass))) {
@@ -254,7 +254,7 @@ abstract class report_base {
 	            throw new Exception(get_string('nosuchcomponent', 'block_configurable_reports'));
 	        }
 	    }
-	
+
 	    $custompath = "reports/".$this->get_type($reportclass);
 	    if (file_exists("$basedir/$custompath/$filepath/$file")) {
 	        return "$basedir/$custompath/$filepath";
@@ -262,18 +262,18 @@ abstract class report_base {
 	        return $this->get_component_path($component, $file, $parentclass);
 	    }
     }
-	
+
 	function get_form_components(){
 	    if (!isset($this->components)) {
 	        $this->_load_components();
 	    }
-	     
+
 	    return array_intersect_key($this->components, $this->form_components());
 	}
-	
+
 	function get_column_options($ignore = array()){
 	    $options = array();
-	    
+
 	    $columnclass = $this->get_component('columns');
 	    if(!isset($columnclass)){
 	        return $options;
@@ -282,7 +282,7 @@ abstract class report_base {
 	    if (empty($instances)) {
 	        return $options;
 	    }
-	    
+
 	    $i = 0;
 	    foreach($instances as $instance){
 	        if(!in_array($i, $ignore) && isset($instance->name)){
@@ -290,10 +290,10 @@ abstract class report_base {
 	        }
 	        $i++;
 	    }
-	
+
 	    return $options;
 	}
-	
+
 	/**
 	 * Retrieve the report type for this class definition.
 	 * FORMAT REQUIREMENT: report_XXX_YYY where XXX is the report type
@@ -307,56 +307,56 @@ abstract class report_base {
 	    $pieces = explode('_', $reportclass);
 	    return $pieces[1];
 	}
-	
+
 	function get_typename(){
 	    return get_string('report_'.$this->get_type(), 'block_configurable_reports');
 	}
-	
+
 	function has_component($compname){
 	    return array_key_exists($compname, $this->all_components());
 	}
-	
+
 	function print_using_template(){
 	    $compclass = $this->get_component('template');
 	    if (empty($compclass->config) || !$compclass->config->enabled) {
 	        return false;
 	    }
-	    
+
 	    $compclass->print_report($this);
 	    return true;
 	}
-	
+
 	function print_report_page(){
 	    global $PAGE, $OUTPUT;
-		
+
 		if ($this->print_using_template()) {
 			return true;
 		}
-				
+
 	    echo html_writer::tag('div', format_text($this->config->summary), array('class' => 'centerpara'));
 
 	    if ($compclass = $this->get_component('contexts')) {
 	        $compclass->print_to_report();
 	    }
-	    
+
 	    if ($compclass = $this->get_component('filters')) {
 	        $compclass->print_to_report();
 	    }
-			    
+
 		$finaltable = $this->finalreport->table;
 		if ($finaltable && !empty($finaltable->data[0])) {
 		    $PAGE->requires->js_init_call('M.block_configurable_reports.setup_data_table', array('reporttable'));
 			echo html_writer::start_tag('div', array('id' => 'printablediv'));
-			
+
 			$compclass = $this->get_component('plot');
 			$compclass->print_to_report();
-		
+
 			if($this->config->pagination){
 				$page = optional_param('page', 0, PARAM_INT);
 				$perpage = $this->config->pagination;
 				$this->totalrecords = count($finaltable->data);
 				$finaltable->data = array_slice($finaltable->data, $page * $perpage, $this->config->pagination);
-				
+
 				$params = array('id' => $this->config->id);
 				$request = array_merge($_POST, $_GET);
 				foreach($request as $key => $val){
@@ -370,37 +370,37 @@ abstract class report_base {
 				        }
 				    }
 				}
-				
+
 				$baseurl = new moodle_url('viewreport.php', $params);
 				$pagingbar = new paging_bar($this->totalrecords, $page, $perpage, $baseurl, 'page');
 				$pagebar = $OUTPUT->render($pagingbar);
 				echo html_writer::tag('div', $pagebar, array('class' => 'boxaligncenter', 'style' => 'margin:15px'));
 			}
-		
+
 			echo html_writer::table($finaltable);
-		
+
     	    if ($compclass = $this->get_component('calcs')) {
     	        $compclass->print_to_report();
     	    }
-    	    
+
 			echo html_writer::end_tag('div');
-			
+
 			if ($compclass = $this->get_component('export')) {
 			    $compclass->print_to_report();
 			}
 		} else {
 		    $norecords = get_string('norecordsfound', 'block_configurable_reports');
 		    echo html_writer::tag('div', $norecords, array('class' => 'centerpara'));
-		}		
-		
+		}
+
 		$this->print_report_link();
     }
-    
+
     function print_report_link($printablediv = 'printablediv'){
         global $PAGE, $OUTPUT;
-    
+
         $PAGE->requires->js_init_call('M.block_configurable_reports.printDiv', array('printreport', $printablediv));
-        
+
         echo html_writer::start_tag('div', array('id' => 'printreport', 'class' => 'centerpara'));
         $url = new moodle_url('/blocks/configurable_reports/printreport.php', array('id' => $this->config->id));
         $printstr = get_string('printreport', 'block_configurable_reports');

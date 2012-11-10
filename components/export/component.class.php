@@ -22,14 +22,14 @@
   */
 
 class component_export extends component_base{
-    
+
     function plugin_classes(){
         return array(
                 'ods'    => 'plugin_export_ods',
                 'xls'    => 'plugin_export_xls',
         );
     }
-	
+
     function report_form_elements(MoodleQuickForm &$mform){
         $mform->addElement('header', 'exportoptions', get_string('exportoptions', 'block_configurable_reports'));
 
@@ -43,10 +43,10 @@ class component_export extends component_base{
             }
         }
     }
-    
+
     function save_report_formdata(stdClass $formdata){
         global $DB;
-        
+
         $exports = array();
         foreach($formdata as $elname => $value){
             if(strpos($elname, 'export_') !== false){
@@ -54,23 +54,23 @@ class component_export extends component_base{
             }
         }
         $configdata = cr_serialize($exports);
-        
+
         //TODO: Should have some save_instance functions for general config handling
         $search = array(
-	        'reportid'  => $this->report->id, 
+	        'reportid'  => $this->report->id,
 	        'component' => $this->get_type(),
 	    );
-        if ($record = $DB->get_record('block_configurable_reports_component', $search)) {
+        if ($record = $DB->get_record('block_cr_component', $search)) {
             $method = 'update_record';
         } else {
             $record = (object) $search;
             $method = 'insert_record';
         }
-        
+
         $record->configdata = $configdata;
-        $DB->$method('block_configurable_reports_component', $record);
+        $DB->$method('block_cr_component', $record);
     }
-    
+
     function print_to_report($return = false){
         $label = get_string('downloadreport', 'block_configurable_reports');
         $options = implode(' ', $this->get_export_options());
@@ -80,10 +80,10 @@ class component_export extends component_base{
         }
         echo $output;
     }
-    
+
     function get_export_options(){
         $params = array('id' => $this->report->id, 'download' => 1);
-        
+
         // TODO: REVIEW $params func parameter?
         $wwwpath = '';
         $request = array_merge($_POST,$_GET);
@@ -98,11 +98,11 @@ class component_export extends component_base{
                 }
             }
         }
-        
+
         $exports = cr_unserialize($this->config);
-        
+
         $viewurl = new moodle_url('/blocks/configurable_reports/viewreport.php', $params);
-        
+
         $options = array();
         foreach($exports as $export){
             $exportclass = $this->get_plugin($export);
@@ -111,7 +111,7 @@ class component_export extends component_base{
             $attr = array('href' => $viewurl->out(false, array('format' => $exportclass->get_type())));
             $options[] = html_writer::tag('a', "$icon $fullname", $attr);
         }
-        
+
         return $options;
     }
 }

@@ -21,9 +21,9 @@
   * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
   * @date: 2009
   */
-  
+
 class block_configurable_reports extends block_list {
-    
+
     /**
      * Sets the block name and version number
      *
@@ -32,7 +32,7 @@ class block_configurable_reports extends block_list {
     function init() {
         $this->title = get_string('blockname', 'block_configurable_reports');
     }
-   
+
     /**
      * Where to add the block
      *
@@ -41,7 +41,7 @@ class block_configurable_reports extends block_list {
     function applicable_formats() {
         return array('site' => true, 'course' => true);
     }
-    
+
     /**
      * Global Config?
      *
@@ -50,7 +50,7 @@ class block_configurable_reports extends block_list {
     function has_config() {
         return false;
     }
-    
+
     /**
      * More than one instance per page?
      *
@@ -58,8 +58,8 @@ class block_configurable_reports extends block_list {
      **/
     function instance_allow_multiple() {
       return false;
-    } 
-	
+    }
+
     /**
      * Gets the contents of the block (course view)
      *
@@ -75,17 +75,17 @@ class block_configurable_reports extends block_list {
 		$this->content = new stdClass;
 		$this->content->footer = '';
 		$this->content->icons = array();
-		
+
 		if (!isloggedin())
 			return $this->content;
-		
+
 		require_once($CFG->dirroot."/blocks/configurable_reports/locallib.php");
-		
+
 		$course = $DB->get_record('course',array('id' => $COURSE->id));
 		if (!$course) {
 			print_error('coursedoesnotexists');
 		}
-		
+
 		$params = array();
 		if ($course->id == SITEID) {
 			$context = context_system::instance();
@@ -93,8 +93,8 @@ class block_configurable_reports extends block_list {
 			$context = context_course::instance($course->id);
 			$params['courseid'] = $course->id;
 		}
-		$reports = $DB->get_records('block_configurable_reports_report', $params, 'name ASC');
-		
+		$reports = $DB->get_records('block_cr_report', $params, 'name ASC');
+
 		if($reports){
 		    $url = new moodle_url('/blocks/configurable_reports/viewreport.php', $params);
 			foreach($reports as $report){
@@ -104,13 +104,13 @@ class block_configurable_reports extends block_list {
 				$this->content->items[] = html_writer::link($url->out(true, array('id' => $report->id)), format_string($report->name));
 			}
 		}
-		
-		if(has_capability('block/configurable_reports:managereports', $context) || 
+
+		if(has_capability('block/configurable_reports:managereports', $context) ||
 		        has_capability('block/configurable_reports:manageownreports', $context)) {
 		    $url = new moodle_url('/blocks/configurable_reports/managereport.php', $params);
 			$this->content->items[] = html_writer::link($url, get_string('managereports','block_configurable_reports'));
 		}
-				
+
         return $this->content;
     }
 }

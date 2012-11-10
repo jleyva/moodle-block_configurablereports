@@ -32,7 +32,7 @@ $moveup = optional_param('moveup', 0, PARAM_INT);
 $movedown = optional_param('movedown', 0, PARAM_INT);
 $delete = optional_param('delete', 0, PARAM_INT);
 
-if (! ($instance = $DB->get_record('block_configurable_reports_plugin', array('id' => $id)))) {
+if (! ($instance = $DB->get_record('block_cr_plugin', array('id' => $id)))) {
     print_error('instancedoesnotexist');
 }
 if (! ($reportclass = report_base::get($instance->reportid))) {
@@ -76,13 +76,13 @@ if ( !($instance = $pluginclass->get_instance($instance->id))){
 
 if ($delete && confirm_sesskey()) {
     $pluginclass->delete_instance($id);
-    
+
     redirect($returnurl);
 }
 if (($moveup || $movedown) && confirm_sesskey()){
     $shift = ($moveup) ? -1 : 1;
     $pluginclass->move_instance($id, $shift);
-    
+
     redirect($returnurl);
 }
 
@@ -92,15 +92,15 @@ $PAGE->set_heading($title);
 navigation_node::override_active_url($returnurl);
 $PAGE->navbar->add($pluginclass->get_type());
 
-$editform = $pluginclass->get_form($PAGE->url, array('id' => $id));		
+$editform = $pluginclass->get_form($PAGE->url, array('id' => $id));
 $editform->set_data($instance);
-	
+
 if ($editform->is_cancelled()) {
 	redirect($returnurl);
-	
+
 } else if ($data = $editform->get_data()) {
     $editform->save_data($data, $id);
-    
+
     $logcourse = isset($courseid) ? $courseid : $SITE->id;
 	add_to_log($logcourse, 'configurable_reports', 'edit', '', $report->name);
 

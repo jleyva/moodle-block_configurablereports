@@ -28,7 +28,7 @@ require_once($CFG->dirroot.'/blocks/configurable_reports/reports/report.class.ph
 $id   = required_param('id', PARAM_INT);        // Report id
 $comp = required_param('comp', PARAM_ALPHA);    // Component name
 
-if (! ($report = $DB->get_record('block_configurable_reports_report', array('id' => $id)))) {
+if (! ($report = $DB->get_record('block_cr_report', array('id' => $id)))) {
 	print_error('reportdoesnotexists');
 }
 $courseid = $report->courseid;
@@ -56,9 +56,9 @@ $manageurl = new moodle_url('/blocks/configurable_reports/managereport.php', arr
 $addurl = new moodle_url('/blocks/configurable_reports/addplugin.php', $params);
 $editurl = new moodle_url('/blocks/configurable_reports/editplugin.php', array('comp' => $comp));
 $PAGE->set_url($baseurl, $params);
-$PAGE->set_context($context);	
+$PAGE->set_context($context);
 $PAGE->set_pagelayout('incourse');
-	
+
 $reportclass = report_base::get($report);
 $compclass = $reportclass->get_component($comp);
 if (!isset($compclass)) {
@@ -73,16 +73,16 @@ $PAGE->set_heading($title);
 
 if($compclass->has_form()){
     $editform = $compclass->get_form($PAGE->url);
-	
+
 	if ($editform->is_cancelled()) {
 		redirect(new moodle_url('/blocks/configurable_reports/editreport.php', array('id' => $id)));
-		
+
 	} else if ($data = $editform->get_data()) {
 	    $editform->save_data($data);
-	    $logcourse = isset($courseid) ? $courseid : $SITE->id; 
+	    $logcourse = isset($courseid) ? $courseid : $SITE->id;
 		add_to_log($logcourse, 'configurable_reports', 'edit', '', $report->name);
 	}
-	
+
 	$editform->set_data();
 }
 
@@ -94,11 +94,11 @@ if (!empty($instances)) {
     $table->tablealign = 'center';
     $table->head = array(
             get_string('idnumber'),
-            get_string('name'), 
-            get_string('summary'), 
+            get_string('name'),
+            get_string('summary'),
             get_string('edit')
     );
-    
+
     $icons = array(
             'edit'      => new pix_icon('t/edit', get_string('edit')),
             'delete'    => new pix_icon('t/delete', get_string('delete')),
@@ -107,7 +107,7 @@ if (!empty($instances)) {
     );
     $divider = '&nbsp;&nbsp;';
     $pixattr = array('class'=>'iconsmall');
-    
+
     $i = 0;
     $numinstances = count($instances);
     $plugins = $compclass->get_plugins();
@@ -117,7 +117,7 @@ if (!empty($instances)) {
         }
         $editurl->params(array('id' => $instance->id));
         $pluginclass = $plugins[$instance->plugin];
-    
+
         $commands = array();
         if($pluginclass->has_form()){
             $commands[] = $OUTPUT->action_icon($editurl, $icons['edit'], null, $pixattr);
@@ -125,7 +125,7 @@ if (!empty($instances)) {
         $url = clone($editurl);
         $url->params(array('delete' => 1, 'sesskey' => $USER->sesskey));
         $commands[] = $OUTPUT->action_icon($url, $icons['delete'], null, $pixattr);
-        
+
         if ($compclass->has_ordering()) {
             if ($i != 0 && $numinstances > 1) {
                 $url = clone($editurl);
@@ -139,7 +139,7 @@ if (!empty($instances)) {
             }
         }
         $editcell = implode($divider, $commands);
-        
+
         $table->data[] = array('c'.($i+1), $instance->name, $instance->summary, $editcell);
         $i++;
     }
