@@ -33,7 +33,7 @@ class plugin_base{
 	var $unique = false;
 	var $reporttypes = array();
 	
-	function plugin_base($report){
+	function __construct($report){
 		global $DB, $CFG;
 		
 		if(is_numeric($report))
@@ -43,11 +43,7 @@ class plugin_base{
 		$this->init();
 	}
 	
-	function __construct($report){
-		$this->plugin_base($report);
-	}
-	
-	function summary(){
+	function summary($data){
 		return '';
 	}
 }
