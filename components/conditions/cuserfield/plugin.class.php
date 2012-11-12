@@ -46,11 +46,15 @@ class plugin_cuserfield extends plugin_base{
 	// data -> Plugin configuration data
 	function execute($data,$user,$courseid){
 		global $DB;
-	
-		$data->value = $data->value;
+
 		$ilike = " LIKE "; // TODO - Use $DB->sql_like()
 		
 		if(strpos($data->field,'profile_') === 0){
+			
+			if ($data->value == "%%CURRENTUSER%%") {
+				$pfname = str_replace('profile_','', $data->field);
+				$data->value = $user->profile[$pfname];
+			}
 			
 			if($fieldid = $DB->get_field('user_info_field','id',array('shortname' => str_replace('profile_','', $data->field)))){
 			
@@ -71,7 +75,12 @@ class plugin_cuserfield extends plugin_base{
 				}
 			}
 		}	
-		else{						
+		else{
+			
+			if ($data->value == "%%CURRENTUSER%%") {
+				$data->value = $user->{$data->field};
+			}
+			
 			switch($data->operator){
 				case 'LIKE % %': 	$sql = "$data->field $ilike ?";
 									$params = array("%$data->value%");
