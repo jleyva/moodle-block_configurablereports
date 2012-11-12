@@ -40,8 +40,8 @@ class plugin_usersincoursereport extends plugin_base{
 	function execute($userid, $context, $data){
 		global $DB, $CFG;
 		
-		return has_capability('moodle/course:view',$context,$userid);
-		
+		return is_enrolled($context, $userid);
+
 	}
 	
 }
