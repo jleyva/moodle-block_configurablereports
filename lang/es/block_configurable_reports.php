@@ -181,7 +181,7 @@ $string['noexplicitprefix'] = "No se debe indicar el prefijo de tabla, usar pref
 $string['queryfailed'] = "La consulta SQL falló";
 $string['norowsreturned'] = "La consulta no ha devuelto ningún resultado";
 
-$string['listofsqlreports'] = '<a href=\"http://docs.moodle.org/en/ad-hoc_contributed_reports\" target=\"_blank\">Listado de informes en SQL</a>';
+$string['listofsqlreports'] = '<a href="http://docs.moodle.org/en/ad-hoc_contributed_reports" target="_blank">Listado de informes en SQL</a>';
 
 $string['usersincoursereport_summary'] = "Cualquier usuario en el curso donde se ha creado el informe";
 
