@@ -31,6 +31,7 @@ require_once($CFG->libdir.'/formslib.php');
 class coursecategory_form extends moodleform {
     function definition() {
         global $DB, $USER, $CFG;
+        require_once($CFG->dirroot.'/course/lib.php');
 
         $mform =& $this->_form;
 
