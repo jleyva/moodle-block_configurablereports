@@ -46,4 +46,3 @@ class plugin_reportscapabilities extends plugin_base{
 	
 }
 
-?>

@@ -46,4 +46,3 @@ class plugin_usersincoursereport extends plugin_base{
 	
 }
 
-?>

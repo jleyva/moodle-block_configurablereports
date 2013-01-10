@@ -67,4 +67,3 @@ function export_report($report){
 
 }
 
-?>

@@ -135,4 +135,3 @@ class plugin_fuserfield extends plugin_base{
 	}	
 }
 
-?>

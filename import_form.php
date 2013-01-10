@@ -55,4 +55,3 @@ class import_form extends moodleform {
 
 }
 
-?>

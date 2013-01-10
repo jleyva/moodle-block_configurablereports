@@ -52,4 +52,3 @@ class roleincourse_form extends moodleform {
 
 }
 
-?>

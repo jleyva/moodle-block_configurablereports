@@ -188,4 +188,3 @@ $string['listofsqlreports'] = '<a href=\"http://docs.moodle.org/en/ad-hoc_contri
 $string['usersincoursereport_summary'] = "Nejaký užívateľ v súčasnej správe kuzru";
 $string[''] = "";
 
-?>

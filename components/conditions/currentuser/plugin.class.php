@@ -45,4 +45,3 @@ class plugin_currentuser extends plugin_base{
 	
 }
 
-?>

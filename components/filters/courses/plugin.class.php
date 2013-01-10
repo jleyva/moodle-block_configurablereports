@@ -93,4 +93,3 @@ class plugin_courses extends plugin_base{
 	
 }
 
-?>

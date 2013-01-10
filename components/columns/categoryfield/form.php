@@ -61,4 +61,3 @@ class categoryfield_form extends moodleform {
 	
 }
 
-?>

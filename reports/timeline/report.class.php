@@ -96,4 +96,3 @@ class report_timeline extends report_base{
 	
 }
 
-?>

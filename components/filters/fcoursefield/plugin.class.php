@@ -89,4 +89,3 @@ class plugin_fcoursefield extends plugin_base{
 	}	
 }
 
-?>

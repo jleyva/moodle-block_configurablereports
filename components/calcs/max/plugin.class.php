@@ -96,4 +96,3 @@ class plugin_max extends plugin_base{
 	
 }
 
-?>

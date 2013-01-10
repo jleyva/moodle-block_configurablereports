@@ -239,4 +239,3 @@ $string['includesubcats'] = 'Incluir subcategorías';
 
 $string['coursededicationtime'] = 'Tiempo dedicado al curso';
 
-?>

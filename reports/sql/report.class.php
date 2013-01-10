@@ -111,4 +111,3 @@ class report_sql extends report_base{
 	
 }
 
-?>

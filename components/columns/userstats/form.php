@@ -62,4 +62,3 @@ class userstats_form extends moodleform {
 	
 }
 
-?>

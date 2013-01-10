@@ -241,4 +241,3 @@
 	
 	echo $OUTPUT->footer();
 
-?>

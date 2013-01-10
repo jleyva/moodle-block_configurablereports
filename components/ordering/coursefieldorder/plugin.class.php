@@ -61,4 +61,3 @@ class plugin_coursefieldorder extends plugin_base{
 	}
 }
 
-?>

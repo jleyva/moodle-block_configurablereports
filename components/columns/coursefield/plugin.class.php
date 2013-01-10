@@ -66,4 +66,3 @@ class plugin_coursefield extends plugin_base{
 	
 }
 
-?>

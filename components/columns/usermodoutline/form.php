@@ -71,4 +71,3 @@ class usermodoutline_form extends moodleform {
 	
 }
 
-?>

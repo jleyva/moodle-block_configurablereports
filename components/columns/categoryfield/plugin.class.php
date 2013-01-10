@@ -67,4 +67,3 @@ class plugin_categoryfield extends plugin_base{
 	
 }
 
-?>

@@ -48,4 +48,3 @@ class plugin_currentreportcourse extends plugin_base{
 	
 }
 
-?>

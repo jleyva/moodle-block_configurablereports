@@ -104,4 +104,3 @@ class component_permissions extends component_base{
 
 }
 
-?>

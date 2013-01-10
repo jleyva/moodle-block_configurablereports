@@ -42,4 +42,3 @@ class min_form extends moodleform {
 
 }
 
-?>

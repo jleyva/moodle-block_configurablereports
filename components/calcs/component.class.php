@@ -93,4 +93,3 @@ class component_calcs extends component_base{
 	
 }
 
-?>

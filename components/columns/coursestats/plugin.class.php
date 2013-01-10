@@ -116,4 +116,3 @@ class plugin_coursestats extends plugin_base{
 	}	
 }
 
-?>

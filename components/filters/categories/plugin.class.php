@@ -93,4 +93,3 @@ class plugin_categories extends plugin_base{
 	
 }
 
-?>

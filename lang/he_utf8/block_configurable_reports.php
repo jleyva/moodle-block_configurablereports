@@ -240,4 +240,3 @@ $string['includesubcats'] = 'הכלל תת קטגוריות';
 
 $string['coursededicationtime'] = 'זמן השקעה בקורס';
 
-?>

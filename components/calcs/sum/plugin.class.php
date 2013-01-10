@@ -95,4 +95,3 @@ class plugin_sum extends plugin_base{
 	
 }
 
-?>

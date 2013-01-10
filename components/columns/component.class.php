@@ -94,4 +94,3 @@ class component_columns extends component_base{
 	
 }
 
-?>

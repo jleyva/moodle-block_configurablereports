@@ -43,4 +43,3 @@ class max_form extends moodleform {
 
 }
 
-?>

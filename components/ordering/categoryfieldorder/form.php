@@ -52,4 +52,3 @@ class categoryfieldorder_form extends moodleform {
 
 }
 
-?>

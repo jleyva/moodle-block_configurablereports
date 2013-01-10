@@ -61,4 +61,3 @@ class plugin_userfieldorder extends plugin_base{
 	}
 }
 
-?>

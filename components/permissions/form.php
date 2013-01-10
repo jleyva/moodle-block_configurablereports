@@ -71,4 +71,3 @@ class permissions_form extends moodleform {
 
 }
 
-?>

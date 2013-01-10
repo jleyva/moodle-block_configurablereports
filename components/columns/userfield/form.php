@@ -68,4 +68,3 @@ class userfield_form extends moodleform {
 	
 }
 
-?>

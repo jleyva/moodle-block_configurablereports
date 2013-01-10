@@ -99,4 +99,3 @@ class plugin_cuserfield extends plugin_base{
 	
 }
 
-?>
