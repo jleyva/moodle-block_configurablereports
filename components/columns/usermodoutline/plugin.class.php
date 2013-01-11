@@ -86,4 +86,3 @@ class plugin_usermodoutline extends plugin_base{
 	
 }
 
-?>

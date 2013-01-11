@@ -33,4 +33,3 @@ class component_filters extends component_base{
 
 }
 
-?>

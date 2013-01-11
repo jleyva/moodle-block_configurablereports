@@ -88,4 +88,3 @@ class report_edit_form extends moodleform {
 
 }
 
-?>

@@ -46,4 +46,3 @@ class plugin_anyone extends plugin_base{
 	
 }
 
-?>

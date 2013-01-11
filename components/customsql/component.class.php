@@ -54,4 +54,3 @@ class component_customsql extends component_base{
 	}
 }
 
-?>

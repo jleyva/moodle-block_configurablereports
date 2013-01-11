@@ -61,4 +61,3 @@ class fuserfield_form extends moodleform {
 
 }
 
-?>

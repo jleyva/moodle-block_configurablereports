@@ -52,4 +52,3 @@ class userfieldorder_form extends moodleform {
 
 }
 
-?>

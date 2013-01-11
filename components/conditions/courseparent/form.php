@@ -54,4 +54,3 @@ class courseparent_form extends moodleform {
 
 }
 
-?>

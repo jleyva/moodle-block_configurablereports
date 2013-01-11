@@ -54,4 +54,3 @@ class date_form extends moodleform {
     }	
 }
 
-?>

@@ -70,6 +70,8 @@ $string['filter'] = "Filter";
 $string['nofilteryet'] = "No filters yet";
 $string['courses'] = "Courses";
 $string['nofiltersyet'] = "No filters yet";
+$string['filter_all'] = 'All';
+$string['filter_apply'] = 'Apply';
 
 // Calcs
 $string['nocalcsyet'] = "No calculations yet";
@@ -132,6 +134,7 @@ $string['usersincoursereport'] = "Any user in the current report course";
 
 $string['groupvalues'] = "Group same values (sum)";
 $string['fuserfield'] = "User field filter";
+$string['fsearchuserfield'] = "User field search box";
 
 $string['module'] = "Module";
 
@@ -332,4 +335,3 @@ $string['comp_columns_help'] = '<p>Here you can choose the differents columns of
 <p>More help: <a href="http://docs.moodle.org/en/blocks/configurable_reports/" target="_blank">Plugin documentation</a></p>';
 
 
-?>

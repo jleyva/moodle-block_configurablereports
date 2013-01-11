@@ -122,4 +122,3 @@ class template_form extends moodleform {
     
 }
 
-?>

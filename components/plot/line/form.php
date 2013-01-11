@@ -85,4 +85,3 @@ class line_form extends moodleform {
 
 }
 
-?>

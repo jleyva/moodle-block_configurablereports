@@ -55,4 +55,3 @@ class report_categories extends report_base{
 	
 }
 
-?>

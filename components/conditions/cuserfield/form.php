@@ -88,4 +88,3 @@ class cuserfield_form extends moodleform {
 
 }
 
-?>

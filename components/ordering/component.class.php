@@ -32,4 +32,3 @@ class component_ordering extends component_base{
 	}
 }
 
-?>

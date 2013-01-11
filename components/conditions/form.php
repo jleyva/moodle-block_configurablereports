@@ -70,4 +70,3 @@ class conditions_form extends moodleform {
 	}	
 }
 
-?>

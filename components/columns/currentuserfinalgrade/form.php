@@ -51,4 +51,3 @@ class currentuserfinalgrade_form extends moodleform {
 
 }
 
-?>

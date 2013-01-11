@@ -109,4 +109,3 @@
 	// Never reached if download = true
     echo $OUTPUT->footer();
 
-?>

@@ -110,4 +110,3 @@ class block_configurable_reports extends block_list {
         return $this->content;
     }
 }
-?>

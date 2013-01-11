@@ -51,4 +51,3 @@ class plugin_currentusercourses extends plugin_base{
 	
 }
 
-?>

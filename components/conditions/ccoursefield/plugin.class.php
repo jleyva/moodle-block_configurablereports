@@ -62,4 +62,3 @@ class plugin_ccoursefield extends plugin_base{
 	
 }
 
-?>

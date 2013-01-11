@@ -84,4 +84,3 @@ class plugin_line extends plugin_base{
 	
 }
 
-?>

@@ -76,4 +76,3 @@ class columns_form extends moodleform {
 	}	
 }
 
-?>

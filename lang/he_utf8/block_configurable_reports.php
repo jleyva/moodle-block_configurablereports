@@ -68,6 +68,8 @@ $string['filter'] = "פילטר";
 $string['nofilteryet'] = "לא הוגדרו פילטרים";
 $string['courses'] = "קורסים";
 $string['nofiltersyet'] = "לא הוגדרו פילטרים";
+$string['filter_all'] = 'All';
+$string['filter_apply'] = 'Apply';
 
 // Calcs
 $string['nocalcsyet'] = "לא הוגדרו חישובים";
@@ -130,6 +132,7 @@ $string['usersincoursereport'] = "משתמש כלשהו בדוח הקורס הנ
 
 $string['groupvalues'] = "ערכים זהים בקבוצה - סכום";
 $string['fuserfield'] = "פילטר שדה של משמש";
+$string['fsearchuserfield'] = "User field search box";
 
 $string['module'] = "מודול";
 
@@ -240,4 +243,3 @@ $string['includesubcats'] = 'הכלל תת קטגוריות';
 
 $string['coursededicationtime'] = 'זמן השקעה בקורס';
 
-?>

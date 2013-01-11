@@ -85,4 +85,3 @@ class timeline_form extends moodleform {
     
 }
 
-?>

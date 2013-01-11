@@ -68,6 +68,8 @@ $string['filter'] = "Filter";
 $string['nofilteryet'] = "Ešte nebol zvolený filter";
 $string['courses'] = "Kurzy";
 $string['nofiltersyet'] = "Ešte neboli zvolené filtre";
+$string['filter_all'] = 'All';
+$string['filter_apply'] = 'Apply';
 
 // Calcs
 $string['nocalcsyet'] = "Ešte neboli zvolené kalkulácie";
@@ -130,6 +132,7 @@ $string['usersincoursereport'] = "Užívateľ v súčasnej správe kurzu";
 
 $string['groupvalues'] = "Zoskupiť rovnaké hodnoty (súčet)";
 $string['fuserfield'] = "Filter poľa užívateľa";
+$string['fsearchuserfield'] = "User field search box";
 
 $string['module'] = "Modul";
 
@@ -188,4 +191,3 @@ $string['listofsqlreports'] = '<a href=\"http://docs.moodle.org/en/ad-hoc_contri
 $string['usersincoursereport_summary'] = "Nejaký užívateľ v súčasnej správe kuzru";
 $string[''] = "";
 
-?>

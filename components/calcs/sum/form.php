@@ -43,4 +43,3 @@ class sum_form extends moodleform {
 
 }
 
-?>

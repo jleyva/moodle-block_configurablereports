@@ -80,4 +80,3 @@ class reportcolumn_form extends moodleform {
 	
 }
 
-?>

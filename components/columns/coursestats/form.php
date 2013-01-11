@@ -73,4 +73,3 @@ class coursestats_form extends moodleform {
 	
 }
 
-?>

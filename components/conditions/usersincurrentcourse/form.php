@@ -51,4 +51,3 @@ class usersincurrentcourse_form extends moodleform {
 
 }
 
-?>

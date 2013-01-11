@@ -61,4 +61,3 @@ class roleusersn_form extends moodleform {
 	
 }
 
-?>

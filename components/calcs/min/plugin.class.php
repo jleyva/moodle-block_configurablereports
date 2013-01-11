@@ -101,4 +101,3 @@ class plugin_min extends plugin_base{
 	
 }
 
-?>

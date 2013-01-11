@@ -68,4 +68,3 @@ class plugin_parentcategory extends plugin_base{
 	
 }
 
-?>
