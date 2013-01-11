@@ -132,6 +132,7 @@ $string['usersincoursereport'] = "Užívateľ v súčasnej správe kurzu";
 
 $string['groupvalues'] = "Zoskupiť rovnaké hodnoty (súčet)";
 $string['fuserfield'] = "Filter poľa užívateľa";
+$string['fsearchuserfield'] = "User field search box";
 
 $string['module'] = "Modul";
 

@@ -130,6 +130,7 @@ $string['usersincoursereport'] = "Cualquier usuario en el curso donde se ha crea
 
 $string['groupvalues'] = "Agrupar valores iguales (mediante suma)";
 $string['fuserfield'] = "Filtro sobre campo del perfil del usuario";
+$string['fsearchuserfield'] = "User field search box";
 
 $string['module'] = "Módulo";
 

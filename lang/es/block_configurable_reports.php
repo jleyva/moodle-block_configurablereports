@@ -111,6 +111,7 @@ $string['currentuserfinalgrade'] = "Nota final del usuario en el curso";
 
 $string['currentuserfinalgrade_summary'] = "Esta columna muestra la nota final en el curso de la fila actual del informe";
 $string['userfield'] = "Campo del perfil de usuario";
+$string['fsearchuserfield'] = "User field search box";
 
 $string['cuserfield'] = "Condición sobre campo del perfil de usuario";
 $string['direction'] = "Dirección";

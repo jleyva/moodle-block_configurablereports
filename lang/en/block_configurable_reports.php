@@ -134,6 +134,7 @@ $string['usersincoursereport'] = "Any user in the current report course";
 
 $string['groupvalues'] = "Group same values (sum)";
 $string['fuserfield'] = "User field filter";
+$string['fsearchuserfield'] = "User field search box";
 
 $string['module'] = "Module";
 

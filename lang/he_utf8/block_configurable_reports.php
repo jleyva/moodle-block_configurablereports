@@ -132,6 +132,7 @@ $string['usersincoursereport'] = "משתמש כלשהו בדוח הקורס הנ
 
 $string['groupvalues'] = "ערכים זהים בקבוצה - סכום";
 $string['fuserfield'] = "פילטר שדה של משמש";
+$string['fsearchuserfield'] = "User field search box";
 
 $string['module'] = "מודול";
 
