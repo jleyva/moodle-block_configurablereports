@@ -67,6 +67,8 @@ $string['value'] = "Valor";
 $string['filter'] = "Filtro";
 $string['nofiltersyet'] = "No hay filtros todavía";
 $string['courses'] = "Cursos";
+$string['filter_all'] = 'Todo';
+$string['filter_apply'] = 'Aplicar';
 
 // Calcs
 $string['nocalcsyet'] = "No hay cálculos todavía";

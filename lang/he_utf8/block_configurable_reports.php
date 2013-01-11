@@ -68,6 +68,8 @@ $string['filter'] = "פילטר";
 $string['nofilteryet'] = "לא הוגדרו פילטרים";
 $string['courses'] = "קורסים";
 $string['nofiltersyet'] = "לא הוגדרו פילטרים";
+$string['filter_all'] = 'All';
+$string['filter_apply'] = 'Apply';
 
 // Calcs
 $string['nocalcsyet'] = "לא הוגדרו חישובים";

@@ -58,7 +58,7 @@ class plugin_fcoursefield extends plugin_base{
 		
 		$columns = $DB->get_columns('course');
 		$filteroptions = array();
-		$filteroptions[''] = get_string('choose');
+		$filteroptions[''] = get_string('filter_all', 'block_configurable_reports');
 		
 		$coursecolumns = array();
 		foreach($columns as $c)

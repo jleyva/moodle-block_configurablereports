@@ -68,6 +68,8 @@ $string['filter'] = "Filter";
 $string['nofilteryet'] = "Ešte nebol zvolený filter";
 $string['courses'] = "Kurzy";
 $string['nofiltersyet'] = "Ešte neboli zvolené filtre";
+$string['filter_all'] = 'All';
+$string['filter_apply'] = 'Apply';
 
 // Calcs
 $string['nocalcsyet'] = "Ešte neboli zvolené kalkulácie";

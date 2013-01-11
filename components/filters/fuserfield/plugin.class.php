@@ -78,7 +78,7 @@ class plugin_fuserfield extends plugin_base{
 		
 		$columns = $DB->get_columns('user');
 		$filteroptions = array();
-		$filteroptions[''] = get_string('choose');
+		$filteroptions[''] = get_string('filter_all', 'block_configurable_reports');
 		
 		$usercolumns = array();
 		foreach($columns as $c)
