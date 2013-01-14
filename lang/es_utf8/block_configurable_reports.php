@@ -67,6 +67,8 @@ $string['value'] = "Valor";
 $string['filter'] = "Filtro";
 $string['nofiltersyet'] = "No hay filtros todavía";
 $string['courses'] = "Cursos";
+$string['filter_all'] = 'Todo';
+$string['filter_apply'] = 'Aplicar';
 
 // Calcs
 $string['nocalcsyet'] = "No hay cálculos todavía";
@@ -128,6 +130,7 @@ $string['usersincoursereport'] = "Cualquier usuario en el curso donde se ha crea
 
 $string['groupvalues'] = "Agrupar valores iguales (mediante suma)";
 $string['fuserfield'] = "Filtro sobre campo del perfil del usuario";
+$string['fsearchuserfield'] = "User field search box";
 
 $string['module'] = "Módulo";
 
@@ -239,4 +242,3 @@ $string['includesubcats'] = 'Incluir subcategorías';
 
 $string['coursededicationtime'] = 'Tiempo dedicado al curso';
 
-?>

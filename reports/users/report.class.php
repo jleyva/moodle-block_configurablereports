@@ -54,4 +54,3 @@ class report_users extends report_base{
 	
 }
 
-?>

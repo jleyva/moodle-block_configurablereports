@@ -57,4 +57,3 @@ class component_template extends component_base{
 	}
 }
 
-?>

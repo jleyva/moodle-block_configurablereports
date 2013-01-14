@@ -89,4 +89,3 @@ class plugin_userfield extends plugin_base{
 	
 }
 
-?>

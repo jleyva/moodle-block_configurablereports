@@ -43,4 +43,4 @@ $tabs = array($top);
 
 print_tabs($tabs, $currenttab);
 
-?>
+

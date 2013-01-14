@@ -43,4 +43,3 @@ class average_form extends moodleform {
 
 }
 
-?>

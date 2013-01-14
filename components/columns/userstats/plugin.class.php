@@ -146,4 +146,3 @@ class plugin_userstats extends plugin_base{
 	}	
 }
 
-?>

@@ -197,4 +197,3 @@ class plugin_reportcolumn extends plugin_base{
 	
 }
 
-?>

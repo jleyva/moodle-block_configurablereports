@@ -84,4 +84,3 @@ class puserfield_form extends moodleform {
 
 }
 
-?>

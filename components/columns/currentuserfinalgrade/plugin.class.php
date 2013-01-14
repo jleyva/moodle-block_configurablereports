@@ -61,4 +61,3 @@ class plugin_currentuserfinalgrade extends plugin_base{
 	
 }
 
-?>

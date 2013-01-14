@@ -55,4 +55,3 @@ class plugin_courseparent extends plugin_base{
 	
 }
 
-?>

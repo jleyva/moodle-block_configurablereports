@@ -49,4 +49,3 @@ class coursecategory_form extends moodleform {
 
 }
 
-?>

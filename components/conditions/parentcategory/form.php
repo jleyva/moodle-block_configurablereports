@@ -51,4 +51,3 @@ class parentcategory_form extends moodleform {
 
 }
 
-?>

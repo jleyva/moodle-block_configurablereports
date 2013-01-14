@@ -149,4 +149,3 @@
 				
     echo $OUTPUT->footer();
 
-?>

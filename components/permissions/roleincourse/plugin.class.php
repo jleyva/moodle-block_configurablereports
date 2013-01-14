@@ -57,4 +57,3 @@ class plugin_roleincourse extends plugin_base{
 	
 }
 
-?>

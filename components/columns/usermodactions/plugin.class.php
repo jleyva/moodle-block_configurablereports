@@ -70,4 +70,3 @@ class plugin_usermodactions extends plugin_base{
 	
 }
 
-?>

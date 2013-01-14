@@ -55,4 +55,3 @@ class report_courses extends report_base{
 	
 }
 
-?>

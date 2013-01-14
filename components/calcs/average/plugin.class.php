@@ -100,4 +100,3 @@ class plugin_average extends plugin_base{
 	
 }
 
-?>

@@ -67,6 +67,8 @@ $string['value'] = "Valor";
 $string['filter'] = "Filtro";
 $string['nofiltersyet'] = "No hay filtros todavía";
 $string['courses'] = "Cursos";
+$string['filter_all'] = 'Todo';
+$string['filter_apply'] = 'Aplicar';
 
 // Calcs
 $string['nocalcsyet'] = "No hay cálculos todavía";
@@ -109,6 +111,7 @@ $string['currentuserfinalgrade'] = "Nota final del usuario en el curso";
 
 $string['currentuserfinalgrade_summary'] = "Esta columna muestra la nota final en el curso de la fila actual del informe";
 $string['userfield'] = "Campo del perfil de usuario";
+$string['fsearchuserfield'] = "User field search box";
 
 $string['cuserfield'] = "Condición sobre campo del perfil de usuario";
 $string['direction'] = "Dirección";
@@ -239,4 +242,3 @@ $string['includesubcats'] = 'Incluir subcategorías';
 
 $string['coursededicationtime'] = 'Tiempo dedicado al curso';
 
-?>

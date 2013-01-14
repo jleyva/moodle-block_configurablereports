@@ -32,4 +32,3 @@ class component_plot extends component_base{
 	}
 }
 
-?>

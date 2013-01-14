@@ -67,4 +67,3 @@ class plugin_puserfield extends plugin_base{
 	
 }
 
-?>

@@ -85,4 +85,3 @@ class plugin_pie extends plugin_base{
 	
 }
 
-?>

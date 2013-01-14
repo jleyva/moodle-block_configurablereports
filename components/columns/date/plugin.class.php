@@ -58,4 +58,3 @@ class plugin_date extends plugin_base{
 	
 }
 
-?>

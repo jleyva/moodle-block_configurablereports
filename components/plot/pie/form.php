@@ -69,4 +69,3 @@ class pie_form extends moodleform {
 
 }
 
-?>

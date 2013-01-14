@@ -70,4 +70,3 @@ class usermodactions_form extends moodleform {
 	
 }
 
-?>

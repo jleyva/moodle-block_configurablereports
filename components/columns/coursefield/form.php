@@ -61,4 +61,3 @@ class coursefield_form extends moodleform {
 	
 }
 
-?>

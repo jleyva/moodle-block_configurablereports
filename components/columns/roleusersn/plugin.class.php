@@ -53,4 +53,3 @@ class plugin_roleusersn extends plugin_base{
 	
 }
 
-?>

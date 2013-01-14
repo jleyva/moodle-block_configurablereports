@@ -51,4 +51,3 @@ class plugin_usersincurrentcourse extends plugin_base{
 	
 }
 
-?>

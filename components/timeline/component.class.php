@@ -52,4 +52,3 @@ class component_timeline extends component_base{
 	}
 }
 
-?>

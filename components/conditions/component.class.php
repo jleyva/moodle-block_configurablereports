@@ -104,4 +104,3 @@ class component_conditions extends component_base{
 
 }
 
-?>

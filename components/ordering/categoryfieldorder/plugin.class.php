@@ -61,4 +61,3 @@ class plugin_categoryfieldorder extends plugin_base{
 	}
 }
 
-?>

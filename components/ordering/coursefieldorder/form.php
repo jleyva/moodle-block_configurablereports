@@ -52,4 +52,3 @@ class coursefieldorder_form extends moodleform {
 
 }
 
-?>

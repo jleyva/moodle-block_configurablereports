@@ -75,7 +75,7 @@ class plugin_categories extends plugin_base{
 		}
 		
 		$courseoptions = array();
-		$courseoptions[0] = get_string('choose');
+		$courseoptions[0] = get_string('filter_all', 'block_configurable_reports');
 		
 		if(!empty($categorieslist)){
 			list($usql, $params) = $DB->get_in_or_equal($categorieslist);
@@ -93,4 +93,3 @@ class plugin_categories extends plugin_base{
 	
 }
 
-?>

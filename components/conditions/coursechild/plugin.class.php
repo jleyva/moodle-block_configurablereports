@@ -54,4 +54,3 @@ class plugin_coursechild extends plugin_base{
 	
 }
 
-?>
