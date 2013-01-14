@@ -93,6 +93,10 @@ class component_permissions extends component_base{
 			$conditionsconfig->conditionexpr = $this->add_missing_conditions($conditionsconfig->conditionexpr);
 			$fdata->conditionexpr = $conditionsconfig->conditionexpr;
 			
+            if(!array_key_exists('config', $components['permissions'])) {
+                $components['permissions']['config'] = new StdClass;
+            }
+
 			$components['permissions']['config']->conditionexpr = $fdata->conditionexpr;
 			$this->config->components = cr_serialize($components);
 			$DB->update_record('block_configurable_reports',$this->config);
