@@ -34,6 +34,8 @@ class report_sql extends report_base{
 		global $DB, $USER, $CFG;
 		
 		$sql = str_replace('%%USERID%%', $USER->id, $sql);
+        $sql = str_replace('%%COURSEID%%', $this->currentcourseid, $sql);
+
 		// See http://en.wikipedia.org/wiki/Year_2038_problem
 		$sql = str_replace(array('%%STARTTIME%%','%%ENDTIME%%'),array('0','2145938400'),$sql);
 		$sql = str_replace('%%WWWROOT%%', $CFG->wwwroot, $sql);
