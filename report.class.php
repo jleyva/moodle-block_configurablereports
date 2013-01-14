@@ -130,8 +130,9 @@
 
 		}	
 	}
-	
-	function print_filters(){
+
+	var $filterform = null;
+	function check_filters_request(){
 		global $DB, $CFG, $FULLME;
 
 		$components = cr_unserialize($this->config->components);		
@@ -145,7 +146,7 @@
 				foreach($request as $key=>$val)
 					if(strpos($key,'filter_') !== false)
 						$formdata->{$key} = $val;
-			
+            
 			require_once('filter_form.php');
 			$filterform = new report_edit_form(null,$this);
 		
@@ -155,8 +156,14 @@
 				redirect("$CFG->wwwroot/blocks/configurable_reports/viewreport.php?id=".$this->config->id);
 				die;
 			}
-			$filterform->display();
-		}	
+			$this->filterform = $filterform;
+		}			
+	}
+	
+	function print_filters(){
+		if(!is_null($this->filterform)) {
+			$this->filterform->display();	
+		}
 	}
 	
 	function print_graphs($return = false){
@@ -368,7 +375,7 @@
 		// FILTERS
 		//
 		
-		if(!empty($filters)){
+        if(!empty($filters)){
 			foreach($filters as $f){
 				require_once($CFG->dirroot.'/blocks/configurable_reports/components/filters/'.$f['pluginname'].'/plugin.class.php');
 				$classname = 'plugin_'.$f['pluginname'];
@@ -517,6 +524,9 @@
 		$calcs->cellspacing = (isset($components['columns']['config']))? $components['columns']['config']->cellspacing : '1';
 		$calcs->class = (isset($components['columns']['config']))? $components['columns']['config']->class : 'generaltable';
 		
+		if(!$this->finalreport) {
+			$this->finalreport = new StdClass;
+		}
 		$this->finalreport->table = $table;
 		$this->finalreport->calcs = $calcs;
 		

@@ -73,6 +73,7 @@
 	
 	// No download, build navigation header etc..
 	if(!$download){
+		$reportclass->check_filters_request();
 		$reportname = format_string($report->name);
 		$navlinks = array();
 

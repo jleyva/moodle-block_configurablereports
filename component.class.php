@@ -28,8 +28,8 @@
 	var $ordering = false;
 	var $form = false;
 	var $help = '';
-	
-	function component_base($report){
+
+	function __construct($report) {
 		global $DB, $CFG;
 		
 		if(is_numeric($report))
@@ -37,10 +37,6 @@
 		else
 			$this->config = $report;
 		$this->init();
-	}
-	
-	function __construct($report) {
-		$this->component_base($report);
 	}
 	
 	function add_form_elements(&$mform,$fullform){
