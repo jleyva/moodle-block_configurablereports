@@ -50,7 +50,7 @@ class plugin_puserfield extends plugin_base{
 			return false;
 		
 		if(strpos($data->field,'profile_') === 0){			
-			if($profiledata = get_records_sql("SELECT d.*, f.shortname, f.datatype FROM {user_info_data} d ,{user_info_field} f 
+			if($profiledata = $DB->get_records_sql("SELECT d.*, f.shortname, f.datatype FROM {user_info_data} d ,{user_info_field} f 
 							WHERE f.id = d.fieldid AND d.userid = ?", array($userid))){
 				foreach($profiledata as $p){					
 					$user->{'profile_'.$p->shortname} = $p->data;
