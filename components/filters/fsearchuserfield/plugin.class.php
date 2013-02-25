@@ -49,10 +49,11 @@ class plugin_fsearchuserfield extends plugin_base{
 	
 	private function execute_sql($finalelements, $data) {
 		$filter_fuserfield = optional_param('filter_fuserfield_'.$data->field,0,PARAM_RAW);
+		$filter = clean_param(base64_decode($filter_fuserfield),PARAM_CLEAN);
 
 		if($filter_fuserfield &&
 		   preg_match("/%%FILTER_USERS:([^%]+)%%/i",$finalelements, $output)){
-			$replace = ' AND '.$output[1].' LIKE '. "'%$filter_fuserfield%'";
+			$replace = ' AND '.$output[1].' LIKE '. "'%$filter%'";
 			return str_replace('%%FILTER_USERS:'.$output[1].'%%',$replace,$finalelements);
 		}
 
@@ -65,7 +66,7 @@ class plugin_fsearchuserfield extends plugin_base{
 		$filter_fuserfield = optional_param('filter_fuserfield_'.$data->field,0,PARAM_RAW);		
 		if($filter_fuserfield){
 			// addslashes is done in clean param
-			$filter = $filter_fuserfield;
+			$filter = clean_param(base64_decode($filter_fuserfield),PARAM_CLEAN);
 			
 			if(strpos($data->field,'profile_') === 0){				
 				if($fieldid = $DB->get_field('user_info_field','id',array('shortname' => str_replace('profile_','', $data->field)))){
@@ -87,11 +88,11 @@ class plugin_fsearchuserfield extends plugin_base{
 				list($usql, $params) = $DB->get_in_or_equal($finalelements);
 				$sql = "$data->field LIKE ? AND id $usql";
 				$params = array_merge(array("%$filter%"),$params);
-				$elements = $DB->get_records_select('user',$sql,$params);
+				if($elements = $DB->get_records_select('user',$sql,$params)){				
 				$finalelements = array_keys($elements);
+				}
 			}
 		}
-
 		return $finalelements;		
 	}
 	
@@ -125,10 +126,38 @@ class plugin_fsearchuserfield extends plugin_base{
 				null;
 			$userlist = $reportclass->elements_by_conditions($conditions);
 		}
-		$selectname = get_string($data->field);
-								
-		$mform->addElement('text', 'filter_fuserfield_'.$data->field, $selectname, array('size' => 20));
-		$mform->setType('filter_courses', PARAM_INT);
+		if(!empty($userlist)){
+			if(strpos($data->field,'profile_') === 0){	
+				if($field = $DB->get_record('user_info_field',array('shortname' => str_replace('profile_','', $data->field)))){
+					$selectname = $field->name;
+					
+					list($usql, $params) = $DB->get_in_or_equal($userlist);					
+					$sql = "SELECT DISTINCT(data) as data FROM {user_info_data} WHERE fieldid = ? AND userid $usql";					
+					$params = array_merge(array($field->id),$params);
+					
+					if($infodata = $DB->get_records_sql($sql,$params)){
+						$finalusersid = array();
+						foreach($infodata as $d){
+							$filteroptions[base64_encode($d->data)] = $d->data;
+						}						
+					}
+				}
+			}
+			else{
+				$selectname = get_string($data->field);
+				
+				list($usql, $params) = $DB->get_in_or_equal($userlist);
+				$sql = "SELECT DISTINCT(".$data->field.") as ufield FROM {user} WHERE id $usql ORDER BY ufield ASC";
+				if($rs = $DB->get_recordset_sql($sql, $params)){
+					foreach($rs as $u){				
+						$filteroptions[base64_encode($u->ufield)] = $u->ufield;
+					}
+					$rs->close();
+				}
+			}
+		}
+		
+		$mform->addElement('select', 'filter_fuserfield_'.$data->field, $selectname, $filteroptions);
+		$mform->setType('filter_fuserfield_'.$data->field, PARAM_INT);
 	}	
 }
-
