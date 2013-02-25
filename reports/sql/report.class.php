@@ -51,7 +51,15 @@ class report_sql extends report_base{
 
 		$sql = preg_replace('/\bprefix_(?=\w+)/i', $CFG->prefix, $sql);
 
-		return  $DB->get_recordset_sql($sql, null, 0, $limitnum);
+        // Use a custom $DB (and not current system's $DB)
+        $remoteDBhost = get_config('blocks/configurable_reports','dbhost');
+        $remoteDBname = get_config('blocks/configurable_reports','dbname');
+        $remoteDBuser = get_config('blocks/configurable_reports','dbuser');
+        $remoteDBpass = get_config('blocks/configurable_reports','dbpass');
+        $remoteDB = $DB;
+        $remoteDB->connect($remoteDBhost,$remoteDBuser,$remoteDBpass,$remoteDBname,$CFG->prefix);
+
+        return $remoteDB->get_recordset_sql($sql, null, 0, $limitnum);
 	}
 	
 	function create_report(){
