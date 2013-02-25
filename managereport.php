@@ -59,8 +59,14 @@
 			if(isset($data['report']['@']['version'])){
 				$newreport = new stdclass;
 				foreach($data['report']['#'] as $key=>$val){
-					if($key == 'components')
-						$val[0]['#'] = base64_decode(trim($val[0]['#']));
+					if($key == 'components') {
+                        $val[0]['#'] = base64_decode(trim($val[0]['#']));
+						// fix url_encode " and ' when importing SQL queries
+						$temp_components = cr_unserialize($val[0]['#']);
+						$temp_components['customsql']['config']->querysql = str_replace("\'","'",$temp_components['customsql']['config']->querysql);
+						$temp_components['customsql']['config']->querysql = str_replace('\"','"',$temp_components['customsql']['config']->querysql);
+						$val[0]['#'] = cr_serialize($temp_components); 
+                    }
 					$newreport->{$key} = trim($val[0]['#']);
 				}
 				$newreport->courseid = $course->id;
