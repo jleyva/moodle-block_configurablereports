@@ -73,6 +73,16 @@ $string['courses'] = "Courses";
 $string['nofiltersyet'] = "No filters yet";
 $string['filter_all'] = 'All';
 $string['filter_apply'] = 'Apply';
+$string['filter_searchtext'] = 'Search text';
+$string['searchtext'] = 'Search text';
+$string['filter_searchtext_summary'] = 'Free text filter';
+$string['years'] = 'Years';
+$string['filteryears'] = 'Years';
+$string['filteryears_summary'] = 'Filter by years (numeric representation, 2012...)';
+$string['filteryears_list'] = '2010,2011,2012,2013';
+$string['semester'] = 'Semesters (Hebrew)'; 
+$string['filtersemester_summary'] = 'מאפשר סינון לפני סמסטרים (בעברית, למשל: סמסטר א,סמסטר ב)'; 
+$string['filtersemester'] = 'סמסטר א,סמסטר ב';
 
 // Calcs
 $string['nocalcsyet'] = "No calculations yet";
@@ -335,4 +345,12 @@ $string['comp_columns_help'] = '<p>Here you can choose the differents columns of
 
 <p>More help: <a href="http://docs.moodle.org/en/blocks/configurable_reports/" target="_blank">Plugin documentation</a></p>';
 
+$string['dbhost'] = "DB Host";
+$string['dbhostinfo'] = "Remote Database host name (on which, we will be executing our SQL queries)";
+$string['dbname'] = "DB Name";
+$string['dbnameinfo'] = "Remote Database name (on which, we will be executing our SQL queries)";
+$string['dbuser'] = "DB Username";
+$string['dbuserinfo'] = "Remote Database username (should have SELECT privileges on above DB)";
+$string['dbpass'] = "DB Password";
+$string['dbpassinfo'] = "Remote Database password (for above username)";
 
