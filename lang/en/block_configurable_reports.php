@@ -335,4 +335,7 @@ $string['comp_columns_help'] = '<p>Here you can choose the differents columns of
 
 <p>More help: <a href="http://docs.moodle.org/en/blocks/configurable_reports/" target="_blank">Plugin documentation</a></p>';
 
+$string['coursecategories'] = 'Category course filter';
+$string['filtercoursecategories'] = 'Category course filter';
+$string['filtercoursecategories_summary'] = 'Filter courses by their any parent category';
 
