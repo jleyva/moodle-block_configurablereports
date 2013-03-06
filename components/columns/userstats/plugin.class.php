@@ -131,6 +131,11 @@ class plugin_userstats extends plugin_base{
         $sql = "SELECT SUM($total) as total FROM {stats_user_daily} WHERE stattype = ? AND userid = ?";
         $params = array($stattype,$row->id);
         
+        if ($courseid != SITEID) {
+            $sql .= " AND courseid = ?";
+            $params[] = $courseid;
+        }
+        
         if($starttime and $endtime){
             $starttime = usergetmidnight($starttime) + 24*60*60;
             $endtime = usergetmidnight($endtime) + 24*60*60;
