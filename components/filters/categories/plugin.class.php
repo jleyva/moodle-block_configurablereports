@@ -71,7 +71,7 @@ class plugin_categories extends plugin_base{
 			$categorieslist = $reportclass->elements_by_conditions($conditions);
 		}
 		else{
-			$categorieslist = array_keys($DB->get_records('course'));
+			$categorieslist = array_keys($DB->get_records('course_categories'));
 		}
 		
 		$courseoptions = array();
