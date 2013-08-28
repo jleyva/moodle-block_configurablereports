@@ -38,34 +38,34 @@ class report_edit_form extends moodleform {
 
         $mform->addElement('header', 'general', get_string('general', 'form'));
 
-		$mform->addElement('text', 'name', get_string('name'),array('maxlength' => 60, 'size' => 58));
-		if (!empty($CFG->formatstringstriptags)) {
+        $mform->addElement('text', 'name', get_string('name'),array('maxlength' => 60, 'size' => 58));
+        if (!empty($CFG->formatstringstriptags)) {
             $mform->setType('name', PARAM_TEXT);
         } else {
             $mform->setType('name', PARAM_NOTAGS);
         }
         $mform->addRule('name', null, 'required', null, 'client');
 
-		$mform->addElement('htmleditor', 'summary', get_string('summary'));
+        $mform->addElement('htmleditor', 'summary', get_string('summary'));
         $mform->setType('summary', PARAM_RAW);
 
         $typeoptions = cr_get_report_plugins($this->_customdata['courseid']);
 
-		$eloptions = array();
-		if(isset($this->_customdata['report']->id) && $this->_customdata['report']->id)
-			$eloptions = array('disabled'=>'disabled');
+        $eloptions = array();
+        if(isset($this->_customdata['report']->id) && $this->_customdata['report']->id)
+            $eloptions = array('disabled'=>'disabled');
         $select = $mform->addElement('select', 'type', get_string("typeofreport",'block_configurable_reports'), $typeoptions,$eloptions);
-		$mform->addHelpButton('type','typeofreport', 'block_configurable_reports');
+        $mform->addHelpButton('type','typeofreport', 'block_configurable_reports');
         $select->setSelected('sql');
 
-		for($i=0;$i<=100;$i++)
-			$pagoptions[$i] = $i;
-		$mform->addElement('select', 'pagination', get_string("pagination",'block_configurable_reports'), $pagoptions);
-		$mform->setDefault('pagination',0);
-		$mform->addHelpButton('pagination','pagination', 'block_configurable_reports');
+        for($i=0;$i<=100;$i++)
+            $pagoptions[$i] = $i;
+        $mform->addElement('select', 'pagination', get_string("pagination",'block_configurable_reports'), $pagoptions);
+        $mform->setDefault('pagination',0);
+        $mform->addHelpButton('pagination','pagination', 'block_configurable_reports');
 
-		$mform->addElement('checkbox','jsordering',get_string('ordering','block_configurable_reports'),get_string('enablejsordering','block_configurable_reports'));
-		$mform->addHelpButton('jsordering','jsordering', 'block_configurable_reports');
+        $mform->addElement('checkbox','jsordering',get_string('ordering','block_configurable_reports'),get_string('enablejsordering','block_configurable_reports'));
+        $mform->addHelpButton('jsordering','jsordering', 'block_configurable_reports');
         $mform->setDefault('jsordering',1);
 
         $mform->addElement('checkbox','cron',get_string('cron','block_configurable_reports'),get_string('crondescription','block_configurable_reports'));
@@ -73,14 +73,14 @@ class report_edit_form extends moodleform {
         $mform->setDefault('cron',0);
 
         $mform->addElement('header', 'exportoptions', get_string('exportoptions', 'block_configurable_reports'));
-		$options = cr_get_export_plugins();
+        $options = cr_get_export_plugins();
 
-		foreach($options as $key=>$val){
-			$mform->addElement('checkbox','export_'.$key,null,$val);
-		}
+        foreach($options as $key=>$val){
+            $mform->addElement('checkbox','export_'.$key,null,$val);
+        }
 
-		if(isset($this->_customdata['report']->id) && $this->_customdata['report']->id)
-			$mform->addElement('hidden','id',$this->_customdata['report']->id);
+        if(isset($this->_customdata['report']->id) && $this->_customdata['report']->id)
+            $mform->addElement('hidden','id',$this->_customdata['report']->id);
         if (!empty($adminmode)) {
             $mform->addElement('text','courseid',get_string("setcourseid",'block_configurable_reports'), $this->_customdata['courseid']);
         } else {
@@ -93,11 +93,10 @@ class report_edit_form extends moodleform {
 
     }
 
-	function validation($data, $files){
-		$errors = parent::validation($data, $files);
+    function validation($data, $files){
+        $errors = parent::validation($data, $files);
 
-		return $errors;
-	}
+        return $errors;
+    }
 
 }
-
