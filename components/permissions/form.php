@@ -20,7 +20,7 @@
   * @package blocks
   * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
   * @date: 2009
-  */  
+  */
 
 if (!defined('MOODLE_INTERNAL')) {
     die('Direct access to this script is forbidden.');    ///  It must be included from a Moodle page
@@ -34,24 +34,25 @@ class permissions_form extends moodleform {
 
         $mform =& $this->_form;
 
-		$mform->addElement('static', 'help','',get_string('conditionexprhelp','block_configurable_reports'));
+	$mform->addElement('static', 'help','',get_string('conditionexprhelp','block_configurable_reports'));
         $mform->addElement('text', 'conditionexpr', get_string('conditionexpr','block_configurable_reports'),'size="50"');
-		$mform->addHelpButton('conditionexpr','conditionexpr_permissions', 'block_configurable_reports');
-	   
+	$mform->addHelpButton('conditionexpr','conditionexpr_permissions', 'block_configurable_reports');
+        $mform->setType('conditionexpr', PARAM_RAW);
+
         // buttons
         $this->add_action_buttons(true, get_string('update'));
 
     }
-	
+
 	function validation($data, $files){
 		$errors = parent::validation($data, $files);
 		// TODO - this reg expr can be improved
 		if(!preg_match("/(\(*\s*\bc\d{1,2}\b\s*\(*\)*\s*(\(|and|or)\s*)+\(*\s*\bc\d{1,2}\b\s*\(*\)*\s*$/i",$data['conditionexpr']))
 			$errors['conditionexpr'] = get_string('badconditionexpr','block_configurable_reports');
-			
+
 		if(substr_count($data['conditionexpr'],'(') != substr_count($data['conditionexpr'],')'))
 			$errors['conditionexpr'] = get_string('badconditionexpr','block_configurable_reports');
-			
+
 		if(isset($this->_customdata['elements']) && is_array($this->_customdata['elements'])){
 			$elements = $this->_customdata['elements'];
 			$nel = count($elements);
@@ -65,9 +66,9 @@ class permissions_form extends moodleform {
 				}
 			}
 		}
-		
+
 		return $errors;
-	}	
+	}
 
 }
 

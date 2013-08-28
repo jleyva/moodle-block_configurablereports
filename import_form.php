@@ -33,25 +33,25 @@ class import_form extends moodleform {
         global $DB, $USER, $CFG;
 
         $mform =& $this->_form;
-		
+
         $mform->addElement('header', 'importreport', get_string('importreport', 'block_configurable_reports'));
 
 		$mform->addElement('filepicker', 'userfile', get_string('file'));
 		$mform->setType('userfile', PARAM_FILE);
 		$mform->addRule('userfile', null, 'required');
-		
+
 		$mform->addElement('hidden','courseid',$this->_customdata);
-		
+		$mform->setType('courseid', PARAM_RAW);
         // buttons
         $this->add_action_buttons(false, get_string('importreport', 'block_configurable_reports'));
 
     }
-	
+
 	function validation($data, $files){
 		$errors = parent::validation($data, $files);
-				
+
 		return $errors;
-	}		
+	}
 
 }
 

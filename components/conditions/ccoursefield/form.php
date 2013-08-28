@@ -39,43 +39,43 @@ class ccoursefield_form extends moodleform {
         $mform->addElement('header', '', get_string('coursefield','block_configurable_reports'), '');
 
 		$columns = $DB->get_columns('course');
-		
+
 		$coursecolumns = array();
 		foreach($columns as $c)
 			$coursecolumns[$c->name] = $c->name;
-			
+
         $mform->addElement('select', 'field', get_string('column','block_configurable_reports'), $coursecolumns);
-		
+
 		$mform->addElement('select', 'operator', get_string('operator','block_configurable_reports'), $this->allowedops);
-		$mform->addElement('text','value',get_string('value','block_configurable_reports'));		
-				
+		$mform->addElement('text','value',get_string('value','block_configurable_reports'));
+		$mform->setType('value', PARAM_RAW);
         // buttons
         $this->add_action_buttons(true, get_string('add'));
 
     }
-	
+
 	function validation($data,$files){
 		global $DB, $db, $CFG;
-		
+
 		$errors = parent::validation($data, $files);
-		
+
 		if(!in_array($data['operator'],$this->allowedops)){
 			$errors['operator'] = get_string('error_operator','block_configurable_reports');
 		}
-	
-		$columns = $DB->get_columns('course');	
+
+		$columns = $DB->get_columns('course');
 		$coursecolumns = array();
 		foreach($columns as $c)
 			$coursecolumns[$c->name] = $c->name;
-			
+
 		if(!in_array($data['field'],$coursecolumns)){
 			$errors['field'] = get_string('error_field','block_configurable_reports');
 		}
-		
+
 		if(!is_numeric($data['value']) && preg_match('/^(<|>)[^(<|>)]/i',$data['operator'])){
 			$errors['value'] = get_string('error_value_expected_integer','block_configurable_reports');
 		}
-		
+
 		return $errors;
 	}
 
