@@ -25,14 +25,14 @@
 define('REPORT_CUSTOMSQL_MAX_RECORDS', 5000);
 
 class report_sql extends report_base{
-	
+
 	function init(){
 		$this->components = array('customsql','filters', 'template','permissions','calcs','plot');
-	}	
+	}
 
 	function prepare_sql($sql) {
 		global $DB, $USER, $CFG;
-		
+
 		$sql = str_replace('%%USERID%%', $USER->id, $sql);
         $sql = str_replace('%%COURSEID%%', $this->currentcourseid, $sql);
 
@@ -45,39 +45,67 @@ class report_sql extends report_base{
 
 		return $sql;
 	}
-	
+
 	function execute_query($sql, $limitnum = REPORT_CUSTOMSQL_MAX_RECORDS) {
-		global $DB, $CFG;
+		global $remoteDB, $DB, $CFG;
 
 		$sql = preg_replace('/\bprefix_(?=\w+)/i', $CFG->prefix, $sql);
 
         // Use a custom $DB (and not current system's $DB)
-        $remoteDBhost = get_config('blocks/configurable_reports','dbhost');
-        $remoteDBname = get_config('blocks/configurable_reports','dbname');
-        $remoteDBuser = get_config('blocks/configurable_reports','dbuser');
-        $remoteDBpass = get_config('blocks/configurable_reports','dbpass');
-        $remoteDB = $DB;
+        // todo: major security issue
+        $remoteDBhost = get_config('block_configurable_reports','dbhost');
+        if (empty($remoteDBhost)) {
+            $remoteDBhost = $CFG->dbhost;
+        }
+        $remoteDBname = get_config('block_configurable_reports','dbname');
+        if (empty($remoteDBname)) {
+            $remoteDBname = $CFG->dbname;
+        }
+        $remoteDBuser = get_config('block_configurable_reports','dbuser');
+        if (empty($remoteDBuser)) {
+            $remoteDBuser = $CFG->dbuser;
+        }
+        $remoteDBpass = get_config('block_configurable_reports','dbpass');
+        if (empty($remoteDBpass)) {
+            $remoteDBpass = $CFG->dbpass;
+        }
+
+        $db_class = get_class($DB);
+        $remoteDB = new $db_class();
         $remoteDB->connect($remoteDBhost,$remoteDBuser,$remoteDBpass,$remoteDBname,$CFG->prefix);
 
-        return $remoteDB->get_recordset_sql($sql, null, 0, $limitnum);
+        // Debug
+        // echo "<hr/>$sql<hr/>";
+        $starttime = microtime(true);
+        $results = $remoteDB->get_recordset_sql($sql, null, 0, $limitnum);
+        // Update the execution time in the DB.
+        $updaterecord = new stdClass;
+        $updaterecord->id = $this->config->id;
+        //$updaterecord->lastrun = time();
+        $updaterecord->lastexecutiontime = round((microtime(true) - $starttime) * 1000);
+        $this->config->lastexecutiontime = $updaterecord->lastexecutiontime;
+        $DB->update_record('block_configurable_reports', $updaterecord);
+
+        return $results;
 	}
-	
+
 	function create_report(){
 		global $DB, $CFG;
-		
+
 		$components = cr_unserialize($this->config->components);
-		
+
 		$filters = (isset($components['filters']['elements']))? $components['filters']['elements'] : array();
 		$calcs = (isset($components['calcs']['elements']))? $components['calcs']['elements'] : array();
-		
+
 		$tablehead = array();
 		$finalcalcs = array();
 		$finaltable = array();
 		$tablehead = array();
-		
+
 		$components = cr_unserialize($this->config->components);
-		$config = (isset($components['customsql']['config']))? $components['customsql']['config'] : new stdclass;	
-		
+		$config = (isset($components['customsql']['config']))? $components['customsql']['config'] : new stdclass;
+        $totalrecords = 0;
+
 		if(isset($config->querysql)){
 			// FILTERS
 			$sql = $config->querysql;
@@ -89,8 +117,9 @@ class report_sql extends report_base{
 					$sql = $class->execute($sql, $f['formdata']);
 				}
 			}
-			
+
 			$sql = $this->prepare_sql($sql);
+
 			if($rs = $this->execute_query($sql))
 		        foreach ($rs as $row) {
 					if(empty($finaltable)){
@@ -102,32 +131,35 @@ class report_sql extends report_base{
                     foreach($array_row as $ii => $cell) {
                         $array_row[$ii] = str_replace('[[QUESTIONMARK]]', '?', $cell);
                     }
-
+                    $totalrecords++;
 					$finaltable[] = $array_row;
 				}
 		}
-		
+
+        $this->totalrecords = $totalrecords;
+
 		// Calcs
-		
+
 		$finalcalcs = $this->get_calcs($finaltable,$tablehead);
-		
+
 		$table = new stdclass;
 		$table->id = 'reporttable';
 		$table->data = $finaltable;
-		$table->head = $tablehead;		
-	
-		$calcs = new stdclass;
+		$table->head = $tablehead;
+
+		$calcs = new html_table();
+        $calcs->id = 'calcstable';
 		$calcs->data = array($finalcalcs);
 		$calcs->head = $tablehead;
-		
+
         if(!$this->finalreport) {
             $this->finalreport = new StdClass;
         }
 		$this->finalreport->table = $table;
 		$this->finalreport->calcs = $calcs;
-		
-		return true;	
+
+		return true;
 	}
-	
+
 }
 

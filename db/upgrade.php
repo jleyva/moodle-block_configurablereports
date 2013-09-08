@@ -31,11 +31,22 @@ function xmldb_block_configurable_reports_upgrade($oldversion) {
     $dbman = $DB->get_manager();
 
     if ($oldversion < 2011040103) {
-        
+
         $table = new xmldb_table('block_configurable_reports_report');
         $dbman->rename_table($table, 'block_configurable_reports');
         upgrade_plugin_savepoint(true, 2011040103, 'block', 'configurable_reports');
     }
 
+    if ($oldversion < 2013090706) {
+
+        $table = new xmldb_table('block_configurable_reports');
+        $field = new xmldb_field('lastexecutiontime', XMLDB_TYPE_INTEGER, '10', XMLDB_UNSIGNED, null, null, '0', null);
+
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        upgrade_plugin_savepoint(true, 2013090706, 'block', 'configurable_reports');
+    }
     return true;
 }

@@ -20,7 +20,7 @@
   * @package blocks
   * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
   * @date: 2009
-  */ 
+  */
 
 if (!defined('MOODLE_INTERNAL')) {
     die('Direct access to this script is forbidden.');    ///  It must be included from a Moodle page
@@ -30,26 +30,26 @@ require_once($CFG->libdir.'/formslib.php');
 
 class fcoursefield_form extends moodleform {
     function definition() {
-        global $DB, $course, $CFG;
+        global $remoteDB, $course, $CFG;
 
         $mform =& $this->_form;
 
         $mform->addElement('header', '', get_string('fcoursefield','block_configurable_reports'), '');
 
-		$this->_customdata['compclass']->add_form_elements($mform,$this); 
-		
-		$columns = $DB->get_columns('course');
-		
+		$this->_customdata['compclass']->add_form_elements($mform,$this);
+
+		$columns = $remoteDB->get_columns('course');
+
 		$coursecolumns = array();
 		foreach($columns as $c)
 			$coursecolumns[$c->name] = $c->name;
-			
+
 		unset($coursecolumns['password']);
 		unset($coursecolumns['sesskey']);
-			
+
         $mform->addElement('select', 'field', get_string('field','block_configurable_reports'), $coursecolumns);
-		
-       
+
+
         // buttons
         $this->add_action_buttons(true, get_string('add'));
 

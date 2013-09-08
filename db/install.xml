@@ -16,7 +16,8 @@
 		<FIELD NAME="pagination" TYPE="int" LENGTH="4" NOTNULL="false" UNSIGNED="true" SEQUENCE="false"  PREVIOUS="type" NEXT="components"/>
         <FIELD NAME="components" TYPE="text" LENGTH="small" NOTNULL="false" SEQUENCE="false"  PREVIOUS="pagination" NEXT="export"/>
         <FIELD NAME="export" TYPE="char" LENGTH="255" NOTNULL="false" SEQUENCE="false"  PREVIOUS="components" NEXT="jsordering"/>
-        <FIELD NAME="jsordering" TYPE="int" LENGTH="4" NOTNULL="false" UNSIGNED="true" SEQUENCE="false"  PREVIOUS="export"/>
+        <FIELD NAME="jsordering" TYPE="int" LENGTH="4" NOTNULL="false" UNSIGNED="true" SEQUENCE="false"  PREVIOUS="export" NEXT="lastexecutiontime"/>
+        <FIELD NAME="lastexecutiontime" TYPE="int" LENGTH="10" NOTNULL="false" UNSIGNED="true" SEQUENCE="false" COMMENT="Time this report took to run last time it was executed, in milliseconds." PREVIOUS="jsordering" NEXT="runable"/>
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
