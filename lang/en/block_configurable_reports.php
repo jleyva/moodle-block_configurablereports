@@ -80,9 +80,12 @@ $string['years'] = 'Years';
 $string['filteryears'] = 'Years';
 $string['filteryears_summary'] = 'Filter by years (numeric representation, 2012...)';
 $string['filteryears_list'] = '2010,2011,2012,2013';
-$string['semester'] = 'Semesters (Hebrew)'; 
-$string['filtersemester_summary'] = 'מאפשר סינון לפני סמסטרים (בעברית, למשל: סמסטר א,סמסטר ב)'; 
+$string['semester'] = 'Semesters (Hebrew)';
+$string['filtersemester_summary'] = 'מאפשר סינון לפני סמסטרים (בעברית, למשל: סמסטר א,סמסטר ב)';
 $string['filtersemester'] = 'סמסטר א,סמסטר ב';
+$string['subcategories'] = 'Category (Include sub categories)';
+$string['filtersubcategories'] = 'Category (Include sub categories)';
+$string['filtersubcategories_summary'] = 'Use: %%FILTER_CATEGORIES:mdl_course_category.path%%';
 
 // Calcs
 $string['nocalcsyet'] = "No calculations yet";
@@ -357,4 +360,7 @@ $string['dbuser'] = "DB Username";
 $string['dbuserinfo'] = "Remote Database username (should have SELECT privileges on above DB)";
 $string['dbpass'] = "DB Password";
 $string['dbpassinfo'] = "Remote Database password (for above username)";
+
+$string['totalrecords'] = 'Total record count = {$a->totalrecords}';
+$string['lastexecutiontime'] = 'Execution time = {$a} (Sec)';
 
