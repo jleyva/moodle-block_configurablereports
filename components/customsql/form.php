@@ -60,12 +60,14 @@ class customsql_form extends moodleform {
         //$this->_customdata['report']->runstatistics = 1;
         if (empty($this->_customdata['report']->runstatistics) OR $this->_customdata['report']->runstatistics == 0) {
             // Simple test to avoid evil stuff in the SQL.
-            if (preg_match('/\b(ALTER|CREATE|DELETE|DROP|GRANT|INSERT|INTO|TRUNCATE|UPDATE|SET|VACUUM|REINDEX|DISCARD|LOCK)\b/i', $sql)) {
+            //if (preg_match('/\b(ALTER|CREATE|DELETE|DROP|GRANT|INSERT|INTO|TRUNCATE|UPDATE|SET|VACUUM|REINDEX|DISCARD|LOCK)\b/i', $sql)) {
+            // Allow cron SQL queries to run CREATE|INSERT|INTO queries.
+            if (preg_match('/\b(ALTER|DELETE|DROP|GRANT|TRUNCATE|UPDATE|SET|VACUUM|REINDEX|DISCARD|LOCK)\b/i', $sql)) {
                 $errors['querysql'] = get_string('notallowedwords', 'block_configurable_reports');
             }
         // Do not allow any semicolons.
-        } else if (strpos($sql, ';') !== false) {
-            $errors['querysql'] = get_string('nosemicolon', 'report_customsql');
+        //} else if (strpos($sql, ';') !== false) {
+        //    $errors['querysql'] = get_string('nosemicolon', 'report_customsql');
 
         // Make sure prefix is prefix_, not explicit.
         //} else if ($CFG->prefix != '' && preg_match('/\b' . $CFG->prefix . '\w+/i', $sql)) {

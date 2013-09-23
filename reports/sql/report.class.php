@@ -77,7 +77,14 @@ class report_sql extends report_base{
         // Debug
         // echo "<hr/>$sql<hr/>";
         $starttime = microtime(true);
-        $results = $remoteDB->get_recordset_sql($sql, null, 0, $limitnum);
+
+        if (preg_match('/\b(INSERT|INTO|CREATE)\b/i', $sql)) {
+            // Run special (dangerous) queries directly.
+            $results = $remoteDB->execute($sql);
+        } else {
+            $results = $remoteDB->get_recordset_sql($sql, null, 0, $limitnum);
+        }
+
         // Update the execution time in the DB.
         $updaterecord = new stdClass;
         $updaterecord->id = $this->config->id;

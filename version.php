@@ -30,9 +30,11 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version = 2013091101;
-// Moodle version required
-$plugin->requires = 2010112400;
+$plugin->version = 2013092002;  // Plugin version.
+$plugin->requires = 2010112400; // require Moodle version.
 $plugin->maturity = MATURITY_STABLE;
 $plugin->release = '2.2';
 $plugin->component = 'block_configurable_reports'; // Full name of the plugin (used for diagnostics)
+$plugin->cron      = 86400; // = Once in 24h, Set min time between cron executions.
+                            // Should probably be at night to off load CPU load.
+                            // todo: create a setting for start time. like we have in backup.
