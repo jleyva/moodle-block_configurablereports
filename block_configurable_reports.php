@@ -86,10 +86,11 @@ class block_configurable_reports extends block_list {
 		if(!$course)
 			print_error('coursedoesnotexists');
 
-		if ($course->id == SITEID)
-			$context = get_context_instance(CONTEXT_SYSTEM);
-		else
-			$context = get_context_instance(CONTEXT_COURSE, $course->id);
+		if ($course->id == SITEID) {
+            $context = context_system::instance();
+        } else {
+            $context = context_course::instance($course->id);
+        }
 
 		$reports = $DB->get_records('block_configurable_reports',array('courseid' => $course->id),'name ASC');
 
