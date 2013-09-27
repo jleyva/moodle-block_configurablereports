@@ -47,6 +47,7 @@ $string['norecordsfound'] = "No records found";
 $string['jsordering'] = 'JavaScript Ordering';
 $string['cron'] = 'Auto run daily';
 $string['crondescription'] = 'Schedule this query to run each day (At night)';
+$string['cron_help'] = 'Schedule this query to run each day (At night)';
 
 // Columns
 $string['column'] = "Column";
