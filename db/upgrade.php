@@ -84,11 +84,18 @@ function xmldb_block_configurable_reports_upgrade($oldversion) {
         upgrade_plugin_savepoint(true, 2013091101, 'block', 'configurable_reports');
     }
 
+    // todo: migration script for moving SQL queries in block_cr_component into block_configurable_reports
+
     if ($oldversion < 2013092001) {
 
         $table = new xmldb_table('block_configurable_reports');
-        $field = new xmldb_field('cron', XMLDB_TYPE_INTEGER, '10', XMLDB_UNSIGNED, null, null, '0', null);
 
+        $field = new xmldb_field('lastexecutiontime', XMLDB_TYPE_INTEGER, '10', XMLDB_UNSIGNED, null, null, '0', null);
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        $field = new xmldb_field('cron', XMLDB_TYPE_INTEGER, '10', XMLDB_UNSIGNED, null, null, '0', null);
         if (!$dbman->field_exists($table, $field)) {
             $dbman->add_field($table, $field);
         }
