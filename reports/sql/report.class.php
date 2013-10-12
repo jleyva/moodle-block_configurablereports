@@ -33,7 +33,15 @@ class report_sql extends report_base{
 	function prepare_sql($sql) {
 		global $DB, $USER, $CFG;
 
-		$sql = str_replace('%%USERID%%', $USER->id, $sql);
+        // Pass special custom undefined variable as filter.
+        // Security warning !!! can be used for sql injection.
+        // Use %%FILTER_VAR%% in your sql code with caution.
+        $filter_var = optional_param('filter_var','',PARAM_RAW);
+        if (!empty($filter_var)) {
+            $sql = str_replace('%%FILTER_VAR%%', $filter_var, $sql);
+        }
+
+        $sql = str_replace('%%USERID%%', $USER->id, $sql);
         $sql = str_replace('%%COURSEID%%', $this->currentcourseid, $sql);
 
 		// See http://en.wikipedia.org/wiki/Year_2038_problem
@@ -72,10 +80,8 @@ class report_sql extends report_base{
 
         $db_class = get_class($DB);
         $remoteDB = new $db_class();
-        $remoteDB->connect($remoteDBhost,$remoteDBuser,$remoteDBpass,$remoteDBname,$CFG->prefix);
+        $remoteDB->connect($remoteDBhost, $remoteDBuser, $remoteDBpass, $remoteDBname, $CFG->prefix);
 
-        // Debug
-        // echo "<hr/>$sql<hr/>";
         $starttime = microtime(true);
 
         if (preg_match('/\b(INSERT|INTO|CREATE)\b/i', $sql)) {
@@ -116,7 +122,7 @@ class report_sql extends report_base{
 		if(isset($config->querysql)){
 			// FILTERS
 			$sql = $config->querysql;
-			if(!empty($filters)){
+			if (!empty($filters)) {
 				foreach($filters as $f){
 					require_once($CFG->dirroot.'/blocks/configurable_reports/components/filters/'.$f['pluginname'].'/plugin.class.php');
 					$classname = 'plugin_'.$f['pluginname'];
@@ -127,7 +133,7 @@ class report_sql extends report_base{
 
 			$sql = $this->prepare_sql($sql);
 
-			if($rs = $this->execute_query($sql))
+			if ($rs = $this->execute_query($sql)) {
 		        foreach ($rs as $row) {
 					if(empty($finaltable)){
 						foreach($row as $colname=>$value){
@@ -141,8 +147,9 @@ class report_sql extends report_base{
                     $totalrecords++;
 					$finaltable[] = $array_row;
 				}
+            }
 		}
-
+        $this->sql = $sql;
         $this->totalrecords = $totalrecords;
 
 		// Calcs

@@ -33,6 +33,7 @@
 	var $currentcourse = 0;
 	var $starttime = 0;
 	var $endtime = 0;
+    var $sql = '';
 
 	function reports_base($report){
 		global $DB, $CFG, $USER;
@@ -133,7 +134,7 @@
 
 	var $filterform = null;
 	function check_filters_request(){
-		global $DB, $CFG, $FULLME;
+		global $DB, $CFG;
 
 		$components = cr_unserialize($this->config->components);
 		$filters = (isset($components['filters']['elements']))? $components['filters']['elements']: array();
@@ -187,9 +188,9 @@
 
 
 	function print_export_options($return = false){
-		global $DB, $CFG, $FULLME;
+		global $CFG;
 
-		$wwwpath = $FULLME;
+		$wwwpath = $CFG->wwwroot;
 		$request = array_merge($_POST,$_GET);
 		if($request){
 			$wwwpath = 'viewreport.php?id='.$request['id'];
@@ -537,7 +538,8 @@
 	}
 
 	function add_jsordering(){
-		cr_add_jsordering('#reporttable');
+		//cr_add_jsordering('#reporttable');
+        cr_add_jsdatatables('#reporttable');
 	}
 
 	function print_template($config){
@@ -625,7 +627,7 @@
 	}
 
 	function print_report_page(){
-		global $DB, $CFG, $FULLME, $OUTPUT, $USER;
+		global $DB, $CFG, $OUTPUT, $USER;
 
 		cr_print_js_function();
 		$components = cr_unserialize($this->config->components);
@@ -637,13 +639,21 @@
 			return true;
 		}
 
+        // Debug
+        $debug = optional_param('debug', false, PARAM_BOOL);
+        if ($debug OR $CFG->debugdisplay) {
+            echo html_writer::empty_tag('hr');
+            echo html_writer::tag('div', $this->sql, array('id'=>'debug', 'style'=>'direction:ltr;text-align:left;'));
+            echo html_writer::empty_tag('hr');
+        }
 
-		echo '<div class="centerpara">';
+        echo '<div class="centerpara">';
 		echo format_text($this->config->summary);
 		echo '</div>';
 
 		$this->print_filters();
 		if($this->finalreport->table && !empty($this->finalreport->table->data[0])){
+
 
 			echo "<div id=\"printablediv\">\n";
 			$this->print_graphs();

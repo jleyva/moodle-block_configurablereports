@@ -16,11 +16,11 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /** Configurable Reports
-  * A Moodle block for creating customizable reports
-  * @package blocks
-  * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
-  * @date: 2009
-  */
+ * A Moodle block for creating customizable reports
+ * @package blocks
+ * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @date: 2009
+ */
 
 require_once($CFG->dirroot.'/blocks/configurable_reports/plugin.class.php');
 
@@ -53,7 +53,7 @@ class plugin_fuserfield extends plugin_base{
 
 		if($filter_fuserfield &&
 		   preg_match("/%%FILTER_USERS:([^%]+)%%/i",$finalelements, $output)){
-			$replace = ' AND '.$output[1].' = '. "'$filter'";
+			$replace = ' AND '.$output[1].' LIKE '. "'%$filter%'";
 			return str_replace('%%FILTER_USERS:'.$output[1].'%%',$replace,$finalelements);
 		}
 
@@ -66,14 +66,14 @@ class plugin_fuserfield extends plugin_base{
 		$filter_fuserfield = optional_param('filter_fuserfield_'.$data->field,0,PARAM_RAW);
 		if($filter_fuserfield){
 			// addslashes is done in clean param
-			$filter = clean_param(base64_decode($filter_fuserfield),PARAM_CLEAN);
+			$filter = clean_param(base64_decode($filter_fuserfield),PARAM_RAW);
 
 			if(strpos($data->field,'profile_') === 0){
 				if($fieldid = $remoteDB->get_field('user_info_field','id',array('shortname' => str_replace('profile_','', $data->field)))){
 
 					list($usql, $params) = $remoteDB->get_in_or_equal($finalelements);
-					$sql = "fieldid = ? AND data = ? AND userid $usql";
-					$params = array_merge(array($fieldid, $filter),$params);
+					$sql = "fieldid = ? AND data LIKE ? AND userid $usql";
+					$params = array_merge(array($fieldid, "%$filter%"),$params);
 
 					if($infodata = $remoteDB->get_records_select('user_info_data',$sql,$params)){
 						$finalusersid = array();
@@ -86,10 +86,10 @@ class plugin_fuserfield extends plugin_base{
 			}
 			else{
 				list($usql, $params) = $remoteDB->get_in_or_equal($finalelements);
-				$sql = "$data->field = ? AND id $usql";
-				$params = array_merge(array($filter),$params);
+				$sql = "$data->field LIKE ? AND id $usql";
+				$params = array_merge(array("%$filter%"),$params);
 				if($elements = $remoteDB->get_records_select('user',$sql,$params)){
-					$finalelements = array_keys($elements);
+				$finalelements = array_keys($elements);
 				}
 			}
 		}
@@ -126,7 +126,6 @@ class plugin_fuserfield extends plugin_base{
 				null;
 			$userlist = $reportclass->elements_by_conditions($conditions);
 		}
-
 		if(!empty($userlist)){
 			if(strpos($data->field,'profile_') === 0){
 				if($field = $remoteDB->get_record('user_info_field',array('shortname' => str_replace('profile_','', $data->field)))){
@@ -159,8 +158,6 @@ class plugin_fuserfield extends plugin_base{
 		}
 
 		$mform->addElement('select', 'filter_fuserfield_'.$data->field, $selectname, $filteroptions);
-		$mform->setType('filter_courses', PARAM_INT);
-
+		$mform->setType('filter_fuserfield_'.$data->field, PARAM_INT);
 	}
 }
-

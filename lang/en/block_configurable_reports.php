@@ -79,16 +79,30 @@ $string['filter_apply'] = 'Apply';
 $string['filter_searchtext'] = 'Search text';
 $string['searchtext'] = 'Search text';
 $string['filter_searchtext_summary'] = 'Free text filter';
-$string['years'] = 'Years';
-$string['filteryears'] = 'Years';
+$string['years'] = 'Year (Numeric)';
+$string['filteryears'] = 'Year (Numeric)';
 $string['filteryears_summary'] = 'Filter by years (numeric representation, 2012...)';
-$string['filteryears_list'] = '2010,2011,2012,2013';
-$string['semester'] = 'Semesters (Hebrew)';
+$string['filteryears_list'] = '2010,2011,2012,2013,2014,2015';
+$string['semester'] = 'Semester (Hebrew)';
+$string['filtersemester'] = 'Semester (Hebrew)';
 $string['filtersemester_summary'] = 'מאפשר סינון לפני סמסטרים (בעברית, למשל: סמסטר א,סמסטר ב)';
-$string['filtersemester'] = 'סמסטר א,סמסטר ב';
+$string['filtersemester_list'] = 'סמסטר א,סמסטר ב,סמסטר ג,סמינריון';
 $string['subcategories'] = 'Category (Include sub categories)';
 $string['filtersubcategories'] = 'Category (Include sub categories)';
 $string['filtersubcategories_summary'] = 'Use: %%FILTER_CATEGORIES:mdl_course_category.path%%';
+$string['yearnumeric'] = 'Year (Numeric)';
+$string['filteryearnumeric'] = 'Year (Numeric)';
+$string['filteryearnumeric_summary'] = 'Filter is using numeric years (2013,...)';
+$string['yearhebrew'] = 'Year (Hebrew)';
+$string['filteryearhebrew'] = 'Year (Hebrew)';
+$string['filteryearhebrew_list'] = 'תשע,תשעא,תשעב,תשעג,תשעד,תשעה';
+$string['filteryearhebrew_summary'] = 'Filter is using Hebrew years (תשעג,...)';
+$string['role'] = 'Role';
+$string['filterrole'] = 'role';
+$string['filterrole_summary'] = 'Filter system Roles (Teacher, Student, ...)';
+$string['coursemodules'] = 'Course module';
+$string['filtercoursemodules'] = 'Course module';
+$string['filtercoursemodules_summary'] = 'Filter course modules';
 
 // Calcs
 $string['nocalcsyet'] = "No calculations yet";
@@ -151,7 +165,6 @@ $string['usersincoursereport'] = "Any user in the current report course";
 
 $string['groupvalues'] = "Group same values (sum)";
 $string['fuserfield'] = "User field filter";
-$string['fsearchuserfield'] = "User field search box";
 
 $string['module'] = "Module";
 
@@ -205,7 +218,7 @@ $string['noexplicitprefix'] = "No explicit prefix";
 $string['queryfailed'] = "Query failed";
 $string['norowsreturned'] = "No rows returned";
 
-$string['listofsqlreports'] = '<a href="http://docs.moodle.org/en/ad-hoc_contributed_reports" target="_blank">List of SQL Contributed reports</a>';
+$string['listofsqlreports'] = 'Press F11 when cursor is in the editor to toggle full screen editing. Esc can also be used to exit full screen editing.<br/><br/><a href="http://docs.moodle.org/en/ad-hoc_contributed_reports" target="_blank">List of SQL Contributed reports</a>';
 
 $string['usersincoursereport_summary'] = "Any user in the current report course";
 
@@ -347,7 +360,7 @@ $string['comp_filters_help'] = '<p>Here you can choose which filters will be dis
 
 <p>More help: <a href="http://docs.moodle.org/en/blocks/configurable_reports/" target="_blank">Plugin documentation</a></p>';
 $string['comp_columns'] = $string['columns'];
-$string['comp_columns_help'] = '<p>Here you can choose the differents columns of your report depending on the type of report</p>
+$string['comp_columns_help'] = '<p>Here you can choose the different columns of your report depending on the type of report</p>
 
 <p>More help: <a href="http://docs.moodle.org/en/blocks/configurable_reports/" target="_blank">Plugin documentation</a></p>';
 
@@ -366,4 +379,12 @@ $string['dbpassinfo'] = "Remote Database password (for above username)";
 
 $string['totalrecords'] = 'Total record count = {$a->totalrecords}';
 $string['lastexecutiontime'] = 'Execution time = {$a} (Sec)';
+
+$string['reportcategories'] = '1) Choose a remote report categories';
+$string['reportsincategory'] = '2) Choose a report form the list';
+$string['remotequerysql'] = 'SQL query';
+$string['executeat'] = 'Execute at';
+$string['executeatinfo'] = 'Moodle CRON will run scheduled SQL queries after selected time. Once in 24h';
+$string['sharedsqlrepository'] = 'Shared sql repository';
+$string['sharedsqlrepositoryinfo'] = 'Name of GitHub account owner + slash + repository name';
 

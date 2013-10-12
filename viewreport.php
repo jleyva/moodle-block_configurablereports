@@ -39,15 +39,11 @@
 	}
 
 	// Force user login in course (SITE or Course)
-    if ($course->id == SITEID)
-		require_login();
-	else
-		require_login($course);
-
-
     if ($course->id == SITEID) {
+        require_login();
         $context = context_system::instance();
     } else {
+        require_login($course);
         $context = context_course::instance($course->id);
     }
 
@@ -73,17 +69,23 @@
 	add_to_log($report->courseid, 'configurable_reports', $action, '/block/configurable_reports/viewreport.php?id='.$id, $report->name);
 
 	// No download, build navigation header etc..
-	if(!$download){
+	if (!$download) {
 		$reportclass->check_filters_request();
 		$reportname = format_string($report->name);
 		$navlinks = array();
 
-		if(has_capability('block/configurable_reports:managereports', $context) || (has_capability('block/configurable_reports:manageownreports', $context)) && $report->ownerid == $USER->id )
-			$navlinks[] = array('name' => get_string('managereports','block_configurable_reports'), 'link' => $CFG->wwwroot.'/blocks/configurable_reports/managereport.php?courseid='.$report->courseid, 'type' => 'title');
+		if(has_capability('block/configurable_reports:managereports', $context)
+            || (has_capability('block/configurable_reports:manageownreports', $context))
+            && $report->ownerid == $USER->id ) {
 
-		$navlinks[] = array('name' => $reportname, 'link' => null, 'type' => 'title');
+            $courseurl =  new moodle_url($CFG->wwwroot.'/course/view.php',array('id'=>$report->courseid));
+            $PAGE->navbar->add($COURSE->shortname, $courseurl);
 
-		$navigation = build_navigation($navlinks);
+            $managereporturl =  new moodle_url($CFG->wwwroot.'/blocks/configurable_reports/managereport.php',array('courseid'=>$report->courseid));
+            $PAGE->navbar->add(get_string('managereports','block_configurable_reports'), $managereporturl);
+
+            $PAGE->navbar->add($report->name);
+        }
 
 		$PAGE->set_title($reportname);
 		$PAGE->set_heading( $reportname);
@@ -96,17 +98,17 @@
 		}
 
 		// Print the report HTML
-		$reportclass->print_report_page($context);
-	}
-	else{
+        $reportclass->print_report_page($context);
+
+	} else {
+
 		$exportplugin = $CFG->dirroot.'/blocks/configurable_reports/export/'.$format.'/export.php';
-		if(file_exists($exportplugin)){
+		if (file_exists($exportplugin)) {
 			require_once($exportplugin);
 			export_report($reportclass->finalreport);
 		}
 		die;
 	}
-
 
 	// Never reached if download = true
     echo $OUTPUT->footer();

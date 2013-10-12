@@ -26,20 +26,19 @@
 	require_once($CFG->dirroot."/blocks/configurable_reports/locallib.php");
 	require_once 'import_form.php';
 
-	$courseid = optional_param('courseid',SITEID,PARAM_INT);
+	$courseid = optional_param('courseid', SITEID, PARAM_INT);
 
-	if (! $course = $DB->get_record("course",array( "id" =>  $courseid)) ) {
+	if (! $course = $DB->get_record("course", array( "id" =>  $courseid)) ) {
 		print_error("No such course id");
 	}
 
 	// Force user login in course (SITE or Course)
     if ($course->id == SITEID){
 		require_login();
-		$context = get_context_instance(CONTEXT_SYSTEM);
-	}
-	else{
+        $context = context_system::instance();
+	} else {
 		require_login($course->id);
-		$context = get_context_instance(CONTEXT_COURSE, $course->id);
+        $context = context_course::instance($course->id);
 	}
 
 	if(! has_capability('block/configurable_reports:managereports', $context) && ! has_capability('block/configurable_reports:manageownreports', $context))
@@ -49,7 +48,7 @@
 	$PAGE->set_context($context);
 	$PAGE->set_pagelayout('incourse');
 
-	$mform = new import_form(null,$course->id);
+	$mform = new import_form(null, $course->id);
 
 	if ($data = $mform->get_data()) {
 		if ($xml = $mform->get_file_content('userfile')) {
@@ -82,9 +81,12 @@
 	$reports = cr_get_my_reports($course->id, $USER->id);
 
 	$title = get_string('reports','block_configurable_reports');
-	$navlinks = array();
-	$navlinks[] = array('name' => $title, 'link' => null, 'type' => 'title');
-	$navigation = build_navigation($navlinks);
+
+    $courseurl =  new moodle_url($CFG->wwwroot.'/course/view.php',array('id'=>$report->courseid));
+    $PAGE->navbar->add($COURSE->shortname, $courseurl);
+
+    $managereporturl =  new moodle_url($CFG->wwwroot.'/blocks/configurable_reports/managereport.php',array('courseid'=>$report->courseid));
+    $PAGE->navbar->add(get_string('managereports','block_configurable_reports'), $managereporturl);
 
 	$PAGE->set_title($title);
 	$PAGE->set_heading( $title);
@@ -155,4 +157,3 @@
 	$mform->display();
 
     echo $OUTPUT->footer();
-

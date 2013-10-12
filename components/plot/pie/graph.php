@@ -43,16 +43,13 @@
 	}
 
 	// Force user login in course (SITE or Course)
-	if ($course->id == SITEID)
-		require_login();
-	else
-		require_login($course);
-
-
-	if ($course->id == SITEID)
-		$context = get_context_instance(CONTEXT_SYSTEM);
-	else
-		$context = get_context_instance(CONTEXT_COURSE, $course->id);
+    if ($course->id == SITEID){
+        require_login();
+        $context = context_system::instance();
+    } else {
+        require_login($course->id);
+        $context = context_course::instance($course->id);
+    }
 
 	require_once($CFG->dirroot.'/blocks/configurable_reports/report.class.php');
 	require_once($CFG->dirroot.'/blocks/configurable_reports/reports/'.$report->type.'/report.class.php');

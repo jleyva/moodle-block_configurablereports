@@ -32,20 +32,43 @@ if (!defined('MOODLE_INTERNAL')) {
 require_once($CFG->libdir.'/formslib.php');
 
 class customsql_form extends moodleform {
- function definition() {
+
+    function definition() {
         global $DB, $CFG;
 
         $mform =& $this->_form;
 
         $mform->addElement('textarea', 'querysql', get_string('querysql', 'block_configurable_reports'),
-                'rows="35" cols="100"');
-        $mform->addRule('querysql', get_string('required'),
-                'required', null, 'client');
+                'rows="35" cols="90"');
+        $mform->addRule('querysql', get_string('required'), 'required', null, 'client');
         $mform->setType('querysql', PARAM_RAW);
+
+        $this->add_action_buttons();
 
         $mform->addElement('static', 'note', '', get_string('listofsqlreports', 'block_configurable_reports'));
 
-        $this->add_action_buttons();
+        $userandrepo = get_config('block_configurable_reports','sharedsqlrepository');
+        if (empty($userandrepo)) {
+            $userandrepo = 'nadavkav/moodle-custom_sql_report_queries';
+        }
+        $res = file_get_contents("https://api.github.com/repos/$userandrepo/contents/");
+        $res = json_decode($res);
+
+        $reportcategories = array(get_string('choose'));
+        foreach ($res as $item) {
+            if ($item->type == 'dir') $reportcategories[$item->path] = $item->path;
+        }
+
+        $mform->addElement('select', 'reportcategories', get_string('reportcategories', 'block_configurable_reports'), $reportcategories ,
+            array('onchange'=>'M.block_configurable_reports.onchange_reportcategories(this,"'.sesskey().'")'));
+
+        $mform->addElement('select', 'reportsincategory', get_string('reportsincategory', 'block_configurable_reports'), $reportcategories ,
+            array('onchange'=>'M.block_configurable_reports.onchange_reportsincategory(this,"'.sesskey().'")'));
+
+        $mform->addElement('textarea', 'remotequerysql', get_string('remotequerysql', 'block_configurable_reports'),
+            'rows="15" cols="90"');
+
+        //$this->add_action_buttons();
     }
 
     function validation($data, $files) {

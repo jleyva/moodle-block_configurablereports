@@ -24,7 +24,6 @@
 
 class plugin_base{
 
-	
 	var $fullname = '';
 	var $type = '';
 	var $report = null;
@@ -32,17 +31,41 @@ class plugin_base{
 	var $cache = array();
 	var $unique = false;
 	var $reporttypes = array();
-	
+
 	function __construct($report){
-		global $DB, $CFG;
-		
+		global $DB, $CFG, $remoteDB;
+
 		if(is_numeric($report))
 			$this->report = $DB->get_record('block_configurable_reports',array('id' => $report));
 		else
 			$this->report = $report;
 		$this->init();
-	}
-	
+
+        // Use a custom $DB (and not current system's $DB)
+        // todo: major security issue
+        $remoteDBhost = get_config('block_configurable_reports','dbhost');
+        if (empty($remoteDBhost)) {
+            $remoteDBhost = $CFG->dbhost;
+        }
+        $remoteDBname = get_config('block_configurable_reports','dbname');
+        if (empty($remoteDBname)) {
+            $remoteDBname = $CFG->dbname;
+        }
+        $remoteDBuser = get_config('block_configurable_reports','dbuser');
+        if (empty($remoteDBuser)) {
+            $remoteDBuser = $CFG->dbuser;
+        }
+        $remoteDBpass = get_config('block_configurable_reports','dbpass');
+        if (empty($remoteDBpass)) {
+            $remoteDBpass = $CFG->dbpass;
+        }
+
+        $db_class = get_class($DB);
+        $remoteDB = new $db_class();
+        $remoteDB->connect($remoteDBhost, $remoteDBuser, $remoteDBpass, $remoteDBname, $CFG->prefix);
+
+    }
+
 	function summary($data){
 		return '';
 	}

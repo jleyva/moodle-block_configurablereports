@@ -71,19 +71,35 @@ $string['courses'] = "קורסים";
 $string['nofiltersyet'] = "לא הוגדרו מסננים";
 $string['filter_all'] = 'הכל';
 $string['filter_apply'] = 'ביצוע';
-$string['searchtext'] = 'סינון לפי מלל חופשי';
-$string['filter_searchtext'] = 'סינון לפי מלל חופשי';
+$string['searchtext'] = 'מלל חופשי';
+$string['filter_searchtext'] = 'מלל חופשי';
 $string['filter_searchtext_summary'] = 'סינון לפי מלל חופשי בשדות תוכן מילולי/טקסט בלבד';
 $string['years'] = 'שנים';
 $string['filteryears'] = ' סינון לפי שנים';
-$string['filteryears_summary'] = 'מסנן לפי שנים (תצוגה מספרית 2012...)';
-$string['filteryears_list'] = '2010,2011,2012,2013';
-$string['semester'] = 'סמסטרים';
-$string['filtersemester_summary'] = 'מאפשר סינון לפני סמסטרים (בעברית, למשל: סמסטר א,סמסטר ב)';
-$string['filtersemester'] = 'סמסטר א,סמסטר ב';
-$string['fsearchuserfield'] = "סינון לפי שדות טבלת משתמשים";
+$string['filteryears_summary'] = 'מסנן לפי שנים (תצוגה מספרית 2013...)';
+$string['filteryears_list'] = '2010,2011,2012,2013,2014,2015';
+$string['semester'] = 'סמסטר';
+$string['filtersemester_summary'] = 'סינון לפני סמסטרים (בעברית, למשל: סמסטר א,סמסטר ב)';
+$string['filtersemester'] = 'סמסטר';
+$string['fuserfield'] = "סינון לפי שדות טבלת משתמשים";
 $string['fcoursefield'] = "מסנן שדות בקורס";
 $string['usersincoursereport'] = "משתמש כלשהו בדוח הקורס הנוכחי";
+$string['subcategories'] = 'קטגוריה (כולל תת־קטגוריות)';
+$string['filtersubcategories'] = 'קטגוריה (כולל תת־קטגוריות)';
+$string['filtersubcategories_summary'] = 'Use: %%FILTER_CATEGORIES:mdl_course_category.path%%';
+$string['yearnumeric'] = 'שנה (מספרי)';
+$string['filteryearnumeric'] = 'שנה (מספרי)';
+$string['filteryearnumeric_summary'] = 'מסנן לפי שנים (תצוגה מספרית: 2013, ...)';
+$string['yearhebrew'] = 'שנה (עברי)';
+$string['filteryearhebrew'] = 'שנה (עברי)';
+$string['filteryearhebrew_list'] = 'תשע,תשעא,תשעב,תשעג,תשעד,תשעה';
+$string['filteryearhebrew_summary'] = 'מסנן לפי שנים (תצוגה עברית: תשעג, ...)';
+$string['role'] = 'תפקיד';
+$string['filterrole'] = 'תפקיד';
+$string['filterrole_summary'] = 'סינון לפי תפקיד (מורה, תלמיד, ... )';
+$string['coursemodules'] = 'רכיב בקורס';
+$string['filtercoursemodules'] = 'רכיב בקורס';
+$string['filtercoursemodules_summary'] = 'מסנן לתצוגת רכיב/ים בקורס/ים';
 
 // Calcs
 $string['nocalcsyet'] = "לא הוגדרו חישובים";
@@ -105,7 +121,7 @@ $string['coursefield'] = "שדה קורס";
 $string['ccoursefield'] = "תנאי שדה קורס";
 $string['roleusersn'] = "מספר משתמשים בעלי תפקיד ...";
 $string['coursecategory'] = "קורסים בקטוגוריה";
-$string['filtercourses'] = "קורסים";
+$string['filtercourses'] = "קורס";
 $string['filtercourses_summary'] = "מסנן זה מציג רשימה של קורסים , ניתן לבחור רק קורס אחד באותו זמן";
 $string['roleincourse'] = "משתמש עם תפקיד בדוח הקורס הנוכחי";
 $string['reportscapabilities'] = "יכולות דיווח";
@@ -196,14 +212,14 @@ $string['noexplicitprefix'] = "אין קידומת מפורשת";
 $string['queryfailed'] = "שאילתא נכשלה";
 $string['norowsreturned'] = "לא הוחזרו שורות";
 
-$string['listofsqlreports'] = '<a href="http://docs.moodle.org/en/ad-hoc_contributed_reports" target="_blank">List of SQL Contributed reports</a>';
+//$string['listofsqlreports'] = 'Press F11 when cursor is in the editor to toggle full screen editing. Esc can also be used to exit full screen editing.<br/><br/><a href="http://docs.moodle.org/en/ad-hoc_contributed_reports" target="_blank">List of SQL Contributed reports</a>';
 
 $string['usersincoursereport_summary'] = "משתמש כלשהו בדוח הקורס הנוכחי";
 
 $string['printreport'] = 'הדפס דוח';
 
-$string['importreport'] = "ייבא דווח";
-$string['exportreport'] = "ייצוא דוח";
+$string['importreport'] = "יבוא דוח";
+$string['exportreport'] = "יצוא דח";
 
 $string['download'] = "הורדה";
 
@@ -253,3 +269,7 @@ $string['includesubcats'] = 'כולל תת־קטגוריות';
 $string['coursededicationtime'] = 'זמן השקעה בקורס';
 $string['totalrecords'] = 'מספר רשומות בדוח = {$a->totalrecords}';
 $string['lastexecutiontime'] = 'זמן הכנת הדוח = {$a} (שניות)';
+
+$string['reportcategories'] = '1) יש לבחור סיווג';
+$string['reportsincategory'] = '2) יש לבחור דוח';
+$string['remotequerysql'] = 'דוגמה לשאילתת SQL';

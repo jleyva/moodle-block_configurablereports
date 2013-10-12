@@ -22,8 +22,8 @@
   * @date: 2009
   */
 
-class component_filters extends component_base{
-	
+class component_filters extends component_base {
+
 	function init(){
 		$this->plugins = true;
 		$this->ordering = true;

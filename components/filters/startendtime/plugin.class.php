@@ -60,7 +60,7 @@ class plugin_startendtime extends plugin_base{
 		$operators = array('<','>','<=','>=');
 
 		if(preg_match("/%%FILTER_STARTTIME:([^%]+)%%/i",$finalelements,$output)){
-			list($field,$operator) = split(':',$output[1]);
+			list($field,$operator) = preg_split('/:/',$output[1]);
 			if(!in_array($operator,$operators))
 				print_error('nosuchoperator');
 			$replace = ' AND '.$field.' '.$operator.' '.$filter_starttime;
@@ -68,7 +68,7 @@ class plugin_startendtime extends plugin_base{
 		}
 
 		if(preg_match("/%%FILTER_ENDTIME:([^%]+)%%/i",$finalelements,$output)){
-			list($field,$operator) = split(':',$output[1]);
+			list($field,$operator) = preg_split('/:/',$output[1]);
 			if(!in_array($operator,$operators))
 				print_error('nosuchoperator');
 			$replace = ' AND '.$field.' '.$operator.' '.$filter_endtime;

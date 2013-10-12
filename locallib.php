@@ -21,16 +21,16 @@
   * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
   * @date: 2009
   */
-  
+
   function cr_print_js_function(){
 	?>
 		<script type="text/javascript">
 			function printDiv(id){
 				var cdiv, tmpw;
-			 
-				cdiv = document.getElementById(id);				   
+
+				cdiv = document.getElementById(id);
 				tmpw = window.open(" ","Print");
-			   
+
 				tmpw.document.open();
 				tmpw.document.write('<html><body>');
 				tmpw.document.write(cdiv.innerHTML);
@@ -42,7 +42,27 @@
 		</script>
 	<?php
   }
-  
+
+    function cr_add_jsdatatables($cssid){
+        global $DB, $CFG, $OUTPUT;
+
+        echo html_writer::script(false, new moodle_url('/blocks/configurable_reports/js/datatables/media/js/jquery.js'));
+        echo html_writer::script(false, new moodle_url('/blocks/configurable_reports/js/datatables/media/js/jquery.dataTables.min.js'));
+        echo html_writer::script(false, new moodle_url('/blocks/configurable_reports/js/datatables/extras/FixedHeader/js/FixedHeader.js'));
+
+        $script = "$(document).ready(function() {
+            var oTable = $('$cssid').dataTable({
+                'bAutoWidth': false,
+                'sPaginationType': 'full_numbers',
+//                'sScrollX': '100%',
+//                'sScrollXInner': '110%',
+//                'bScrollCollapse': true
+            });
+            new FixedHeader( oTable );
+        } );";
+        echo html_writer::script($script);
+    }
+
   function cr_add_jsordering($cssid){
 	global $DB, $CFG, $OUTPUT;
     echo html_writer::script(false, new moodle_url('/blocks/configurable_reports/js/jquery-latest.js'));
@@ -68,9 +88,9 @@
 
 		<?php echo $cssid; ?> th.headerSortDown{
 		 background-image:url(<?php echo $OUTPUT->pix_url('desc', 'block_configurable_reports');?>);
-		}    
-		</style>		
-	<?php 
+		}
+		</style>
+	<?php
   }
 
   function urlencode_recursive($var) {
@@ -96,7 +116,7 @@
 
     return $new_var;
   }
-  
+
   function urldecode_recursive($var) {
     if (is_object($var)) {
         $new_var = new object();
@@ -125,52 +145,52 @@ function cr_get_my_reports($courseid, $userid, $allcourses=true){
 	global $DB;
 
 	$reports = array();
-	if ($courseid == SITEID){
-		$context = get_context_instance(CONTEXT_SYSTEM);
-	}	
-	else{
-		$context = get_context_instance(CONTEXT_COURSE, $courseid);
-	}
+    if ($courseid == SITEID){
+        $context = context_system::instance();
+    } else {
+        $context = context_course::instance($courseid);
+    }
 
-	if(has_capability('block/configurable_reports:managereports', $context, $userid)){
+
+    if(has_capability('block/configurable_reports:managereports', $context, $userid)){
 		if($courseid == SITEID && $allcourses)
 			$reports = $DB->get_records('block_configurable_reports',null,'name ASC');
 		else
 			$reports = $DB->get_records('block_configurable_reports',array('courseid' => $courseid),'name ASC');
 	}
-	else{		
-		$reports = $DB->get_records_select('block_configurable_reports','ownerid = ? AND courseid = ? ORDER BY name ASC',array($userid,$courseid));		
+	else{
+		$reports = $DB->get_records_select('block_configurable_reports','ownerid = ? AND courseid = ? ORDER BY name ASC',array($userid,$courseid));
 	}
 	return $reports;
 }
-  
+
  function cr_serialize($var){
 	return serialize(urlencode_recursive($var));
  }
 
  function cr_unserialize($var){
 	return urldecode_recursive(unserialize($var));
- } 
-  
+ }
+
  function cr_check_report_permissions($report,$userid,$context){
 	global $DB, $CFG;
-	
+
 	require_once($CFG->dirroot.'/blocks/configurable_reports/report.class.php');
 	require_once($CFG->dirroot.'/blocks/configurable_reports/reports/'.$report->type.'/report.class.php');
-	
+
 	$classn = 'report_'.$report->type;
 	$classi = new $classn($report->id);
 	return $classi->check_permissions($userid,$context);
-	
+
 	return true;
  }
- 
+
  function cr_get_report_plugins($courseid){
- 
+
 	$pluginoptions = array();
-	$context = ($courseid == SITEID)? get_context_instance(CONTEXT_SYSTEM): get_context_instance(CONTEXT_COURSE,$courseid);
+	$context = ($courseid == SITEID)? context_system::instance() : context_course::instance($courseid);
 	$plugins = get_list_of_plugins('blocks/configurable_reports/reports');
-	
+
 	if($plugins)
 		foreach($plugins as $p){
 			if($p == 'sql' && !has_capability('block/configurable_reports:managesqlreports',$context))
@@ -181,17 +201,17 @@ function cr_get_my_reports($courseid, $userid, $allcourses=true){
  }
 
  function cr_get_export_plugins(){
- 
+
 	$exportoptions = array();
 	$plugins = get_list_of_plugins('blocks/configurable_reports/export');
-	
+
 	if($plugins)
 		foreach($plugins as $p){
 			$pluginoptions[$p] = get_string('export_'.$p,'block_configurable_reports');
 		}
 	return $pluginoptions;
- } 
- 
+ }
+
  function cr_print_table($table, $return=false) {
     $output = '';
 
@@ -252,7 +272,7 @@ function cr_get_my_reports($courseid, $userid, $allcourses=true){
     $output .= " cellpadding=\"$table->cellpadding\" cellspacing=\"$table->cellspacing\" class=\"$table->class boxalign$table->tablealign\" $tableid>\n";
 
     $countcols = 0;
-    
+
     if (!empty($table->head)) {
         $countcols = count($table->head);
         $output .= '<thead><tr>';
@@ -324,14 +344,14 @@ function cr_get_my_reports($courseid, $userid, $allcourses=true){
 
     echo $output;
     return true;
-}            
+}
 
 function table_to_excel($filename,$table){
     global $DB, $CFG;
-    
+
     require_once($CFG->dirroot.'/lib/excellib.class.php');
 
-    
+
     if (!empty($table->head)) {
         $countcols = count($table->head);
         $keys=array_keys($table->head);
@@ -355,17 +375,17 @@ function table_to_excel($filename,$table){
     /// Sending HTTP headers
     $workbook->send($downloadfilename);
     /// Adding the worksheet
-    $myxls =& $workbook->add_worksheet($filename);     
-    
+    $myxls =& $workbook->add_worksheet($filename);
+
     foreach($matrix as $ri=>$col){
         foreach($col as $ci=>$cv){
             $myxls->write_string($ri,$ci,$cv);
         }
     }
-    
+
     $workbook->close();
     exit;
 }
 
 
- 
+
