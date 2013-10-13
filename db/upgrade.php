@@ -80,8 +80,8 @@ function xmldb_block_configurable_reports_upgrade($oldversion) {
         if (!$dbman->table_exists($table)) {
             $dbman->install_from_xmldb_file($CFG->dirroot . '/blocks/configurable_reports/db/install.xml');
         }
-        //upgrade_block_savepoint(true, 2013091101, 'configurable_reports');
-        upgrade_plugin_savepoint(true, 2013091101, 'block', 'configurable_reports');
+        upgrade_block_savepoint(true, 2013091101, 'configurable_reports');
+        //upgrade_plugin_savepoint(true, 2013091101, 'block', 'configurable_reports');
     }
 
     // todo: migration script for moving SQL queries in block_cr_component into block_configurable_reports
@@ -99,8 +99,8 @@ function xmldb_block_configurable_reports_upgrade($oldversion) {
         if (!$dbman->field_exists($table, $field)) {
             $dbman->add_field($table, $field);
         }
-
-        upgrade_plugin_savepoint(true, 2013092001, 'block', 'configurable_reports');
+        upgrade_block_savepoint(true, 2013092001, 'configurable_reports');
+        //upgrade_plugin_savepoint(true, 2013092001, 'block', 'configurable_reports');
     }
 
     return true;
