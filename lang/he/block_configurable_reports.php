@@ -100,6 +100,12 @@ $string['filterrole_summary'] = 'סינון לפי תפקיד (מורה, תלמ�
 $string['coursemodules'] = 'רכיב בקורס';
 $string['filtercoursemodules'] = 'רכיב בקורס';
 $string['filtercoursemodules_summary'] = 'מסנן לתצוגת רכיב/ים בקורס/ים';
+$string['user'] = 'משתמש בקורס';
+$string['filteruser'] = 'משתמש בקורס הנוכחי';
+$string['filteruser_summary'] = 'מסנן לפי קוד משתמש מתוך משתמשי הקורס הנוכחי';
+$string['users'] = 'משתמש מערכת';
+$string['filterusers'] = 'משתמש מערכת';
+$string['filterusers_summary'] = 'מסנן לפי קוד משתמש מתוך רשימת המשתמשים במערכת';
 
 // Calcs
 $string['nocalcsyet'] = "לא הוגדרו חישובים";

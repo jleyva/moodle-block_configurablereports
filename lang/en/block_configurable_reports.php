@@ -103,6 +103,12 @@ $string['filterrole_summary'] = 'Filter system Roles (Teacher, Student, ...)';
 $string['coursemodules'] = 'Course module';
 $string['filtercoursemodules'] = 'Course module';
 $string['filtercoursemodules_summary'] = 'Filter course modules';
+$string['user'] = 'Course user (id)';
+$string['filteruser'] = 'Current course user';
+$string['filteruser_summary'] = 'Filter a user (id) from current course users';
+$string['users'] = 'System user (id)';
+$string['filterusers'] = 'System user';
+$string['filterusers_summary'] = 'Filter a user (by id) from system user list';
 
 // Calcs
 $string['nocalcsyet'] = "No calculations yet";
