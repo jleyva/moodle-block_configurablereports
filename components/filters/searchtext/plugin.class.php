@@ -40,7 +40,7 @@ class plugin_searchtext extends plugin_base{
     function execute($finalelements, $data){
 
         $filter_searchtext = optional_param('filter_searchtext','',PARAM_RAW);
-        $operators = array('<', '>', '<=', '>=', '~');
+        $operators = array('=', '<', '>', '<=', '>=', '~');
 
         if(!$filter_searchtext)
             return $finalelements;
