@@ -21,6 +21,13 @@ if ($ADMIN->fulltree) {
     $settings->add(new admin_setting_configcheckbox('block_configurable_reports/sqlsyntaxhighlight', get_string('sqlsyntaxhighlight', 'block_configurable_reports'),
         get_string('sqlsyntaxhighlightinfo', 'block_configurable_reports'), 0));
 
+    $reporttableoptions = array('html'=>'Simple', 'jquery'=>'jQuery', 'datatables'=>'DataTables JS');
+    $settings->add(new admin_setting_configselect('block_configurable_reports/reporttableui', get_string('reporttableui', 'block_configurable_reports'),
+        get_string('reporttableuiinfo', 'block_configurable_reports'), 0, $reporttableoptions ));
+
+//    $settings->add(new admin_setting_configcheckbox('block_configurable_reports/datatables', get_string('datatables', 'block_configurable_reports'),
+//        get_string('datatablesinfo', 'block_configurable_reports'), 0));
+
 }
 
 

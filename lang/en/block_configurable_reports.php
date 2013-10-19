@@ -395,4 +395,9 @@ $string['sharedsqlrepository'] = 'Shared sql repository';
 $string['sharedsqlrepositoryinfo'] = 'Name of GitHub account owner + slash + repository name';
 $string['sqlsyntaxhighlight'] = 'Highlight SQL syntax';
 $string['sqlsyntaxhighlightinfo'] = 'Highlight SQL syntax in code editor (CodeMirror JS library)';
+$string['datatables'] = 'Enable DataTables JS library';
+$string['datatablesinfo'] = 'DataTables JS library (Column sort, fixed header, search, paging...)';
+$string['reporttableui'] = 'Report table UI';
+$string['reporttableuiinfo'] = 'Display the report table as: Simple scrollable HTML table, jQuery with column sorting Or DataTables JS library (Column sort, fixed header, search, paging...)';
+
 

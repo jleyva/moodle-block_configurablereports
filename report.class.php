@@ -538,8 +538,28 @@
 	}
 
 	function add_jsordering(){
-		//cr_add_jsordering('#reporttable');
-        cr_add_jsdatatables('#reporttable');
+        switch (get_config('block_configurable_reports', 'reporttableui')) {
+            case 'datatables':
+                cr_add_jsdatatables('#reporttable');
+                break;
+            case 'jquery':
+                cr_add_jsordering('#reporttable');
+                echo html_writer::tag('style',
+                    '#page-blocks-configurable_reports-viewreport .generaltable {
+                    overflow: auto;
+                    width: 100%;
+                    display: block;}');
+                break;
+            case 'html':
+                echo html_writer::tag('style',
+                    '#page-blocks-configurable_reports-viewreport .generaltable {
+                    overflow: auto;
+                    width: 100%;
+                    display: block;}');
+                break;
+            default: break;
+        }
+
 	}
 
 	function print_template($config){
