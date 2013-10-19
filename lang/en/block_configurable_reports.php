@@ -393,4 +393,6 @@ $string['executeat'] = 'Execute at';
 $string['executeatinfo'] = 'Moodle CRON will run scheduled SQL queries after selected time. Once in 24h';
 $string['sharedsqlrepository'] = 'Shared sql repository';
 $string['sharedsqlrepositoryinfo'] = 'Name of GitHub account owner + slash + repository name';
+$string['sqlsyntaxhighlight'] = 'Highlight SQL syntax';
+$string['sqlsyntaxhighlightinfo'] = 'Highlight SQL syntax in code editor (CodeMirror JS library)';
 

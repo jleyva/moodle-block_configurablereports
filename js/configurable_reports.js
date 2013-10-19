@@ -70,7 +70,7 @@ M.block_configurable_reports = {
                     var response = Y.JSON.parse(o.responseText);
 
                     // Use regular textarea element.
-                    //textarea_reportsincategory.set('value', response);
+                    textarea_reportsincategory.set('value', response);
 
                     // Use codemirror editor.
                     editor_remotequerysql.setValue(response);

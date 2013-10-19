@@ -52,10 +52,13 @@
 	$PAGE->set_url('/blocks/configurable_reports/editreport.php', array('id'=>$id,'comp'=>$comp));
 	$PAGE->set_context($context);
 	$PAGE->set_pagelayout('incourse');
-	$PAGE->requires->js('/blocks/configurable_reports/js/codemirror/lib/codemirror.js');
-    $PAGE->requires->js('/blocks/configurable_reports/js/codemirror/mode/sql/sql.js');
-    $PAGE->requires->js('/blocks/configurable_reports/js/codemirror/addon/display/fullscreen.js');
-    $PAGE->requires->js('/blocks/configurable_reports/js/codemirror/addon/edit/matchbrackets.js');
+
+    if (get_config('block_configurable_reports', 'sqlsyntaxhighlight')) {
+        $PAGE->requires->js('/blocks/configurable_reports/js/codemirror/lib/codemirror.js');
+        $PAGE->requires->js('/blocks/configurable_reports/js/codemirror/mode/sql/sql.js');
+        $PAGE->requires->js('/blocks/configurable_reports/js/codemirror/addon/display/fullscreen.js');
+        $PAGE->requires->js('/blocks/configurable_reports/js/codemirror/addon/edit/matchbrackets.js');
+    }
 
     $PAGE->requires->js('/blocks/configurable_reports/js/configurable_reports.js');
     $PAGE->requires->js_init_call('M.block_configurable_reports.init');
