@@ -29,8 +29,10 @@ if (!defined('MOODLE_INTERNAL')) {
 require_once($CFG->libdir.'/formslib.php');
 
 class fuserfield_form extends moodleform {
+
     function definition() {
-        global $remoteDB, $USER, $CFG;
+
+        global $remoteDB;
 
         $mform =& $this->_form;
 
@@ -52,7 +54,6 @@ class fuserfield_form extends moodleform {
 		unset($usercolumns['sesskey']);
 
         $mform->addElement('select', 'field', get_string('field','block_configurable_reports'), $usercolumns);
-
 
         // buttons
         $this->add_action_buttons(true, get_string('add'));

@@ -83,12 +83,11 @@ class plugin_fuserfield extends plugin_base{
 						return $finalusersid;
 					}
 				}
-			}
-			else{
+			} else {
 				list($usql, $params) = $remoteDB->get_in_or_equal($finalelements);
 				$sql = "$data->field LIKE ? AND id $usql";
-				$params = array_merge(array("%$filter%"),$params);
-				if($elements = $remoteDB->get_records_select('user',$sql,$params)){
+				$params = array_merge(array("%$filter%"), $params);
+				if($elements = $remoteDB->get_records_select('user', $sql, $params)){
 				$finalelements = array_keys($elements);
 				}
 			}
