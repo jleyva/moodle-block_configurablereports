@@ -24,18 +24,18 @@
 
 require_once($CFG->dirroot.'/blocks/configurable_reports/plugin.class.php');
 
-class plugin_startendtime extends plugin_base{
+class plugin_startendtime extends plugin_base {
 
-	function init(){
-		$this->form = false;
-		$this->unique = true;
-		$this->fullname = get_string('startendtime','block_configurable_reports');
-		$this->reporttypes = array('sql','timeline','users','courses');
-	}
+    public function init() {
+        $this->form = false;
+        $this->unique = true;
+        $this->fullname = get_string('startendtime', 'block_configurable_reports');
+        $this->reporttypes = array('sql', 'timeline', 'users','courses');
+    }
 
-	function summary($data){
-		return get_string('filterstartendtime_summary','block_configurable_reports');
-	}
+    public function summary($data) {
+        return get_string('filterstartendtime_summary', 'block_configurable_reports');
+    }
 
 	function execute($finalelements, $data){
 		global $CFG;
@@ -45,29 +45,30 @@ class plugin_startendtime extends plugin_base{
 			return $finalelements;
 
 		if ($CFG->version < 2011120100) {
-            $filter_starttime = optional_param('filter_starttime',0,PARAM_RAW);
-            $filter_endtime = optional_param('filter_endtime',0,PARAM_RAW);
+            $filter_starttime = optional_param('filter_starttime', 0, PARAM_RAW);
+            $filter_endtime = optional_param('filter_endtime', 0, PARAM_RAW);
 		} else {
-            $filter_starttime = optional_param_array('filter_starttime',0,PARAM_RAW);
-            $filter_endtime = optional_param_array('filter_endtime',0,PARAM_RAW);
+            $filter_starttime = optional_param_array('filter_starttime', 0, PARAM_RAW);
+            $filter_endtime = optional_param_array('filter_endtime', 0, PARAM_RAW);
 		}
-		if(!$filter_starttime || ! $filter_endtime)
-			return $finalelements;
+        if(!$filter_starttime || !$filter_endtime) return $finalelements;
 
-		$filter_starttime = make_timestamp($filter_starttime['year'],$filter_starttime['month'],$filter_starttime['day']);
-		$filter_endtime = make_timestamp($filter_endtime['year'],$filter_endtime['month'],$filter_endtime['day']);
+        $filter_starttime = make_timestamp($filter_starttime['year'], $filter_starttime['month'], $filter_starttime['day'],
+            $filter_starttime['hour'], $filter_starttime['minute']);
+        $filter_endtime = make_timestamp($filter_endtime['year'], $filter_endtime['month'], $filter_endtime['day'],
+            $filter_endtime['hour'], $filter_endtime['minute']);
 
-		$operators = array('<','>','<=','>=');
+		$operators = array('<', '>', '<=', '>=');
 
-		if(preg_match("/%%FILTER_STARTTIME:([^%]+)%%/i",$finalelements,$output)){
+		if (preg_match("/%%FILTER_STARTTIME:([^%]+)%%/i", $finalelements, $output)) {
 			list($field,$operator) = preg_split('/:/',$output[1]);
 			if(!in_array($operator,$operators))
 				print_error('nosuchoperator');
 			$replace = ' AND '.$field.' '.$operator.' '.$filter_starttime;
-			$finalelements = str_replace('%%FILTER_STARTTIME:'.$output[1].'%%',$replace,$finalelements);
+			$finalelements = str_replace('%%FILTER_STARTTIME:'.$output[1].'%%', $replace, $finalelements);
 		}
 
-		if(preg_match("/%%FILTER_ENDTIME:([^%]+)%%/i",$finalelements,$output)){
+		if(preg_match("/%%FILTER_ENDTIME:([^%]+)%%/i",$finalelements, $output)){
 			list($field,$operator) = preg_split('/:/',$output[1]);
 			if(!in_array($operator,$operators))
 				print_error('nosuchoperator');
