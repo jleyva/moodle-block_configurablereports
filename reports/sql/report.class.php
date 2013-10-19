@@ -24,7 +24,7 @@
 
 define('REPORT_CUSTOMSQL_MAX_RECORDS', 5000);
 
-class report_sql extends report_base{
+class report_sql extends report_base {
 
 	function init(){
 		$this->components = array('customsql','filters', 'template','permissions','calcs','plot');
@@ -33,10 +33,13 @@ class report_sql extends report_base{
 	function prepare_sql($sql) {
 		global $DB, $USER, $CFG;
 
+        // Enable debug mode from SQL query.
+        $this->config->debug = (strpos($sql, '%%DEBUG%%') !== false) ? true : false;
+
         // Pass special custom undefined variable as filter.
         // Security warning !!! can be used for sql injection.
         // Use %%FILTER_VAR%% in your sql code with caution.
-        $filter_var = optional_param('filter_var','',PARAM_RAW);
+        $filter_var = optional_param('filter_var', '', PARAM_RAW);
         if (!empty($filter_var)) {
             $sql = str_replace('%%FILTER_VAR%%', $filter_var, $sql);
         }
