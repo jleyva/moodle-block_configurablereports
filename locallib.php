@@ -292,7 +292,7 @@ function cr_get_my_reports($courseid, $userid, $allcourses=true){
                 $extraclass = '';
             }
 
-            $output .= '<th style="vertical-align:top;'. $align[$key].$size[$key] .';white-space:nowrap;" class="header c'.$key.$extraclass.'" scope="col">'. $heading .'</th>';
+            $output .= '<th style="vertical-align:top;'. $align[$key].$size[$key] .';white-space:normal;" class="header c'.$key.$extraclass.'" scope="col">'. $heading .'</th>';
         }
         $output .= '</tr></thead>'."\n";
     }
