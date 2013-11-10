@@ -39,7 +39,7 @@ foreach($reportclass->components as $comptab){
 $top[] = new tabobject('report', new moodle_url('/blocks/configurable_reports/editreport.php', array('id' => $report->id)),
                 get_string('report','block_configurable_reports'));
 
-$top[] = new tabobject('managereports', new moodle_url('/blocks/configurable_reports/managereport.php', array('id' => $course->id)),
+$top[] = new tabobject('managereports', new moodle_url('/blocks/configurable_reports/managereport.php', array('courseid' => $course->id)),
                 get_string('managereports','block_configurable_reports'));
 
 $tabs = array($top);
