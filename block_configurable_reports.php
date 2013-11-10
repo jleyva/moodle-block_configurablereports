@@ -39,7 +39,7 @@ class block_configurable_reports extends block_list {
      * @return boolean
      **/
     public function applicable_formats() {
-        return array('site' => true, 'course' => true);
+        return array('site' => true, 'course' => true, 'my' => true);
     }
 
     /**
