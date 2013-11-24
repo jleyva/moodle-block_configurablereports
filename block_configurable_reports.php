@@ -92,10 +92,24 @@ class block_configurable_reports extends block_list {
             $context = context_course::instance($course->id);
         }
 
-		$reports = $DB->get_records('block_configurable_reports',array('courseid' => $course->id),'name ASC');
+        // Site (Shared) reports
+        $reports = $DB->get_records('block_configurable_reports',array('courseid' => SITEID),'name ASC');
 
-		if($reports){
-			foreach($reports as $report){
+        if ($reports) {
+            foreach($reports as $report){
+                if($report->visible && cr_check_report_permissions($report, $USER->id, $context)){
+                    $rname = format_string($report->name);
+                    $this->content->items[] = '<a href= "'.$CFG->wwwroot.'/blocks/configurable_reports/viewreport.php?id='.$report->id.'&courseid='.$course->id.'" alt="'.$rname.'">'.$rname.'</a>';
+                }
+            }
+            echo "<hr/>";
+        }
+
+        // Course reports
+        $reports = $DB->get_records('block_configurable_reports',array('courseid' => $course->id),'name ASC');
+
+		if ($reports) {
+			foreach($reports as $report) {
 				if($report->visible && cr_check_report_permissions($report,$USER->id,$context)){
 					$rname = format_string($report->name);
 					$this->content->items[] = '<a href= "'.$CFG->wwwroot.'/blocks/configurable_reports/viewreport.php?id='.$report->id.'&courseid='.$course->id.'" alt="'.$rname.'">'.$rname.'</a>';
