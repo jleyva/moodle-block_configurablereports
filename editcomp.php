@@ -125,15 +125,15 @@ if(! has_capability('block/configurable_reports:managereports', $context) && ! h
 	}
 
 
-    $courseurl =  new moodle_url($CFG->wwwroot.'/course/view.php',array('id'=>$report->courseid));
-    $PAGE->navbar->add($COURSE->shortname, $courseurl);
+    //$courseurl =  new moodle_url($CFG->wwwroot.'/course/view.php',array('id'=>$report->courseid));
+    //$PAGE->navbar->add($COURSE->shortname, $courseurl);
 
     $managereporturl =  new moodle_url($CFG->wwwroot.'/blocks/configurable_reports/managereport.php',array('courseid'=>$report->courseid));
     $PAGE->navbar->add(get_string('managereports','block_configurable_reports'), $managereporturl);
 
     $PAGE->navbar->add($report->name);
 
-    $title = format_string($report->name).' '.get_string($comp,'block_configurable_reports');
+    $title = format_string($report->name);//.' '.get_string($comp,'block_configurable_reports');
     $PAGE->set_title($title);
 	$PAGE->set_heading($title);
 	$PAGE->set_cacheable(true);

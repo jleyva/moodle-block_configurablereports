@@ -82,11 +82,11 @@
 
 	$title = get_string('reports','block_configurable_reports');
 
-    $courseurl =  new moodle_url($CFG->wwwroot.'/course/view.php',array('id'=>$report->courseid));
-    $PAGE->navbar->add($COURSE->shortname, $courseurl);
+    //$courseurl =  new moodle_url($CFG->wwwroot.'/course/view.php',array('id'=>$report->courseid));
+    //$PAGE->navbar->add($COURSE->shortname, $courseurl);
 
-    $managereporturl =  new moodle_url($CFG->wwwroot.'/blocks/configurable_reports/managereport.php',array('courseid'=>$report->courseid));
-    $PAGE->navbar->add(get_string('managereports','block_configurable_reports'), $managereporturl);
+    //$managereporturl =  new moodle_url($CFG->wwwroot.'/blocks/configurable_reports/managereport.php',array('courseid'=>$courseid));
+    $PAGE->navbar->add(get_string('managereports','block_configurable_reports'));//, $managereporturl);
 
 	$PAGE->set_title($title);
 	$PAGE->set_heading( $title);
