@@ -42,9 +42,10 @@ class plugin_roleincourse extends plugin_base{
 	}
 
 	function execute($userid, $context, $data){
-		global $DB, $CFG;
+		//global $DB, $CFG, $COURSE;
 
-		$context = ($this->report->courseid == SITEID) ? context_system::instance() : context_course::instance($this->report->courseid);
+		//$context = ($this->report->courseid == SITEID) ? context_system::instance() : context_course::instance($this->report->courseid);
+        //$context = context_course::instance($COURSE->id);
 		$roles = get_user_roles($context, $userid);
 		if(!empty($roles)){
 			foreach($roles as $rol){
