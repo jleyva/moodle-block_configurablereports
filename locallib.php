@@ -172,7 +172,7 @@ function cr_get_my_reports($courseid, $userid, $allcourses=true){
 	return urldecode_recursive(unserialize($var));
  }
 
- function cr_check_report_permissions($report,$userid,$context){
+ function cr_check_report_permissions($report, $userid, $context){
 	global $DB, $CFG;
 
 	require_once($CFG->dirroot.'/blocks/configurable_reports/report.class.php');
@@ -180,9 +180,7 @@ function cr_get_my_reports($courseid, $userid, $allcourses=true){
 
 	$classn = 'report_'.$report->type;
 	$classi = new $classn($report->id);
-	return $classi->check_permissions($userid,$context);
-
-	return true;
+	return $classi->check_permissions($userid, $context);
  }
 
  function cr_get_report_plugins($courseid){
@@ -213,6 +211,8 @@ function cr_get_my_reports($courseid, $userid, $allcourses=true){
  }
 
  function cr_print_table($table, $return=false) {
+    global $COURSE;
+
     $output = '';
 
     if (isset($table->align)) {
@@ -264,7 +264,7 @@ function cr_get_my_reports($courseid, $userid, $allcourses=true){
     }
 
     $tableid = empty($table->id) ? '' : 'id="'.$table->id.'"';
-
+    $output .= '<form action="send_emails.php" method="post" id="sendemail">';
     $output .= '<table width="'.$table->width.'" ';
     if (!empty($table->summary)) {
         $output .= " summary=\"$table->summary\"";
@@ -272,6 +272,7 @@ function cr_get_my_reports($courseid, $userid, $allcourses=true){
     $output .= " cellpadding=\"$table->cellpadding\" cellspacing=\"$table->cellspacing\" class=\"$table->class boxalign$table->tablealign\" $tableid>\n";
 
     $countcols = 0;
+    $isuserid = -1;
 
     if (!empty($table->head)) {
         $countcols = count($table->head);
@@ -279,7 +280,9 @@ function cr_get_my_reports($courseid, $userid, $allcourses=true){
         $keys=array_keys($table->head);
         $lastkey = end($keys);
         foreach ($table->head as $key => $heading) {
-
+            if ($heading == 'sendemail') {
+                $isuserid = $key;
+            }
             if (!isset($size[$key])) {
                 $size[$key] = '';
             }
@@ -330,13 +333,23 @@ function cr_get_my_reports($courseid, $userid, $allcourses=true){
                     } else {
                       $extraclass = '';
                     }
-                    $output .= '<td style="'. $align[$key].$size[$key].$wrap[$key] .'" class="cell c'.$key.$extraclass.'">'. $item .'</td>';
+                    if ($key == $isuserid) {
+                        $output .= '<td style="'. $align[$key].$size[$key].$wrap[$key] .'" class="cell c'.$key.$extraclass.'"><input name="userids[]" type="checkbox" value="'.$item.'"></td>';
+                    } else {
+                        $output .= '<td style="'. $align[$key].$size[$key].$wrap[$key] .'" class="cell c'.$key.$extraclass.'">'. $item .'</td>';
+                    }
+
                 }
             }
             $output .= '</tr>'."\n";
         }
     }
     $output .= '</table>'."\n";
+    $output .= '<input type="hidden" name="courseid" value="'.$COURSE->id.'">';
+    if ($isuserid != -1) {
+        $output .= '<input type="submit" value="send emails">';
+    }
+    $output .= '</form>';
 
     if ($return) {
         return $output;

@@ -43,6 +43,10 @@ $string['export_ods'] = "ODS ייצא בתסדיר";
 $string['export_xls'] = "XLS ייצא בתסדיר";
 $string['viewreport'] = "צפיה בדוח";
 $string['norecordsfound'] = "לא נמצאו רשומות";
+$string['cron'] = 'הפעלה אוטומטית';
+$string['crondescription'] = 'תזמון ביצוע הדוח, באופן קבוע - כל לילה';
+$string['cron_help'] = 'תזמון ביצוע הדוח, באופן קבוע - כל לילה. ניתן לקבוע את זמן ההפעלה של הדוח בהגדרות המערכת של הרכיב';
+
 
 // Columns
 $string['column'] = "עמודה";
@@ -279,3 +283,6 @@ $string['lastexecutiontime'] = 'זמן הכנת הדוח = {$a} (שניות)';
 $string['reportcategories'] = '1) יש לבחור סיווג';
 $string['reportsincategory'] = '2) יש לבחור דוח';
 $string['remotequerysql'] = 'דוגמה לשאילתת SQL';
+$string['email_subject'] = 'נושא';
+$string['email_message'] = 'תוכן ההודעה';
+$string['email_send'] = 'שליחה';

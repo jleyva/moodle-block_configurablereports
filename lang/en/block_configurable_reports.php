@@ -48,6 +48,7 @@ $string['jsordering'] = 'JavaScript Ordering';
 $string['cron'] = 'Auto run daily';
 $string['crondescription'] = 'Schedule this query to run each day (At night)';
 $string['cron_help'] = 'Schedule this query to run each day (At night)';
+$string['setcourseid'] = 'Set courseid';
 
 // Columns
 $string['column'] = "Column";
@@ -400,4 +401,7 @@ $string['datatablesinfo'] = 'DataTables JS library (Column sort, fixed header, s
 $string['reporttableui'] = 'Report table UI';
 $string['reporttableuiinfo'] = 'Display the report table as: Simple scrollable HTML table, jQuery with column sorting Or DataTables JS library (Column sort, fixed header, search, paging...)';
 
+$string['email_subject'] = 'Subject';
+$string['email_message'] = 'Message';
+$string['email_send'] = 'Send';
 
