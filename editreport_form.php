@@ -32,6 +32,8 @@ class report_edit_form extends moodleform {
     function definition() {
         global $DB, $USER, $CFG;
 
+        $adminmode = optional_param('adminmode',null,PARAM_INT);
+
         $mform =& $this->_form;
 
         $mform->addElement('header', 'general', get_string('general', 'form'));
@@ -79,7 +81,11 @@ class report_edit_form extends moodleform {
 
 		if(isset($this->_customdata['report']->id) && $this->_customdata['report']->id)
 			$mform->addElement('hidden','id',$this->_customdata['report']->id);
-		$mform->addElement('hidden','courseid',$this->_customdata['courseid']);
+        if (!empty($adminmode)) {
+            $mform->addElement('text','courseid',get_string("setcourseid",'block_configurable_reports'), $this->_customdata['courseid']);
+        } else {
+            $mform->addElement('hidden','courseid',$this->_customdata['courseid']);
+        }
         $mform->setType('courseid', PARAM_INT);
 
         // buttons
