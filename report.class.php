@@ -69,10 +69,7 @@
 
 		if(empty($permissions['elements'])){
 			return has_capability('block/configurable_reports:viewreports', $context);
-		}
-		else{
-			$finalresult = false;
-
+		} else {
 			$i = 1;
 			$cond = array();
 			foreach($permissions['elements'] as $p){
@@ -83,9 +80,9 @@
 				$cond[$i] = $class->execute($userid, $context, $p['formdata']);
 				$i++;
 			}
-			if(count($cond) == 1)
-				return $cond[1];
-			else{
+			if (count($cond) == 1) {
+                return $cond[1];
+            } else {
 				$m = new EvalMath;
 				$orig = $dest = array();
 
@@ -106,12 +103,10 @@
 					}
 
 					return $m->evaluate(str_replace($orig,$dest,$logic));
-				}
-				else{
+				} else {
 					return false;
 				}
 			}
-			return $finalresult;
 		}
 	}
 
