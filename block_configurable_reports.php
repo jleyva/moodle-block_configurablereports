@@ -102,23 +102,26 @@ class block_configurable_reports extends block_list {
                     $this->content->items[] = '<a href= "'.$CFG->wwwroot.'/blocks/configurable_reports/viewreport.php?id='.$report->id.'&courseid='.$course->id.'" alt="'.$rname.'">'.$rname.'</a>';
                 }
             }
-            echo "<hr/>";
+            $this->content->items[] = '========';
         }
 
         // Course reports
-        $reports = $DB->get_records('block_configurable_reports',array('courseid' => $course->id),'name ASC');
+        if ($course->id != SITEID) {
+            $reports = $DB->get_records('block_configurable_reports',array('courseid' => $course->id),'name ASC');
 
-		if ($reports) {
-			foreach($reports as $report) {
-				if($report->visible && cr_check_report_permissions($report,$USER->id,$context)){
-					$rname = format_string($report->name);
-					$this->content->items[] = '<a href= "'.$CFG->wwwroot.'/blocks/configurable_reports/viewreport.php?id='.$report->id.'&courseid='.$course->id.'" alt="'.$rname.'">'.$rname.'</a>';
-				}
-			}
-		}
+            if ($reports) {
+                foreach($reports as $report) {
+                    if($report->visible && cr_check_report_permissions($report,$USER->id,$context)){
+                        $rname = format_string($report->name);
+                        $this->content->items[] = '<a href= "'.$CFG->wwwroot.'/blocks/configurable_reports/viewreport.php?id='.$report->id.'&courseid='.$course->id.'" alt="'.$rname.'">'.$rname.'</a>';
+                    }
+                }
+                $this->content->items[] = '========';
+            }
+        }
 
 		if(has_capability('block/configurable_reports:managereports', $context) || has_capability('block/configurable_reports:manageownreports', $context)){
-			$this->content->items[] = '<hr/><a href="'.$CFG->wwwroot.'/blocks/configurable_reports/managereport.php?courseid='.$course->id.'">'.(get_string('managereports','block_configurable_reports')).'</a>';
+			$this->content->items[] = '<a href="'.$CFG->wwwroot.'/blocks/configurable_reports/managereport.php?courseid='.$course->id.'">'.(get_string('managereports','block_configurable_reports')).'</a>';
 		}
 
         return $this->content;
