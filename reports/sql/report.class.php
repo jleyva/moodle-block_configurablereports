@@ -31,7 +31,7 @@ class report_sql extends report_base {
 	}
 
 	function prepare_sql($sql) {
-		global $DB, $USER, $CFG;
+		global $DB, $USER, $CFG, $COURSE;
 
         // Enable debug mode from SQL query.
         $this->config->debug = (strpos($sql, '%%DEBUG%%') !== false) ? true : false;
@@ -45,7 +45,7 @@ class report_sql extends report_base {
         }
 
         $sql = str_replace('%%USERID%%', $USER->id, $sql);
-        $sql = str_replace('%%COURSEID%%', $this->currentcourseid, $sql);
+        $sql = str_replace('%%COURSEID%%', $COURSE->id, $sql);
 
 		// See http://en.wikipedia.org/wiki/Year_2038_problem
 		$sql = str_replace(array('%%STARTTIME%%','%%ENDTIME%%'),array('0','2145938400'),$sql);
