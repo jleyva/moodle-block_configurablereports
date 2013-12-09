@@ -55,7 +55,7 @@ class plugin_user extends plugin_base{
 	}
 
 	function print_filter(&$mform){
-		global $remoteDB;
+		global $remoteDB, $COURSE;
 
 		//$filter_user = optional_param('filter_user',0,PARAM_INT);
 
@@ -68,7 +68,7 @@ class plugin_user extends plugin_base{
 
 			$userlist = $reportclass->elements_by_conditions($conditions);
 		} else {
-            $coursecontext = context_course::instance($this->report->courseid);
+            $coursecontext = context_course::instance($COURSE->id);
             $userlist = array_keys(get_users_by_capability($coursecontext, 'moodle/user:viewdetails'));
 		}
 
