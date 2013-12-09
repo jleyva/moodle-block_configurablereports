@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 
 $string['blockname'] = "דוחות מתקדמים";
 $string['pluginname'] = "דוחות מתקדמים";
@@ -110,6 +110,9 @@ $string['filteruser_summary'] = 'מסנן לפי קוד משתמש מתוך מש
 $string['users'] = 'משתמש מערכת';
 $string['filterusers'] = 'משתמש מערכת';
 $string['filterusers_summary'] = 'מסנן לפי קוד משתמש מתוך רשימת המשתמשים במערכת';
+$string['filterenrolledstudents'] = 'תלמידים בקורס';
+$string['filterenrolledstudents_summary'] = 'מסנן לפי קוד משתמש מתוך רשימת התלמידים בקורס';
+$string['student'] = 'תלמיד';
 
 // Calcs
 $string['nocalcsyet'] = "לא הוגדרו חישובים";
