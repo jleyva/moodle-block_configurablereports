@@ -31,12 +31,17 @@
 
 	$id = required_param('id', PARAM_INT);
 	$comp = required_param('comp', PARAM_ALPHA);
+    $courseid = optional_param('courseid', null, PARAM_INT);
 
 	if(! $report = $DB->get_record('block_configurable_reports',array('id' => $id)))
 		print_error('reportdoesnotexists');
 
+    // Ignore report's courseid, If we are running this report on a specific courseid
+    // (For permission checks)
+    if (empty($courseid))
+        $courseid = $report->courseid;
 
-	if (! $course = $DB->get_record("course",array( "id" =>  $report->courseid)) ) {
+	if (! $course = $DB->get_record("course",array( "id" =>  $courseid)) ) {
 		print_error("No such course id");
 	}
 
@@ -95,7 +100,7 @@ if(! has_capability('block/configurable_reports:managereports', $context) && ! h
 		}
 		else if ($data = $editform->get_data()) {
 			$compclass->form_process_data($editform);
-			add_to_log($report->courseid, 'configurable_reports', 'edit', '', $report->name);
+			add_to_log($courseid, 'configurable_reports', 'edit', '', $report->name);
 		}
 
 		$compclass->form_set_data($editform);
@@ -128,7 +133,7 @@ if(! has_capability('block/configurable_reports:managereports', $context) && ! h
     //$courseurl =  new moodle_url($CFG->wwwroot.'/course/view.php',array('id'=>$report->courseid));
     //$PAGE->navbar->add($COURSE->shortname, $courseurl);
 
-    $managereporturl =  new moodle_url($CFG->wwwroot.'/blocks/configurable_reports/managereport.php',array('courseid'=>$report->courseid));
+    $managereporturl =  new moodle_url($CFG->wwwroot.'/blocks/configurable_reports/managereport.php',array('courseid'=>$courseid));
     $PAGE->navbar->add(get_string('managereports','block_configurable_reports'), $managereporturl);
 
     $PAGE->navbar->add($report->name);

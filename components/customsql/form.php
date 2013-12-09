@@ -34,7 +34,7 @@ require_once($CFG->libdir.'/formslib.php');
 class customsql_form extends moodleform {
 
     function definition() {
-        global $DB, $CFG;
+        global $DB, $CFG, $COURSE;
 
         $mform =& $this->_form;
 
@@ -42,6 +42,8 @@ class customsql_form extends moodleform {
                 'rows="35" cols="80"');
         $mform->addRule('querysql', get_string('required'), 'required', null, 'client');
         $mform->setType('querysql', PARAM_RAW);
+
+        $mform->addElement('hidden','courseid',$COURSE->id);
 
         $this->add_action_buttons();
 

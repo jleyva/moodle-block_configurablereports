@@ -8,7 +8,7 @@ require_once($CFG->libdir.'/formslib.php');
 
 class report_edit_form extends moodleform {
     function definition() {
-        global $DB, $USER, $CFG;
+        global $DB, $USER, $CFG, $COURSE;
 
         $mform =& $this->_form;
 
@@ -18,6 +18,7 @@ class report_edit_form extends moodleform {
 		
 		
 		$mform->addElement('hidden', 'id', $this->_customdata->config->id);
+        $mform->addElement('hidden', 'courseid', $COURSE->id);
         // buttons
         $this->add_action_buttons(true, get_string('filter_apply', 'block_configurable_reports'));
 
