@@ -38,47 +38,47 @@ class puserfield_form extends moodleform {
         $mform->addElement('header', '', get_string('coursefield','block_configurable_reports'), '');
 
 		$columns = $DB->get_columns('user');
-		
+
 		$usercolumns = array();
 		foreach($columns as $c)
 			$usercolumns[$c->name] = $c->name;
-			
+
 		if($profile = $DB->get_records('user_info_field'))
 			foreach($profile as $p)
-				$usercolumns['profile_'.$p->shortname] = $p->name;	
-			
+				$usercolumns['profile_'.$p->shortname] = $p->name;
+
 		unset($usercolumns['password']);
 		unset($usercolumns['secret']);
-			
+
         $mform->addElement('select', 'field', get_string('column','block_configurable_reports'), $usercolumns);
-		
-		$mform->addElement('text','value',get_string('value','block_configurable_reports'));		
-		
+
+		$mform->addElement('text','value',get_string('value','block_configurable_reports'));
+		$mform->setType('value', PARAM_RAW);
 		$mform->addRule('value',get_string('required'),'required');
-		
+
         // buttons
         $this->add_action_buttons(true, get_string('add'));
 
     }
-	
+
 	function validation($data,$files){
 		global $DB, $db, $CFG;
-		
+
 		$errors = parent::validation($data, $files);
-		
-		$columns = $DB->get_columns('user');	
+
+		$columns = $DB->get_columns('user');
 		$usercolumns = array();
 		foreach($columns as $c)
 			$usercolumns[$c->name] = $c->name;
 
 		if($profile = $DB->get_records('user_info_field'))
 			foreach($profile as $p)
-				$usercolumns['profile_'.$p->shortname] = 'profile_'.$p->shortname;	
-			
+				$usercolumns['profile_'.$p->shortname] = 'profile_'.$p->shortname;
+
 		if(!in_array($data['field'],$usercolumns)){
 			$errors['field'] = get_string('error_field','block_configurable_reports');
 		}
-		
+
 		return $errors;
 	}
 
