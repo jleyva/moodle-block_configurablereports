@@ -67,11 +67,11 @@ class report_edit_form extends moodleform {
 		$mform->addElement('header', 'exportoptions', get_string('exportoptions', 'block_configurable_reports'));
 		$options = cr_get_export_plugins();
 
-		foreach($options as $key=>$val){
+		foreach ($options as $key=>$val) {
 			$mform->addElement('checkbox','export_'.$key,null,$val);
 		}
 
-		if(isset($this->_customdata['report']->id) && $this->_customdata['report']->id){
+		if(isset($this->_customdata['report']->id) && $this->_customdata['report']->id) {
                     $mform->addElement('hidden','id',$this->_customdata['report']->id);
                     $mform->setType('id', PARAM_RAW);
                 }
@@ -82,7 +82,7 @@ class report_edit_form extends moodleform {
 
     }
 
-	function validation($data, $files){
+	function validation($data, $files) {
 		$errors = parent::validation($data, $files);
 
 		return $errors;

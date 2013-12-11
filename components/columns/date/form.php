@@ -34,14 +34,14 @@ class date_form extends moodleform {
 
         $mform =& $this->_form;
 
-        $mform->addElement('header', '', get_string('date','block_configurable_reports'), '');
+        $mform->addElement('header', 'celementsheader', get_string('date','block_configurable_reports'), '');
 
 		$this->_customdata['compclass']->add_form_elements($mform,$this);
 
 		$mform->addElement('select', 'date', get_string('date','block_configurable_reports'), array('starttime'=>get_string('starttime','block_configurable_reports'),'endtime'=>get_string('endtime','block_configurable_reports')));
 
 		$formats = array(''=>get_string('default'), 'custom'=>get_string('custom','block_configurable_reports'));
-		foreach(array('%A, %d %B %Y', '%d %B %Y', '%d/%B/%Y', '%B %d %Y') as $f)
+		foreach (array('%A, %d %B %Y', '%d %B %Y', '%d/%B/%Y', '%B %d %Y') as $f)
 			$formats[$f] = $f;
 
 		$mform->addElement('select', 'dateformat', get_string('dateformat','block_configurable_reports'), $formats);

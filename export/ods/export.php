@@ -22,14 +22,14 @@
   * @date: 2009
   */
 
-function export_report($report){
+function export_report($report) {
 	global $DB, $CFG;
     require_once($CFG->dirroot.'/lib/odslib.class.php');
 
     $table = $report->table;
 	$matrix = array();
 	$filename = 'report_'.(time()).'.ods';
-	
+
     if (!empty($table->head)) {
         $countcols = count($table->head);
         $keys=array_keys($table->head);
@@ -53,14 +53,14 @@ function export_report($report){
     /// Sending HTTP headers
     $workbook->send($downloadfilename);
     /// Adding the worksheet
-    $myxls =& $workbook->add_worksheet($filename);     
-    
-    foreach($matrix as $ri=>$col){
-        foreach($col as $ci=>$cv){
+    $myxls =& $workbook->add_worksheet($filename);
+
+    foreach ($matrix as $ri=>$col) {
+        foreach ($col as $ci=>$cv) {
             $myxls->write_string($ri,$ci,$cv);
         }
     }
-    
+
     $workbook->close();
     exit;
 

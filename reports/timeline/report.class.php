@@ -23,45 +23,45 @@
   */
 
 class report_timeline extends report_base{
-	
-	function init(){
-		$this->components = array('timeline','columns','filters','template','permissions','calcs','plot');
-	}	
 
-	function get_all_elements(){
+	function init() {
+		$this->components = array('timeline','columns','filters','template','permissions','calcs','plot');
+	}
+
+	function get_all_elements() {
 		$elements = array();
-		
+
 		$components = cr_unserialize($this->config->components);
-		
+
 		$config = (isset($components['timeline']['config']))? $components['timeline']['config'] : new stdclass();
-				
-		if(isset($config->timemode)){
-			
+
+		if(isset($config->timemode)) {
+
 			$daysecs = 60 * 60 * 24;
-		
-			if($config->timemode == 'previous'){
-				$config->starttime = gmmktime() - $config->previousstart * $daysecs;				
+
+			if($config->timemode == 'previous') {
+				$config->starttime = gmmktime() - $config->previousstart * $daysecs;
 				$config->endtime = gmmktime() - $config->previousend * $daysecs;
-				if(isset($config->forcemidnight)){
+				if(isset($config->forcemidnight)) {
 					$config->starttime = usergetmidnight($config->starttime);
 					$config->endtime = usergetmidnight($config->endtime) + ($daysecs - 1);
-				}				
+				}
 			}
 
 			$filter_starttime = optional_param('filter_starttime',0,PARAM_RAW);
 			$filter_endtime = optional_param('filter_endtime',0,PARAM_RAW);
-	
-			if($filter_starttime and $filter_endtime){
+
+			if($filter_starttime and $filter_endtime) {
 				$filter_starttime = make_timestamp($filter_starttime['year'],$filter_starttime['month'],$filter_starttime['day']);
 				$filter_endtime = make_timestamp($filter_endtime['year'],$filter_endtime['month'],$filter_endtime['day']);
-				
+
 				$config->starttime = usergetmidnight($filter_starttime);
 				$config->endtime = usergetmidnight($filter_endtime) + 24*60*60;
-			
+
 			}
-					
-			
-			for($i=$config->starttime; $i<$config->endtime; $i += $config->interval * $daysecs){
+
+
+			for($i=$config->starttime; $i<$config->endtime; $i += $config->interval * $daysecs) {
 				$row = new stdclass();
 				$row->id = $i;
 				$row->starttime = $i;
@@ -71,28 +71,28 @@ class report_timeline extends report_base{
 				$this->timeline[$row->starttime] = $row;
 				$elements[] = $row->starttime;
 			}
-			
-			if($config->ordering == 'desc')				
-				rsort($elements);			
+
+			if($config->ordering == 'desc')
+				rsort($elements);
 		}
-				
+
 		return $elements;
 	}
-	
-	function get_rows($elements, $sqlorder = ''){
-		global $DB, $CFG;		
-				
-		if(!empty($elements)){
+
+	function get_rows($elements, $sqlorder = '') {
+		global $DB, $CFG;
+
+		if(!empty($elements)) {
 			$finaltimeline = array();
-			foreach($elements as $e){
+			foreach ($elements as $e) {
 				$finaltimeline[] = $this->timeline[$e];
-			}			
+			}
 			return $finaltimeline;
-		}	
+		}
 		else{
 			return array();
 		}
 	}
-	
+
 }
 

@@ -47,7 +47,7 @@ class import_form extends moodleform {
 
     }
 
-	function validation($data, $files){
+	function validation($data, $files) {
 		$errors = parent::validation($data, $files);
 
 		return $errors;

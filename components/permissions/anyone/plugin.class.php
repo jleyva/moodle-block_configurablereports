@@ -25,24 +25,24 @@
 require_once($CFG->dirroot.'/blocks/configurable_reports/plugin.class.php');
 
 class plugin_anyone extends plugin_base{
-	
-	function init(){
+
+	function init() {
 		$this->form = false;
 		$this->unique = true;
 		$this->fullname = get_string('anyone','block_configurable_reports');
 		$this->reporttypes = array('courses','sql','users','timeline','categories');
 	}
-	
-	function summary($data){
+
+	function summary($data) {
 		return get_string('anyone_summary','block_configurable_reports');
 	}
-	
-	function execute($userid, $context, $data){
+
+	function execute($userid, $context, $data) {
 		global $DB, $CFG;
-		
+
 		return true;
-		
+
 	}
-	
+
 }
 

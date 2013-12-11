@@ -34,19 +34,19 @@ class coursechild_form extends moodleform {
 
         $mform =& $this->_form;
 
-        $mform->addElement('header', '', get_string('coursechild','block_configurable_reports'), '');
+        $mform->addElement('header', 'celementsheader', get_string('coursechild','block_configurable_reports'), '');
 
 		$options = array();
 		$options[0] = get_string('choose');
-		
-		if($courses = $DB->get_records_sql('SELECT c.id, fullname FROM {course} c, {course_meta} cm WHERE c.id = cm.child_course GROUP BY (child_course)')){
-			foreach($courses as $c){
+
+		if($courses = $DB->get_records_sql('SELECT c.id, fullname FROM {course} c, {course_meta} cm WHERE c.id = cm.child_course GROUP BY (child_course)')) {
+			foreach ($courses as $c) {
 				$options[$c->id] = format_string($c->fullname);
 			}
 		}
-		
+
 		$mform->addElement('select', 'courseid', get_string('course'), $options);
-				
+
         // buttons
         $this->add_action_buttons(true, get_string('add'));
 

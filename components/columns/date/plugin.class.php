@@ -20,41 +20,41 @@
   * @package blocks
   * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
   * @date: 2009
-  */ 
+  */
 
 require_once($CFG->dirroot.'/blocks/configurable_reports/plugin.class.php');
 
 class plugin_date extends plugin_base{
 
-	function init(){
+	function init() {
 		$this->fullname = get_string('date','block_configurable_reports');
 		$this->type = 'undefined';
 		$this->form = true;
 		$this->reporttypes = array('timeline');
 	}
-	
-	function summary($data){		
+
+	function summary($data) {
 		return format_string($data->columname);
 	}
-	
-	function colformat($data){
+
+	function colformat($data) {
 		$align = (isset($data->align))? $data->align : '';
 		$size = (isset($data->size))? $data->size : '';
 		$wrap = (isset($data->wrap))? $data->wrap : '';
 		return array($align,$size,$wrap);
-	}	
-	
+	}
+
 	// data -> Plugin configuration data
 	// row -> Complet course row c->id, c->fullname, etc...
-	function execute($data,$row,$user,$courseid,$starttime=0,$endtime=0){
+	function execute($data,$row,$user,$courseid,$starttime=0,$endtime=0) {
 		$date = ($data->date == 'starttime')? $row->starttime: $row->endtime;
-		
+
 		$format = (isset($data->dateformat))? $data->dateformat: '';
 		$format = ($data->dateformat == 'custom')? $data->customdateformat : $format;
 		$format = preg_replace('/[^a-zA-Z%]/i','', $format);
-		
+
 		return userdate($date,$format);
 	}
-	
+
 }
 

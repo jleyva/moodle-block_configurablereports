@@ -20,36 +20,36 @@
   * @package blocks
   * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
   * @date: 2009
-  */ 
+  */
 
 class plugin_roleusersn extends plugin_base{
 
 
-	function init(){
+	function init() {
 		$this->fullname = get_string('roleusersn','block_configurable_reports');
 		$this->type = 'numeric';
 		$this->form = true;
 		$this->reporttypes = array('courses');
 	}
-	
-	function summary($data){
+
+	function summary($data) {
 		return format_string($data->columname);
 	}
-	
-	function colformat($data){
+
+	function colformat($data) {
 		$align = (isset($data->align))? $data->align : '';
 		$size = (isset($data->size))? $data->size : '';
 		$wrap = (isset($data->wrap))? $data->wrap : '';
 		return array($align,$size,$wrap);
-	}	
-	
+	}
+
 	// data -> Plugin configuration data
 	// row -> Full course row c->id, c->fullname, etc...
-	function execute($data,$row,$user,$courseid,$starttime=0,$endtime=0){
+	function execute($data,$row,$user,$courseid,$starttime=0,$endtime=0) {
 		$courseid = $row->id;
-		$context = get_context_instance(CONTEXT_COURSE,$courseid);
+		$context = cr_get_context(CONTEXT_COURSE,$courseid);
 		return count_role_users($data->roles,$context);
-	}	
-	
+	}
+
 }
 

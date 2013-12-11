@@ -25,63 +25,63 @@
 require_once($CFG->dirroot.'/blocks/configurable_reports/plugin.class.php');
 
 class plugin_pie extends plugin_base{
-	
-	function init(){
-		$this->fullname = get_string('pie','block_configurable_reports');		
+
+	function init() {
+		$this->fullname = get_string('pie','block_configurable_reports');
 		$this->form = true;
 		$this->ordering = true;
-		$this->reporttypes = array('courses','sql','users','timeline', 'categories');		
+		$this->reporttypes = array('courses','sql','users','timeline', 'categories');
 	}
-	
-	function summary($data){
+
+	function summary($data) {
 		return get_string('piesummary','block_configurable_reports');
 	}
-	
+
 	// data -> Plugin configuration data
-	function execute($id, $data, $finalreport){
+	function execute($id, $data, $finalreport) {
 		global $DB, $CFG;
 
 		$series = array();
-		if($finalreport){
-			foreach($finalreport as $r){
-				if($data->areaname == $data->areavalue){
+		if($finalreport) {
+			foreach ($finalreport as $r) {
+				if($data->areaname == $data->areavalue) {
 					$hash = md5(strtolower($r[$data->areaname]));
-					if(isset($series[0][$hash])){
+					if(isset($series[0][$hash])) {
 						$series[1][$hash] += 1;
 					}
 					else{
 						$series[0][$hash] = str_replace(',','',$r[$data->areaname]);
 						$series[1][$hash] = 1;
 					}
-				
-				}else if(!isset($data->group) || ! $data->group){
+
+				}else if(!isset($data->group) || ! $data->group) {
 					$series[0][] = str_replace(',','',$r[$data->areaname]);
 					$series[1][] = (isset($r[$data->areavalue]) && is_numeric($r[$data->areavalue]))? $r[$data->areavalue] : 0;
 				}else{
 					$hash = md5(strtolower($r[$data->areaname]));
-					if(isset($series[0][$hash])){
+					if(isset($series[0][$hash])) {
 						$series[1][$hash] += (isset($r[$data->areavalue]) && is_numeric($r[$data->areavalue]))? $r[$data->areavalue] : 0;
 					}
 					else{
 						$series[0][$hash] = str_replace(',','',$r[$data->areaname]);
 						$series[1][$hash] = (isset($r[$data->areavalue]) && is_numeric($r[$data->areavalue]))? $r[$data->areavalue] : 0;
-					}					
+					}
 				}
 			}
 		}
-		
+
 		$serie0 = base64_encode(implode(',',$series[0]));
 		$serie1 = base64_encode(implode(',',$series[1]));
-		
+
 		return $CFG->wwwroot.'/blocks/configurable_reports/components/plot/pie/graph.php?reportid='.$this->report->id.'&id='.$id.'&serie0='.$serie0.'&serie1='.$serie1;
 	}
-	
-	function get_series($data){
+
+	function get_series($data) {
 		$serie0 = required_param('serie0',PARAM_RAW);
 		$serie1 = required_param('serie1',PARAM_BASE64);
-						
+
 		return array(explode(',',base64_decode($serie0)),explode(',',base64_decode($serie1)));
 	}
-	
+
 }
 

@@ -29,21 +29,21 @@
 // - => ^ => array_diff
 
  class EvalWise extends EvalMath {
-		
+
 	var $data = array();
 	var $index = 0;
-	
-	function set_data($data){
+
+	function set_data($data) {
 		$this->data = $data;
 		$this->index = count($this->data);
 	}
-	
+
     function pfx($tokens, $vars = array()) {
-        
+
         if ($tokens == false) return false;
-    
+
         $stack = new EvalMathStack;
-        
+
         foreach ($tokens as $token) { // nice and easy
 
             // if the token is a function, pop arguments off the stack, hand them to the function, and push the result back on
@@ -78,26 +78,26 @@
             } elseif (in_array($token, array('+', '-', '*', '/', '^'), true)) {
                 if (is_null($op2 = $stack->pop())) return $this->trigger("internal error");
                 if (is_null($op1 = $stack->pop())) return $this->trigger("internal error");
-                
+
 				switch ($token) {
-					
-                    case '+':        
+
+                    case '+':
 						$this->index += 1;
-						$stack->push($this->index); 
+						$stack->push($this->index);
 						$this->data[$this->index] = array_merge($this->data[$op1],$this->data[$op2]);
 						break;
                     case '-':
                         $this->index += 1;
-						$stack->push($this->index); 
+						$stack->push($this->index);
 						$this->data[$this->index] = array_diff($this->data[$op1],$this->data[$op2]);
 						break;
                     case '*':
                         $this->index += 1;
-						$stack->push($this->index); 
+						$stack->push($this->index);
 						$this->data[$this->index] = array_intersect($this->data[$op1],$this->data[$op2]);
-						break;                    
+						break;
                 }
-				
+
             // if the token is a unary operator, pop one value off the stack, do the operation, and push it back on
             } elseif ($token == "_") {
                 $stack->push(-1*$stack->pop());
@@ -122,6 +122,6 @@
 		else
 			return false;
     }
-		
+
  }
 

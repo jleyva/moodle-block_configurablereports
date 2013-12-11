@@ -36,16 +36,16 @@ class cuserfield_form extends moodleform {
 
         $mform =& $this->_form;
 
-        $mform->addElement('header', '', get_string('coursefield','block_configurable_reports'), '');
+        $mform->addElement('header', 'celementsheader', get_string('coursefield','block_configurable_reports'), '');
 
 		$columns = $DB->get_columns('user');
 
 		$usercolumns = array();
-		foreach($columns as $c)
+		foreach ($columns as $c)
 			$usercolumns[$c->name] = $c->name;
 
 		if($profile = $DB->get_records('user_info_field'))
-			foreach($profile as $p)
+			foreach ($profile as $p)
 				$usercolumns['profile_'.$p->shortname] = $p->name;
 
         $mform->addElement('select', 'field', get_string('column','block_configurable_reports'), $usercolumns);
@@ -58,28 +58,28 @@ class cuserfield_form extends moodleform {
 
     }
 
-	function validation($data,$files){
+	function validation($data,$files) {
 		global $DB, $db, $CFG;
 
 		$errors = parent::validation($data, $files);
 
-		if(!in_array($data['operator'],$this->allowedops)){
+		if(!in_array($data['operator'],$this->allowedops)) {
 			$errors['operator'] = get_string('error_operator','block_configurable_reports');
 		}
 
 		$columns = $DB->get_columns('user');
 		$usercolumns = array();
-		foreach($columns as $c)
+		foreach ($columns as $c)
 			$usercolumns[$c->name] = $c->name;
 		if($profile = $DB->get_records('user_info_field'))
-			foreach($profile as $p)
+			foreach ($profile as $p)
 				$usercolumns['profile_'.$p->shortname] = 'profile_'.$p->shortname;
 
-		if(!in_array($data['field'],$usercolumns)){
+		if(!in_array($data['field'],$usercolumns)) {
 			$errors['field'] = get_string('error_field','block_configurable_reports');
 		}
 
-		if(!is_numeric($data['value']) && preg_match('/^(<|>)[^(<|>)]/i',$data['operator'])){
+		if(!is_numeric($data['value']) && preg_match('/^(<|>)[^(<|>)]/i',$data['operator'])) {
 			$errors['value'] = get_string('error_value_expected_integer','block_configurable_reports');
 		}
 

@@ -21,9 +21,9 @@
   * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
   * @date: 2009
   */
- 
+
  class component_base {
-	
+
 	var $plugins = false;
 	var $ordering = false;
 	var $form = false;
@@ -31,17 +31,17 @@
 
 	function __construct($report) {
 		global $DB, $CFG;
-		
+
 		if(is_numeric($report))
 			$this->config = $DB->get_record('block_configurable_reports',array('id' => $report));
 		else
 			$this->config = $report;
 		$this->init();
 	}
-	
-	function add_form_elements(&$mform,$fullform){
+
+	function add_form_elements($mform,$fullform) {
 		return false;
 	}
-	
+
  }
 

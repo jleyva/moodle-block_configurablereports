@@ -25,14 +25,14 @@
 	require_once("../../../../../config.php");
 	require_once($CFG->dirroot."/blocks/configurable_reports/locallib.php");
 
-	require_login(); 
-	
+	require_login();
+
 	error_reporting(0);
 	ini_set('display_erros',false);
-	 
+
 	$id = required_param('id', PARAM_ALPHANUM);
 	$reportid = required_param('reportid', PARAM_INT);
-	 
+
 	if(! $report = $DB->get_record('block_configurable_reports',array('id' => $reportid)))
 		print_error('reportdoesnotexists');
 
@@ -50,45 +50,45 @@
 
 
 	if ($course->id == SITEID)
-		$context = get_context_instance(CONTEXT_SYSTEM);
+		$context = cr_get_context(CONTEXT_SYSTEM);
 	else
-		$context = get_context_instance(CONTEXT_COURSE, $course->id);
-		
+		$context = cr_get_context(CONTEXT_COURSE, $course->id);
+
 	require_once($CFG->dirroot.'/blocks/configurable_reports/report.class.php');
 	require_once($CFG->dirroot.'/blocks/configurable_reports/reports/'.$report->type.'/report.class.php');
 
-	$reportclassname = 'report_'.$report->type;	
+	$reportclassname = 'report_'.$report->type;
 	$reportclass = new $reportclassname($report);
 
-	if (!$reportclass->check_permissions($USER->id, $context)){
+	if (!$reportclass->check_permissions($USER->id, $context)) {
 		print_error("No permissions");
-	} 
+	}
 	else{
-	
+
 		$components = cr_unserialize($report->components);
 		$graphs = $components['plot']['elements'];
-		
-		if(!empty($graphs)){
+
+		if(!empty($graphs)) {
 			$series = array();
-			foreach($graphs as $g){
+			foreach ($graphs as $g) {
 				require_once($CFG->dirroot.'/blocks/configurable_reports/components/plot/'.$g['pluginname'].'/plugin.class.php');
-				if($g['id'] == $id){
+				if($g['id'] == $id) {
 					$classname = 'plugin_'.$g['pluginname'];
 					$class = new $classname($report);
 					$series = $class->get_series($g['formdata']);
 					break;
 				}
 			}
-			
-			if($g['id'] == $id){
-			
-				// Standard inclusions   
+
+			if($g['id'] == $id) {
+
+				// Standard inclusions
 				include($CFG->dirroot."/blocks/configurable_reports/lib/pChart/pData.class");
 				include($CFG->dirroot."/blocks/configurable_reports/lib/pChart/pChart.class");
 
-				// Dataset definition 
+				// Dataset definition
 				$DataSet = new pData;
-				
+
 				$DataSet->AddPoint($series[1],"Serie1");
 				$DataSet->AddPoint($series[0],"Serie2");
 				$DataSet->AddAllSeries();
@@ -103,7 +103,7 @@
 				$Test->setFontProperties($CFG->dirroot."/blocks/configurable_reports/lib/Fonts/tahoma.ttf",8);
 				//$Test->drawFlatPieGraph($DataSet->GetData(),$DataSet->GetDataDescription(),120,100,60,TRUE,10);
 				//$Test->drawBasicPieGraph($DataSet->GetData(),$DataSet->GetDataDescription(),120,100,70,PIE_PERCENTAGE,255,255,218);
-				$Test->drawPieGraph($DataSet->GetData(),$DataSet->GetDataDescription(),150,90,110,PIE_PERCENTAGE,TRUE,50,20,5);  
+				$Test->drawPieGraph($DataSet->GetData(),$DataSet->GetDataDescription(),150,90,110,PIE_PERCENTAGE,TRUE,50,20,5);
 				$Test->drawPieLegend(300,15,$DataSet->GetData(),$DataSet->GetDataDescription(),250,250,250);
 
 				$Test->Stroke();

@@ -20,50 +20,50 @@
   * @package blocks
   * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
   * @date: 2009
-  */ 
+  */
 
 require_once($CFG->dirroot.'/blocks/configurable_reports/plugin.class.php');
 
 class plugin_categoryfield extends plugin_base{
 
-	function init(){
+	function init() {
 		$this->fullname = get_string('categoryfield','block_configurable_reports');
 		$this->type = 'undefined';
 		$this->form = true;
 		$this->reporttypes = array('categories');
 	}
-	
-	function summary($data){		
+
+	function summary($data) {
 		return format_string($data->columname);
 	}
-	
-	function colformat($data){
+
+	function colformat($data) {
 		$align = (isset($data->align))? $data->align : '';
 		$size = (isset($data->size))? $data->size : '';
 		$wrap = (isset($data->wrap))? $data->wrap : '';
 		return array($align,$size,$wrap);
-	}	
-	
+	}
+
 	// data -> Plugin configuration data
 	// row -> Complet course row c->id, c->fullname, etc...
-	function execute($data,$row,$user,$courseid,$starttime=0,$endtime=0){
+	function execute($data,$row,$user,$courseid,$starttime=0,$endtime=0) {
 		global $DB;
-		
-		if(isset($row->{$data->column})){
-			switch($data->column){
+
+		if(isset($row->{$data->column})) {
+			switch($data->column) {
 				case 'timemodified': 	$row->{$data->column} = ($row->{$data->column})? userdate($row->{$data->column}): '--';
 									break;
 				case 'visible':
 									$row->{$data->column} = ($row->{$data->column})? get_string('yes') : get_string('no');
 									break;
-									
+
 				case 'parent':
 									$row->{$data->column} = $DB->get_field('course_categories','name',array('id' => $row->{$data->column}));
-									break;					
+									break;
 			}
 		}
 		return (isset($row->{$data->column}))? $row->{$data->column} : '';
 	}
-	
+
 }
 

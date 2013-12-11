@@ -20,7 +20,7 @@
   * @package blocks
   * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
   * @date: 2009
-  */ 
+  */
 
 if (!defined('MOODLE_INTERNAL')) {
     die('Direct access to this script is forbidden.');    ///  It must be included from a Moodle page
@@ -34,26 +34,26 @@ class fsearchuserfield_form extends moodleform {
 
         $mform =& $this->_form;
 
-        $mform->addElement('header', '', get_string('fsearchuserfield','block_configurable_reports'), '');
+        $mform->addElement('header', 'celementsheader', get_string('fsearchuserfield','block_configurable_reports'), '');
 
-		$this->_customdata['compclass']->add_form_elements($mform,$this); 
-		
+		$this->_customdata['compclass']->add_form_elements($mform,$this);
+
 		$columns = $DB->get_columns('user');
-		
+
 		$usercolumns = array();
-		foreach($columns as $c)
+		foreach ($columns as $c)
 			$usercolumns[$c->name] = $c->name;
-			
+
 		if($profile = $DB->get_records('user_info_field'))
-			foreach($profile as $p)
-				$usercolumns['profile_'.$p->shortname] = $p->name;	
-			
+			foreach ($profile as $p)
+				$usercolumns['profile_'.$p->shortname] = $p->name;
+
 		unset($usercolumns['password']);
 		unset($usercolumns['sesskey']);
-			
+
         $mform->addElement('select', 'field', get_string('field','block_configurable_reports'), $usercolumns);
-		
-       
+
+
         // buttons
         $this->add_action_buttons(true, get_string('add'));
 

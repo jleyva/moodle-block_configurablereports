@@ -20,37 +20,37 @@
   * @package blocks
   * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
   * @date: 2009
-  */ 
+  */
 
 require_once($CFG->dirroot.'/blocks/configurable_reports/plugin.class.php');
 
 class plugin_coursecategory extends plugin_base{
-	
-	function init(){
+
+	function init() {
 		$this->fullname = get_string('coursecategory','block_configurable_reports');
 		$this->type = 'text';
 		$this->form = true;
 		$this->reporttypes = array('courses');
 	}
-	
-	function summary($data){
+
+	function summary($data) {
 		global $DB;
-		
+
 		$cat = $DB->get_record('course_categories',array('id' => $data->categoryid));
 		if($cat)
 			return get_string('category').' '.$cat->name;
 		else
 			return get_string('category').' '.get_string('top');
 	}
-	
+
 	// data -> Plugin configuration data
-	function execute($data,$user,$courseid){
+	function execute($data,$user,$courseid) {
 		global $DB;
 		$courses = $DB->get_records('course',array('category' => $data->categoryid));
 		if($courses)
 			return array_keys($courses);
 		return array();
 	}
-	
+
 }
 

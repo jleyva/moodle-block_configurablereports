@@ -24,7 +24,7 @@
 
 class plugin_base{
 
-	
+
 	var $fullname = '';
 	var $type = '';
 	var $report = null;
@@ -32,18 +32,18 @@ class plugin_base{
 	var $cache = array();
 	var $unique = false;
 	var $reporttypes = array();
-	
-	function __construct($report){
+
+	function __construct($report) {
 		global $DB, $CFG;
-		
+
 		if(is_numeric($report))
 			$this->report = $DB->get_record('block_configurable_reports',array('id' => $report));
 		else
 			$this->report = $report;
 		$this->init();
 	}
-	
-	function summary($data){
+
+	function summary($data) {
 		return '';
 	}
 }

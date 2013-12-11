@@ -23,17 +23,17 @@
   */
 
 class component_customsql extends component_base{
-	
-	function init(){
+
+	function init() {
 		$this->plugins = false;
 		$this->ordering = false;
 		$this->form = true;
 		$this->help = true;
 	}
-	
-	function form_process_data(&$cform){
+
+	function form_process_data($cform) {
 		global $DB;
-		if($this->form){
+		if($this->form) {
 			$data = $cform->get_data();
 			// cr_serialize() will add slashes
 			$components = cr_unserialize($this->config->components);
@@ -42,13 +42,13 @@ class component_customsql extends component_base{
 			$DB->update_record('block_configurable_reports',$this->config);
 		}
 	}
-	
-	function form_set_data(&$cform){
-		if($this->form){
+
+	function form_set_data($cform) {
+		if($this->form) {
 			$fdata = new stdclass;
 			$components = cr_unserialize($this->config->components);
 			//print_r($components);exit;
-			$sqlconfig = (isset($components['customsql']['config']))? $components['customsql']['config'] : new stdclass;		
+			$sqlconfig = (isset($components['customsql']['config']))? $components['customsql']['config'] : new stdclass;
 			$cform->set_data($sqlconfig);
 		}
 	}

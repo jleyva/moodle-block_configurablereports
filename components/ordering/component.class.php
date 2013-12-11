@@ -23,8 +23,8 @@
   */
 
 class component_ordering extends component_base{
-	
-	function init(){
+
+	function init() {
 		$this->plugins = true;
 		$this->ordering = false;
 		$this->form = false;

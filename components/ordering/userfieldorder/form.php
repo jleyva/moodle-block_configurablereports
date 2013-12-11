@@ -21,7 +21,7 @@
   * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
   * @date: 2009
   */
-  
+
 if (!defined('MOODLE_INTERNAL')) {
     die('Direct access to this script is forbidden.');    ///  It must be included from a Moodle page
 }
@@ -33,18 +33,18 @@ class userfieldorder_form extends moodleform {
         global $DB, $USER, $CFG;
 
         $mform =& $this->_form;
-				
+
 		$columns = $DB->get_columns('user');
-		
+
 		$coursecolumns = array();
-		foreach($columns as $c)
+		foreach ($columns as $c)
 			$coursecolumns[$c->name] = $c->name;
-			
+
         $mform->addElement('select', 'column', get_string('column', 'block_configurable_reports'), $coursecolumns);
-		
+
 		$directions = array('asc'=>'ASC', 'desc'=>'DESC');
 		$mform->addElement('select', 'direction', get_string('direction','block_configurable_reports'), $directions);
-				
+
         // buttons
         $this->add_action_buttons(true, get_string('add'));
 

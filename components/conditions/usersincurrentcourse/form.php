@@ -20,7 +20,7 @@
   * @package blocks
   * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
   * @date: 2009
-  */ 
+  */
 
 if (!defined('MOODLE_INTERNAL')) {
     die('Direct access to this script is forbidden.');    ///  It must be included from a Moodle page
@@ -35,19 +35,21 @@ class usersincurrentcourse_form extends moodleform {
 
         $mform =& $this->_form;
 
-        $mform->addElement('header', '', get_string('coursefield','block_configurable_reports'), '');
+        $mform->addElement('header', 'celementsheader', get_string('coursefield','block_configurable_reports'), '');
 
-		$roles = $DB->get_records('role');
-		$userroles = array();
-		foreach($roles as $r)
-			$userroles[$r->id] = $r->name;
-			
+    		$roles = $DB->get_records('role');
+
+    		$userroles = array();
+    		foreach ($roles as $r) {
+    			$userroles[$r->id] = $r->shortname;
+        }
+
         $mform->addElement('select', 'roles', get_string('roles'), $userroles,array('multiple'=>'multiple'));
-		
+
         // buttons
         $this->add_action_buttons(true, get_string('add'));
 
-    }	
+    }
 
 }
 

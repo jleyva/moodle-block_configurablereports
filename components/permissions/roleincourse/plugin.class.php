@@ -25,35 +25,35 @@
 require_once($CFG->dirroot.'/blocks/configurable_reports/plugin.class.php');
 
 class plugin_roleincourse extends plugin_base{
-	
-	function init(){
+
+	function init() {
 		$this->form = true;
 		$this->unique = false;
 		$this->fullname = get_string('roleincourse','block_configurable_reports');
 		$this->reporttypes = array('courses','sql','users','timeline','categories');
 	}
-	
-	function summary($data){
+
+	function summary($data) {
 		global $DB;
-		
+
 		$rolename = $DB->get_field('role','name',array('id' => $data->roleid));
 		$coursename = $DB->get_field('course','fullname',array('id' => $this->report->courseid));
 		return $rolename.' '.$coursename;
 	}
-	
-	function execute($userid, $context, $data){
+
+	function execute($userid, $context, $data) {
 		global $DB, $CFG;
-		
-		$context = ($this->report->courseid == SITEID)? get_context_instance(CONTEXT_SYSTEM): get_context_instance(CONTEXT_COURSE,$this->report->courseid);
+
+		$context = ($this->report->courseid == SITEID)? cr_get_context(CONTEXT_SYSTEM): cr_get_context(CONTEXT_COURSE,$this->report->courseid);
 		$roles = get_user_roles($context,$userid);
-		if(!empty($roles)){
-			foreach($roles as $rol){
+		if(!empty($roles)) {
+			foreach ($roles as $rol) {
 				if($rol->roleid == $data->roleid)
 					return true;
 			}
 		}
 		return false;
 	}
-	
+
 }
 

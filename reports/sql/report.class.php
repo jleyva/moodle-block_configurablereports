@@ -25,14 +25,14 @@
 define('REPORT_CUSTOMSQL_MAX_RECORDS', 5000);
 
 class report_sql extends report_base{
-	
-	function init(){
+
+	function init() {
 		$this->components = array('customsql','filters', 'template','permissions','calcs','plot');
-	}	
+	}
 
 	function prepare_sql($sql) {
 		global $DB, $USER, $CFG;
-		
+
 		$sql = str_replace('%%USERID%%', $USER->id, $sql);
         $sql = str_replace('%%COURSEID%%', $this->currentcourseid, $sql);
 
@@ -45,7 +45,7 @@ class report_sql extends report_base{
 
 		return $sql;
 	}
-	
+
 	function execute_query($sql, $limitnum = REPORT_CUSTOMSQL_MAX_RECORDS) {
 		global $DB, $CFG;
 
@@ -53,73 +53,73 @@ class report_sql extends report_base{
 
 		return  $DB->get_recordset_sql($sql, null, 0, $limitnum);
 	}
-	
-	function create_report(){
+
+	function create_report() {
 		global $DB, $CFG;
-		
+
 		$components = cr_unserialize($this->config->components);
-		
+
 		$filters = (isset($components['filters']['elements']))? $components['filters']['elements'] : array();
 		$calcs = (isset($components['calcs']['elements']))? $components['calcs']['elements'] : array();
-		
+
 		$tablehead = array();
 		$finalcalcs = array();
 		$finaltable = array();
 		$tablehead = array();
-		
+
 		$components = cr_unserialize($this->config->components);
-		$config = (isset($components['customsql']['config']))? $components['customsql']['config'] : new stdclass;	
-		
-		if(isset($config->querysql)){
+		$config = (isset($components['customsql']['config']))? $components['customsql']['config'] : new stdclass;
+
+		if(isset($config->querysql)) {
 			// FILTERS
 			$sql = $config->querysql;
-			if(!empty($filters)){
-				foreach($filters as $f){
+			if(!empty($filters)) {
+				foreach ($filters as $f) {
 					require_once($CFG->dirroot.'/blocks/configurable_reports/components/filters/'.$f['pluginname'].'/plugin.class.php');
 					$classname = 'plugin_'.$f['pluginname'];
 					$class = new $classname($this->config);
 					$sql = $class->execute($sql, $f['formdata']);
 				}
 			}
-			
+
 			$sql = $this->prepare_sql($sql);
 			if($rs = $this->execute_query($sql))
 		        foreach ($rs as $row) {
-					if(empty($finaltable)){
-						foreach($row as $colname=>$value){
+					if(empty($finaltable)) {
+						foreach ($row as $colname=>$value) {
 							$tablehead[] = str_replace('_', ' ', $colname);
 						}
 					}
                     $array_row = array_values((array) $row);
-                    foreach($array_row as $ii => $cell) {
+                    foreach ($array_row as $ii => $cell) {
                         $array_row[$ii] = str_replace('[[QUESTIONMARK]]', '?', $cell);
                     }
 
 					$finaltable[] = $array_row;
 				}
 		}
-		
+
 		// Calcs
-		
+
 		$finalcalcs = $this->get_calcs($finaltable,$tablehead);
-		
+
 		$table = new stdclass;
 		$table->id = 'reporttable';
 		$table->data = $finaltable;
-		$table->head = $tablehead;		
-	
+		$table->head = $tablehead;
+
 		$calcs = new stdclass;
 		$calcs->data = array($finalcalcs);
 		$calcs->head = $tablehead;
-		
+
         if(!$this->finalreport) {
             $this->finalreport = new StdClass;
         }
 		$this->finalreport->table = $table;
 		$this->finalreport->calcs = $calcs;
-		
-		return true;	
+
+		return true;
 	}
-	
+
 }
 

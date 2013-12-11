@@ -20,28 +20,28 @@
   * @package blocks
   * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
   * @date: 2009
-  */ 
+  */
 
 require_once($CFG->dirroot.'/blocks/configurable_reports/plugin.class.php');
 
 class plugin_currentuser extends plugin_base{
-	
-	function init(){
+
+	function init() {
 		$this->fullname = get_string('currentuser','block_configurable_reports');
 		$this->reporttypes = array('users');
 		$this->form = false;
 	}
-		
-	function summary($data){
+
+	function summary($data) {
 		return get_string('currentuser_summary','block_configurable_reports');
-		
+
 	}
-	
+
 	// data -> Plugin configuration data
-	function execute($data,$user,$courseid){
+	function execute($data,$user,$courseid) {
 		global $DB;
 		return array($user->id);
 	}
-	
+
 }
 

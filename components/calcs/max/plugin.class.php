@@ -21,29 +21,29 @@
   * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
   * @date: 2009
   */
-  
+
 require_once($CFG->dirroot.'/blocks/configurable_reports/plugin.class.php');
 
 class plugin_max extends plugin_base{
-	
-	function init(){
+
+	function init() {
 		$this->form = true;
 		$this->unique = false;
 		$this->fullname = get_string('max','block_configurable_reports');
 		$this->reporttypes = array('courses','users','sql','timeline','categories');
 	}
-	
-	function summary($data){
+
+	function summary($data) {
 		global $DB, $CFG;
-		
-		if($this->report->type != 'sql'){
-			$components = cr_unserialize($this->report->components);		
+
+		if($this->report->type != 'sql') {
+			$components = cr_unserialize($this->report->components);
 			if(!is_array($components) || empty($components['columns']['elements']))
 				print_error('nocolumns');
-					
+
 			$columns = $components['columns']['elements'];
 			$i = 0;
-			foreach($columns as $c){
+			foreach ($columns as $c) {
 				if($i == $data->column)
 					return $c['summary'];
 				$i++;
@@ -53,21 +53,21 @@ class plugin_max extends plugin_base{
 
 			require_once($CFG->dirroot.'/blocks/configurable_reports/report.class.php');
 			require_once($CFG->dirroot.'/blocks/configurable_reports/reports/'.$this->report->type.'/report.class.php');
-			
-			$reportclassname = 'report_'.$this->report->type;	
+
+			$reportclassname = 'report_'.$this->report->type;
 			$reportclass = new $reportclassname($this->report);
-			
+
 			$components = cr_unserialize($this->report->components);
-			$config = (isset($components['customsql']['config']))? $components['customsql']['config'] : new stdclass;	
-			
-			if(isset($config->querysql)){
-				
+			$config = (isset($components['customsql']['config']))? $components['customsql']['config'] : new stdclass;
+
+			if(isset($config->querysql)) {
+
 				$sql =$config->querysql;
 				$sql = $reportclass->prepare_sql($sql);
-				if($rs = $reportclass->execute_query($sql)){
-					foreach($rs as $row){
+				if($rs = $reportclass->execute_query($sql)) {
+					foreach ($rs as $row) {
 						$i = 0;
-						foreach($row as $colname=>$value){
+						foreach ($row as $colname=>$value) {
 							if($i == $data->column)
 								return str_replace('_', ' ', $colname);
 							$i++;
@@ -76,23 +76,23 @@ class plugin_max extends plugin_base{
 					}
 					$rs->close();
 				}
-			}				
+			}
 		}
-		
+
 		return '';
 	}
-	
-	function execute($rows){
-		
+
+	function execute($rows) {
+
 		$result = 0;
-		
-		foreach($rows as $r){
+
+		foreach ($rows as $r) {
 			if(is_numeric($r) && $result < $r)
 				$result = $r;
 		}
-		
+
 		return $result;
 	}
-	
+
 }
 

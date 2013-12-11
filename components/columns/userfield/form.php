@@ -20,7 +20,7 @@
   * @package blocks
   * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
   * @date: 2009
-  */ 
+  */
 
 if (!defined('MOODLE_INTERNAL')) {
     die('Direct access to this script is forbidden.');    ///  It must be included from a Moodle page
@@ -34,37 +34,37 @@ class userfield_form extends moodleform {
 
         $mform =& $this->_form;
 
-        $mform->addElement('header', '', get_string('userfield','block_configurable_reports'), '');
+        $mform->addElement('header', 'userfieldheader', get_string('userfield','block_configurable_reports'));
 
 		$columns = $DB->get_columns('user');
-		
+
 		$usercolumns = array();
-		foreach($columns as $c)
+		foreach ($columns as $c)
 			$usercolumns[$c->name] = $c->name;
-		
+
 		if($profile = $DB->get_records('user_info_field'))
-			foreach($profile as $p)
+			foreach ($profile as $p)
 				$usercolumns['profile_'.$p->shortname] = $p->name;
-		
+
 		unset($usercolumns['password']);
 		unset($usercolumns['sesskey']);
-			
+
         $mform->addElement('select', 'column', get_string('column','block_configurable_reports'), $usercolumns);
-		
-		$this->_customdata['compclass']->add_form_elements($mform,$this); 	
-       
+
+		$this->_customdata['compclass']->add_form_elements($mform,$this);
+
         // buttons
         $this->add_action_buttons(true, get_string('add'));
 
     }
 
-	function validation($data, $files){
+	function validation($data, $files) {
 		$errors = parent::validation($data, $files);
-		
+
 		$errors = $this->_customdata['compclass']->validate_form_elements($data,$errors);
-		
+
 		return $errors;
 	}
-	
+
 }
 

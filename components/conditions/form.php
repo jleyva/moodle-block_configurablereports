@@ -44,7 +44,7 @@ class conditions_form extends moodleform {
 
     }
 
-	function validation($data, $files){
+	function validation($data, $files) {
 		$errors = parent::validation($data, $files);
 		// TODO - this reg expr can be improved
 		if(!preg_match("/(\(*\s*\bc\d{1,2}\b\s*\(*\)*\s*(\(|and|or|not)\s*)+\(*\s*\bc\d{1,2}\b\s*\(*\)*\s*$/i",$data['conditionexpr']))
@@ -53,13 +53,13 @@ class conditions_form extends moodleform {
 		if(substr_count($data['conditionexpr'],'(') != substr_count($data['conditionexpr'],')'))
 			$errors['conditionexpr'] = get_string('badconditionexpr','block_configurable_reports');
 
-		if(isset($this->_customdata['elements']) && is_array($this->_customdata['elements'])){
+		if(isset($this->_customdata['elements']) && is_array($this->_customdata['elements'])) {
 			$elements = $this->_customdata['elements'];
 			$nel = count($elements);
-			if(!empty($elements) && $nel > 1){
+			if(!empty($elements) && $nel > 1) {
 				preg_match_all('/(\d+)/',$data['conditionexpr'],$matches,PREG_PATTERN_ORDER);
-				foreach($matches[0] as $num){
-					if($num > $nel){
+				foreach ($matches[0] as $num) {
+					if($num > $nel) {
 						$errors['conditionexpr'] = get_string('badconditionexpr','block_configurable_reports');
 						break;
 					}

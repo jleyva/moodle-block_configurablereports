@@ -20,43 +20,43 @@
   * @package blocks
   * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
   * @date: 2009
-  */  
+  */
 
 require_once($CFG->dirroot.'/blocks/configurable_reports/plugin.class.php');
 
 class plugin_categoryfieldorder extends plugin_base{
-	
+
 	var $sql = true;
-	
-	function init(){
-		$this->fullname = get_string('categoryfield','block_configurable_reports');		
+
+	function init() {
+		$this->fullname = get_string('categoryfield','block_configurable_reports');
 		$this->form = true;
 		$this->unique = true;
 		$this->reporttypes = array('categories');
 		$this->sql = true;
 	}
-	
-	function summary($data){
+
+	function summary($data) {
 		return $data->column.' '.(strtoupper($data->direction));
 	}
-	
+
 	// data -> Plugin configuration data
-	function execute($data){
+	function execute($data) {
 		global $DB, $CFG;
-		
-		if($data->direction == 'asc' || $data->direction == 'desc'){
+
+		if($data->direction == 'asc' || $data->direction == 'desc') {
 			$direction = strtoupper($data->direction);
 			$columns = $DB->get_columns('course_categories');
-		
+
 			$categorycolumns = array();
-			foreach($columns as $c)
+			foreach ($columns as $c)
 				$categorycolumns[$c->name] = $c->name;
-				
-			if(isset($categorycolumns[$data->column])){
+
+			if(isset($categorycolumns[$data->column])) {
 				return $data->column.' '.$direction;
 			}
 		}
-		
+
 		return '';
 	}
 }

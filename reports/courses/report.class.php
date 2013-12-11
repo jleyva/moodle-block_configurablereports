@@ -23,14 +23,14 @@
   */
 
 class report_courses extends report_base{
-	
-	function init(){
-		$this->components = array('columns','conditions','ordering','filters','template','permissions','calcs','plot');
-	}	
 
-	function get_all_elements(){
+	function init() {
+		$this->components = array('columns','conditions','ordering','filters','template','permissions','calcs','plot');
+	}
+
+	function get_all_elements() {
 		global $DB;
-		
+
 		$elements = array();
 		$rs = $DB->get_recordset('course', null, '', 'id');
         foreach ($rs as $result) {
@@ -39,19 +39,19 @@ class report_courses extends report_base{
 		$rs->close();
 		return $elements;
 	}
-	
-	function get_rows($elements, $sqlorder = ''){
+
+	function get_rows($elements, $sqlorder = '') {
 		global $DB, $CFG;
-		
+
 		$finalelements = array();
-		
-		if(!empty($elements)){
+
+		if(!empty($elements)) {
 			list($usql, $params) = $DB->get_in_or_equal($elements);
 			return $DB->get_records_select('course',"id $usql", $params, $sqlorder);
-		}	
-		
+		}
+
 		return $finalelements;
 	}
-	
+
 }
 

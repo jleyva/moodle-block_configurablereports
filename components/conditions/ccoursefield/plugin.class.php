@@ -20,38 +20,38 @@
   * @package blocks
   * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
   * @date: 2009
-  */ 
+  */
 
 require_once($CFG->dirroot.'/blocks/configurable_reports/plugin.class.php');
 
 class plugin_ccoursefield extends plugin_base{
-	
-	function init(){
+
+	function init() {
 		$this->fullname = get_string('ccoursefield','block_configurable_reports');
 		$this->reporttypes = array('courses');
 		$this->form = true;
 	}
-		
-	function summary($data){		
+
+	function summary($data) {
 		return get_string($data->field).' '.$data->operator.' '.$data->value;
-		
+
 	}
-	
+
 	// data -> Plugin configuration data
-	function execute($data,$user,$courseid){
+	function execute($data,$user,$courseid) {
 		global $DB;
-		
+
 		$data->value = $data->value;
 		$ilike = " LIKE "; // TODO - Use $DB->sql_like()
-	
-		switch($data->operator){
+
+		switch($data->operator) {
 			case 'LIKE % %': 	$sql = "$data->field $ilike ?";
 								$params = array("%$data->value%");
-								break;						
+								break;
 			default:	$sql = "$data->field $data->operator ?";
 						$params = array($data->value);
 		}
-		
+
 		$courses = $DB->get_records_select('course',$sql, $params);
 
 		if($courses)
@@ -59,6 +59,6 @@ class plugin_ccoursefield extends plugin_base{
 
 		return array();
 	}
-	
+
 }
 

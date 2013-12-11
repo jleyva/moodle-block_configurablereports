@@ -20,41 +20,41 @@
   * @package blocks
   * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
   * @date: 2009
-  */ 
+  */
 
 require_once($CFG->dirroot.'/blocks/configurable_reports/plugin.class.php');
 
 class plugin_parentcategory extends plugin_base{
-	
-	function init(){
+
+	function init() {
 		$this->fullname = get_string('parentcategory','block_configurable_reports');
 		$this->type = 'text';
 		$this->form = true;
 		$this->reporttypes = array('categories');
 	}
-	
-	function summary($data){
+
+	function summary($data) {
 		global $DB;
-		
+
 		$cat = $DB->get_record('course_categories',array('id' => $data->categoryid));
 		if($cat)
 			return format_string(get_string('category').' '.$cat->name);
 		else
 			return get_string('category').' '.get_string('top');
 	}
-	
+
 	// data -> Plugin configuration data
-	function execute($data,$user,$courseid){
+	function execute($data,$user,$courseid) {
 		global $DB, $CFG;
-		
+
 		require_once($CFG->dirroot.'/course/lib.php');
-		
-		if(isset($data->includesubcats)){
-			if($category = $DB->get_record('course_categories',array('id' => $data->categoryid)))				
-				make_categories_list($options, $parents, '', 0, $category);
+
+		if(isset($data->includesubcats)) {
+			if($category = $DB->get_record('course_categories',array('id' => $data->categoryid)))
+				cr_make_categories_list($options, $parents, '', 0, $category);
 			else
-				make_categories_list($options, $parents);
-			unset($options[$data->categoryid]);			
+				cr_make_categories_list($options, $parents);
+			unset($options[$data->categoryid]);
 			return array_keys($options);
 		}
 		else{
@@ -62,9 +62,9 @@ class plugin_parentcategory extends plugin_base{
 			if($categories)
 				return array_keys($categories);
 		}
-		
+
 		return array();
 	}
-	
+
 }
 

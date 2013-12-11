@@ -23,14 +23,14 @@
   */
 
 class report_users extends report_base{
-	
-	function init(){
-		$this->components = array('columns','conditions','ordering','filters','template','permissions','calcs','plot');
-	}	
 
-	function get_all_elements(){
+	function init() {
+		$this->components = array('columns','conditions','ordering','filters','template','permissions','calcs','plot');
+	}
+
+	function get_all_elements() {
 		global $DB;
-		
+
 		$elements = array();
 		$rs = $DB->get_recordset('user', null, '', 'id');
         foreach ($rs as $result) {
@@ -39,18 +39,18 @@ class report_users extends report_base{
 		$rs->close();
 		return $elements;
 	}
-	
-	function get_rows($elements, $sqlorder = ''){
+
+	function get_rows($elements, $sqlorder = '') {
 		global $DB, $CFG;
-	
-		if(!empty($elements)){
-			list($usql, $params) = $DB->get_in_or_equal($elements);	
+
+		if(!empty($elements)) {
+			list($usql, $params) = $DB->get_in_or_equal($elements);
 			return $DB->get_records_select('user',"id $usql", $params, $sqlorder);
-		}	
+		}
 		else{
 			return array();
 		}
 	}
-	
+
 }
 
