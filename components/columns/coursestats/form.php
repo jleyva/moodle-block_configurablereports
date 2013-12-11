@@ -42,7 +42,7 @@ class coursestats_form extends moodleform {
 		$roles = $DB->get_records('role');
 		$userroles = array();
 		foreach ($roles as $r)
-			$userroles[$r->id] = $r->name;
+			$userroles[$r->id] = $r->shortname;
 
         $mform->addElement('select', 'roles', get_string('roles'), $userroles,array('multiple'=>'multiple'));
 		$mform->disabledIf('roles','stat','eq','totalenrolments');

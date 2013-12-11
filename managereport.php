@@ -76,9 +76,7 @@
 	$reports = cr_get_my_reports($course->id, $USER->id);
 
 	$title = get_string('reports','block_configurable_reports');
-	$navlinks = array();
-	$navlinks[] = array('name' => $title, 'link' => null, 'type' => 'title');
-	$navigation = build_navigation($navlinks);
+	$PAGE->navbar->add($title);
 
 	$PAGE->set_title($title);
 	$PAGE->set_heading( $title);

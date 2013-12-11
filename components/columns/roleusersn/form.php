@@ -40,7 +40,7 @@ class roleusersn_form extends moodleform {
 
 		$userroles = array();
 		foreach ($roles as $r)
-			$userroles[$r->id] = $r->name;
+			$userroles[$r->id] = $r->shortname;
 
         $mform->addElement('select', 'roles', get_string('roles'), $userroles,array('multiple'=>'multiple'));
 

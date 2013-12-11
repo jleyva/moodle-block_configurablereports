@@ -32,6 +32,7 @@ $string['configurable_reports:manageownreports'] = "Manage own reports";
 $string['configurable_reports:managereports'] = "Mange reports";
 $string['configurable_reports:managesqlreports'] = "Manage SQL reports";
 $string['configurable_reports:viewreports'] = "View reports";
+$string['configurable_reports:viewcrossreports'] = "View reports across courses";
 
 $string['exportoptions'] = "Export options";
 $string['field'] = "Field";

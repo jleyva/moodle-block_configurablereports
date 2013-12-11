@@ -39,8 +39,9 @@ class roleincourse_form extends moodleform {
 		$roles = $DB->get_records('role');
 
 		$userroles = array();
-		foreach ($roles as $r)
-			$userroles[$r->id] = $r->name;
+		foreach ($roles as $r) {
+			$userroles[$r->id] = $r->shortname;
+    }
 
         $mform->addElement('select', 'roleid', get_string('roles'), $userroles);
 

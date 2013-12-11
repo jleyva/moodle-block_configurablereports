@@ -28,9 +28,24 @@
 	$id = required_param('id', PARAM_INT);
 	$download = optional_param('download',false,PARAM_BOOL);
 	$format = optional_param('format','',PARAM_ALPHA);
+	// If courseid is not empty, we allow to display this report in a different course context.
+	$courseid = optional_param('courseid', 0, PARAM_INT);
 
-	if(! $report = $DB->get_record('block_configurable_reports',array('id' => $id)))
+	if(! $report = $DB->get_record('block_configurable_reports',array('id' => $id))) {
 		print_error('reportdoesnotexists','block_configurable_reports');
+	}
+
+	// Are we trying to see a report for a different course that the original where it was defined?.
+	if ($courseid and $report->courseid != $courseid and $DB->get_record("course",array("id" => $courseid))) {
+		if ($courseid == SITEID) {
+			$context = cr_get_context(CONTEXT_SYSTEM);
+		}
+		else {
+			$context = cr_get_context(CONTEXT_COURSE, $courseid);
+		}
+		require_capability('block/configurable_reports:viewcrossreports', $context);
+		$report->courseid = $courseid;
+	}
 
 	$courseid = $report->courseid;
 
@@ -39,16 +54,19 @@
 	}
 
 	// Force user login in course (SITE or Course)
-    if ($course->id == SITEID)
+    if ($course->id == SITEID) {
 		require_login();
-	else
+	} else {
 		require_login($course);
+	}
 
 
-	if ($course->id == SITEID)
+	if ($course->id == SITEID) {
 		$context = cr_get_context(CONTEXT_SYSTEM);
-	else
+	}
+	else {
 		$context = cr_get_context(CONTEXT_COURSE, $course->id);
+	}
 
 	require_once($CFG->dirroot.'/blocks/configurable_reports/report.class.php');
 	require_once($CFG->dirroot.'/blocks/configurable_reports/reports/'.$report->type.'/report.class.php');
@@ -62,7 +80,7 @@
 
 	$PAGE->set_context($context);
 	$PAGE->set_pagelayout('report');
-	$PAGE->set_url('/blocks/configurable_reports/viewreport.php', array('id'=>$id));
+	$PAGE->set_url('/blocks/configurable_reports/viewreport.php', array('id'=>$id, 'courseid' => $courseid));
 
 	$reportclass->create_report();
 

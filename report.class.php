@@ -153,7 +153,7 @@
 			$filterform->set_data($formdata);
 
 			if($filterform->is_cancelled()) {
-				redirect("$CFG->wwwroot/blocks/configurable_reports/viewreport.php?id=".$this->config->id);
+				redirect("$CFG->wwwroot/blocks/configurable_reports/viewreport.php?id=".$this->config->id."&courseid=" . $this->config->courseid);
 				die;
 			}
 			$this->filterform = $filterform;
@@ -572,7 +572,7 @@
 
 			$this->totalrecords = count($this->finalreport->table->data);
 			//$pagination = print_paging_bar($this->totalrecords,$page,$this->config->pagination,"viewreport.php?id=".$this->config->id."$postfiltervars&amp;",'page',false,true);
-			$pagingbar = new paging_bar($this->totalrecords, $page, $this->config->pagination, "viewreport.php?id=".$this->config->id."$postfiltervars&amp;");
+			$pagingbar = new paging_bar($this->totalrecords, $page, $this->config->pagination, "viewreport.php?id=".$this->config->id."&courseid=".$this->config->courseid."$postfiltervars&amp;");
 			$pagingbar->pagevar = 'page';
 			$pagination =  $OUTPUT->render($pagingbar);
 		}
@@ -670,7 +670,7 @@
 						}
 
 				//print_paging_bar($this->totalrecords,$page,$this->config->pagination,"viewreport.php?id=".$this->config->id."$postfiltervars&amp;");
-				$pagingbar = new paging_bar($this->totalrecords, $page, $this->config->pagination, "viewreport.php?id=".$this->config->id."$postfiltervars&amp;");
+				$pagingbar = new paging_bar($this->totalrecords, $page, $this->config->pagination, "viewreport.php?id=".$this->config->id."&courseid=" . $this->config->courseid."$postfiltervars&amp;");
 				$pagingbar->pagevar = 'page';
 				echo $OUTPUT->render($pagingbar);
 			}
