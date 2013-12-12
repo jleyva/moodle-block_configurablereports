@@ -400,5 +400,82 @@ function table_to_excel($filename,$table){
     exit;
 }
 
+/**
+ * Returns contexts in deprecated and current modes
+ *
+ * @param  int $context The context
+ * @param  int $id      The context id
+ * @param  int $flags   The flags to be used
+ * @return stdClass     An object instance
+ */
+function cr_get_context($context, $id = null, $flags = null) {
 
+    if ($context == CONTEXT_SYSTEM) {
+        if (class_exists('context_system')) {
+            return context_system::instance();
+        } else {
+            return get_context_instance(CONTEXT_SYSTEM);
+        }
+    } else if ($context == CONTEXT_COURSE) {
+        if (class_exists('context_course')) {
+            return context_course::instance($id, $flags);
+        } else {
+            return get_context_instance($context, $id, $flags);
+        }
+    } else if ($context == CONTEXT_COURSECAT) {
+        if (class_exists('context_coursecat')) {
+            return context_coursecat::instance($id, $flags);
+        } else {
+            return get_context_instance($context, $id, $flags);
+        }
+    } else if ($context == CONTEXT_BLOCK) {
+        if (class_exists('context_block')) {
+            return context_block::instance($id, $flags);
+        } else {
+            return get_context_instance($context, $id, $flags);
+        }
+    } else if ($context == CONTEXT_MODULE) {
+        if (class_exists('context_module')) {
+            return get_context_instance::instance($id, $flags);
+        } else {
+            return get_context_instance($context, $id, $flags);
+        }
+    } else if ($context == CONTEXT_USER) {
+        if (class_exists('context_user')) {
+            return context_user::instance($id, $flags);
+        } else {
+            return get_context_instance($context, $id, $flags);
+        }
+    }
+
+    return get_context_instance($context, $id, $flags);
+}
+
+function cr_cr_make_categories_list(&$list, &$parents, $requiredcapability = '',
+        $excludeid = 0, $category = NULL, $path = "") {
+    global $CFG, $DB;
+    require_once($CFG->libdir.'/coursecatlib.php');
+
+
+    // For categories list use just this one function:
+    if (empty($list)) {
+        $list = array();
+    }
+    $list += coursecat::cr_make_categories_list($requiredcapability, $excludeid);
+
+    // Building the list of all parents of all categories in the system is highly undesirable and hardly ever needed.
+    // Usually user needs only parents for one particular category, in which case should be used:
+    // coursecat::get($categoryid)->get_parents()
+    if (empty($parents)) {
+        $parents = array();
+    }
+    $all = $DB->get_records_sql('SELECT id, parent FROM {course_categories} ORDER BY sortorder');
+    foreach ($all as $record) {
+        if ($record->parent) {
+            $parents[$record->id] = array_merge($parents[$record->parent], array($record->parent));
+        } else {
+            $parents[$record->id] = array();
+        }
+    }
+}
 

@@ -48,7 +48,7 @@ class plugin_coursecategories extends plugin_base{
 
         $displaylist = array();
         $parents = array();
-        make_categories_list($displaylist, $parents);
+        cr_make_categories_list($displaylist, $parents);
 
         $coursecache = array();
 		foreach ($finalelements as $key=>$course) {
@@ -72,7 +72,7 @@ class plugin_coursecategories extends plugin_base{
 
         $displaylist = array();
         $notused = array();
-        make_categories_list($displaylist, $notused);
+        cr_make_categories_list($displaylist, $notused);
 
         $displaylist[0] = get_string("all");
 		$mform->addElement('select', 'filter_coursecategories', get_string('category'), $displaylist, $filter_categories);

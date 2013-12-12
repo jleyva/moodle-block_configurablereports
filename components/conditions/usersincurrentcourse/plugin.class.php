@@ -25,29 +25,29 @@
 require_once($CFG->dirroot.'/blocks/configurable_reports/plugin.class.php');
 
 class plugin_usersincurrentcourse extends plugin_base{
-	
+
 	function init(){
 		$this->fullname = get_string('usersincurrentcourse','block_configurable_reports');
 		$this->reporttypes = array('users');
 		$this->form = true;
 	}
-		
+
 	function summary($data){
 		return get_string('usersincurrentcourse_summary','block_configurable_reports');
-		
+
 	}
-	
+
 	// data -> Plugin configuration data
 	function execute($data,$user,$courseid){
 		global $DB;
-	
-		$context = get_context_instance(CONTEXT_COURSE,$courseid);
+
+		$context = cr_get_context(CONTEXT_COURSE,$courseid);
 		if($users = get_role_users($data->roles, $context, false, 'u.id', 'u.id')){
 			return array_keys($users);
 		}
-		
+
 		return array();
 	}
-	
+
 }
 
