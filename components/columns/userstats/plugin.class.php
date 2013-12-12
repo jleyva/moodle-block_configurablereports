@@ -131,7 +131,7 @@ class plugin_userstats extends plugin_base{
         $sql = "SELECT SUM($total) as total FROM {stats_user_daily} WHERE stattype = ? AND userid = ?";
         $params = array($stattype,$row->id);
 
-        if ($courseid != SITEID) {
+        if ($courseid != SITEID and $data->stat != 'logins') {
             $sql .= " AND courseid = ?";
             $params[] = $courseid;
         }
