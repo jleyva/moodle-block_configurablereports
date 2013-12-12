@@ -93,7 +93,7 @@ class block_configurable_reports extends block_list {
         }
 
         // Site (Shared) reports
-        $reports = $DB->get_records('block_configurable_reports',array('courseid' => SITEID),'name ASC');
+        $reports = $DB->get_records('block_configurable_reports',array('global' => 1),'name ASC');
 
         if ($reports) {
             foreach($reports as $report){
@@ -111,7 +111,7 @@ class block_configurable_reports extends block_list {
 
             if ($reports) {
                 foreach($reports as $report) {
-                    if($report->visible && cr_check_report_permissions($report,$USER->id,$context)){
+                    if(!$report->global && $report->visible && cr_check_report_permissions($report,$USER->id,$context)){
                         $rname = format_string($report->name);
                         $this->content->items[] = '<a href= "'.$CFG->wwwroot.'/blocks/configurable_reports/viewreport.php?id='.$report->id.'&courseid='.$course->id.'" alt="'.$rname.'">'.$rname.'</a>';
                     }
