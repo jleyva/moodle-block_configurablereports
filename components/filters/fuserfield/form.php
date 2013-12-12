@@ -20,7 +20,7 @@
   * @package blocks
   * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
   * @date: 2009
-  */ 
+  */
 
 if (!defined('MOODLE_INTERNAL')) {
     die('Direct access to this script is forbidden.');    ///  It must be included from a Moodle page
@@ -29,31 +29,32 @@ if (!defined('MOODLE_INTERNAL')) {
 require_once($CFG->libdir.'/formslib.php');
 
 class fuserfield_form extends moodleform {
+
     function definition() {
-        global $DB, $USER, $CFG;
+
+        global $remoteDB;
 
         $mform =& $this->_form;
 
         $mform->addElement('header', '', get_string('fuserfield','block_configurable_reports'), '');
 
-		$this->_customdata['compclass']->add_form_elements($mform,$this); 
-		
-		$columns = $DB->get_columns('user');
-		
+		$this->_customdata['compclass']->add_form_elements($mform,$this);
+
+		$columns = $remoteDB->get_columns('user');
+
 		$usercolumns = array();
 		foreach($columns as $c)
 			$usercolumns[$c->name] = $c->name;
-			
-		if($profile = $DB->get_records('user_info_field'))
+
+		if($profile = $remoteDB->get_records('user_info_field'))
 			foreach($profile as $p)
-				$usercolumns['profile_'.$p->shortname] = $p->name;	
-			
+				$usercolumns['profile_'.$p->shortname] = $p->name;
+
 		unset($usercolumns['password']);
 		unset($usercolumns['sesskey']);
-			
+
         $mform->addElement('select', 'field', get_string('field','block_configurable_reports'), $usercolumns);
-		
-       
+
         // buttons
         $this->add_action_buttons(true, get_string('add'));
 

@@ -22,29 +22,59 @@
   * @date: 2009
   */
 
-class plugin_base{
+class plugin_base {
 
-	
-	var $fullname = '';
-	var $type = '';
-	var $report = null;
-	var $form = false;
-	var $cache = array();
-	var $unique = false;
-	var $reporttypes = array();
-	
-	function __construct($report){
-		global $DB, $CFG;
-		
-		if(is_numeric($report))
-			$this->report = $DB->get_record('block_configurable_reports',array('id' => $report));
-		else
-			$this->report = $report;
-		$this->init();
-	}
-	
-	function summary($data){
-		return '';
-	}
+    public $fullname = '';
+    public $type = '';
+    public $report = null;
+    public $form = false;
+    public $cache = array();
+    public $unique = false;
+    public $reporttypes = array();
+
+    public function __construct($report) {
+        global $DB, $CFG, $remoteDB;
+
+        if (is_numeric($report)) {
+            $this->report = $DB->get_record('block_configurable_reports', array('id' => $report));
+        } else {
+            $this->report = $report;
+        }
+        $this->init();
+
+        // Use a custom $DB (and not current system's $DB)
+        // TODO: major security issue.
+        $remoteDBhost = get_config('block_configurable_reports', 'dbhost');
+        if (empty($remoteDBhost)) {
+            $remoteDBhost = $CFG->dbhost;
+        }
+        $remoteDBname = get_config('block_configurable_reports', 'dbname');
+        if (empty($remoteDBname)) {
+            $remoteDBname = $CFG->dbname;
+        }
+        $remoteDBuser = get_config('block_configurable_reports', 'dbuser');
+        if (empty($remoteDBuser)) {
+            $remoteDBuser = $CFG->dbuser;
+        }
+        $remoteDBpass = get_config('block_configurable_reports', 'dbpass');
+        if (empty($remoteDBpass)) {
+            $remoteDBpass = $CFG->dbpass;
+        }
+
+        $db_class = get_class($DB);
+        $remoteDB = new $db_class();
+        $remoteDB->connect($remoteDBhost, $remoteDBuser, $remoteDBpass, $remoteDBname, $CFG->prefix);
+
+    }
+
+    public function summary($data) {
+        return '';
+    }
+
+    // Should be override.
+    public function init() {
+        return '';
+    }
+
 }
 

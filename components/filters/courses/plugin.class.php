@@ -25,71 +25,70 @@
 require_once($CFG->dirroot.'/blocks/configurable_reports/plugin.class.php');
 
 class plugin_courses extends plugin_base{
-	
+
 	function init(){
 		$this->form = false;
 		$this->unique = true;
 		$this->fullname = get_string('filtercourses','block_configurable_reports');
 		$this->reporttypes = array('courses','sql');
 	}
-	
+
 	function summary($data){
 		return get_string('filtercourses_summary','block_configurable_reports');
 	}
-	
+
 	function execute($finalelements, $data){
-		
+
 		$filter_courses = optional_param('filter_courses',0,PARAM_INT);
 		if(!$filter_courses)
 			return $finalelements;
-		
+
 		if($this->report->type != 'sql'){
-				return array($filter_courses);			
+				return array($filter_courses);
 		}
 		else{
-			if(preg_match("/%%FILTER_COURSES:([^%]+)%%/i",$finalelements,
-    $output)){
-				$replace = ' AND '.$output[1].' = '.$filter_courses;				
+			if(preg_match("/%%FILTER_COURSES:([^%]+)%%/i",$finalelements, $output)){
+				$replace = ' AND '.$output[1].' = '.$filter_courses;
 				return str_replace('%%FILTER_COURSES:'.$output[1].'%%',$replace,$finalelements);
-			}			
-		}		
+			}
+		}
 		return $finalelements;
 	}
-	
+
 	function print_filter(&$mform){
-		global $DB, $CFG;
-		
+		global $remoteDB, $CFG;
+
 		$filter_courses = optional_param('filter_courses',0,PARAM_INT);
-		
-		$reportclassname = 'report_'.$this->report->type;	
+
+		$reportclassname = 'report_'.$this->report->type;
 		$reportclass = new $reportclassname($this->report);
-		
+
 		if($this->report->type != 'sql'){
-			$components = cr_unserialize($this->report->components);		
+			$components = cr_unserialize($this->report->components);
 			$conditions = $components['conditions'];
-					
+
 			$courselist = $reportclass->elements_by_conditions($conditions);
 		}
 		else{
-			$courselist = array_keys($DB->get_records('course'));
+			$courselist = array_keys($remoteDB->get_records('course'));
 		}
-		
+
 		$courseoptions = array();
 		$courseoptions[0] = get_string('filter_all', 'block_configurable_reports');
-		
+
 		if(!empty($courselist)){
-			list($usql, $params) = $DB->get_in_or_equal($courselist);			
-			$courses = $DB->get_records_select('course',"id $usql",$params);
-			
+			list($usql, $params) = $remoteDB->get_in_or_equal($courselist);
+			$courses = $remoteDB->get_records_select('course',"id $usql",$params);
+
 			foreach($courses as $c){
-				$courseoptions[$c->id] = format_string($c->fullname);				
+				$courseoptions[$c->id] = format_string($c->fullname);
 			}
 		}
-		
+
 		$mform->addElement('select', 'filter_courses', get_string('course'), $courseoptions);
 		$mform->setType('filter_courses', PARAM_INT);
-		
+
 	}
-	
+
 }
 

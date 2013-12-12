@@ -25,61 +25,61 @@
 require_once($CFG->dirroot.'/blocks/configurable_reports/plugin.class.php');
 
 class plugin_coursecategories extends plugin_base{
-	
+
 	function init(){
 		$this->form = false;
 		$this->unique = true;
 		$this->fullname = get_string('filtercoursecategories','block_configurable_reports');
 		$this->reporttypes = array('courses');
 	}
-	
+
 	function summary($data){
 		return get_string('filtercoursecategories_summary','block_configurable_reports');
 	}
-	
-	function execute($finalelements, $data){
-                global $DB, $CFG;
-                require_once($CFG->dirroot . "/course/lib.php");	
-	
+
+	function execute($finalelements, $data) {
+        global $remoteDB, $CFG;
+        require_once($CFG->dirroot . "/course/lib.php");
+
 		$category = optional_param('filter_coursecategories',0,PARAM_INT);
 		if(!$category) {
 			return $finalelements;
-                }		
+        }
 
-                $displaylist = array();
-                $parents = array();
-                make_categories_list($displaylist, $parents);
+        $displaylist = array();
+        $parents = array();
+        make_categories_list($displaylist, $parents);
 
-                $coursecache = array();
+        $coursecache = array();
 		foreach ($finalelements as $key=>$course) {
-                    if(empty($coursecache[$course])) {
-                        $coursecache[$course] = $DB->get_record('course', array('id' => $course));
-                    }
-                    $course = $coursecache[$course];
-                    if ($category != $course->category and !in_array($category, $parents[$course->id])) {
-                        unset($finalelements[$key]);
-                    }
-                }
+            if(empty($coursecache[$course])) {
+                $coursecache[$course] = $remoteDB->get_record('course', array('id' => $course));
+            }
+            $course = $coursecache[$course];
+            if ($category != $course->category and !in_array($category, $parents[$course->id])) {
+                unset($finalelements[$key]);
+            }
+        }
 
 		return $finalelements;
 	}
-	
+
 	function print_filter(&$mform){
-		global $DB, $CFG;
-                require_once($CFG->dirroot . "/course/lib.php");	
-	
+		global $remoteDB, $CFG;
+        require_once($CFG->dirroot . "/course/lib.php");
+
 		$filter_categories = optional_param('filter_coursecategories',0,PARAM_INT);
-	       
-                $displaylist = array();
-                $notused = array();
-                make_categories_list($displaylist, $notused);	
-	
-                $displaylist[0] = get_string("all");	
+
+        $displaylist = array();
+        $notused = array();
+        make_categories_list($displaylist, $notused);
+
+        $displaylist[0] = get_string("all");
 		$mform->addElement('select', 'filter_coursecategories', get_string('category'), $displaylist, $filter_categories);
 		$mform->setDefault('filter_coursecategories', 0);
 		$mform->setType('filter_coursecategories', PARAM_INT);
-		
+
 	}
-	
+
 }
 
