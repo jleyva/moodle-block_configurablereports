@@ -79,6 +79,55 @@ class customsql_form extends moodleform {
     }
 
     function validation($data, $files) {
+        if (get_config('block_configurable_reports', 'sqlsecurity')) {
+            return $this->validation_high_security($data, $files);
+        } else {
+            return $this->validation_low_security($data, $files);
+        }
+    }
+
+    function validation_high_security($data, $files) {
+        global $DB, $CFG, $db, $USER;
+
+        $errors = parent::validation($data, $files);
+
+        $sql = $data['querysql'];
+        $sql = trim($sql);
+
+        // Simple test to avoid evil stuff in the SQL.
+        if (preg_match('/\b(ALTER|CREATE|DELETE|DROP|GRANT|INSERT|INTO|TRUNCATE|UPDATE|SET|VACUUM|REINDEX|DISCARD|LOCK)\b/i', $sql)) {
+            $errors['querysql'] = get_string('notallowedwords', 'block_configurable_reports');
+
+        // Do not allow any semicolons.
+        } else if (strpos($sql, ';') !== false) {
+            $errors['querysql'] = get_string('nosemicolon', 'report_customsql');
+
+        // Make sure prefix is prefix_, not explicit.
+        } else if ($CFG->prefix != '' && preg_match('/\b' . $CFG->prefix . '\w+/i', $sql)) {
+            $errors['querysql'] = get_string('noexplicitprefix', 'block_configurable_reports');
+
+        // Now try running the SQL, and ensure it runs without errors.
+        } else {
+
+            $sql = $this->_customdata['reportclass']->prepare_sql($sql);
+            $rs = $this->_customdata['reportclass']->execute_query($sql, 2);
+            if (!$rs) {
+                $errors['querysql'] = get_string('queryfailed', 'block_configurable_reports', $db->ErrorMsg());
+            } else if (!empty($data['singlerow'])) {
+                if (rs_EOF($rs)) {
+                    $errors['querysql'] = get_string('norowsreturned', 'block_configurable_reports');
+                }
+            }
+
+            if ($rs) {
+                $rs->close();
+            }
+        }
+
+        return $errors;
+    }
+
+    function validation_low_security($data, $files) {
         global $DB, $CFG, $db, $USER;
 
         $errors = parent::validation($data, $files);
@@ -86,8 +135,7 @@ class customsql_form extends moodleform {
         $sql = $data['querysql'];
 		$sql = trim($sql);
 
-        // Disable security protection
-        //$this->_customdata['report']->runstatistics = 1;
+
         if (empty($this->_customdata['report']->runstatistics) OR $this->_customdata['report']->runstatistics == 0) {
             // Simple test to avoid evil stuff in the SQL.
             //if (preg_match('/\b(ALTER|CREATE|DELETE|DROP|GRANT|INSERT|INTO|TRUNCATE|UPDATE|SET|VACUUM|REINDEX|DISCARD|LOCK)\b/i', $sql)) {
@@ -95,13 +143,6 @@ class customsql_form extends moodleform {
             if (preg_match('/\b(ALTER|DELETE|DROP|GRANT|TRUNCATE|UPDATE|SET|VACUUM|REINDEX|DISCARD|LOCK)\b/i', $sql)) {
                 $errors['querysql'] = get_string('notallowedwords', 'block_configurable_reports');
             }
-        // Do not allow any semicolons.
-        //} else if (strpos($sql, ';') !== false) {
-        //    $errors['querysql'] = get_string('nosemicolon', 'report_customsql');
-
-        // Make sure prefix is prefix_, not explicit.
-        //} else if ($CFG->prefix != '' && preg_match('/\b' . $CFG->prefix . '\w+/i', $sql)) {
-        //    $errors['querysql'] = get_string('noexplicitprefix', 'block_configurable_reports');
 
 		// Now try running the SQL, and ensure it runs without errors.
         } else {

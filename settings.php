@@ -15,6 +15,9 @@ if ($ADMIN->fulltree) {
     $settings->add(new admin_setting_configtime('block_configurable_reports/cron_hour', 'cron_minute',
         get_string('executeat', 'block_configurable_reports'), get_string('executeatinfo', 'block_configurable_reports'), array('h' => 0, 'm' => 0)));
 
+    $settings->add(new admin_setting_configcheckbox('block_configurable_reports/sqlsecurity', get_string('sqlsecurity', 'block_configurable_reports'),
+        get_string('sqlsecurityinfo', 'block_configurable_reports'), 1));
+
     $settings->add(new admin_setting_configtext('block_configurable_reports/sharedsqlrepository', get_string('sharedsqlrepository', 'block_configurable_reports'),
         get_string('sharedsqlrepositoryinfo', 'block_configurable_reports'), 'nadavkav/moodle-custom_sql_report_queries', PARAM_URL, 40));
 

@@ -408,3 +408,6 @@ $string['email_subject'] = 'Subject';
 $string['email_message'] = 'Message';
 $string['email_send'] = 'Send';
 
+$string['sqlsecurity'] = 'SQL Security';
+$string['sqlsecurityinfo'] = 'Disable for executing SQL queries with statements for inserting data';
+

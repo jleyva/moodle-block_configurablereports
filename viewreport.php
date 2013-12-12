@@ -35,8 +35,9 @@
 
     // Ignore report's courseid, If we are running this report on a specific courseid
     // (For permission checks)
-    if (empty($courseid))
+    if (empty($courseid)) {
 	    $courseid = $report->courseid;
+    }
 
 	if (! $course = $DB->get_record("course",array( "id" =>  $courseid)) ) {
 		print_error("No such course id");
