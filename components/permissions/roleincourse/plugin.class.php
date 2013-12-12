@@ -36,7 +36,7 @@ class plugin_roleincourse extends plugin_base{
 	function summary($data){
 		global $DB;
 
-		$rolename = $DB->get_field('role', 'name', array('id' => $data->roleid));
+		$rolename = $DB->get_field('role', 'shortname', array('id' => $data->roleid));
 		$coursename = $DB->get_field('course', 'fullname', array('id' => $this->report->courseid));
 		return $rolename.' '.$coursename;
 	}

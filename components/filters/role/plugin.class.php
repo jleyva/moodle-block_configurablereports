@@ -65,7 +65,7 @@ class plugin_role extends plugin_base{
         $systemroles = $remoteDB->get_records('role');
         $roles = array();
         foreach($systemroles as $role) {
-            $roles[$role->id] = $role->name;
+            $roles[$role->id] = $role->shortname;
         }
 
 		if($this->report->type != 'sql'){

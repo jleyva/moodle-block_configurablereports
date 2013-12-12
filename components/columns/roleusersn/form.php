@@ -20,7 +20,7 @@
   * @package blocks
   * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
   * @date: 2009
-  */  
+  */
 
 if (!defined('MOODLE_INTERNAL')) {
     die('Direct access to this script is forbidden.');    ///  It must be included from a Moodle page
@@ -37,15 +37,15 @@ class roleusersn_form extends moodleform {
         $mform->addElement('header', '', get_string('roleusersn','block_configurable_reports'), '');
 
 		$roles = $DB->get_records('role');
-		
+
 		$userroles = array();
 		foreach($roles as $r)
-			$userroles[$r->id] = $r->name;
-			
+			$userroles[$r->id] = $r->shortname;
+
         $mform->addElement('select', 'roles', get_string('roles'), $userroles,array('multiple'=>'multiple'));
-		
-		$this->_customdata['compclass']->add_form_elements($mform,$this); 	
-       
+
+		$this->_customdata['compclass']->add_form_elements($mform,$this);
+
         // buttons
         $this->add_action_buttons(true, get_string('add'));
 
@@ -53,11 +53,11 @@ class roleusersn_form extends moodleform {
 
 	function validation($data, $files){
 		$errors = parent::validation($data, $files);
-		
+
 		$errors = $this->_customdata['compclass']->validate_form_elements($data,$errors);
-		
+
 		return $errors;
 	}
-	
+
 }
 
