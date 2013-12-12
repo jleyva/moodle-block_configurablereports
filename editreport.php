@@ -91,7 +91,13 @@
     $courseurl =  new moodle_url($CFG->wwwroot.'/course/view.php',array('id'=>$courseid));
     $PAGE->navbar->add($course->shortname, $courseurl);
 
-    $managereporturl =  new moodle_url($CFG->wwwroot.'/blocks/configurable_reports/managereport.php',array('courseid'=>$report->courseid));
+    if (!empty($report->courseid)) {
+    	$params = array('courseid'=>$report->courseid);
+    } else {
+    	$params = array('courseid'=>$courseid);
+    }
+
+    $managereporturl =  new moodle_url($CFG->wwwroot.'/blocks/configurable_reports/managereport.php', $params);
     $PAGE->navbar->add(get_string('managereports','block_configurable_reports'), $managereporturl);
 
     $PAGE->navbar->add($title);

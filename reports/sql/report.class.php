@@ -96,11 +96,10 @@ class report_sql extends report_base {
         }
 
         // Update the execution time in the DB.
-        $updaterecord = new stdClass;
-        $updaterecord->id = $this->config->id;
-        //$updaterecord->lastrun = time();
+        $updaterecord = $DB->get_record('block_configurable_reports', array('id' => $this->config->id));
         $updaterecord->lastexecutiontime = round((microtime(true) - $starttime) * 1000);
         $this->config->lastexecutiontime = $updaterecord->lastexecutiontime;
+
         $DB->update_record('block_configurable_reports', $updaterecord);
 
         return $results;
