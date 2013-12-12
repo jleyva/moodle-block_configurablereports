@@ -44,6 +44,7 @@ class customsql_form extends moodleform {
         $mform->setType('querysql', PARAM_RAW);
 
         $mform->addElement('hidden','courseid',$COURSE->id);
+        $mform->setType('courseid', PARAM_INT);
 
         $this->add_action_buttons();
 
@@ -53,22 +54,26 @@ class customsql_form extends moodleform {
         if (empty($userandrepo)) {
             $userandrepo = 'nadavkav/moodle-custom_sql_report_queries';
         }
-        $res = file_get_contents("https://api.github.com/repos/$userandrepo/contents/");
+
+        $c = new curl();
+        $res = $c->get("https://api.github.com/repos/$userandrepo/contents/");
         $res = json_decode($res);
 
-        $reportcategories = array(get_string('choose'));
-        foreach ($res as $item) {
-            if ($item->type == 'dir') $reportcategories[$item->path] = $item->path;
+        if (is_array($res)) {
+            $reportcategories = array(get_string('choose'));
+            foreach ($res as $item) {
+                if ($item->type == 'dir') $reportcategories[$item->path] = $item->path;
+            }
+
+            $mform->addElement('select', 'reportcategories', get_string('reportcategories', 'block_configurable_reports'), $reportcategories ,
+                array('onchange'=>'M.block_configurable_reports.onchange_reportcategories(this,"'.sesskey().'")'));
+
+            $mform->addElement('select', 'reportsincategory', get_string('reportsincategory', 'block_configurable_reports'), $reportcategories ,
+                array('onchange'=>'M.block_configurable_reports.onchange_reportsincategory(this,"'.sesskey().'")'));
+
+            $mform->addElement('textarea', 'remotequerysql', get_string('remotequerysql', 'block_configurable_reports'),
+                'rows="15" cols="90"');
         }
-
-        $mform->addElement('select', 'reportcategories', get_string('reportcategories', 'block_configurable_reports'), $reportcategories ,
-            array('onchange'=>'M.block_configurable_reports.onchange_reportcategories(this,"'.sesskey().'")'));
-
-        $mform->addElement('select', 'reportsincategory', get_string('reportsincategory', 'block_configurable_reports'), $reportcategories ,
-            array('onchange'=>'M.block_configurable_reports.onchange_reportsincategory(this,"'.sesskey().'")'));
-
-        $mform->addElement('textarea', 'remotequerysql', get_string('remotequerysql', 'block_configurable_reports'),
-            'rows="15" cols="90"');
 
         //$this->add_action_buttons();
     }
