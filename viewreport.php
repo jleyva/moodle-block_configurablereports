@@ -33,9 +33,9 @@
 	if(! $report = $DB->get_record('block_configurable_reports',array('id' => $id)))
 		print_error('reportdoesnotexists','block_configurable_reports');
 
-    // Ignore report's courseid, If we are running this report on a specific courseid
-    // (For permission checks)
-    if (empty($courseid)) {
+    if ($courseid) {
+        $report->courseid = $courseid;
+    } else {
 	    $courseid = $report->courseid;
     }
 
