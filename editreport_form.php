@@ -81,12 +81,15 @@ class report_edit_form extends moodleform {
 
         if(isset($this->_customdata['report']->id) && $this->_customdata['report']->id)
             $mform->addElement('hidden','id',$this->_customdata['report']->id);
+            $mform->setType('id', PARAM_INT);
         if (!empty($adminmode)) {
             $mform->addElement('text','courseid',get_string("setcourseid",'block_configurable_reports'), $this->_customdata['courseid']);
+            $mform->setType('courseid', PARAM_INT);
         } else {
             $mform->addElement('hidden','courseid',$this->_customdata['courseid']);
+            $mform->setType('courseid', PARAM_INT);
         }
-        $mform->setType('courseid', PARAM_INT);
+
 
         // buttons
         $this->add_action_buttons(true, get_string('add'));

@@ -123,6 +123,7 @@ class report_sql extends report_base {
 		$config = (isset($components['customsql']['config']))? $components['customsql']['config'] : new stdclass;
         $totalrecords = 0;
 
+        $sql = '';
 		if(isset($config->querysql)){
 			// FILTERS
 			$sql = $config->querysql;
