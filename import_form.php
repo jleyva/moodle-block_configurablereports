@@ -40,8 +40,8 @@ class import_form extends moodleform {
 		$mform->setType('userfile', PARAM_FILE);
 		$mform->addRule('userfile', null, 'required');
 
-		$mform->addElement('hidden','courseid',$this->_customdata);
-        $mform->setType('courseid', PARAM_INT);
+		$mform->addElement('hidden','courseid', $this->_customdata);
+    $mform->setType('courseid', PARAM_INT);
 
         // buttons
         $this->add_action_buttons(false, get_string('importreport', 'block_configurable_reports'));

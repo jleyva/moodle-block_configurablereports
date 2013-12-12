@@ -48,7 +48,7 @@
 	$PAGE->set_context($context);
 	$PAGE->set_pagelayout('incourse');
 
-    $mform = new import_form(null, array('courseid'=>$course->id));
+    $mform = new import_form(null, $course->id);
 
 	if ($data = $mform->get_data()) {
 		if ($xml = $mform->get_file_content('userfile')) {
