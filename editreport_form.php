@@ -71,6 +71,8 @@ class report_edit_form extends moodleform {
         $mform->addElement('checkbox','cron',get_string('cron','block_configurable_reports'),get_string('crondescription','block_configurable_reports'));
         $mform->addHelpButton('cron','cron', 'block_configurable_reports');
         $mform->setDefault('cron',0);
+        $mform->disabledIf('cron', 'type', 'neq', 'sql');
+
 
         $mform->addElement('header', 'exportoptions', get_string('exportoptions', 'block_configurable_reports'));
         $options = cr_get_export_plugins();
