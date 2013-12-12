@@ -109,6 +109,7 @@ $string['filteruser'] = 'Current course user';
 $string['filteruser_summary'] = 'Filter a user (id) from current course users';
 $string['users'] = 'System user (id)';
 $string['filterusers'] = 'System user';
+$string['enrolledstudents'] = 'Enrolled students';
 $string['filterusers_summary'] = 'Filter a user (by id) from system user list';
 $string['filterenrolledstudents'] = 'Enrolled course students';
 $string['filterenrolledstudents_summary'] = 'Filter a user (by id) from enrolled course students';
