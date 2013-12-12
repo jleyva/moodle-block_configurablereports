@@ -42,51 +42,8 @@ function xmldb_block_configurable_reports_upgrade($oldversion) {
         upgrade_plugin_savepoint(true, 2011040103, 'block', 'configurable_reports');
     }
 
-//    if ($oldversion < 2012040103) {
-//
-//        $table = new xmldb_table('block_configurable_reports');
-//        $field = new xmldb_field('lastexecutiontime', XMLDB_TYPE_INTEGER, '10', XMLDB_UNSIGNED, null, null, '0', null);
-//
-//        if (!$dbman->field_exists($table, $field)) {
-//            $dbman->add_field($table, $field);
-//        }
-//
-//        //upgrade_block_savepoint(true, 2012040103, 'configurable_reports');
-//        upgrade_plugin_savepoint(true, 2012040103, 'block', 'configurable_reports');
-//    }
 
-    // Migrate deprecated MOODLE_22 branch and all its tables
-    // Into new 2.5 single table architecture
-    if ($oldversion < 2013091101) {
-        // Better we do not delete old tables that might hold so old and useful SQL queries.
-        /*
-        $table = new xmldb_table('block_cr_component');
-        if ($dbman->table_exists($table)) {
-            $dbman->drop_table($table, true, false);
-        }
-
-        $table = new xmldb_table('block_cr_plugin');
-        if ($dbman->table_exists($table)) {
-            $dbman->drop_table($table, true, false);
-        }
-
-        $table = new xmldb_table('block_cr_report');
-        if ($dbman->table_exists($table)) {
-            $dbman->drop_table($table, true, false);
-        }
-        */
-
-        $table = new xmldb_table('block_configurable_reports');
-        if (!$dbman->table_exists($table)) {
-            $dbman->install_from_xmldb_file($CFG->dirroot . '/blocks/configurable_reports/db/install.xml');
-        }
-        upgrade_block_savepoint(true, 2013091101, 'configurable_reports');
-        //upgrade_plugin_savepoint(true, 2013091101, 'block', 'configurable_reports');
-    }
-
-    // todo: migration script for moving SQL queries in block_cr_component into block_configurable_reports
-
-    if ($oldversion < 2013092001) {
+    if ($oldversion < 2011040106) {
 
         $table = new xmldb_table('block_configurable_reports');
 
@@ -99,8 +56,7 @@ function xmldb_block_configurable_reports_upgrade($oldversion) {
         if (!$dbman->field_exists($table, $field)) {
             $dbman->add_field($table, $field);
         }
-        upgrade_block_savepoint(true, 2013092001, 'configurable_reports');
-        //upgrade_plugin_savepoint(true, 2013092001, 'block', 'configurable_reports');
+        upgrade_plugin_savepoint(true, 2011040106, 'block', 'configurable_reports');
     }
 
     return true;
