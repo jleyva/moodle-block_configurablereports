@@ -677,6 +677,7 @@
 				$this->add_jsordering();
 			}
 
+			$this->totalrecords = count($this->finalreport->table->data);
 			if($this->config->pagination){
 				$page = optional_param('page',0,PARAM_INT);
 				$this->totalrecords = count($this->finalreport->table->data);

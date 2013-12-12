@@ -230,11 +230,11 @@
 
 	$title = format_string($report->name).' '.get_string($comp,'block_configurable_reports');
 
-	$navlinks = array();
-	$navlinks[] = array('name' => get_string('managereports','block_configurable_reports'), 'link' => $CFG->wwwroot.'/blocks/configurable_reports/managereport.php?courseid='.$report->courseid, 'type' => 'title');
-	$navlinks[] = array('name' => $title, 'link' => $CFG->wwwroot.'/blocks/configurable_reports/editcomp.php?id='.$id.'&amp;comp='.$comp, 'type' => 'title');
-	$navlinks[] = array('name' => get_string($pname,'block_configurable_reports'), 'link' => null, 'type' => 'title');
-	$navigation = build_navigation($navlinks);
+
+	$PAGE->navbar->add(get_string('managereports','block_configurable_reports'), $CFG->wwwroot.'/blocks/configurable_reports/managereport.php?courseid='.$report->courseid);
+	$PAGE->navbar->add($title, $CFG->wwwroot.'/blocks/configurable_reports/editcomp.php?id='.$id.'&amp;comp='.$comp);
+	$PAGE->navbar->add(get_string($pname,'block_configurable_reports'));
+
 
 	$PAGE->set_title($title);
 	$PAGE->set_heading( $title);
