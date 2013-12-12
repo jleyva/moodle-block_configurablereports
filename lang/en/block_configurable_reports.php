@@ -412,3 +412,7 @@ $string['email_send'] = 'Send';
 $string['sqlsecurity'] = 'SQL Security';
 $string['sqlsecurityinfo'] = 'Disable for executing SQL queries with statements for inserting data';
 
+$string['global'] = 'Global report';
+$string['enableglobal'] = 'This is a global report (accesible from any course)';
+$string['global_help'] = 'Global report can be accessed from any course in the platform just appending &courseid=MY_COURSE_ID in the report URL';
+

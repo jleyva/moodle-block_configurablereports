@@ -33,7 +33,7 @@
 	if(! $report = $DB->get_record('block_configurable_reports',array('id' => $id)))
 		print_error('reportdoesnotexists','block_configurable_reports');
 
-    if ($courseid) {
+    if ($courseid and $report->global) {
         $report->courseid = $courseid;
     } else {
 	    $courseid = $report->courseid;

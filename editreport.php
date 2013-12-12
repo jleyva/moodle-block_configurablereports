@@ -174,6 +174,7 @@
 	}
 	else if ($data = $editform->get_data()) {
 
+
 		require_once($CFG->dirroot.'/blocks/configurable_reports/report.class.php');
 		require_once($CFG->dirroot.'/blocks/configurable_reports/reports/'.$data->type.'/report.class.php');
 		if(empty($report))
@@ -189,13 +190,19 @@
 			}
 		}
 
+		if(!isset($data->global)) {
+			$data->global = 0;
+		}
+
+		if(!isset($data->jsordering)) {
+			$data->jsordering = 0;
+		}
+
 		if(empty($report)){
 			$data->ownerid = $USER->id;
 			$data->courseid = $courseid;
 			$data->visible = 1;
 			$data->components = '';
-			if(!isset($data->jsordering))
-				$data->jsordering = 0;
 
 			// extra check
 			if($data->type == 'sql' && !has_capability('block/configurable_reports:managesqlreports',$context))
@@ -213,6 +220,7 @@
 			add_to_log($report->courseid, 'configurable_reports', 'edit', '/block/configurable_reports/editreport.php?id='.$id, $report->name);
 			$reportclass = new $reportclassname($data->id);
 			$data->type = $report->type;
+
 			if(! $DB->update_record('block_configurable_reports',$data)){
 				print_error('errorsavingreport','block_configurable_reports');
 			}else{
