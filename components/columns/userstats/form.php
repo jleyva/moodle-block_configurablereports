@@ -34,7 +34,7 @@ class userstats_form extends moodleform {
 
         $mform =& $this->_form;
 
-        $mform->addElement('header', '', get_string('userstats','block_configurable_reports'), '');
+        $mform->addElement('header',  'crformheader' ,get_string('userstats','block_configurable_reports'), '');
 
         $userstats = array('logins'=>get_string('statslogins','block_configurable_reports'),'activityview'=>get_string('activityview','block_configurable_reports'),'activitypost'=>get_string('activitypost','block_configurable_reports'));
 		$userstats['coursededicationtime'] = get_string('coursededicationtime','block_configurable_reports');

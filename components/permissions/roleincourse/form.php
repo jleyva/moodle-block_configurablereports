@@ -34,7 +34,7 @@ class roleincourse_form extends moodleform {
 
         $mform =& $this->_form;
 
-        $mform->addElement('header', '', get_string('roleincourse','block_configurable_reports'), '');
+        $mform->addElement('header',  'crformheader' ,get_string('roleincourse','block_configurable_reports'), '');
 
 		$roles = $DB->get_records('role');
 

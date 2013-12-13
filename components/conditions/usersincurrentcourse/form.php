@@ -35,7 +35,7 @@ class usersincurrentcourse_form extends moodleform {
 
         $mform =& $this->_form;
 
-        $mform->addElement('header', '', get_string('coursefield','block_configurable_reports'), '');
+        $mform->addElement('header',  'crformheader' ,get_string('coursefield','block_configurable_reports'), '');
 
 		$roles = $DB->get_records('role');
 		$userroles = array();

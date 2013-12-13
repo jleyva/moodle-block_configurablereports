@@ -20,7 +20,7 @@
   * @package blocks
   * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
   * @date: 2009
-  */  
+  */
 
 if (!defined('MOODLE_INTERNAL')) {
     die('Direct access to this script is forbidden.');    ///  It must be included from a Moodle page
@@ -33,32 +33,32 @@ class reportcolumn_form extends moodleform {
         global $DB, $USER, $CFG;
 
         $mform =& $this->_form;
-        $mform->addElement('header', '', get_string('reportcolumn','block_configurable_reports'), '');
+        $mform->addElement('header',  'crformheader' ,get_string('reportcolumn','block_configurable_reports'), '');
 
 		$reportid = optional_param('reportid',0,PARAM_INT);
 		if($actualrid = $this->_customdata['pluginclass']->get_current_report($this->_customdata['report']))
 			$reportid = $actualrid;
-		
-		$reports = $this->_customdata['pluginclass']->get_user_reports(); 
+
+		$reports = $this->_customdata['pluginclass']->get_user_reports();
         $reportoptions = array(0=>get_string('choose'));
-		
+
 		if($reports)
 			foreach($reports as $r)
 				$reportoptions[$r->id] = format_string($r->name);
-		
+
 		$furl = "$CFG->wwwroot/blocks/configurable_reports/editplugin.php?id=".$this->_customdata['report']->id."&comp=columns&pname=reportcolumn";
 		$options = array('onchange'=>'location.href="'.$furl.'&reportid="+document.getElementById("id_reportid").value');
 		if($actualrid)
 			$options['disabled'] = 'disabled';
-		
+
 		$mform->addElement('select', 'reportid', get_string('report','block_configurable_reports'), $reportoptions, $options);
 		$mform->setDefault('reportid',$reportid);
-						
+
 		$columnsoptions = $this->_customdata['pluginclass']->get_report_columns($reportid);
 		$mform->addElement('select', 'column', get_string('column','block_configurable_reports'), $columnsoptions);
-		       
-		$this->_customdata['compclass']->add_form_elements($mform,$this); 
-		
+
+		$this->_customdata['compclass']->add_form_elements($mform,$this);
+
         // buttons
         $this->add_action_buttons(true, get_string('add'));
 
@@ -66,17 +66,17 @@ class reportcolumn_form extends moodleform {
 
 	function validation($data, $files){
 		$errors = parent::validation($data, $files);
-		
+
 		$errors = $this->_customdata['compclass']->validate_form_elements($data,$errors);
-		
+
 		if(!$data['reportid'])
 			$errors['reportid'] = get_string('missingcolumn','block_configurable_reports');
-			
+
 		if(!isset($data['column']))
 			$errors['column'] = get_string('missingcolumn','block_configurable_reports');
-				
+
 		return $errors;
-	}	
-	
+	}
+
 }
 

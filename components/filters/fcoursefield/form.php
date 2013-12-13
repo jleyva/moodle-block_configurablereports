@@ -34,7 +34,7 @@ class fcoursefield_form extends moodleform {
 
         $mform =& $this->_form;
 
-        $mform->addElement('header', '', get_string('fcoursefield','block_configurable_reports'), '');
+        $mform->addElement('header',  'crformheader' ,get_string('fcoursefield','block_configurable_reports'), '');
 
 		$this->_customdata['compclass']->add_form_elements($mform,$this);
 

@@ -56,7 +56,7 @@ class line_form extends moodleform {
 		}
 
 
-		$mform->addElement('header', '', get_string('line','block_configurable_reports'), '');
+		$mform->addElement('header',  'crformheader' ,get_string('line','block_configurable_reports'), '');
 
 		$mform->addElement('select', 'xaxis', get_string('xaxis','block_configurable_reports'), $options);
 		$mform->addRule('xaxis', null, 'required', null, 'client');

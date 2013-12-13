@@ -34,27 +34,27 @@ class usermodactions_form extends moodleform {
 
         $mform =& $this->_form;
 
-        $mform->addElement('header', '', get_string('usermodactions','block_configurable_reports'), '');
-		
+        $mform->addElement('header',  'crformheader' ,get_string('usermodactions','block_configurable_reports'), '');
+
 		$columns = $DB->get_columns('user');
-		
+
 		$modules = array();
-		
+
 		// Fix for http://tracker.moodle.org/browse/CONTRIB-2945
 		require_once($CFG->dirroot."/course/lib.php");
 		get_all_mods($this->_customdata['report']->courseid, $mods, $modnames, $modnamesplural, $modnamesused);
-		
+
 		if($mods){
 			foreach($mods as $m){
 				$instance = $DB->get_record("$m->modname",array( "id" =>  "$m->instance"));
 				$modules[$m->id] = $instance->name;
 			}
 		}
-		
+
         $mform->addElement('select', 'cmid', get_string('module','block_configurable_reports'), $modules);
 
-		$this->_customdata['compclass']->add_form_elements($mform,$this); 		
-		
+		$this->_customdata['compclass']->add_form_elements($mform,$this);
+
         // buttons
         $this->add_action_buttons(true, get_string('add'));
 
@@ -62,11 +62,11 @@ class usermodactions_form extends moodleform {
 
 	function validation($data, $files){
 		$errors = parent::validation($data, $files);
-		
+
 		$errors = $this->_customdata['compclass']->validate_form_elements($data,$errors);
-		
+
 		return $errors;
 	}
-	
+
 }
 

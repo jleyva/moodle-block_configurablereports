@@ -34,7 +34,7 @@ class coursestats_form extends moodleform {
 
         $mform =& $this->_form;
 
-        $mform->addElement('header', '', get_string('coursestats','block_configurable_reports'), '');
+        $mform->addElement('header',  'crformheader' ,get_string('coursestats','block_configurable_reports'), '');
 
         $coursestats = array('totalenrolments'=>get_string('statstotalenrolments','block_configurable_reports'),'activeenrolments'=>get_string('statsactiveenrolments','block_configurable_reports'),'activityview'=>get_string('activityview','block_configurable_reports'),'activitypost'=>get_string('activitypost','block_configurable_reports'));
 		$mform->addElement('select', 'stat', get_string('stat','block_configurable_reports'), $coursestats);
