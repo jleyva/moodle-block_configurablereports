@@ -88,7 +88,7 @@
 				$DataSet->AddPoint($series[1],"Serie1");
                 // Invert/Reverse Hebrew labels so it can be rendered using PHP imagettftext()
                 foreach ($series[0] as $key => $value) {
-                    $invertedlabels[$key] = (preg_match("/[\xE0-\xFA]/", iconv("UTF-8", "ISO-8859-8", $value))) ? $reportclass->utf8_strrev($value) : $value;
+                    $invertedlabels[$key] = strip_tags((preg_match("/[\xE0-\xFA]/", iconv("UTF-8", "ISO-8859-8", $value))) ? $reportclass->utf8_strrev($value) : $value);
                 }
 				$DataSet->AddPoint($invertedlabels /* $series[0] */,"Serie2");
 				$DataSet->AddAllSeries();

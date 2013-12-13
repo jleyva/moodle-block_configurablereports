@@ -50,6 +50,7 @@ M.block_configurable_reports = {
             on: {
                 success: function(id, o) {
                     var response = Y.JSON.parse(o.responseText);
+                    select_reportnames.get('childNodes').remove();
                     option = Y.Node.create('<option value="-1">...</option>');
                     select_reportnames.appendChild(option);
 
