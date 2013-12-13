@@ -4,7 +4,7 @@ Installation, Documentation, Tutorials....
 See http://docs.moodle.org/en/blocks/configurable_reports/
 Also http://moodle.org/mod/data/view.php?d=13&rid=4283
 
-Author: Juan Leyva 
+Author: Juan Leyva
 <http://moodle.org/user/profile.php?id=49568>
 <http://twitter.com/jleyvadelgado>
 <http://sites.google.com/site/mooconsole/>
@@ -12,6 +12,7 @@ Author: Juan Leyva
 <http://openlearningtech.blogspot.com>
 
 Thanks to:
+Nadav Kavalerchik for developing amazing new features
 Ivan Breziansky for translating the block to slovak language
 Iñaki Arenaza for translating the block documentation to spanish
 Luis de Vasconcelos for testing the block
