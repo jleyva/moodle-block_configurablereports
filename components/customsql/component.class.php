@@ -23,14 +23,25 @@
   */
 
 class component_customsql extends component_base{
-	
+
 	function init(){
+		global $PAGE;
+
 		$this->plugins = false;
 		$this->ordering = false;
 		$this->form = true;
 		$this->help = true;
+
+		if (get_config('block_configurable_reports', 'sqlsyntaxhighlight')) {
+	        $PAGE->requires->js('/blocks/configurable_reports/js/codemirror/lib/codemirror.js');
+	        $PAGE->requires->js('/blocks/configurable_reports/js/codemirror/mode/sql/sql.js');
+	        $PAGE->requires->js('/blocks/configurable_reports/js/codemirror/addon/display/fullscreen.js');
+	        $PAGE->requires->js('/blocks/configurable_reports/js/codemirror/addon/edit/matchbrackets.js');
+	    }
+
+	    $PAGE->requires->js_init_call('M.block_configurable_reports.init');
 	}
-	
+
 	function form_process_data(&$cform){
 		global $DB;
 		if($this->form){
@@ -42,13 +53,13 @@ class component_customsql extends component_base{
 			$DB->update_record('block_configurable_reports',$this->config);
 		}
 	}
-	
+
 	function form_set_data(&$cform){
 		if($this->form){
 			$fdata = new stdclass;
 			$components = cr_unserialize($this->config->components);
 			//print_r($components);exit;
-			$sqlconfig = (isset($components['customsql']['config']))? $components['customsql']['config'] : new stdclass;		
+			$sqlconfig = (isset($components['customsql']['config']))? $components['customsql']['config'] : new stdclass;
 			$cform->set_data($sqlconfig);
 		}
 	}

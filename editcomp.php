@@ -58,15 +58,7 @@
 	$PAGE->set_context($context);
 	$PAGE->set_pagelayout('incourse');
 
-    if (get_config('block_configurable_reports', 'sqlsyntaxhighlight')) {
-        $PAGE->requires->js('/blocks/configurable_reports/js/codemirror/lib/codemirror.js');
-        $PAGE->requires->js('/blocks/configurable_reports/js/codemirror/mode/sql/sql.js');
-        $PAGE->requires->js('/blocks/configurable_reports/js/codemirror/addon/display/fullscreen.js');
-        $PAGE->requires->js('/blocks/configurable_reports/js/codemirror/addon/edit/matchbrackets.js');
-    }
-
     $PAGE->requires->js('/blocks/configurable_reports/js/configurable_reports.js');
-    $PAGE->requires->js_init_call('M.block_configurable_reports.init');
 
 if(! has_capability('block/configurable_reports:managereports', $context) && ! has_capability('block/configurable_reports:manageownreports', $context))
 		print_error('badpermissions');
