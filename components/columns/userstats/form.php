@@ -20,7 +20,7 @@
   * @package blocks
   * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
   * @date: 2009
-  */ 
+  */
 
 if (!defined('MOODLE_INTERNAL')) {
     die('Direct access to this script is forbidden.');    ///  It must be included from a Moodle page
@@ -38,11 +38,11 @@ class userstats_form extends moodleform {
 
         $userstats = array('logins'=>get_string('statslogins','block_configurable_reports'),'activityview'=>get_string('activityview','block_configurable_reports'),'activitypost'=>get_string('activitypost','block_configurable_reports'));
 		$userstats['coursededicationtime'] = get_string('coursededicationtime','block_configurable_reports');
-		
+
 		$mform->addElement('select', 'stat', get_string('stat','block_configurable_reports'), $userstats);
-		
-		$this->_customdata['compclass']->add_form_elements($mform,$this); 	
-       
+
+		$this->_customdata['compclass']->add_form_elements($mform,$this);
+
         // buttons
         $this->add_action_buttons(true, get_string('add'));
 
@@ -51,14 +51,15 @@ class userstats_form extends moodleform {
 	function validation($data, $files){
 		global $DB, $CFG;
 		$errors = parent::validation($data, $files);
-		
+
 		$errors = $this->_customdata['compclass']->validate_form_elements($data,$errors);
-		
-		if(!isset($CFG->enablestats) || !$CFG->enablestats)
+
+		if($data['stat'] != 'coursededicationtime' && (!isset($CFG->enablestats) || !$CFG->enablestats)) {
 			$errors['stat'] = get_string('globalstatsshouldbeenabled','block_configurable_reports');
-		
+        }
+
 		return $errors;
 	}
-	
+
 }
 
