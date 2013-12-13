@@ -36,6 +36,10 @@ $c = new curl();
 if ($action == 'listreports') {
   if ($res = $c->get("https://api.github.com/repos/$userandrepo/contents/")) {
     $data = json_decode($res);
+    if (!is_array($data)) {
+      echo json_encode(array());
+      die;
+    }
     foreach ($data as $key => $d) {
       if ($d->type != 'dir') {
         unset($data[$key]);

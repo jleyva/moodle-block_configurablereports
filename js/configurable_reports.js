@@ -1,3 +1,5 @@
+var editor_querysql = null;
+var editor_remotequerysql = null;
 
 M.block_configurable_reports = {
 
@@ -6,6 +8,35 @@ M.block_configurable_reports = {
     init: function(Y, sesskey) {
         this.Y = Y;
         this.sesskey = sesskey;
+
+        // Documentation can be found @ http://codemirror.net/
+        editor_querysql = CodeMirror.fromTextArea(document.getElementById('id_querysql'), {
+            mode: "text/x-mysql",
+            rtlMoveVisually: true,
+            indentWithTabs: true,
+            smartIndent: true,
+            lineNumbers: true,
+            matchBrackets : true,
+            autofocus: true,
+            extraKeys: {
+                "F11": function(cm) {
+                    cm.setOption("fullScreen", !cm.getOption("fullScreen"));
+                },
+                "Esc": function(cm) {
+                    if (cm.getOption("fullScreen")) cm.setOption("fullScreen", false);
+                }}
+            });
+
+        editor_remotequerysql = CodeMirror.fromTextArea(document.getElementById('id_remotequerysql'), {
+            mode: "text/x-mysql",
+            rtlMoveVisually: true,
+            indentWithTabs: true,
+            smartIndent: true,
+            lineNumbers: true,
+            matchBrackets : true,
+        //    autofocus: true
+        });
+
     },
 
     loadReportCategories: function(Y, sesskey) {
@@ -172,34 +203,6 @@ M.block_configurable_reports = {
 }
 
 function menuplugin(event,args) {
-	location.href = args.url+document.getElementById('menuplugin').value;
+    location.href = args.url+document.getElementById('menuplugin').value;
 }
-
-// Documentation can be found @ http://codemirror.net/
-var editor_querysql = CodeMirror.fromTextArea(document.getElementById('id_querysql'), {
-    mode: "text/x-mysql",
-    rtlMoveVisually: true,
-    indentWithTabs: true,
-    smartIndent: true,
-    lineNumbers: true,
-    matchBrackets : true,
-    autofocus: true,
-    extraKeys: {
-        "F11": function(cm) {
-            cm.setOption("fullScreen", !cm.getOption("fullScreen"));
-        },
-        "Esc": function(cm) {
-            if (cm.getOption("fullScreen")) cm.setOption("fullScreen", false);
-        }}
-    });
-
-var editor_remotequerysql = CodeMirror.fromTextArea(document.getElementById('id_remotequerysql'), {
-    mode: "text/x-mysql",
-    rtlMoveVisually: true,
-    indentWithTabs: true,
-    smartIndent: true,
-    lineNumbers: true,
-    matchBrackets : true,
-//    autofocus: true
-});
 
