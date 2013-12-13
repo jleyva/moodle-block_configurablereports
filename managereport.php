@@ -102,8 +102,10 @@
 
 	if($reports){
 		$table = new stdclass;
+		$table->width = "100%";
 		$table->head = array(get_string('name'),get_string('reportsmanage','admin').' '.get_string('course'),get_string('type','block_configurable_reports'),get_string('username'),get_string('edit'),get_string('download','block_configurable_reports'));
 		$table->align = array('left','left','left','left','center','center');
+		$table->size = array('30%','10%','10%','10%','20%','20%');
 		$stredit = get_string('edit');
 		$strdelete = get_string('delete');
 		$strhide = get_string('hide');
