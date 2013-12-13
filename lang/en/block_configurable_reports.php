@@ -419,4 +419,11 @@ $string['global_help'] = 'Global report can be accessed from any course in the p
 $string['crrepository'] = 'Reports repository';
 $string['crrepositoryinfo'] = 'Remote shared repository with sample reports fully functional';
 $string['importfromrepository'] = 'Import from shared repository';
+$string['repository'] = 'Reports repository';
+$string['repository_help'] = 'You can import sample reports from a public shared repository.
+
+Please, notice that there is a daily limit of calls to the repository.
+
+If the connection to the repository is not working, you can download manually here <a href="https://github.com/jleyva/moodle-configurable_reports_repository" target="_blank">https://github.com/jleyva/moodle-configurable_reports_repository</a> a report and then import it using the "Import report" feature displayed bellow
+';
 

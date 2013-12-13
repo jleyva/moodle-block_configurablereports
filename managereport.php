@@ -168,12 +168,16 @@
 		echo html_writer::start_tag('fieldset');
 		echo html_writer::tag('legend', get_string('importfromrepository', 'block_configurable_reports'));
 
+		echo $OUTPUT->help_icon('repository', 'block_configurable_reports') . "&nbsp;&nbsp;";
+
 		$reportcategories = array('' => '...');
+		echo get_string('categories', 'block_configurable_reports');
 		echo html_writer::select($reportcategories, 'crreportcategories', '', null,
 									array('onchange' => 'M.block_configurable_reports.onchange_crreportcategories(this,"'.sesskey().'")',
 										  'id' => 'id_crreportcategories'
 										)
 		);
+		echo get_string('report', 'block_configurable_reports');
 		echo html_writer::select(array(), 'crreportnames', '', array(),
 									array('onchange' => 'M.block_configurable_reports.onchange_crreportnames(this,"'.sesskey().'")',
 											'id' => 'id_crreportnames'
