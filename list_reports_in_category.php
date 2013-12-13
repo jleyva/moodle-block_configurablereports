@@ -27,9 +27,9 @@ require_once($CFG->libdir . '/filelib.php');
 
 $category = required_param('category', PARAM_RAW);
 
-$userandrepo = get_config('block_configurable_reports','sharedsqlrepository');
-if (empty($userandrepo)) {
-    $userandrepo = 'nadavkav/moodle-custom_sql_report_queries';
+if (!$userandrepo = get_config('block_configurable_reports','sharedsqlrepository')) {
+  echo json_encode(array());
+  die;
 }
 
 $c = new curl();

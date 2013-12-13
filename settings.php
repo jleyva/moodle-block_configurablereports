@@ -19,7 +19,7 @@ if ($ADMIN->fulltree) {
         get_string('sqlsecurityinfo', 'block_configurable_reports'), 1));
 
     $settings->add(new admin_setting_configtext('block_configurable_reports/sharedsqlrepository', get_string('sharedsqlrepository', 'block_configurable_reports'),
-        get_string('sharedsqlrepositoryinfo', 'block_configurable_reports'), 'nadavkav/moodle-custom_sql_report_queries', PARAM_URL, 40));
+        get_string('sharedsqlrepositoryinfo', 'block_configurable_reports'), 'jleyva/moodle-custom_sql_report_queries', PARAM_URL, 40));
 
     $settings->add(new admin_setting_configcheckbox('block_configurable_reports/sqlsyntaxhighlight', get_string('sqlsyntaxhighlight', 'block_configurable_reports'),
         get_string('sqlsyntaxhighlightinfo', 'block_configurable_reports'), 1));
