@@ -27,6 +27,7 @@
 	require_once 'import_form.php';
 
 	$courseid = optional_param('courseid', SITEID, PARAM_INT);
+	$importurl = optional_param('importurl', '', PARAM_RAW);
 
 	if (! $course = $DB->get_record("course", array( "id" =>  $courseid)) ) {
 		print_error("No such course id");
@@ -48,32 +49,32 @@
 	$PAGE->set_context($context);
 	$PAGE->set_pagelayout('incourse');
 
+	if ($importurl) {
+		$c = new curl();
+		if ($data = $c->get($importurl)) {
+			$data = json_decode($data);
+			$xml = base64_decode($data->content);
+
+		} else {
+			print_error('errorimporting');
+		}
+		if (cr_import_xml($xml, $course)) {
+	        header("Location: $CFG->wwwroot/blocks/configurable_reports/managereport.php?courseid={$course->id}");
+	        die;
+		} else {
+			print_error('errorimporting');
+		}
+	}
+
     $mform = new import_form(null, $course->id);
 
 	if ($data = $mform->get_data()) {
 		if ($xml = $mform->get_file_content('userfile')) {
-			require_once($CFG->dirroot.'/lib/xmlize.php');
-			$data = xmlize($xml, 1, 'UTF-8');
-
-			if(isset($data['report']['@']['version'])){
-				$newreport = new stdclass;
-				foreach($data['report']['#'] as $key=>$val){
-					if($key == 'components') {
-                        $val[0]['#'] = base64_decode(trim($val[0]['#']));
-						// fix url_encode " and ' when importing SQL queries
-						$temp_components = cr_unserialize($val[0]['#']);
-						$temp_components['customsql']['config']->querysql = str_replace("\'","'",$temp_components['customsql']['config']->querysql);
-						$temp_components['customsql']['config']->querysql = str_replace('\"','"',$temp_components['customsql']['config']->querysql);
-						$val[0]['#'] = cr_serialize($temp_components);
-                    }
-					$newreport->{$key} = trim($val[0]['#']);
-				}
-				$newreport->courseid = $course->id;
-				$newreport->ownerid = $USER->id;
-				if(!$DB->insert_record('block_configurable_reports',$newreport))
-					print_error('errorimporting');
-				header("Location: $CFG->wwwroot/blocks/configurable_reports/managereport.php?courseid={$course->id}");
-				die;
+			if (cr_import_xml($xml, $course)) {
+		        header("Location: $CFG->wwwroot/blocks/configurable_reports/managereport.php?courseid={$course->id}");
+		        die;
+			} else {
+				print_error('errorimporting');
 			}
 		}
 	}
@@ -91,6 +92,12 @@
 	$PAGE->set_title($title);
 	$PAGE->set_heading( $title);
 	$PAGE->set_cacheable( true);
+	$jsmodule = array(
+                'name' => 'block_configurable_reports',
+                'fullpath' => '/blocks/configurable_reports/js/configurable_reports.js',
+                'requires' => array("io"));
+    $PAGE->requires->js_init_call('M.block_configurable_reports.loadReportCategories', null, false, $jsmodule);
+
 	echo $OUTPUT->header();
 
 	if($reports){
@@ -153,6 +160,29 @@
 	}
 
 	echo $OUTPUT->heading('<div class="addbutton"><a class="linkbutton" href="'.$CFG->wwwroot.'/blocks/configurable_reports/editreport.php?courseid='.$course->id.'">'.(get_string('addreport','block_configurable_reports')).'</a></div>');
+
+
+	// Repository report import.
+	if ($userandrepo = get_config('block_configurable_reports','crrepository')) {
+		echo html_writer::start_tag('div', array('class' => 'mform'));
+		echo html_writer::start_tag('fieldset');
+		echo html_writer::tag('legend', get_string('importfromrepository', 'block_configurable_reports'));
+
+		$reportcategories = array('' => '...');
+		echo html_writer::select($reportcategories, 'crreportcategories', '', null,
+									array('onchange' => 'M.block_configurable_reports.onchange_crreportcategories(this,"'.sesskey().'")',
+										  'id' => 'id_crreportcategories'
+										)
+		);
+		echo html_writer::select(array(), 'crreportnames', '', array(),
+									array('onchange' => 'M.block_configurable_reports.onchange_crreportnames(this,"'.sesskey().'")',
+											'id' => 'id_crreportnames'
+										)
+		);
+
+		echo html_writer::end_tag('fieldset');
+		echo html_writer::end_tag('div');
+	}
 
 	$mform->display();
 

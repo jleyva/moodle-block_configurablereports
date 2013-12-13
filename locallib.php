@@ -479,3 +479,33 @@ function cr_cr_make_categories_list(&$list, &$parents, $requiredcapability = '',
     }
 }
 
+function cr_import_xml($xml, $course) {
+    global $CFG, $DB, $USER;
+
+    require_once($CFG->dirroot.'/lib/xmlize.php');
+    $data = xmlize($xml, 1, 'UTF-8');
+
+    if(isset($data['report']['@']['version'])){
+        $newreport = new stdclass;
+        foreach($data['report']['#'] as $key=>$val){
+            if($key == 'components') {
+                $val[0]['#'] = base64_decode(trim($val[0]['#']));
+                // fix url_encode " and ' when importing SQL queries
+                $temp_components = cr_unserialize($val[0]['#']);
+                $temp_components['customsql']['config']->querysql = str_replace("\'","'",$temp_components['customsql']['config']->querysql);
+                $temp_components['customsql']['config']->querysql = str_replace('\"','"',$temp_components['customsql']['config']->querysql);
+                $val[0]['#'] = cr_serialize($temp_components);
+            }
+            $newreport->{$key} = trim($val[0]['#']);
+        }
+        $newreport->courseid = $course->id;
+        $newreport->ownerid = $USER->id;
+        $newreport->name .= " (" . userdate(time()) . ")";
+
+        if(!$DB->insert_record('block_configurable_reports',$newreport)) {
+            return false;
+        }
+        return true;
+    }
+    return false;
+}

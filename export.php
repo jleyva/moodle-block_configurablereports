@@ -22,68 +22,72 @@
   * @date: 2009
   */
 
-    require_once("../../config.php");
+require_once("../../config.php");
 
-	require_once($CFG->dirroot."/blocks/configurable_reports/locallib.php");
+require_once($CFG->dirroot."/blocks/configurable_reports/locallib.php");
 
-	$id = required_param('id', PARAM_INT);
+$id = required_param('id', PARAM_INT);
 
-	if(! $report = $DB->get_record('block_configurable_reports',array('id' => $id)))
-		print_error('reportdoesnotexists','block_configurable_reports');
-
-
-	if (! $course = $DB->get_record("course",array( "id" =>  $report->courseid)) ) {
-		print_error("nosuchcourseid",'block_configurable_reports');	}
+if(! $report = $DB->get_record('block_configurable_reports',array('id' => $id)))
+	print_error('reportdoesnotexists','block_configurable_reports');
 
 
-	// Force user login in course (SITE or Course)
-    if ($course->id == SITEID){
-        require_login();
-        $context = context_system::instance();
-    } else {
-        require_login($course->id);
-        $context = context_course::instance($course->id);
+if (! $course = $DB->get_record("course",array( "id" =>  $report->courseid)) ) {
+	print_error("nosuchcourseid",'block_configurable_reports');	}
+
+
+// Force user login in course (SITE or Course)
+if ($course->id == SITEID){
+    require_login();
+    $context = context_system::instance();
+} else {
+    require_login($course->id);
+    $context = context_course::instance($course->id);
+}
+
+$PAGE->set_context($context);
+
+if(!has_capability('block/configurable_reports:managereports', $context) && ! (has_capability('block/configurable_reports:manageownreports', $context) && $report->ownerid == $USER->id))
+	print_error('badpermissions','block_configurable_reports');
+
+if(!confirm_sesskey())
+	print_error('badpermissions','block_configurable_reports');
+
+$downloadfilename = clean_filename(format_string($report->name)).'.xml';
+
+$version = $DB->get_field('config_plugins','value',array('plugin' => 'block_configurable_reports', 'name' => 'version'));
+if(!$version) {
+    if (!$version = $DB->get_field('block','version',array('name' => 'configurable_reports'))) {
+	   print_error("Plugin not found");
     }
+}
 
-	$PAGE->set_context($context);
+$data = '<?xml version="1.0" encoding="UTF-8" ?>'."\n";
+$data .= "<report version=\"$version\">";
 
-	if(!has_capability('block/configurable_reports:managereports', $context) && ! (has_capability('block/configurable_reports:manageownreports', $context) && $report->ownerid == $USER->id))
-		print_error('badpermissions','block_configurable_reports');
+$reportdata = (array) $report;
+unset($reportdata['id']);
+unset($reportdata['courseid']);
+unset($reportdata['ownerid']);
+$reportdata['components'] = base64_encode($reportdata['components']);
 
-	if(!confirm_sesskey())
-		print_error('badpermissions','block_configurable_reports');
+foreach($reportdata as $key=>$value){
+	$data .= "<$key><![CDATA[$value]]></$key>\n";
+}
 
-	$downloadfilename = clean_filename(format_string($report->name)).'.xml';
-	$version = $DB->get_field('block','version',array('name' => 'configurable_reports'));
-	if(!$version)
-		print_error("Plugin not found");
+$data .= "</report>";
 
-	$data = '<?xml version="1.0" encoding="UTF-8" ?>'."\n";
-	$data .= "<report version=\"$version\">";
+if (strpos($CFG->wwwroot, 'https://') === 0) { //https sites - watch out for IE! KB812935 and KB316431
+	@header('Cache-Control: max-age=10');
+	@header('Expires: '. gmdate('D, d M Y H:i:s', 0) .' GMT');
+	@header('Pragma: ');
+} else { //normal http - prevent caching at all cost
+	@header('Cache-Control: private, must-revalidate, pre-check=0, post-check=0, max-age=0');
+	@header('Expires: '. gmdate('D, d M Y H:i:s', 0) .' GMT');
+	@header('Pragma: no-cache');
+}
+header("Content-type: text/xml; charset=UTF-8");
+header("Content-Disposition: attachment; filename=\"$downloadfilename\"");
 
-	$reportdata = (array) $report;
-	unset($reportdata['id']);
-	unset($reportdata['courseid']);
-	unset($reportdata['ownerid']);
-	$reportdata['components'] = base64_encode($reportdata['components']);
-
-	foreach($reportdata as $key=>$value){
-		$data .= "<$key><![CDATA[$value]]></$key>\n";
-	}
-
-	$data .= "</report>";
-
-	if (strpos($CFG->wwwroot, 'https://') === 0) { //https sites - watch out for IE! KB812935 and KB316431
-		@header('Cache-Control: max-age=10');
-		@header('Expires: '. gmdate('D, d M Y H:i:s', 0) .' GMT');
-		@header('Pragma: ');
-	} else { //normal http - prevent caching at all cost
-		@header('Cache-Control: private, must-revalidate, pre-check=0, post-check=0, max-age=0');
-		@header('Expires: '. gmdate('D, d M Y H:i:s', 0) .' GMT');
-		@header('Pragma: no-cache');
-	}
-	header("Content-type: text/xml; charset=UTF-8");
-	header("Content-Disposition: attachment; filename=\"$downloadfilename\"");
-
-	print($data);
+print($data);
 

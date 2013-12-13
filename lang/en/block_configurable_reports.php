@@ -410,9 +410,13 @@ $string['email_message'] = 'Message';
 $string['email_send'] = 'Send';
 
 $string['sqlsecurity'] = 'SQL Security';
-$string['sqlsecurityinfo'] = 'Disable for executing SQL queries with statements for inserting data';
+$string['sqlsecurityinfo'] = 'Disable for executing SQL queries with statements for inserting data (GitHub account owner + slash + repository name)';
 
 $string['global'] = 'Global report';
 $string['enableglobal'] = 'This is a global report (accesible from any course)';
 $string['global_help'] = 'Global report can be accessed from any course in the platform just appending &courseid=MY_COURSE_ID in the report URL';
+
+$string['crrepository'] = 'Reports repository';
+$string['crrepositoryinfo'] = 'Remote shared repository with sample reports fully functional';
+$string['importfromrepository'] = 'Import from shared repository';
 
