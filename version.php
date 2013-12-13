@@ -31,7 +31,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 $plugin->version = 2011040106;  // Plugin version.
-$plugin->requires = 2010112400; // require Moodle version.
+$plugin->requires = 2011120500; // require Moodle version (2.2).
 $plugin->maturity = MATURITY_STABLE;
 $plugin->release = '2.3';
 $plugin->component = 'block_configurable_reports'; // Full name of the plugin (used for diagnostics)
