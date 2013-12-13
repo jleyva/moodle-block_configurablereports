@@ -59,8 +59,8 @@
 			print_error('errorimporting');
 		}
 		if (cr_import_xml($xml, $course)) {
-	        header("Location: $CFG->wwwroot/blocks/configurable_reports/managereport.php?courseid={$course->id}");
-	        die;
+			redirect("$CFG->wwwroot/blocks/configurable_reports/managereport.php?courseid={$course->id}",
+						get_string('reportcreated', 'block_configurable_reports'));
 		} else {
 			print_error('errorimporting');
 		}
@@ -71,8 +71,8 @@
 	if ($data = $mform->get_data()) {
 		if ($xml = $mform->get_file_content('userfile')) {
 			if (cr_import_xml($xml, $course)) {
-		        header("Location: $CFG->wwwroot/blocks/configurable_reports/managereport.php?courseid={$course->id}");
-		        die;
+		        redirect("$CFG->wwwroot/blocks/configurable_reports/managereport.php?courseid={$course->id}",
+						get_string('reportcreated', 'block_configurable_reports'));
 			} else {
 				print_error('errorimporting');
 			}
