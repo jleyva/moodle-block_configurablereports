@@ -27,6 +27,14 @@ By Tim Hunt
 
 Versions history
 
+2.3.1 (2011040107) for Moodle 2.0, 2.1, 2.2, 2.3, 2.4, 2.5m 2.6
+Release date Monday, 16 December 2013, 10:25 AM
+Some minor bug fixes
+SQL syntax by default is disabled
+New block instance settings (change name and also show/hide global reports)
+New users cohorts condition
+
+
 2.3 (2011040106) for Moodle 2.0, 2.1, 2.2, 2.3, 2.4, 2.5m 2.6
 Release date Friday, 13 December 2013, 4:35 PM
 
