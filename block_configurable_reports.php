@@ -33,6 +33,18 @@ class block_configurable_reports extends block_list {
         $this->title = get_string('pluginname', 'block_configurable_reports');
     }
 
+    public function specialization() {
+        if (empty($this->config->title)) {
+            $this->title = get_string('pluginname', 'block_configurable_reports');
+        } else {
+            $this->title = $this->config->title;
+        }
+    }
+
+    public function instance_allow_config() {
+        return true;
+    }
+
     /**
      * Where to add the block
      *
@@ -93,16 +105,18 @@ class block_configurable_reports extends block_list {
         }
 
         // Site (Shared) reports
-        $reports = $DB->get_records('block_configurable_reports',array('global' => 1),'name ASC');
+        if (!empty($this->config->displayglobalreports)) {
+          $reports = $DB->get_records('block_configurable_reports',array('global' => 1),'name ASC');
 
-        if ($reports) {
-            foreach($reports as $report){
-                if($report->visible && cr_check_report_permissions($report, $USER->id, $context)){
-                    $rname = format_string($report->name);
-                    $this->content->items[] = '<a href= "'.$CFG->wwwroot.'/blocks/configurable_reports/viewreport.php?id='.$report->id.'&courseid='.$course->id.'" alt="'.$rname.'">'.$rname.'</a>';
-                }
-            }
-            $this->content->items[] = '========';
+          if ($reports) {
+              foreach($reports as $report){
+                  if($report->visible && cr_check_report_permissions($report, $USER->id, $context)){
+                      $rname = format_string($report->name);
+                      $this->content->items[] = '<a href= "'.$CFG->wwwroot.'/blocks/configurable_reports/viewreport.php?id='.$report->id.'&courseid='.$course->id.'" alt="'.$rname.'">'.$rname.'</a>';
+                  }
+              }
+              $this->content->items[] = '========';
+          }
         }
 
         // Course reports

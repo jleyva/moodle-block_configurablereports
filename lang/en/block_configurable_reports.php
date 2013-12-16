@@ -431,4 +431,5 @@ If the connection to the repository is not working, you can download manually he
 $string['reportcreated'] = 'Report successfully created';
 $string['usersincohorts'] = 'User who are member of a/several cohorts';
 $string['usersincohorts_summary'] = 'Only the users who are members of the selected cohorts';
+$string['displayglobalreports'] = 'Display global reports';
 
