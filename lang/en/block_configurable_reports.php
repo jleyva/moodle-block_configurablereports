@@ -304,6 +304,12 @@ $string['template_marks_help'] = '<p>You can use any of this replacement marks:<
 </ul>';
 
 
+
+$string['conditionexpr_conditions'] = 'Condition';
+$string['conditionexpr_conditions_help'] = '<p>You can combine conditions using a logic expression</p>
+
+<p>Enter a valid logic expression with these operators: and, or.</p>';
+
 $string['conditionexpr_permissions'] = 'Condition';
 $string['conditionexpr_permissions_help'] = '<p>You can combine conditions using a logic expression</p>
 
@@ -423,4 +429,6 @@ Please, notice that there is a daily limit of calls to the repository.
 If the connection to the repository is not working, you can download manually here <a href="https://github.com/jleyva/moodle-configurable_reports_repository" target="_blank">https://github.com/jleyva/moodle-configurable_reports_repository</a> a report and then import it using the "Import report" feature displayed bellow
 ';
 $string['reportcreated'] = 'Report successfully created';
+$string['usersincohorts'] = 'User who are member of a/several cohorts';
+$string['usersincohorts_summary'] = 'Only the users who are members of the selected cohorts';
 

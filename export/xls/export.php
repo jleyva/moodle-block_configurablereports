@@ -21,7 +21,7 @@
   * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
   * @date: 2009
   */
-  
+
   function export_report($report){
 	global $DB, $CFG;
     require_once($CFG->dirroot.'/lib/excellib.class.php');
@@ -29,7 +29,7 @@
     $table = $report->table;
 	$matrix = array();
 	$filename = 'report_'.(time()).'.xls';
-	
+
     if (!empty($table->head)) {
         $countcols = count($table->head);
         $keys=array_keys($table->head);
@@ -53,14 +53,14 @@
     /// Sending HTTP headers
     $workbook->send($downloadfilename);
     /// Adding the worksheet
-    $myxls =& $workbook->add_worksheet($filename);     
-    
+    $myxls = $workbook->add_worksheet($filename);
+
     foreach($matrix as $ri=>$col){
         foreach($col as $ci=>$cv){
             $myxls->write_string($ri,$ci,$cv);
         }
     }
-    
+
     $workbook->close();
     exit;
 

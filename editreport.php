@@ -150,8 +150,8 @@
 		}
 	}
 
-
 	require_once('editreport_form.php');
+
 	if(!empty($report))
 		$editform = new report_edit_form('editreport.php',compact('report','courseid','context'));
 	else
@@ -173,7 +173,6 @@
 			redirect($CFG->wwwroot.'/blocks/configurable_reports/editreport.php');
 	}
 	else if ($data = $editform->get_data()) {
-
 
 		require_once($CFG->dirroot.'/blocks/configurable_reports/report.class.php');
 		require_once($CFG->dirroot.'/blocks/configurable_reports/reports/'.$data->type.'/report.class.php');

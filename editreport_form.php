@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 
 // This file is part of Moodle - http://moodle.org/
 //
@@ -77,7 +77,6 @@ class report_edit_form extends moodleform {
         $mform->setDefault('cron',0);
         $mform->disabledIf('cron', 'type', 'neq', 'sql');
 
-
         $mform->addElement('header', 'exportoptions', get_string('exportoptions', 'block_configurable_reports'));
         $options = cr_get_export_plugins();
 
@@ -99,7 +98,6 @@ class report_edit_form extends moodleform {
 
         // buttons
         $this->add_action_buttons(true, get_string('add'));
-
     }
 
     function validation($data, $files){
@@ -107,5 +105,4 @@ class report_edit_form extends moodleform {
 
         return $errors;
     }
-
 }
