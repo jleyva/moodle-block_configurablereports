@@ -432,4 +432,8 @@ $string['reportcreated'] = 'Report successfully created';
 $string['usersincohorts'] = 'User who are member of a/several cohorts';
 $string['usersincohorts_summary'] = 'Only the users who are members of the selected cohorts';
 $string['displayglobalreports'] = 'Display global reports';
+$string['displayreportslist'] = 'Display the reports list in the block body';
+
+$string['usercompletion'] = 'User course completion status';
+$string['usercompletionsummary'] = 'Course completion status';
 
