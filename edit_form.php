@@ -31,6 +31,9 @@ class block_configurable_reports_edit_form extends block_edit_form {
         $mform->setType('config_title', PARAM_MULTILANG);
         $mform->setDefault('config_title', get_string('pluginname', 'block_configurable_reports'));
 
+        $mform->addElement('selectyesno', 'config_displayreportslist', get_string('displayreportslist', 'block_configurable_reports'));
+        $mform->setDefault('config_displayreportslist', 1);
+
         $mform->addElement('selectyesno', 'config_displayglobalreports', get_string('displayglobalreports', 'block_configurable_reports'));
         $mform->setDefault('config_displayglobalreports', 1);
 

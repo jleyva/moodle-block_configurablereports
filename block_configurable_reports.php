@@ -84,25 +84,25 @@ class block_configurable_reports extends block_list {
             return $this->content;
         }
 
-		$this->content = new stdClass;
-		$this->content->footer = '';
-		$this->content->icons = array();
+    		$this->content = new stdClass;
+    		$this->content->footer = '';
+    		$this->content->icons = array();
 
-		if (!isloggedin())
-			return $this->content;
+    		if (!isloggedin())
+    			return $this->content;
 
-		require_once($CFG->dirroot."/blocks/configurable_reports/locallib.php");
+    		require_once($CFG->dirroot."/blocks/configurable_reports/locallib.php");
 
-		$course = $DB->get_record('course',array('id' => $COURSE->id));
+    		$course = $DB->get_record('course',array('id' => $COURSE->id));
 
-		if(!$course)
-			print_error('coursedoesnotexists');
+    		if(!$course)
+    			print_error('coursedoesnotexists');
 
-		if ($course->id == SITEID) {
-            $context = context_system::instance();
-        } else {
-            $context = context_course::instance($course->id);
-        }
+    		if ($course->id == SITEID) {
+                $context = context_system::instance();
+            } else {
+                $context = context_course::instance($course->id);
+            }
 
         // Site (Shared) reports
         if (!empty($this->config->displayglobalreports)) {
@@ -120,7 +120,9 @@ class block_configurable_reports extends block_list {
         }
 
         // Course reports
-        if ($course->id != SITEID) {
+        if (!property_exists($this, 'config')
+            or !property_exists($this->config, 'displayreportslist')
+            or $this->config->displayreportslist) {
             $reports = $DB->get_records('block_configurable_reports',array('courseid' => $course->id),'name ASC');
 
             if ($reports) {
@@ -134,9 +136,9 @@ class block_configurable_reports extends block_list {
             }
         }
 
-		if(has_capability('block/configurable_reports:managereports', $context) || has_capability('block/configurable_reports:manageownreports', $context)){
-			$this->content->items[] = '<a href="'.$CFG->wwwroot.'/blocks/configurable_reports/managereport.php?courseid='.$course->id.'">'.(get_string('managereports','block_configurable_reports')).'</a>';
-		}
+    		if(has_capability('block/configurable_reports:managereports', $context) || has_capability('block/configurable_reports:manageownreports', $context)){
+    			$this->content->items[] = '<a href="'.$CFG->wwwroot.'/blocks/configurable_reports/managereport.php?courseid='.$course->id.'">'.(get_string('managereports','block_configurable_reports')).'</a>';
+    		}
 
         return $this->content;
     }
