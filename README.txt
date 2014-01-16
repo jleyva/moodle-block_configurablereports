@@ -18,7 +18,7 @@ Iñaki Arenaza for translating the block documentation to spanish
 Luis de Vasconcelos for testing the block
 Adam Olley and Netspot Moodle Partner for improving some parts of the Moodle2 version
 
-Some parts of this plugin uses code of:
+Some functionalities of this plugin uses code from:
 
 Admin Report: Custom SQL queries
 http://moodle.org/mod/data/view.php?d=13&rid=2884
@@ -26,6 +26,11 @@ By Tim Hunt
 
 
 Versions history
+
+2.3.2 (2011040108) for Moodle  2.2, 2.3, 2.4, 2.5m 2.6
+Release date Thursday, 16 January 2014, 15:25 AM
+Some bug fixes
+New CSV export
 
 2.3.1 (2011040107) for Moodle 2.0, 2.1, 2.2, 2.3, 2.4, 2.5m 2.6
 Release date Monday, 16 December 2013, 10:25 AM
