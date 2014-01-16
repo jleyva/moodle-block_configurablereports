@@ -137,10 +137,10 @@ class block_configurable_reports extends block_list {
             }
         }
 
-            if (has_capability('block/configurable_reports:managereports', $context)
-                || has_capability('block/configurable_reports:manageownreports', $context)) {
-                $this->content->items[] = '<a href="'.$CFG->wwwroot.'/blocks/configurable_reports/managereport.php?courseid='.$course->id.'">'.(get_string('managereports', 'block_configurable_reports')).'</a>';
-            }
+        if (has_capability('block/configurable_reports:managereports', $context)
+            || has_capability('block/configurable_reports:manageownreports', $context)) {
+            $this->content->items[] = '<a href="'.$CFG->wwwroot.'/blocks/configurable_reports/managereport.php?courseid='.$course->id.'">'.(get_string('managereports', 'block_configurable_reports')).'</a>';
+        }
 
         return $this->content;
     }
@@ -160,7 +160,7 @@ class block_configurable_reports extends block_list {
             return false;
         }
 
-        $lastcron = $DB->get_field('blocks', 'lastcron', array('name' => 'configurable_reports'));
+        $lastcron = $DB->get_field('block', 'lastcron', array('name' => 'configurable_reports'));
         if (!$lastcron and ($lastcron + $this->cron < time()) ) {
             return false;
         }
