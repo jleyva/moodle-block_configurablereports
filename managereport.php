@@ -115,13 +115,15 @@
 
 		foreach($reports as $r){
 
-			if($r->courseid == 1)
+			if($r->courseid == 1) {
 				$coursename = '<a href="'.$CFG->wwwroot.'">'.get_string('site').'</a>';
-			else if(! $coursename = $DB->get_field('course','fullname',array('id' => $r->courseid)))
+			} else if(! $coursename = $DB->get_field('course','fullname',array('id' => $r->courseid))) {
 				$coursename = get_string('deleted');
-			else
+			} else {
+				$coursename = format_string($coursename);
 				//$coursename = '<a href="'.$CFG->wwwroot.'/course/view.php?id='.$r->courseid.'">'.$coursename.'</a>';
                 $coursename = '<a href="'.$CFG->wwwroot.'/blocks/configurable_reports/managereport.php?courseid='.$r->courseid.'">'.$coursename.'</a>';
+            }
 
 			if($owneruser = $DB->get_record('user',array('id' => $r->ownerid)))
 				$owner = '<a href="'.$CFG->wwwroot.'/user/view.php?id='.$r->ownerid.'">'.fullname($owneruser).'</a>';
