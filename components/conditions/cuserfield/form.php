@@ -52,7 +52,7 @@ class cuserfield_form extends moodleform {
 
 		$mform->addElement('select', 'operator', get_string('operator','block_configurable_reports'), $this->allowedops);
 		$mform->addElement('text', 'value', get_string('value','block_configurable_reports'));
-		$mform->setType('value', PARAM_FLOAT);
+		$mform->setType('value', PARAM_RAW);
         // buttons
         $this->add_action_buttons(true, get_string('add'));
 
