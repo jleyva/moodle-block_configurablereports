@@ -26,6 +26,8 @@ $string['column'] = "Column";
 $string['confirmdeletereport'] = "Are you sure you want to delete this report?";
 $string['noreportsavailable'] = "No reports available";
 $string['downloadreport'] = "Download report";
+$string['reportlimit'] = "Report row limit";
+$string['reportlimitinfo'] = "Limit the number of rows that are displayed in the report table (Default is 5000 rows. Better to have some limit, so users will not over load the DB engine)";
 
 $string['configurable_reports:addinstance'] = 'Add a new configurable reports block';
 $string['configurable_reports:manageownreports'] = "Manage own reports";
