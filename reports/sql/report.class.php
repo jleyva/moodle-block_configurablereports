@@ -58,7 +58,7 @@ class report_sql extends report_base {
 		return $sql;
 	}
 
-	function execute_query($sql, $limitnum = REPORT_CUSTOMSQL_MAX_RECORDS) {
+	function execute_query($sql, $limitnum = REPORT_CUSTOMSQL_MAX_RECORDS /* ignored */) {
 		global $remoteDB, $DB, $CFG;
 
 		$sql = preg_replace('/\bprefix_(?=\w+)/i', $CFG->prefix, $sql);
@@ -82,6 +82,11 @@ class report_sql extends report_base {
             $remoteDBpass = $CFG->dbpass;
         }
 
+        $reportlimit = get_config('block_configurable_reports','reportlimit');
+        if (empty($reportlimit) or $reportlimit == '0') {
+                $reportlimit = REPORT_CUSTOMSQL_MAX_RECORDS;
+        }
+
         $db_class = get_class($DB);
         $remoteDB = new $db_class();
         $remoteDB->connect($remoteDBhost, $remoteDBuser, $remoteDBpass, $remoteDBname, $CFG->prefix);
@@ -92,7 +97,7 @@ class report_sql extends report_base {
             // Run special (dangerous) queries directly.
             $results = $remoteDB->execute($sql);
         } else {
-            $results = $remoteDB->get_recordset_sql($sql, null, 0, $limitnum);
+            $results = $remoteDB->get_recordset_sql($sql, null, 0, $reportlimit);
         }
 
         // Update the execution time in the DB.
