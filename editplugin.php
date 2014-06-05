@@ -153,7 +153,7 @@
 				redirect($CFG->wwwroot.'/blocks/configurable_reports/editreport.php');
 		}
 		else if ($data = $editform->get_data()) {
-			add_to_log($report->courseid, 'configurable_reports', 'edit', '', $report->name);
+			cr_add_to_log($report->courseid, 'configurable_reports', 'edit', '', $report->name);
 			if(!empty($cdata)){
 				// cr_serialize() will add slashes
 

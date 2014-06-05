@@ -441,4 +441,5 @@ $string['usercompletion'] = 'User course completion status';
 $string['usercompletionsummary'] = 'Course completion status';
 
 $string['finalgradeincurrentcourse'] = 'Final grade in current course';
-
+$string['legacylognotenabled'] = 'Legacy logs must be enabled.
+ Go to Site administration / Plugins / Logging Enable the Legacy log and inside the log settings check Log legacy data';

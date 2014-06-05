@@ -100,6 +100,15 @@
 
 	echo $OUTPUT->header();
 
+	if ($CFG->version >= 2014051200) {
+		$plugins = get_config('tool_log', 'enabled_stores');
+		$plugins = explode(',', $plugins);
+
+		if (!get_config('logstore_legacy', 'loglegacy') or !in_array("logstore_legacy", $plugins)) {
+			echo $OUTPUT->error_text(get_string('legacylognotenabled', 'block_configurable_reports'), 'generalbox adminwarning');
+		}
+	}
+
 	if($reports){
 		$table = new stdclass;
 		$table->width = "100%";

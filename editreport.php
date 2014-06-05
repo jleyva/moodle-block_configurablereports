@@ -108,7 +108,7 @@
 		if(!$DB->set_field('block_configurable_reports','visible',$visible,array('id' => $report->id)))
 			print_error('cannotupdatereport','block_configurable_reports');
 		$action = ($visible)? 'showed' : 'hidden';
-		add_to_log($report->courseid, 'configurable_reports', 'report '.$action, '/block/configurable_reports/editreport.php?id='.$report->id, $report->id);
+		cr_add_to_log($report->courseid, 'configurable_reports', 'report '.$action, '/block/configurable_reports/editreport.php?id='.$report->id, $report->id);
 		header("Location: $CFG->wwwroot/blocks/configurable_reports/managereport.php?courseid=$courseid");
 		die;
 	}
@@ -121,7 +121,7 @@
 		$newreport->summary = $newreport->summary;
 		if(! $newreportid = $DB->insert_record('block_configurable_reports',$newreport))
 			print_error('cannotduplicate','block_configurable_reports');
-		add_to_log($newreport->courseid, 'configurable_reports', 'report duplicated', '/block/configurable_reports/editreport.php?id='.$newreportid, $id);
+		cr_add_to_log($newreport->courseid, 'configurable_reports', 'report duplicated', '/block/configurable_reports/editreport.php?id='.$newreportid, $id);
 		header("Location: $CFG->wwwroot/blocks/configurable_reports/managereport.php?courseid=$courseid");
 		die;
 	}
@@ -144,7 +144,7 @@
 		}
 		else{
 			if($DB->delete_records('block_configurable_reports',array('id'=>$report->id)))
-				add_to_log($report->courseid, 'configurable_reports', 'report deleted', '/block/configurable_reports/editreport.php?id='.$report->id, $report->id);
+				cr_add_to_log($report->courseid, 'configurable_reports', 'report deleted', '/block/configurable_reports/editreport.php?id='.$report->id, $report->id);
 			header("Location: $CFG->wwwroot/blocks/configurable_reports/managereport.php?courseid=$courseid");
 			die;
 		}
@@ -210,13 +210,13 @@
 			if(! $lastid = $DB->insert_record('block_configurable_reports',$data)){
 				print_error('errorsavingreport','block_configurable_reports');
 			}else{
-				add_to_log($courseid, 'configurable_reports', 'report created', '/block/configurable_reports/editreport.php?id='.$lastid, $data->name);
+				cr_add_to_log($courseid, 'configurable_reports', 'report created', '/block/configurable_reports/editreport.php?id='.$lastid, $data->name);
 				$reportclass = new $reportclassname($lastid);
 				redirect($CFG->wwwroot.'/blocks/configurable_reports/editcomp.php?id='.$lastid.'&comp='.$reportclass->components[0]);
 			}
 		}
 		else{
-			add_to_log($report->courseid, 'configurable_reports', 'edit', '/block/configurable_reports/editreport.php?id='.$id, $report->name);
+			cr_add_to_log($report->courseid, 'configurable_reports', 'edit', '/block/configurable_reports/editreport.php?id='.$id, $report->name);
 			$reportclass = new $reportclassname($data->id);
 			$data->type = $report->type;
 
