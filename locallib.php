@@ -512,6 +512,8 @@ function cr_import_xml($xml, $course) {
 
 // For avoid warnings in versions minor than 2.7
 function cr_add_to_log($courseid, $module, $action, $url='', $info='', $cm=0, $user=0) {
+    global $CFG;
+
     if ($CFG->version < 2014051200) {
         add_to_log($courseid, $module, $action, $url, $info, $cm, $user);
     }
