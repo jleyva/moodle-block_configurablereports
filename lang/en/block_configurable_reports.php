@@ -440,3 +440,5 @@ $string['displayreportslist'] = 'Display the reports list in the block body';
 $string['usercompletion'] = 'User course completion status';
 $string['usercompletionsummary'] = 'Course completion status';
 
+$string['finalgradeincurrentcourse'] = 'Final grade in current course';
+

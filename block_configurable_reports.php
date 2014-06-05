@@ -116,7 +116,9 @@ class block_configurable_reports extends block_list {
                         $this->content->items[] = '<a href= "'.$CFG->wwwroot.'/blocks/configurable_reports/viewreport.php?id='.$report->id.'&courseid='.$course->id.'" alt="'.$rname.'">'.$rname.'</a>';
                     }
                 }
-                $this->content->items[] = '========';
+                if (!empty($this->content->items)) {
+                    $this->content->items[] = '========';
+                }
             }
         }
 
@@ -133,7 +135,9 @@ class block_configurable_reports extends block_list {
                         $this->content->items[] = '<a href= "'.$CFG->wwwroot.'/blocks/configurable_reports/viewreport.php?id='.$report->id.'&courseid='.$course->id.'" alt="'.$rname.'">'.$rname.'</a>';
                     }
                 }
-                $this->content->items[] = '========';
+                if (!empty($this->content->items)) {
+                    $this->content->items[] = '========';
+                }
             }
         }
 
