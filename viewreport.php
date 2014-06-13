@@ -63,7 +63,7 @@
 	}
 
 	$PAGE->set_context($context);
-	$PAGE->set_pagelayout('report');
+	$PAGE->set_pagelayout('incourse');
 	$PAGE->set_url('/blocks/configurable_reports/viewreport.php', array('id'=>$id));
 
 	$reportclass->create_report();
