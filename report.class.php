@@ -36,7 +36,7 @@
     var $sql = '';
 
 	function reports_base($report){
-		global $DB, $CFG, $USER;
+		global $DB, $CFG, $USER, $remotedb;
 
 		if(is_numeric($report))
 			$this->config = $DB->get_record('block_configurable_reports',array('id' => $report));
@@ -46,6 +46,22 @@
 		$this->currentuser = $USER;
 		$this->currentcourseid = $this->config->courseid;
 		$this->init();
+
+		// Use a custom $DB (and not current system's $DB)
+        // TODO: major security issue.
+        $remotedbhost = get_config('block_configurable_reports', 'dbhost');
+        $remotedbname = get_config('block_configurable_reports', 'dbname');
+        $remotedbuser = get_config('block_configurable_reports', 'dbuser');
+        $remotedbpass = get_config('block_configurable_reports', 'dbpass');
+
+        if (!empty($remotedbhost) and !empty($remotedbname) and !empty($remotedbuser) and !empty($remotedbpass) ) {
+            $db_class = get_class($DB);
+            $remotedb = new $db_class();
+            $remotedb->connect($remotedbhost, $remotedbuser, $remotedbpass, $remotedbname, $CFG->prefix);
+        } else {
+            $remotedb = $DB;
+        }
+
 	}
 
 	function __construct($report) {

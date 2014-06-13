@@ -38,7 +38,7 @@ class plugin_coursemodules extends plugin_base{
 	}
 
 	function execute($finalelements, $data) {
-        global $remoteDB;
+        global $remotedb;
 
 		$filter_coursemoduleid = optional_param('filter_coursemodules',0,PARAM_INT);
 		if(!$filter_coursemoduleid)
@@ -57,7 +57,7 @@ class plugin_coursemodules extends plugin_base{
             }
 
             if (preg_match("/%%FILTER_COURSEMODULE:([^%]+)%%/i",$finalelements, $output)) {
-                $module = $remoteDB->get_record('modules', array('id' => $filter_coursemoduleid));
+                $module = $remotedb->get_record('modules', array('id' => $filter_coursemoduleid));
                 $replace = ' JOIN mdl_'.$module->name.' AS m ON m.id = '.$output[1].' ';
                 $finalelements = str_replace('%%FILTER_COURSEMODULE:'.$output[1].'%%', $replace, $finalelements);
             }
@@ -66,7 +66,7 @@ class plugin_coursemodules extends plugin_base{
 	}
 
 	function print_filter(&$mform){
-		global $remoteDB;
+		global $remotedb;
 
 		$filter_coursemoduleid = optional_param('filter_coursemodules',0,PARAM_INT);
 
@@ -79,15 +79,15 @@ class plugin_coursemodules extends plugin_base{
 
 			$coursemodulelist = $reportclass->elements_by_conditions($conditions);
 		} else {
-			$coursemodulelist = array_keys($remoteDB->get_records('modules'));
+			$coursemodulelist = array_keys($remotedb->get_records('modules'));
 		}
 
 		$courseoptions = array();
 		$courseoptions[0] = get_string('filter_all', 'block_configurable_reports');
 
 		if(!empty($coursemodulelist)){
-			list($usql, $params) = $remoteDB->get_in_or_equal($coursemodulelist);
-			$coursemodules = $remoteDB->get_records_select('modules',"id $usql",$params);
+			list($usql, $params) = $remotedb->get_in_or_equal($coursemodulelist);
+			$coursemodules = $remotedb->get_records_select('modules',"id $usql",$params);
 
 			foreach($coursemodules as $c){
 				$courseoptions[$c->id] = format_string(get_string('pluginname',$c->name).' = '.$c->name);

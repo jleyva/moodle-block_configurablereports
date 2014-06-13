@@ -32,7 +32,7 @@ class fuserfield_form extends moodleform {
 
     function definition() {
 
-        global $remoteDB;
+        global $remotedb;
 
         $mform =& $this->_form;
 
@@ -40,13 +40,13 @@ class fuserfield_form extends moodleform {
 
 		$this->_customdata['compclass']->add_form_elements($mform,$this);
 
-		$columns = $remoteDB->get_columns('user');
+		$columns = $remotedb->get_columns('user');
 
 		$usercolumns = array();
 		foreach($columns as $c)
 			$usercolumns[$c->name] = $c->name;
 
-		if($profile = $remoteDB->get_records('user_info_field'))
+		if($profile = $remotedb->get_records('user_info_field'))
 			foreach($profile as $p)
 				$usercolumns['profile_'.$p->shortname] = $p->name;
 

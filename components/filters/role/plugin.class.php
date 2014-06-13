@@ -55,14 +55,14 @@ class plugin_role extends plugin_base{
 	}
 
 	function print_filter(&$mform){
-		global $remoteDB, $CFG;
+		global $remotedb, $CFG;
 
 		$filter_role = optional_param('filter_role',0,PARAM_INT);
 
 		$reportclassname = 'report_'.$this->report->type;
 		$reportclass = new $reportclassname($this->report);
 
-        $systemroles = $remoteDB->get_records('role');
+        $systemroles = $remotedb->get_records('role');
         $roles = array();
         foreach($systemroles as $role) {
             $roles[$role->id] = $role->shortname;

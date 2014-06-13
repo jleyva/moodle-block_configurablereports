@@ -55,7 +55,7 @@ class plugin_enrolledstudents extends plugin_base{
 	}
 
 	function print_filter(&$mform){
-		global $remoteDB, $COURSE;
+		global $remotedb, $COURSE;
 
 		//$filter_enrolledstudents = optional_param('filter_enrolledstudents',0,PARAM_INT);
 
@@ -82,7 +82,7 @@ class plugin_enrolledstudents extends plugin_base{
                         WHERE ra.roleid=5 AND context.instanceid = {$COURSE->id}";
 
             //echo $sql;die;
-            $studentlist = $remoteDB->get_records_sql($sql);
+            $studentlist = $remotedb->get_records_sql($sql);
             //print_object($enrolledstudentslist);die;
             foreach($studentlist as $student) {
                 $enrolledstudentslist[] = $student->userid;
@@ -94,8 +94,8 @@ class plugin_enrolledstudents extends plugin_base{
 		$enrolledstudentsoptions[0] = get_string('filter_all', 'block_configurable_reports');
 
 		if(!empty($enrolledstudentslist)){
-			list($usql, $params) = $remoteDB->get_in_or_equal($enrolledstudentslist);
-			$enrolledstudents = $remoteDB->get_records_select('user',"id $usql",$params);
+			list($usql, $params) = $remotedb->get_in_or_equal($enrolledstudentslist);
+			$enrolledstudents = $remotedb->get_records_select('user',"id $usql",$params);
 
 			foreach($enrolledstudents as $c){
 				$enrolledstudentsoptions[$c->id] = format_string($c->lastname.' '.$c->firstname);

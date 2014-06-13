@@ -55,7 +55,7 @@ class plugin_users extends plugin_base{
 	}
 
 	function print_filter(&$mform){
-		global $remoteDB;
+		global $remotedb;
 
 		$reportclassname = 'report_'.$this->report->type;
 		$reportclass = new $reportclassname($this->report);
@@ -66,15 +66,15 @@ class plugin_users extends plugin_base{
 
 			$userslist = $reportclass->elements_by_conditions($conditions);
 		} else {
-            $userslist = array_keys($remoteDB->get_records('user'));
+            $userslist = array_keys($remotedb->get_records('user'));
 		}
 
 		$usersoptions = array();
 		$usersoptions[0] = get_string('filter_all', 'block_configurable_reports');
 
 		if(!empty($userslist)){
-			list($usql, $params) = $remoteDB->get_in_or_equal($userslist);
-			$users = $remoteDB->get_records_select('user',"id $usql",$params);
+			list($usql, $params) = $remotedb->get_in_or_equal($userslist);
+			$users = $remotedb->get_records_select('user',"id $usql",$params);
 
 			foreach($users as $c){
 				$usersoptions[$c->id] = format_string($c->lastname.' '.$c->firstname);

@@ -38,15 +38,15 @@ class plugin_fcoursefield extends plugin_base{
 	}
 
 	function execute($finalelements,$data){
-		global $remoteDB;
+		global $remotedb;
 		$filter_fcoursefield = optional_param('filter_fcoursefield_'.$data->field,0,PARAM_RAW);
 		if($filter_fcoursefield){
 			// addslashes is done in clean param
 			$filter = clean_param(base64_decode($filter_fcoursefield),PARAM_CLEAN);
-			list($usql, $params) = $remoteDB->get_in_or_equal($finalelements);
+			list($usql, $params) = $remotedb->get_in_or_equal($finalelements);
 			$sql = "$data->field = ? AND id $usql";
 			$params = array_merge(array($filter),$params);
-			if($elements = $remoteDB->get_records_select('course',$sql,$params)){
+			if($elements = $remotedb->get_records_select('course',$sql,$params)){
 				$finalelements = array_keys($elements);
 			}
 		}
@@ -54,9 +54,9 @@ class plugin_fcoursefield extends plugin_base{
 	}
 
 	function print_filter(&$mform, $data){
-		global $remoteDB, $CFG;
+		global $remotedb, $CFG;
 
-		$columns = $remoteDB->get_columns('course');
+		$columns = $remotedb->get_columns('course');
 		$filteroptions = array();
 		$filteroptions[''] = get_string('filter_all', 'block_configurable_reports');
 
@@ -75,7 +75,7 @@ class plugin_fcoursefield extends plugin_base{
 		$courselist = $reportclass->elements_by_conditions($conditions);
 
 		if(!empty($courselist)){
-			if($rs = $remoteDB->get_recordset_sql('SELECT DISTINCT('.$data->field.') as ufield FROM {course} WHERE '.$data->field.' <> "" ORDER BY ufield ASC', null)){
+			if($rs = $remotedb->get_recordset_sql('SELECT DISTINCT('.$data->field.') as ufield FROM {course} WHERE '.$data->field.' <> "" ORDER BY ufield ASC', null)){
 				foreach($rs as $u){
 					$filteroptions[base64_encode($u->ufield)] = $u->ufield;
 				}

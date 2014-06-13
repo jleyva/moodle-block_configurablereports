@@ -55,7 +55,7 @@ class plugin_categories extends plugin_base{
 	}
 
 	function print_filter(&$mform){
-		global $remoteDB, $CFG;
+		global $remotedb, $CFG;
 
 		$filter_categories = optional_param('filter_categories',0,PARAM_INT);
 
@@ -69,15 +69,15 @@ class plugin_categories extends plugin_base{
 			$categorieslist = $reportclass->elements_by_conditions($conditions);
 		}
 		else{
-			$categorieslist = array_keys($remoteDB->get_records('course_categories'));
+			$categorieslist = array_keys($remotedb->get_records('course_categories'));
 		}
 
 		$courseoptions = array();
 		$courseoptions[0] = get_string('filter_all', 'block_configurable_reports');
 
 		if(!empty($categorieslist)){
-			list($usql, $params) = $remoteDB->get_in_or_equal($categorieslist);
-			$categories = $remoteDB->get_records_select('course_categories',"id $usql",$params);
+			list($usql, $params) = $remotedb->get_in_or_equal($categorieslist);
+			$categories = $remotedb->get_records_select('course_categories',"id $usql",$params);
 
 			foreach($categories as $c){
 				$courseoptions[$c->id] = format_string($c->name);

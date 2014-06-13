@@ -38,7 +38,7 @@ class plugin_coursecategories extends plugin_base{
 	}
 
 	function execute($finalelements, $data) {
-        global $remoteDB, $CFG;
+        global $remotedb, $CFG;
         require_once($CFG->dirroot . "/course/lib.php");
 
 		$category = optional_param('filter_coursecategories',0,PARAM_INT);
@@ -53,7 +53,7 @@ class plugin_coursecategories extends plugin_base{
         $coursecache = array();
 		foreach ($finalelements as $key=>$course) {
             if(empty($coursecache[$course])) {
-                $coursecache[$course] = $remoteDB->get_record('course', array('id' => $course));
+                $coursecache[$course] = $remotedb->get_record('course', array('id' => $course));
             }
             $course = $coursecache[$course];
             if ($category != $course->category and !in_array($category, $parents[$course->id])) {
@@ -65,7 +65,7 @@ class plugin_coursecategories extends plugin_base{
 	}
 
 	function print_filter(&$mform){
-		global $remoteDB, $CFG;
+		global $remotedb, $CFG;
         require_once($CFG->dirroot . "/course/lib.php");
 
 		$filter_categories = optional_param('filter_coursecategories',0,PARAM_INT);

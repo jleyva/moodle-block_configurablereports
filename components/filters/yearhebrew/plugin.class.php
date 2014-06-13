@@ -55,7 +55,7 @@ class plugin_yearhebrew extends plugin_base{
 	}
 
 	function print_filter(&$mform){
-		global $remoteDB, $CFG;
+		global $remotedb, $CFG;
 
 		$filter_yearhebrew = optional_param('filter_yearhebrew',0,PARAM_RAW);
 

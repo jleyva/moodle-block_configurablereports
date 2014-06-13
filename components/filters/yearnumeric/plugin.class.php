@@ -55,7 +55,7 @@ class plugin_yearnumeric extends plugin_base{
 	}
 
 	function print_filter(&$mform){
-		global $remoteDB, $CFG;
+		global $remotedb, $CFG;
 
 		$filter_yearnumeric = optional_param('filter_yearnumeric',0,PARAM_INT);
 

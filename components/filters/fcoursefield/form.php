@@ -30,7 +30,7 @@ require_once($CFG->libdir.'/formslib.php');
 
 class fcoursefield_form extends moodleform {
     function definition() {
-        global $remoteDB, $course, $CFG;
+        global $remotedb, $course, $CFG;
 
         $mform =& $this->_form;
 
@@ -38,7 +38,7 @@ class fcoursefield_form extends moodleform {
 
 		$this->_customdata['compclass']->add_form_elements($mform,$this);
 
-		$columns = $remoteDB->get_columns('course');
+		$columns = $remotedb->get_columns('course');
 
 		$coursecolumns = array();
 		foreach($columns as $c)

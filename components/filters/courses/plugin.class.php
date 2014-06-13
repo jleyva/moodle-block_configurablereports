@@ -56,7 +56,7 @@ class plugin_courses extends plugin_base{
 	}
 
 	function print_filter(&$mform){
-		global $remoteDB, $CFG;
+		global $remotedb, $CFG;
 
 		$filter_courses = optional_param('filter_courses',0,PARAM_INT);
 
@@ -70,15 +70,15 @@ class plugin_courses extends plugin_base{
 			$courselist = $reportclass->elements_by_conditions($conditions);
 		}
 		else{
-			$courselist = array_keys($remoteDB->get_records('course'));
+			$courselist = array_keys($remotedb->get_records('course'));
 		}
 
 		$courseoptions = array();
 		$courseoptions[0] = get_string('filter_all', 'block_configurable_reports');
 
 		if(!empty($courselist)){
-			list($usql, $params) = $remoteDB->get_in_or_equal($courselist);
-			$courses = $remoteDB->get_records_select('course',"id $usql",$params);
+			list($usql, $params) = $remotedb->get_in_or_equal($courselist);
+			$courses = $remotedb->get_records_select('course',"id $usql",$params);
 
 			foreach($courses as $c){
 				$courseoptions[$c->id] = format_string($c->fullname);

@@ -55,7 +55,7 @@ class plugin_semester extends plugin_base{
 	}
 
 	function print_filter(&$mform){
-		global $remoteDB, $CFG;
+		global $remotedb, $CFG;
 
 		$filter_semester = optional_param('filter_semester','',PARAM_RAW);
 

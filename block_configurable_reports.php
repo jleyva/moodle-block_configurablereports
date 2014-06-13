@@ -185,7 +185,7 @@ class block_configurable_reports extends block_list {
                 if ($report->type == 'sql' AND (!empty($report->cron) AND $report->cron == '1')) {
                     $reportclass = new report_sql($report);
 
-                    // Execute it using $remoteDB.
+                    // Execute it using $remotedb.
                     $starttime = microtime(true);
                     mtrace("\nExecuting query '$report->name'");
 
