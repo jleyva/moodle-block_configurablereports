@@ -28,7 +28,7 @@ class plugin_fuserfield extends plugin_base{
 
 	function init(){
 		$this->form = true;
-		$this->unique = true;
+		$this->unique = false;
 		$this->fullname = get_string('fuserfield','block_configurable_reports');
 		$this->reporttypes = array('users', 'sql');
 	}
