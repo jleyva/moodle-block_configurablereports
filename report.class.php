@@ -437,6 +437,9 @@
 			foreach($rows as $r){
 				$tempcols = array();
 				foreach($columns as $c){
+					if (empty($c)) {
+						continue;
+					}
 					require_once($CFG->dirroot.'/blocks/configurable_reports/components/columns/'.$c['pluginname'].'/plugin.class.php');
 					$classname = 'plugin_'.$c['pluginname'];
 					if(!isset($pluginscache[$classname])){

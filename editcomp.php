@@ -146,6 +146,11 @@ if(! has_capability('block/configurable_reports:managereports', $context) && ! h
 		$i = 0;
 
 		foreach($elements as $e){
+
+			if (empty($e)) {
+				continue;
+			}
+
 			require_once($CFG->dirroot.'/blocks/configurable_reports/components/'.$comp.'/'.$e['pluginname'].'/plugin.class.php');
 			$pluginclassname = 'plugin_'.$e['pluginname'];
 			$pluginclass = new $pluginclassname($report);

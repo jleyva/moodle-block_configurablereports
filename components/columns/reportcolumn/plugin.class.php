@@ -137,6 +137,7 @@ class plugin_reportcolumn extends plugin_base{
 					$components['conditions']['elements'][] = $newplugin;
 					if (empty($components['conditions']['config'])) {
 						$components['conditions']['config'] = new stdclass();
+						$components['conditions']['config']->conditionexpr = '';
 					}
 					$components['conditions']['config']->conditionexpr = $this->fix_condition_expr($components['conditions']['config']->conditionexpr, count($components['conditions']['elements']));
 					$reportclass->config->components = cr_serialize($components);

@@ -34,6 +34,16 @@ Added new user column plugin (final grade in current course)
 
 Added options for limit the max number of records in SQL queries (previously the limit was hard coded to 5000)
 
+2.3.4 (2011040114)Moodle 2.2, 2.3, 2.4, 2.5, 2.6, 2.7
+Release date: Thursday, 26 June 2014, 18:16
+
+New fullname user field column
+Several bug fixes
+
+2.3.3 (2011040113)Moodle 2.2, 2.3, 2.4, 2.5, 2.6, 2.7
+Release date: Friday, 13 June 2014, 18:16
+
+Fixed layout and notice/warnings problems
 
 2.3.2 (2011040110)Moodle 2.2, 2.3, 2.4, 2.5, 2.6
 Release date: Friday, 14 February 2014, 11:14 AM

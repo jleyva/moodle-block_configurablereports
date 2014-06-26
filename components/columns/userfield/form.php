@@ -39,6 +39,8 @@ class userfield_form extends moodleform {
 		$columns = $DB->get_columns('user');
 
 		$usercolumns = array();
+
+        $usercolumns['fullname'] = get_string('fullname');
 		foreach($columns as $c)
 			$usercolumns[$c->name] = $c->name;
 
