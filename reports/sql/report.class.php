@@ -22,7 +22,7 @@
   * @date: 2009
   */
 
-define('REPORT_CUSTOMSQL_MAX_RECORDS', 5000);
+defined('REPORT_CUSTOMSQL_MAX_RECORDS') || define('REPORT_CUSTOMSQL_MAX_RECORDS', 5000);
 
 class report_sql extends report_base {
 
