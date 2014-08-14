@@ -23,7 +23,9 @@ class pie_form extends moodleform {
 
 			$columns = $components['columns']['elements'];
 			foreach($columns as $c){
-				$options[] = $c['summary'];
+				if (!empty($c['summary'])) {
+					$options[] = $c['summary'];
+				}
 			}
 		}
 		else{
