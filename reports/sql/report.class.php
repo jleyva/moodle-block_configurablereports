@@ -63,33 +63,10 @@ class report_sql extends report_base {
 
 		$sql = preg_replace('/\bprefix_(?=\w+)/i', $CFG->prefix, $sql);
 
-        // Use a custom $DB (and not current system's $DB)
-        // todo: major security issue
-        $remotedbhost = get_config('block_configurable_reports','dbhost');
-        if (empty($remotedbhost)) {
-            $remotedbhost = $CFG->dbhost;
-        }
-        $remotedbname = get_config('block_configurable_reports','dbname');
-        if (empty($remotedbname)) {
-            $remotedbname = $CFG->dbname;
-        }
-        $remotedbuser = get_config('block_configurable_reports','dbuser');
-        if (empty($remotedbuser)) {
-            $remotedbuser = $CFG->dbuser;
-        }
-        $remotedbpass = get_config('block_configurable_reports','dbpass');
-        if (empty($remotedbpass)) {
-            $remotedbpass = $CFG->dbpass;
-        }
-
         $reportlimit = get_config('block_configurable_reports','reportlimit');
         if (empty($reportlimit) or $reportlimit == '0') {
                 $reportlimit = REPORT_CUSTOMSQL_MAX_RECORDS;
         }
-
-        $db_class = get_class($DB);
-        $remotedb = new $db_class();
-        $remotedb->connect($remotedbhost, $remotedbuser, $remotedbpass, $remotedbname, $CFG->prefix);
 
         $starttime = microtime(true);
 

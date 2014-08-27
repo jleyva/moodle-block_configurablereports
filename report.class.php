@@ -54,7 +54,7 @@
         $remotedbuser = get_config('block_configurable_reports', 'dbuser');
         $remotedbpass = get_config('block_configurable_reports', 'dbpass');
 
-        if (!empty($remotedbhost) and !empty($remotedbname) and !empty($remotedbuser) and !empty($remotedbpass) ) {
+        if (!empty($remotedbhost) and !empty($remotedbname) and !empty($remotedbuser) and !empty($remotedbpass) and $this->config->remote) {
             $db_class = get_class($DB);
             $remotedb = new $db_class();
             $remotedb->connect($remotedbhost, $remotedbuser, $remotedbpass, $remotedbname, $CFG->prefix);
