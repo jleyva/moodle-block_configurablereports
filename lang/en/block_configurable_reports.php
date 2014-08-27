@@ -52,6 +52,9 @@ $string['jsordering'] = 'JavaScript Ordering';
 $string['cron'] = 'Auto run daily';
 $string['crondescription'] = 'Schedule this query to run each day (At night)';
 $string['cron_help'] = 'Schedule this query to run each day (At night)';
+$string['remote'] = 'Run on remote db';
+$string['remotedescription'] = 'Do you want to run this query on the remote db';
+$string['remote_help'] = 'Do you want to run this query on the remote db';
 $string['setcourseid'] = 'Set courseid';
 
 // Columns

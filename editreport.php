@@ -197,6 +197,10 @@
 			$data->jsordering = 0;
 		}
 
+   		if(!isset($data->remote)) {
+			$data->remote = 0;
+		}
+
 		if(empty($report)){
 			$data->ownerid = $USER->id;
 			$data->courseid = $courseid;
