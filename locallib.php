@@ -451,7 +451,7 @@ function cr_get_context($context, $id = null, $flags = null) {
     return get_context_instance($context, $id, $flags);
 }
 
-function cr_cr_make_categories_list(&$list, &$parents, $requiredcapability = '',
+function cr_make_categories_list(&$list, &$parents, $requiredcapability = '',
         $excludeid = 0, $category = NULL, $path = "") {
     global $CFG, $DB;
     require_once($CFG->libdir.'/coursecatlib.php');
