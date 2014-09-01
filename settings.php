@@ -29,7 +29,7 @@ if ($ADMIN->fulltree) {
 
     $reporttableoptions = array('html'=>'Simple', 'jquery'=>'jQuery', 'datatables'=>'DataTables JS');
     $settings->add(new admin_setting_configselect('block_configurable_reports/reporttableui', get_string('reporttableui', 'block_configurable_reports'),
-        get_string('reporttableuiinfo', 'block_configurable_reports'), 0, $reporttableoptions ));
+        get_string('reporttableuiinfo', 'block_configurable_reports'), 'jquery', $reporttableoptions ));
         
     $settings->add(new admin_setting_configtext('block_configurable_reports/reportlimit', get_string('reportlimit', 'block_configurable_reports'),
         get_string('reportlimitinfo', 'block_configurable_reports'), '5000', PARAM_INT, 6));
