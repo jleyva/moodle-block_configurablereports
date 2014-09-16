@@ -104,7 +104,7 @@ class plugin_userstats extends plugin_base{
 
                 $dedication = $previouslogtime - $sessionstart;
                 $totaldedication += $dedication;
-                if ($dedication) {
+                if ($totaldedication) {
                     return format_time($totaldedication);
                 } else {
                     return 0;
