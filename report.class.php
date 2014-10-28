@@ -33,7 +33,7 @@
 	var $currentcourse = 0;
 	var $starttime = 0;
 	var $endtime = 0;
-    var $sql = '';
+        var $sql = '';
 
 	function reports_base($report){
 		global $DB, $CFG, $USER, $remotedb;
@@ -675,7 +675,7 @@
 
         // Debug
         $debug = optional_param('debug', false, PARAM_BOOL);
-        if ($debug or $this->config->debug) {
+        if ($debug or !empty($this->config->debug)) {
             echo html_writer::empty_tag('hr');
             echo html_writer::tag('div', $this->sql, array('id'=>'debug', 'style'=>'direction:ltr;text-align:left;'));
             echo html_writer::empty_tag('hr');
