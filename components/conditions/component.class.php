@@ -98,7 +98,9 @@ class component_conditions extends component_base{
 				$components['conditions'] = array();
 			}
 
-			$components['conditions']['config']->conditionexpr = $fdata->conditionexpr;
+                        if(!empty($components['conditions']['config']->conditionexpr)){
+                            $components['conditions']['config']->conditionexpr = $fdata->conditionexpr;
+                        }
 			$this->config->components = cr_serialize($components);
 			$DB->update_record('block_configurable_reports',$this->config);
 
