@@ -157,6 +157,18 @@ $string['pieareaname'] = "Name";
 $string['pieareavalue'] = "Value";
 $string['piesummary'] = "A pie graph";
 
+$string['bar'] = "Bar";
+$string['barsummary'] = "A bar graph";
+$string['label_field'] = "Label field";
+$string['label_field_help'] = "The field that provides names for the things represented in the graph";
+$string['value_fields'] = "Value fields";
+$string['value_fields_help'] = "Fields that should be represented in the graph. Ctrl+click (Cmd+click on Mac) to select multiple. If you select the Label field or a field with non-numeric values it will be ignored";
+$string['width'] = "Width";
+$string['height'] = "Height";
+$string['head_data'] = "Graph data";
+$string['head_size'] = "Graph size";
+$string['head_color'] = "Graph background color";
+
 $string['anyone'] = "Anyone";
 $string['anyone_summary'] = "Any user in the Campus will be able to view this report";
 
