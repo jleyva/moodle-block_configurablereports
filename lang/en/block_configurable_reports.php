@@ -100,6 +100,14 @@ $string['filtersubcategories'] = 'Category (Include sub categories)';
 $string['filtersubcategories_summary'] = 'Use: %%FILTER_CATEGORIES:mdl_course_category.path%%';
 $string['yearnumeric'] = 'Year (Numeric)';
 $string['filteryearnumeric'] = 'Year (Numeric)';
+
+$years = array();
+$y = date("Y");
+for ($i=0; $i<100; $i++) {
+        $years[] = $y - $i;
+}
+$string['filteryearnumeric_list'] = implode(',', $years);
+
 $string['filteryearnumeric_summary'] = 'Filter is using numeric years (2013,...)';
 $string['yearhebrew'] = 'Year (Hebrew)';
 $string['filteryearhebrew'] = 'Year (Hebrew)';
