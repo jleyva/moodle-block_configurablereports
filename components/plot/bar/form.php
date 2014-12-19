@@ -104,6 +104,10 @@ class bar_form extends moodleform {
 		);
 		$mform->setDefault("height",500);
 		
+        /* Shouldn't use these without a way to automatically
+         * calculate colors for the text and bars that contrast
+         * with the chosen background.
+         *
 		$mform->addElement(
 			'header', 
 			'color', 
@@ -130,6 +134,7 @@ class bar_form extends moodleform {
 			"size = 5"
 		);		
 		$mform->setDefault("color_b",87);
+        */
 
         // buttons
         $this->add_action_buttons(true, get_string('add'));
