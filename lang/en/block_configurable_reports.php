@@ -447,3 +447,19 @@ $string['usercompletionsummary'] = 'Course completion status';
 $string['finalgradeincurrentcourse'] = 'Final grade in current course';
 $string['legacylognotenabled'] = 'Legacy logs must be enabled.
  Go to Site administration / Plugins / Logging Enable the Legacy log and inside the log settings check Log legacy data';
+
+$string['datatables_sortascending'] = ': activate to sort column ascending';
+$string['datatables_sortdescending'] = ': activate to sort column descending';
+$string['datatables_first'] = 'First';
+$string['datatables_last'] = 'Last';
+$string['datatables_next'] = 'Next';
+$string['datatables_previous'] = 'Previous';
+$string['datatables_emptytable'] = 'No data available in table';
+$string['datatables_info'] = 'Showing _START_ to _END_ of _TOTAL_ entries';
+$string['datatables_infoempty'] = 'Showing 0 to 0 of 0 entries';
+$string['datatables_infofiltered'] = '(filtered from _MAX_ total entries)';
+$string['datatables_lengthmenu'] = 'Show _MENU_ entries';
+$string['datatables_loadingrecords'] = 'Loading...';
+$string['datatables_processing'] = 'Processing...';
+$string['datatables_search'] = 'Search:';
+$string['datatables_zerorecords'] = 'No matching records found';
