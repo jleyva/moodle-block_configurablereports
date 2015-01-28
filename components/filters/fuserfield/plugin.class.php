@@ -157,6 +157,6 @@ class plugin_fuserfield extends plugin_base{
 		}
 
 		$mform->addElement('select', 'filter_fuserfield_'.$data->field, $selectname, $filteroptions);
-		$mform->setType('filter_fuserfield_'.$data->field, PARAM_INT);
+		$mform->setType('filter_fuserfield_'.$data->field, PARAM_BASE64);
 	}
 }
