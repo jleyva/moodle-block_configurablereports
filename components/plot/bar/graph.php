@@ -112,12 +112,14 @@
 				$padding = 30;
 				$font_size = 8;
 				$font_path = $CFG->dirroot."/blocks/configurable_reports/lib/pChart2/Fonts";
-				$label_offset = ($longest_label * ($font_size/2));
-				$max_label_offset = $height / 2 + $padding;
-				if ($label_offset > $max_label_offset) {
-					$label_offset = $max_label_offset;	
-				}
-				
+                $label_offset = $longest_label * ($font_size/2);
+                $min_label_offset = $padding + 100;
+>--->--->--->---$max_label_offset = $height / 2 + $padding;
+                if ($label_offset < $min_label_offset) {
+                    $label_offset = $min_label_offset;
+                } else if ($label_offset > $max_label_offset) {
+>--->--->--->--->---$label_offset = $max_label_offset;>-
+>--->--->--->---}
 				$legend_offset = ($longest_legend * ($font_size/2));
 				$max_legend_offset = $width / 3 + $padding;
 				if ($legend_offset > $max_legend_offset) {
