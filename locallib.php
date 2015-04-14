@@ -559,3 +559,49 @@ function cr_add_to_log($courseid, $module, $action, $url='', $info='', $cm=0, $u
         add_to_log($courseid, $module, $action, $url, $info, $cm, $user);
     }
 }
+
+function cr_logging_info() {
+    global $DB, $CFG;
+
+    static $uselegacyreader;
+    static $useinternalreader;
+    static $logtable;
+
+    if (isset($uselegacyreader) && isset($useinternalreader) && isset($logtable)) {
+        return array($uselegacyreader, $useinternalreader, $logtable);
+    }
+
+    $uselegacyreader = false; // Flag to determine if we should use the legacy reader.
+    $useinternalreader = false; // Flag to determine if we should use the internal reader.
+    $logtable = '';
+
+    // Pre 2.7.
+    if ($CFG->version < 2014051200) {
+        $uselegacyreader = true;
+        $logtable = 'log';
+    } else {
+
+        // Get list of readers.
+        $logmanager = get_log_manager();
+        $readers = $logmanager->get_readers();
+
+        // Get preferred reader.
+        if (!empty($readers)) {
+            foreach ($readers as $readerpluginname => $reader) {
+                // If legacy reader is preferred reader.
+                if ($readerpluginname == 'logstore_legacy') {
+                    $uselegacyreader = true;
+                    $logtable = 'log';
+                }
+
+                // If sql_internal_table_reader is preferred reader.
+                if ($reader instanceof \core\log\sql_internal_table_reader or $reader instanceof \core\log\sql_internal_reader) {
+                    $useinternalreader = true;
+                    $logtable = $reader->get_internal_log_table_name();
+                }
+            }
+        }
+    }
+
+    return array($uselegacyreader, $useinternalreader, $logtable);
+}

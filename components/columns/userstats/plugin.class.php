@@ -72,20 +72,46 @@ class plugin_userstats extends plugin_base{
             $sql = "userid = ?";
             $params =  array($row->id);
 
-            if($courseid != 1){
-                $sql .= " AND course = ?";
-                $params = array_merge($params, array($courseid));
-            }
+            require_once($CFG->dirroot . "/blocks/configurable_reports/locallib.php");
 
-            if($starttime and $endtime){
-                $starttime = usergetmidnight($starttime) + 24*60*60;
-                $endtime = usergetmidnight($endtime) + 24*60*60;
-                $sql .= " AND time >= ? AND time <= ?";
-                $params = array_merge($params, array($starttime, $endtime));
+            list($uselegacyreader, $useinternalreader, $logtable) = cr_logging_info();
+
+            $logs = array();
+            if ($uselegacyreader) {
+
+                if($courseid != 1){
+                    $sql .= " AND course = ?";
+                    $params = array_merge($params, array($courseid));
+                }
+
+                if($starttime and $endtime){
+                    $starttime = usergetmidnight($starttime) + 24*60*60;
+                    $endtime = usergetmidnight($endtime) + 24*60*60;
+                    $sql .= " AND time >= ? AND time <= ?";
+                    $params = array_merge($params, array($starttime, $endtime));
+                }
+
+                $logs = $DB->get_records_select("log", $sql, $params, "time ASC", "id,time");
+
+            } else if ($useinternalreader){
+
+                if($courseid != 1){
+                    $sql .= " AND courseid = ?";
+                    $params = array_merge($params, array($courseid));
+                }
+
+                if($starttime and $endtime){
+                    $starttime = usergetmidnight($starttime) + 24*60*60;
+                    $endtime = usergetmidnight($endtime) + 24*60*60;
+                    $sql .= " AND timecreated >= ? AND timecreated <= ?";
+                    $params = array_merge($params, array($starttime, $endtime));
+                }
+
+                $logs = $DB->get_records_select($logtable, $sql, $params, "timecreated ASC", "id,timecreated as time");
             }
 
             // Code from Course Dedication Block
-            if ($logs = $DB->get_records_select("log", $sql, $params, "time ASC", "id,time")) {
+            if ($logs) {
                 // This should be a config value in some where
                 $limitinseconds = 30*60;
                 $previouslog = array_shift($logs);
