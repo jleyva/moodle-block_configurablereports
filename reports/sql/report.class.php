@@ -22,7 +22,7 @@
   * @date: 2009
   */
 
-defined('REPORT_CUSTOMSQL_MAX_RECORDS') || define('REPORT_CUSTOMSQL_MAX_RECORDS', 5000);
+defined('BLOCK_CONFIGURABLE_REPORTS_MAX_RECORDS') || define('BLOCK_CONFIGURABLE_REPORTS_MAX_RECORDS', 5000);
 
 class report_sql extends report_base {
 
@@ -58,14 +58,14 @@ class report_sql extends report_base {
 		return $sql;
 	}
 
-	function execute_query($sql, $limitnum = REPORT_CUSTOMSQL_MAX_RECORDS /* ignored */) {
+	function execute_query($sql, $limitnum = BLOCK_CONFIGURABLE_REPORTS_MAX_RECORDS /* ignored */) {
 		global $remotedb, $DB, $CFG;
 
 		$sql = preg_replace('/\bprefix_(?=\w+)/i', $CFG->prefix, $sql);
 
         $reportlimit = get_config('block_configurable_reports','reportlimit');
         if (empty($reportlimit) or $reportlimit == '0') {
-                $reportlimit = REPORT_CUSTOMSQL_MAX_RECORDS;
+                $reportlimit = BLOCK_CONFIGURABLE_REPORTS_MAX_RECORDS;
         }
 
         $starttime = microtime(true);
