@@ -40,7 +40,7 @@ class plugin_searchtext extends plugin_base{
     function execute($finalelements, $data){
 
         $filter_searchtext = optional_param('filter_searchtext','',PARAM_RAW);
-        $operators = array('=', '<', '>', '<=', '>=', '~');
+        $operators = array('=', '<', '>', '<=', '>=', '~', 'in');
 
         if(!$filter_searchtext)
             return $finalelements;
@@ -54,6 +54,27 @@ class plugin_searchtext extends plugin_base{
                     print_error('nosuchoperator');
                 if ($operator == '~') {
                     $replace = " AND ".$field." LIKE '%".$filter_searchtext."%'";
+                } else if ($operator == 'in') {
+                    $processed_items = array();
+                    # Accept comma-separated values, allowing for '\,' as a literal comma
+                    foreach ( preg_split("/(?<!\\\\),/",$filter_searchtext) as $search_item ) {
+                        # Strip leading/trailing whitespace and quotes
+                        # (we'll add our own quotes later)
+                        $search_item = trim($search_item);
+                        $search_item = trim($search_item,'"\'');
+
+                        # We can also safely remove escaped commas now
+                        $search_item = str_replace('\\,',',',$search_item);
+
+                        # Escape and quote strings...
+                        if ( ! is_numeric($search_item) ) {
+                           $search_item = "'".addslashes($search_item)."'";
+                        }
+                        $processed_items[] = "$field like $search_item";
+                    }
+                    # Despite the name, by not actually using in() we can support
+                    # wildcards, and maybe be more portable as well.
+                    $replace = " AND (".implode(" OR ",$processed_items).")";
                 } else {
                     $replace = ' AND '.$field.' '.$operator.' '.$filter_searchtext;
                 }
