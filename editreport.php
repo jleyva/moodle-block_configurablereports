@@ -38,6 +38,10 @@
 
 	$report = null;
 
+	if ($id) {
+          $courseid = $DB->get_field('block_configurable_reports','courseid',array('id' => $id));
+    }
+
 	if (! $course = $DB->get_record("course",array( "id" =>  $courseid)) ) {
 		print_error("nosuchcourseid",'block_configurable_reports');
 	}
