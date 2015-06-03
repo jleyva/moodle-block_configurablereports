@@ -275,6 +275,13 @@
 				require_once($CFG->dirroot.'/blocks/configurable_reports/components/plot/'.$g['pluginname'].'/plugin.class.php');
 				$classname = 'plugin_'.$g['pluginname'];
 				$class = new $classname($this->config);
+				
+				// New feature in PIE graph.
+				if ($g['pluginname'] == 'pie') {
+					$finalreport = $this->filter_data_pie($g['formdata'], $finalreport);
+				}
+				// END new feature PIE Graphs.
+
 				$reportgraphs[] = $class->execute($g['id'],$g['formdata'],$finalreport);
 			}
 		}
@@ -754,6 +761,76 @@
     public function utf8_strrev($str){
         preg_match_all('/./us', $str, $ar);
         return join('',array_reverse($ar[0]));
+    }
+
+	/**
+     * Return an array with results filtered by:
+     * - No results with 0 value.
+     * - Using Limit Categories to cut off results.
+     *
+     * @param  object $data Settings Pie
+     * @param  array  $finalreport Array of results to filter
+     * @return array Array with results filtered.
+     */
+    protected function filter_data_pie($settings, $finalreport) {
+    	global $CFG;
+		
+		// Debug Mode.			
+		$debug = (!empty($CFG->debug) && $CFG->debug >= DEBUG_DEVELOPER && $CFG->debugdisplay);
+
+		// Limit to cut off categories.
+		$limit = 0;
+		if (!empty($settings->limitcategories)) {
+			$limit = $settings->limitcategories;
+		}
+		
+		// Array to return results filtered.
+		$results = array();
+		
+		// Filter data with value == 0 in order to not show in a graph.
+		$data = array();
+		foreach ($finalreport as $key=>$value) {
+			if ($value[$settings->areavalue] > 0) {
+				$data[$key] = $value;
+			}
+		}
+		
+		// Filter the data if necessary.
+		if (count($data) > $limit && $limit <> 0) {
+			// Order de values.
+			$ordervalues = array();
+			$ordernames = array();	
+			$resultsorder = $data;
+			foreach($data as $key=>$value) {
+				$ordervalues[$key] = $value[$settings->areavalue];	
+				$ordernames[$key] = $value[$settings->areaname];	
+			}
+			array_multisort($ordervalues, SORT_DESC,  $resultsorder);		
+
+			// We cut the first LIMIT values and the other group them into a new category.
+			$othertotals = 0;
+			foreach($resultsorder as $key=>$value) {
+				if ($key < $limit) {
+					$results[$key] = $value;
+				} else {
+					// Build OTHERS.
+					$othertotals = $othertotals + $value[$settings->areavalue];
+				}
+			}	
+			if ($othertotals > 0) {
+				$results[$key+1] = array($settings->areaname=>get_string('others', 'block_configurable_reports')
+										, $settings->areavalue=>$othertotals);
+			}
+
+		} else {
+			$results = $data;
+		}
+
+		if ($debug) {
+			print_object($results);
+		}
+	
+		return $results;			
     }
 
  }
