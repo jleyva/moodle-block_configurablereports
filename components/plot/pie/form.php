@@ -62,6 +62,20 @@ class pie_form extends moodleform {
 
 		$mform->addElement('select', 'areaname', get_string('pieareaname','block_configurable_reports'), $options);
 		$mform->addElement('select', 'areavalue', get_string('pieareavalue','block_configurable_reports'), $options);
+
+		// New Feature: Select Limit Categories in PIE.
+		$limits = array();
+		for ($i=0;$i<=10;$i++) {
+			$limits[$i] = $i;
+		}
+		$mform->addElement('select', 'limitcategories', get_string('limitcategories','block_configurable_reports'), $limits);
+		
+		// New Feature: Select Decimals in PIE
+		$decimals = array('0'=>0, '1'=>1, '2'=>2);
+		$mform->addElement('select', 'decimals', get_string('decimals','block_configurable_reports'), $decimals);
+		
+
+
 		$mform->addElement('checkbox', 'group', get_string('groupvalues','block_configurable_reports'));
 
         // buttons

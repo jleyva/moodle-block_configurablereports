@@ -65,6 +65,8 @@
 		$graphs = $components['plot']['elements'];
 
 		if(!empty($graphs)){
+			// New feature: Decimals.
+			$decimals = 0;
 			$series = array();
 			foreach($graphs as $g){
 				require_once($CFG->dirroot.'/blocks/configurable_reports/components/plot/'.$g['pluginname'].'/plugin.class.php');
@@ -72,6 +74,11 @@
 					$classname = 'plugin_'.$g['pluginname'];
 					$class = new $classname($report);
 					$series = $class->get_series($g['formdata']);
+
+					// New Feature: Decimals.
+	                if (!empty($g['formdata']->decimals)) {
+						$decimals = $g['formdata']->decimals;
+	                }
 					break;
 				}
 			}
@@ -105,7 +112,9 @@
                 $Test->AntialiasQuality = 0;
 				//$Test->drawFlatPieGraph($DataSet->GetData(),$DataSet->GetDataDescription(),120,100,60,TRUE,10);
 				//$Test->drawBasicPieGraph($DataSet->GetData(),$DataSet->GetDataDescription(),120,100,70,PIE_PERCENTAGE,255,255,218);
-				$Test->drawPieGraph($DataSet->GetData(),$DataSet->GetDataDescription(),150,90,110,PIE_PERCENTAGE,TRUE,50,20,5);
+				
+				// New Feature: Decimals.
+				$Test->drawPieGraph($DataSet->GetData(),$DataSet->GetDataDescription(), 150, 90, 110, PIE_PERCENTAGE, TRUE, 50, 20, 8, $decimals);
 				$Test->drawPieLegend(300,15,$DataSet->GetData(),$DataSet->GetDataDescription(),250,250,250);
 
                 ob_clean(); // Hack to clear output and send only IMAGE data to browser
