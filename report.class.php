@@ -778,6 +778,11 @@
 		// Debug Mode.			
 		$debug = (!empty($CFG->debug) && $CFG->debug >= DEBUG_DEVELOPER && $CFG->debugdisplay);
 
+		// GROUP not work with cut pie.
+		if ($settings->group) {
+            return $finalreport;
+        }
+
 		// Limit to cut off categories.
 		$limit = 0;
 		if (!empty($settings->limitcategories)) {
