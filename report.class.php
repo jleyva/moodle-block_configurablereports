@@ -780,8 +780,8 @@
 
 		// GROUP not work with cut pie.
 		if ($settings->group) {
-            return $finalreport;
-        }
+			return $finalreport;
+		}
 
 		// Limit to cut off categories.
 		$limit = 0;
