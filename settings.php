@@ -1,4 +1,18 @@
 <?php
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 defined('MOODLE_INTERNAL') || die;
 
@@ -27,16 +41,10 @@ if ($ADMIN->fulltree) {
     $settings->add(new admin_setting_configcheckbox('block_configurable_reports/sqlsyntaxhighlight', get_string('sqlsyntaxhighlight', 'block_configurable_reports'),
         get_string('sqlsyntaxhighlightinfo', 'block_configurable_reports'), 0));
 
-    $reporttableoptions = array('html'=>'Simple', 'jquery'=>'jQuery', 'datatables'=>'DataTables JS');
+    $reporttableoptions = array('html' => 'Simple', 'jquery' => 'jQuery', 'datatables' => 'DataTables JS');
     $settings->add(new admin_setting_configselect('block_configurable_reports/reporttableui', get_string('reporttableui', 'block_configurable_reports'),
         get_string('reporttableuiinfo', 'block_configurable_reports'), 'jquery', $reporttableoptions ));
-        
+
     $settings->add(new admin_setting_configtext('block_configurable_reports/reportlimit', get_string('reportlimit', 'block_configurable_reports'),
         get_string('reportlimitinfo', 'block_configurable_reports'), '5000', PARAM_INT, 6));
-
-//    $settings->add(new admin_setting_configcheckbox('block_configurable_reports/datatables', get_string('datatables', 'block_configurable_reports'),
-//        get_string('datatablesinfo', 'block_configurable_reports'), 0));
-
 }
-
-

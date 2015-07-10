@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -15,40 +14,38 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-/** Configurable Reports
-  * A Moodle block for creating customizable reports
-  * @package blocks
-  * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
-  * @date: 2009
-  */
+/**
+ * Configurable Reports
+ * A Moodle block for creating customizable reports
+ * @package blocks
+ * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @date: 2009
+ */
 
 if (!defined('MOODLE_INTERNAL')) {
-    die('Direct access to this script is forbidden.');    ///  It must be included from a Moodle page
+    //  It must be included from a Moodle page.
+    die('Direct access to this script is forbidden.');
 }
 
 require_once($CFG->libdir.'/formslib.php');
 
 class usersincohorts_form extends moodleform {
-
-    function definition() {
+    public function definition() {
         global $DB, $USER, $CFG;
 
         $mform =& $this->_form;
 
-        $mform->addElement('header',  'crformheader' ,get_string('cohorts', 'cohort'), '');
+        $mform->addElement('header',  'crformheader', get_string('cohorts', 'cohort'), '');
 
-    		$cohorts = $DB->get_records('cohort');
-    		$usercohorts = array();
-    		foreach($cohorts as $c) {
-    			$usercohorts[$c->id] = format_string($c->name);
+        $cohorts = $DB->get_records('cohort');
+        $usercohorts = array();
+        foreach ($cohorts as $c) {
+            $usercohorts[$c->id] = format_string($c->name);
         }
 
-        $mform->addElement('select', 'cohorts', get_string('cohorts', 'cohort'), $usercohorts, array('multiple'=>'multiple'));
+        $mform->addElement('select', 'cohorts', get_string('cohorts', 'cohort'), $usercohorts, array('multiple' => 'multiple'));
 
-        // buttons
+        // Buttons.
         $this->add_action_buttons(true, get_string('add'));
-
     }
-
 }
-

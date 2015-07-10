@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -15,20 +14,19 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-/** Configurable Reports
-  * A Moodle block for creating customizable reports
-  * @package blocks
-  * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
-  * @date: 2009
-  */
+/**
+ * Configurable Reports
+ * A Moodle block for creating customizable reports
+ * @package blocks
+ * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @date: 2009
+ */
 
-class component_ordering extends component_base{
-	
-	function init(){
-		$this->plugins = true;
-		$this->ordering = false;
-		$this->form = false;
-		$this->help = true;
-	}
+class component_ordering extends component_base {
+    public function init() {
+        $this->plugins = true;
+        $this->ordering = false;
+        $this->form = false;
+        $this->help = true;
+    }
 }
-

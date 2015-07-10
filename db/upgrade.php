@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -41,7 +40,6 @@ function xmldb_block_configurable_reports_upgrade($oldversion) {
         $dbman->rename_table($table, 'block_configurable_reports');
         upgrade_plugin_savepoint(true, 2011040103, 'block', 'configurable_reports');
     }
-
 
     if ($oldversion < 2011040106) {
 

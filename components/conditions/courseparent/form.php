@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -15,42 +14,42 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-/** Configurable Reports
-  * A Moodle block for creating customizable reports
-  * @package blocks
-  * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
-  * @date: 2009
-  */
+/**
+ * Configurable Reports
+ * A Moodle block for creating customizable reports
+ * @package blocks
+ * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @date: 2009
+ */
 
 if (!defined('MOODLE_INTERNAL')) {
-    die('Direct access to this script is forbidden.');    ///  It must be included from a Moodle page
+    //  It must be included from a Moodle page.
+    die('Direct access to this script is forbidden.');
 }
 
 require_once($CFG->libdir.'/formslib.php');
 
 class courseparent_form extends moodleform {
-    function definition() {
+    public function definition() {
         global $DB, $USER, $CFG;
 
         $mform =& $this->_form;
 
-        $mform->addElement('header',  'crformheader' ,get_string('courseparent','block_configurable_reports'), '');
+        $mform->addElement('header',  'crformheader', get_string('courseparent', 'block_configurable_reports'), '');
 
-		$options = array();
-		$options[0] = get_string('choose');
+        $options = array();
+        $options[0] = get_string('choose');
 
-		if($courses = $DB->get_records_sql('SELECT c.id, fullname FROM {course} c, {course_meta} cm WHERE c.id = cm.parent_course GROUP BY (parent_course)')){
-			foreach($courses as $c){
-				$options[$c->id] = format_string($c->fullname);
-			}
-		}
+        $sql = 'SELECT c.id, fullname FROM {course} c, {course_meta} cm WHERE c.id = cm.parent_course GROUP BY (parent_course)';
+        if ($courses = $DB->get_records_sql($sql)) {
+            foreach ($courses as $c) {
+                $options[$c->id] = format_string($c->fullname);
+            }
+        }
 
-		$mform->addElement('select', 'courseid', get_string('course'), $options);
+        $mform->addElement('select', 'courseid', get_string('course'), $options);
 
-        // buttons
+        // Buttons.
         $this->add_action_buttons(true, get_string('add'));
-
     }
-
 }
-

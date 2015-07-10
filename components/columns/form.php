@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -15,64 +14,65 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-/** Configurable Reports
-  * A Moodle block for creating customizable reports
-  * @package blocks
-  * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
-  * @date: 2009
-  */
+/**
+ * Configurable Reports
+ * A Moodle block for creating customizable reports
+ * @package blocks
+ * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @date: 2009
+ */
 
 if (!defined('MOODLE_INTERNAL')) {
-    die('Direct access to this script is forbidden.');    ///  It must be included from a Moodle page
+    //  It must be included from a Moodle page.
+    die('Direct access to this script is forbidden.');
 }
 
 require_once($CFG->libdir.'/formslib.php');
 
 class columns_form extends moodleform {
-    function definition() {
+    public function definition() {
         global $DB, $USER, $CFG;
 
         $mform =& $this->_form;
 
-		$mform->addElement('header', get_string('reporttable','block_configurable_reports'), '');
+        $mform->addElement('header', get_string('reporttable', 'block_configurable_reports'), '');
 
-		$mform->addElement('text', 'tablewidth', get_string('tablewidth','block_configurable_reports'));
+        $mform->addElement('text', 'tablewidth', get_string('tablewidth', 'block_configurable_reports'));
         $mform->setType('tablewidth', PARAM_CLEAN);
-		$mform->setDefault('tablewidth', '100%');
-		$mform->addHelpButton('tablewidth','reporttable', 'block_configurable_reports');
+        $mform->setDefault('tablewidth', '100%');
+        $mform->addHelpButton('tablewidth', 'reporttable', 'block_configurable_reports');
 
-		$options = array('center'=>'center','left'=>'left','right'=>'right');
+        $options = array('center' => 'center', 'left' => 'left', 'right' => 'right');
 
-		$mform->addElement('SELECT', 'tablealign', get_string('tablealign','block_configurable_reports'), $options);
+        $mform->addElement('SELECT', 'tablealign', get_string('tablealign', 'block_configurable_reports'), $options);
         $mform->setType('tablealign', PARAM_CLEAN);
-		$mform->setDefault('tablealign', 'center');
+        $mform->setDefault('tablealign', 'center');
 
-	    $mform->addElement('text', 'cellspacing', get_string('tablecellspacing','block_configurable_reports'));
+        $mform->addElement('text', 'cellspacing', get_string('tablecellspacing', 'block_configurable_reports'));
         $mform->setType('cellspacing', PARAM_INT);
-		$mform->setDefault('cellspacing', '3');
-		$mform->setAdvanced('cellspacing');
+        $mform->setDefault('cellspacing', '3');
+        $mform->setAdvanced('cellspacing');
 
-		$mform->addElement('text', 'cellpadding', get_string('tablecellpadding','block_configurable_reports'));
+        $mform->addElement('text', 'cellpadding', get_string('tablecellpadding', 'block_configurable_reports'));
         $mform->setType('cellpadding', PARAM_INT);
-		$mform->setDefault('cellpadding', '3');
-		$mform->setAdvanced('cellpadding');
+        $mform->setDefault('cellpadding', '3');
+        $mform->setAdvanced('cellpadding');
 
-		$mform->addElement('text', 'class', get_string('tableclass','block_configurable_reports'));
+        $mform->addElement('text', 'class', get_string('tableclass', 'block_configurable_reports'));
         $mform->setType('class', PARAM_CLEAN);
-		$mform->setAdvanced('class');
+        $mform->setAdvanced('class');
 
-        // buttons
+        // Buttons.
         $this->add_action_buttons(true, get_string('update'));
-
     }
 
-	function validation($data, $files){
-		$errors = parent::validation($data, $files);
+    public function validation($data, $files) {
+        $errors = parent::validation($data, $files);
 
-		if(!preg_match("/^\d+%?$/i",trim($data['tablewidth'])))
-			$errors['tablewidth'] = get_string('badtablewidth','block_configurable_reports');
+        if (!preg_match("/^\d+%?$/i", trim($data['tablewidth']))) {
+            $errors['tablewidth'] = get_string('badtablewidth', 'block_configurable_reports');
+        }
 
-		return $errors;
-	}
+        return $errors;
+    }
 }
-
