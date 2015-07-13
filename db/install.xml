@@ -19,7 +19,7 @@
         <FIELD NAME="jsordering" TYPE="int" LENGTH="4" NOTNULL="false" UNSIGNED="true" SEQUENCE="false"  PREVIOUS="export" NEXT="global"/>
         <FIELD NAME="global" TYPE="int" LENGTH="4" NOTNULL="false" UNSIGNED="true" SEQUENCE="false"  PREVIOUS="jsordering" NEXT="lastexecutiontime"/>
         <FIELD NAME="lastexecutiontime" TYPE="int" LENGTH="10" NOTNULL="false" UNSIGNED="true" SEQUENCE="false" COMMENT="Time this report took to run last time it was executed, in milliseconds." PREVIOUS="global" NEXT="cron"/>
-        <FIELD NAME="cron" TYPE="int" LENGTH="4" NOTNULL="true" DEFAULT="0" UNSIGNED="true" SEQUENCE="false"  PREVIOUS="lastexecutiontime" COMMENT="Should we run this query on regular CRON"/>
+        <FIELD NAME="cron" TYPE="int" LENGTH="4" NOTNULL="true" DEFAULT="0" UNSIGNED="true" SEQUENCE="false"  PREVIOUS="lastexecutiontime" NEXT="remote" COMMENT="Should we run this query on regular CRON"/>
         <FIELD NAME="remote" TYPE="int" LENGTH="1" NOTNULL="false" DEFAULT="0" UNSIGNED="true" SEQUENCE="false"  PREVIOUS="cron"/>
       </FIELDS>
       <KEYS>
