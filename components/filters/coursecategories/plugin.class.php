@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -15,35 +14,36 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-/** Configurable Reports
-  * A Moodle block for creating customizable reports
-  * @package blocks
-  * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
-  * @date: 2009
-  */
+/**
+ * Configurable Reports
+ * A Moodle block for creating customizable reports
+ * @package blocks
+ * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @date: 2009
+ */
 
 require_once($CFG->dirroot.'/blocks/configurable_reports/plugin.class.php');
 
-class plugin_coursecategories extends plugin_base{
+class plugin_coursecategories extends plugin_base {
 
-	function init(){
-		$this->form = false;
-		$this->unique = true;
-		$this->fullname = get_string('filtercoursecategories','block_configurable_reports');
-		$this->reporttypes = array('courses');
-	}
+    public function init() {
+        $this->form = false;
+        $this->unique = true;
+        $this->fullname = get_string('filtercoursecategories', 'block_configurable_reports');
+        $this->reporttypes = array('courses');
+    }
 
-	function summary($data){
-		return get_string('filtercoursecategories_summary','block_configurable_reports');
-	}
+    public function summary($data) {
+        return get_string('filtercoursecategories_summary', 'block_configurable_reports');
+    }
 
-	function execute($finalelements, $data) {
+    public function execute($finalelements, $data) {
         global $remotedb, $CFG;
         require_once($CFG->dirroot . "/course/lib.php");
 
-		$category = optional_param('filter_coursecategories',0,PARAM_INT);
-		if(!$category) {
-			return $finalelements;
+        $category = optional_param('filter_coursecategories', 0, PARAM_INT);
+        if (!$category) {
+            return $finalelements;
         }
 
         $displaylist = array();
@@ -51,8 +51,8 @@ class plugin_coursecategories extends plugin_base{
         cr_make_categories_list($displaylist, $parents);
 
         $coursecache = array();
-		foreach ($finalelements as $key=>$course) {
-            if(empty($coursecache[$course])) {
+        foreach ($finalelements as $key => $course) {
+            if (empty($coursecache[$course])) {
                 $coursecache[$course] = $remotedb->get_record('course', array('id' => $course));
             }
             $course = $coursecache[$course];
@@ -61,25 +61,22 @@ class plugin_coursecategories extends plugin_base{
             }
         }
 
-		return $finalelements;
-	}
+        return $finalelements;
+    }
 
-	function print_filter(&$mform){
-		global $remotedb, $CFG;
+    public function print_filter(&$mform) {
+        global $remotedb, $CFG;
         require_once($CFG->dirroot . "/course/lib.php");
 
-		$filter_categories = optional_param('filter_coursecategories',0,PARAM_INT);
+        $filtercategories = optional_param('filter_coursecategories', 0, PARAM_INT);
 
         $displaylist = array();
         $notused = array();
         cr_make_categories_list($displaylist, $notused);
 
         $displaylist[0] = get_string("all");
-		$mform->addElement('select', 'filter_coursecategories', get_string('category'), $displaylist, $filter_categories);
-		$mform->setDefault('filter_coursecategories', 0);
-		$mform->setType('filter_coursecategories', PARAM_INT);
-
-	}
-
+        $mform->addElement('select', 'filter_coursecategories', get_string('category'), $displaylist, $filtercategories);
+        $mform->setDefault('filter_coursecategories', 0);
+        $mform->setType('filter_coursecategories', PARAM_INT);
+    }
 }
-

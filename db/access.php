@@ -43,7 +43,7 @@ $capabilities = array(
         'clonepermissionsfrom' => 'moodle/site:manageblocks'
     ),
 
-	'block/configurable_reports:myaddinstance' => array(
+    'block/configurable_reports:myaddinstance' => array(
         'riskbitmask' => RISK_SPAM | RISK_XSS,
 
         'captype' => 'write',

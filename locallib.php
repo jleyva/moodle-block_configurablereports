@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -15,97 +14,98 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-/** Configurable Reports
-  * A Moodle block for creating Configurable Reports
-  * @package blocks
-  * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
-  * @date: 2009
-  */
+/**
+ * Configurable Reports
+ * A Moodle block for creating Configurable Reports
+ * @package blocks
+ * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @date: 2009
+ */
 
-  function cr_print_js_function(){
-	?>
-		<script type="text/javascript">
-			function printDiv(id){
-				var cdiv, tmpw;
+function cr_print_js_function() {
+?>
+    <script type="text/javascript">
+        function printDiv(id){
+            var cdiv, tmpw;
 
-				cdiv = document.getElementById(id);
-				tmpw = window.open(" ","Print");
+            cdiv = document.getElementById(id);
+            tmpw = window.open(" ","Print");
 
-				tmpw.document.open();
-				tmpw.document.write('<html><body>');
-				tmpw.document.write(cdiv.innerHTML);
-				tmpw.document.write('</body></html>');
-				tmpw.document.close();
-				tmpw.print();
-				tmpw.close();
-			}
-		</script>
-	<?php
-  }
+            tmpw.document.open();
+            tmpw.document.write('<html><body>');
+            tmpw.document.write(cdiv.innerHTML);
+            tmpw.document.write('</body></html>');
+            tmpw.document.close();
+            tmpw.print();
+            tmpw.close();
+        }
+    </script>
+<?php
+}
 
-    function cr_add_jsdatatables($cssid){
-        global $DB, $CFG, $OUTPUT, $PAGE;
+function cr_add_jsdatatables($cssid) {
+    global $DB, $CFG, $OUTPUT, $PAGE;
 
-        $PAGE->requires->string_for_js('thousandssep', 'langconfig');
-        $PAGE->requires->strings_for_js(array(
-            'datatables_sortascending',
-            'datatables_sortdescending',
-            'datatables_first',
-            'datatables_last',
-            'datatables_next',
-            'datatables_previous',
-            'datatables_emptytable',
-            'datatables_info',
-            'datatables_infoempty',
-            'datatables_infofiltered',
-            'datatables_lengthmenu',
-            'datatables_loadingrecords',
-            'datatables_processing',
-            'datatables_search',
-            'datatables_zerorecords',
-        ), 'block_configurable_reports');
+    $PAGE->requires->string_for_js('thousandssep', 'langconfig');
+    $PAGE->requires->strings_for_js(array(
+        'datatables_sortascending',
+        'datatables_sortdescending',
+        'datatables_first',
+        'datatables_last',
+        'datatables_next',
+        'datatables_previous',
+        'datatables_emptytable',
+        'datatables_info',
+        'datatables_infoempty',
+        'datatables_infofiltered',
+        'datatables_lengthmenu',
+        'datatables_loadingrecords',
+        'datatables_processing',
+        'datatables_search',
+        'datatables_zerorecords',
+    ), 'block_configurable_reports');
 
-        echo html_writer::script(false, new moodle_url('/blocks/configurable_reports/js/datatables/media/js/jquery.js'));
-        echo html_writer::script(false, new moodle_url('/blocks/configurable_reports/js/datatables/media/js/jquery.dataTables.min.js'));
-        echo html_writer::script(false, new moodle_url('/blocks/configurable_reports/js/datatables/extras/FixedHeader/js/FixedHeader.js'));
+    echo html_writer::script(false, new moodle_url('/blocks/configurable_reports/js/datatables/media/js/jquery.js'));
+    echo html_writer::script(false, new moodle_url('/blocks/configurable_reports/js/datatables/media/js/jquery.dataTables.min.js'));
+    echo html_writer::script(false, new moodle_url('/blocks/configurable_reports/js/datatables/extras/FixedHeader/js/FixedHeader.js'));
 
-        $script = "$(document).ready(function() {
-            var oTable = $('$cssid').dataTable({
-                'bAutoWidth': false,
-                'sPaginationType': 'full_numbers',
+    $script = "$(document).ready(function() {
+        var oTable = $('$cssid').dataTable({
+            'bAutoWidth': false,
+            'sPaginationType': 'full_numbers',
 //                'sScrollX': '100%',
 //                'sScrollXInner': '110%',
 //                'bScrollCollapse': true
-                'oLanguage': {
-                    'oAria': {
-                        'sSortAscending': M.str.block_configurable_reports.datatables_sortascending,
-                        'sSortDescending': M.str.block_configurable_reports.datatables_sortdescending,
-                    },
-                    'oPaginate': {
-                        'sFirst': M.str.block_configurable_reports.datatables_first,
-                        'sLast': M.str.block_configurable_reports.datatables_last,
-                        'sNext': M.str.block_configurable_reports.datatables_next,
-                        'sPrevious': M.str.block_configurable_reports.datatables_previous
-                    },
-                    'sEmptyTable': M.str.block_configurable_reports.datatables_emptytable,
-                    'sInfo': M.str.block_configurable_reports.datatables_info,
-                    'sInfoEmpty': M.str.block_configurable_reports.datatables_infoempty,
-                    'sInfoFiltered': M.str.block_configurable_reports.datatables_infofiltered,
-                    'sInfoThousands': M.str.langconfig.thousandssep,
-                    'sLengthMenu': M.str.block_configurable_reports.datatables_lengthmenu,
-                    'sLoadingRecords': M.str.block_configurable_reports.datatables_loadingrecords,
-                    'sProcessing': M.str.block_configurable_reports.datatables_processing,
-                    'sSearch': M.str.block_configurable_reports.datatables_search,
-                    'sZeroRecords': M.str.block_configurable_reports.datatables_zerorecords
-                }
-            });
-            new FixedHeader( oTable );
-        } );";
-        echo html_writer::script($script);
-    }
+            'oLanguage': {
+                'oAria': {
+                    'sSortAscending': M.str.block_configurable_reports.datatables_sortascending,
+                    'sSortDescending': M.str.block_configurable_reports.datatables_sortdescending,
+                },
+                'oPaginate': {
+                    'sFirst': M.str.block_configurable_reports.datatables_first,
+                    'sLast': M.str.block_configurable_reports.datatables_last,
+                    'sNext': M.str.block_configurable_reports.datatables_next,
+                    'sPrevious': M.str.block_configurable_reports.datatables_previous
+                },
+                'sEmptyTable': M.str.block_configurable_reports.datatables_emptytable,
+                'sInfo': M.str.block_configurable_reports.datatables_info,
+                'sInfoEmpty': M.str.block_configurable_reports.datatables_infoempty,
+                'sInfoFiltered': M.str.block_configurable_reports.datatables_infofiltered,
+                'sInfoThousands': M.str.langconfig.thousandssep,
+                'sLengthMenu': M.str.block_configurable_reports.datatables_lengthmenu,
+                'sLoadingRecords': M.str.block_configurable_reports.datatables_loadingrecords,
+                'sProcessing': M.str.block_configurable_reports.datatables_processing,
+                'sSearch': M.str.block_configurable_reports.datatables_search,
+                'sZeroRecords': M.str.block_configurable_reports.datatables_zerorecords
+            }
+        });
+        new FixedHeader( oTable );
+    } );";
+    echo html_writer::script($script);
+}
 
-  function cr_add_jsordering($cssid){
-	global $DB, $CFG, $OUTPUT;
+function cr_add_jsordering($cssid) {
+    global $DB, $CFG, $OUTPUT;
     echo html_writer::script(false, new moodle_url('/blocks/configurable_reports/js/jquery-latest.js'));
     echo html_writer::script(false, new moodle_url('/blocks/configurable_reports/js/jquery.tablesorter.min.js'));
     $script = '$(document).ready(function() {
@@ -113,145 +113,141 @@
         $("'.$cssid.'").tablesorter();
     });';
     echo html_writer::script($script);
-	?>
+    ?>
 
-		<style type="text/css">
-		<?php echo $cssid; ?> th.header{
-			background-image:url(<?php echo $OUTPUT->pix_url('normal', 'block_configurable_reports'); ?>);
-			background-position:right center;
-			background-repeat:no-repeat;
-			cursor:pointer;
-		}
-
-		<?php echo $cssid; ?> th.headerSortUp{
-		 background-image:url(<?php echo $OUTPUT->pix_url('asc', 'block_configurable_reports');?>);
-		}
-
-		<?php echo $cssid; ?> th.headerSortDown{
-		 background-image:url(<?php echo $OUTPUT->pix_url('desc', 'block_configurable_reports');?>);
-		}
-		</style>
-	<?php
-  }
-
-  function urlencode_recursive($var) {
-    if (is_object($var)) {
-        $new_var = new object();
-        $properties = get_object_vars($var);
-        foreach($properties as $property => $value) {
-            $new_var->$property = urlencode_recursive($value);
+        <style type="text/css">
+        <?php echo $cssid; ?> th.header{
+            background-image:url(<?php echo $OUTPUT->pix_url('normal', 'block_configurable_reports'); ?>);
+            background-position:right center;
+            background-repeat:no-repeat;
+            cursor:pointer;
         }
 
+        <?php echo $cssid; ?> th.headerSortUp{
+         background-image:url(<?php echo $OUTPUT->pix_url('asc', 'block_configurable_reports');?>);
+        }
+
+        <?php echo $cssid; ?> th.headerSortDown{
+         background-image:url(<?php echo $OUTPUT->pix_url('desc', 'block_configurable_reports');?>);
+        }
+        </style>
+    <?php
+}
+
+function urlencode_recursive($var) {
+    if (is_object($var)) {
+        $newvar = new \object();
+        $properties = get_object_vars($var);
+        foreach ($properties as $property => $value) {
+            $newvar->$property = urlencode_recursive($value);
+        }
     } else if (is_array($var)) {
-        $new_var = array();
-        foreach($var as $property => $value) {
-            $new_var[$property] = urlencode_recursive($value);
+        $newvar = array();
+        foreach ($var as $property => $value) {
+            $newvar[$property] = urlencode_recursive($value);
         }
-
     } else if (is_string($var)) {
-        $new_var = urlencode($var);
-
-    } else { // nulls, integers, etc.
-        $new_var = $var;
+        $newvar = urlencode($var);
+    } else {
+        // Nulls, integers, etc.
+        $newvar = $var;
     }
 
-    return $new_var;
-  }
+    return $newvar;
+}
 
-  function urldecode_recursive($var) {
+function urldecode_recursive($var) {
     if (is_object($var)) {
-        $new_var = new object();
+        $newvar = new \object();
         $properties = get_object_vars($var);
-        foreach($properties as $property => $value) {
-            $new_var->$property = urldecode_recursive($value);
+        foreach ($properties as $property => $value) {
+            $newvar->$property = urldecode_recursive($value);
         }
-
-    } else if(is_array($var)) {
-        $new_var = array();
-        foreach($var as $property => $value) {
-            $new_var[$property] = urldecode_recursive($value);
+    } else if (is_array($var)) {
+        $newvar = array();
+        foreach ($var as $property => $value) {
+            $newvar[$property] = urldecode_recursive($value);
         }
-
-    } else if(is_string($var)) {
-        $new_var = urldecode($var);
-
+    } else if (is_string($var)) {
+        $newvar = urldecode($var);
     } else {
-        $new_var = $var;
+        $newvar = $var;
     }
 
-    return $new_var;
+    return $newvar;
 }
 
-function cr_get_my_reports($courseid, $userid, $allcourses=true){
-	global $DB;
+function cr_get_my_reports($courseid, $userid, $allcourses = true) {
+    global $DB;
 
-	$reports = array();
-    if ($courseid == SITEID){
-        $context = context_system::instance();
+    $reports = [];
+    if ($courseid == SITEID) {
+        $context = \context_system::instance();
     } else {
-        $context = context_course::instance($courseid);
+        $context = \context_course::instance($courseid);
     }
 
-
-    if(has_capability('block/configurable_reports:managereports', $context, $userid)){
-		if($courseid == SITEID && $allcourses)
-			$reports = $DB->get_records('block_configurable_reports',null,'name ASC');
-		else
-			$reports = $DB->get_records('block_configurable_reports',array('courseid' => $courseid),'name ASC');
-	}
-	else{
-		$reports = $DB->get_records_select('block_configurable_reports','ownerid = ? AND courseid = ? ORDER BY name ASC',array($userid,$courseid));
-	}
-	return $reports;
+    if (has_capability('block/configurable_reports:managereports', $context, $userid)) {
+        if ($courseid == SITEID && $allcourses) {
+            $reports = $DB->get_records('block_configurable_reports', null, 'name ASC');
+        } else {
+            $reports = $DB->get_records('block_configurable_reports', array('courseid' => $courseid), 'name ASC');
+        }
+    } else {
+        $reports = $DB->get_records_select('block_configurable_reports', 'ownerid = ? AND courseid = ? ORDER BY name ASC', array($userid, $courseid));
+    }
+    return $reports;
 }
 
- function cr_serialize($var){
-	return serialize(urlencode_recursive($var));
- }
+function cr_serialize($var) {
+    return serialize(urlencode_recursive($var));
+}
 
- function cr_unserialize($var){
-	return urldecode_recursive(unserialize($var));
- }
+function cr_unserialize($var) {
+    return urldecode_recursive(unserialize($var));
+}
 
- function cr_check_report_permissions($report, $userid, $context){
-	global $DB, $CFG;
+function cr_check_report_permissions($report, $userid, $context) {
+    global $DB, $CFG;
 
-	require_once($CFG->dirroot.'/blocks/configurable_reports/report.class.php');
-	require_once($CFG->dirroot.'/blocks/configurable_reports/reports/'.$report->type.'/report.class.php');
+    require_once($CFG->dirroot.'/blocks/configurable_reports/report.class.php');
+    require_once($CFG->dirroot.'/blocks/configurable_reports/reports/'.$report->type.'/report.class.php');
 
-	$classn = 'report_'.$report->type;
-	$classi = new $classn($report->id);
-	return $classi->check_permissions($userid, $context);
- }
+    $classn = 'report_'.$report->type;
+    $classi = new $classn($report->id);
+    return $classi->check_permissions($userid, $context);
+}
 
- function cr_get_report_plugins($courseid){
+function cr_get_report_plugins($courseid) {
+    $pluginoptions = array();
+    $context = ($courseid == SITEID) ? \context_system::instance() : \context_course::instance($courseid);
+    $plugins = get_list_of_plugins('blocks/configurable_reports/reports');
 
-	$pluginoptions = array();
-	$context = ($courseid == SITEID)? context_system::instance() : context_course::instance($courseid);
-	$plugins = get_list_of_plugins('blocks/configurable_reports/reports');
+    if ($plugins) {
+        foreach ($plugins as $p) {
+            if ($p == 'sql' && !has_capability('block/configurable_reports:managesqlreports', $context)) {
+                continue;
+            }
+            $pluginoptions[$p] = get_string('report_'.$p, 'block_configurable_reports');
+        }
+    }
+    return $pluginoptions;
+}
 
-	if($plugins)
-		foreach($plugins as $p){
-			if($p == 'sql' && !has_capability('block/configurable_reports:managesqlreports',$context))
-				continue;
-			$pluginoptions[$p] = get_string('report_'.$p,'block_configurable_reports');
-		}
-	return $pluginoptions;
- }
+function cr_get_export_plugins() {
 
- function cr_get_export_plugins(){
+    $exportoptions = array();
+    $plugins = get_list_of_plugins('blocks/configurable_reports/export');
 
-	$exportoptions = array();
-	$plugins = get_list_of_plugins('blocks/configurable_reports/export');
+    if ($plugins) {
+        foreach ($plugins as $p) {
+            $pluginoptions[$p] = get_string('export_'.$p, 'block_configurable_reports');
+        }
+    }
+    return $pluginoptions;
+}
 
-	if($plugins)
-		foreach($plugins as $p){
-			$pluginoptions[$p] = get_string('export_'.$p,'block_configurable_reports');
-		}
-	return $pluginoptions;
- }
-
- function cr_print_table($table, $return=false) {
+function cr_print_table($table, $return = false) {
     global $COURSE;
 
     $output = '';
@@ -259,7 +255,7 @@ function cr_get_my_reports($courseid, $userid, $allcourses=true){
     if (isset($table->align)) {
         foreach ($table->align as $key => $aa) {
             if ($aa) {
-                $align[$key] = ' text-align:'. fix_align_rtl($aa) .';';  // Fix for RTL languages
+                $align[$key] = ' text-align:'. fix_align_rtl($aa) .';';  // Fix for RTL languages.
             } else {
                 $align[$key] = '';
             }
@@ -318,7 +314,7 @@ function cr_get_my_reports($courseid, $userid, $allcourses=true){
     if (!empty($table->head)) {
         $countcols = count($table->head);
         $output .= '<thead><tr>';
-        $keys=array_keys($table->head);
+        $keys = array_keys($table->head);
         $lastkey = end($keys);
         foreach ($table->head as $key => $heading) {
             if ($heading == 'sendemail') {
@@ -343,7 +339,7 @@ function cr_get_my_reports($courseid, $userid, $allcourses=true){
 
     if (!empty($table->data)) {
         $oddeven = 1;
-        $keys=array_keys($table->data);
+        $keys = array_keys($table->data);
         $lastrowkey = end($keys);
         foreach ($table->data as $key => $row) {
             $oddeven = $oddeven ? 0 : 1;
@@ -356,8 +352,8 @@ function cr_get_my_reports($courseid, $userid, $allcourses=true){
             $output .= '<tr class="r'.$oddeven.' '.$table->rowclass[$key].'">'."\n";
             if ($row == 'hr' and $countcols) {
                 $output .= '<td colspan="'. $countcols .'"><div class="tabledivider"></div></td>';
-            } else {  /// it's a normal row of data
-                $keys2=array_keys($row);
+            } else {  // It's a normal row of data.
+                $keys2 = array_keys($row);
                 $lastkey = end($keys2);
                 foreach ($row as $key => $item) {
                     if (!isset($size[$key])) {
@@ -370,9 +366,9 @@ function cr_get_my_reports($courseid, $userid, $allcourses=true){
                         $wrap[$key] = '';
                     }
                     if ($key == $lastkey) {
-                      $extraclass = ' lastcol';
+                        $extraclass = ' lastcol';
                     } else {
-                      $extraclass = '';
+                        $extraclass = '';
                     }
                     if ($key == $isuserid) {
                         $output .= '<td style="'. $align[$key].$size[$key].$wrap[$key] .'" class="cell c'.$key.$extraclass.'"><input name="userids[]" type="checkbox" value="'.$item.'"></td>';
@@ -400,40 +396,39 @@ function cr_get_my_reports($courseid, $userid, $allcourses=true){
     return true;
 }
 
-function table_to_excel($filename,$table){
+function table_to_excel($filename, $table) {
     global $DB, $CFG;
 
     require_once($CFG->dirroot.'/lib/excellib.class.php');
 
-
     if (!empty($table->head)) {
         $countcols = count($table->head);
-        $keys=array_keys($table->head);
+        $keys = array_keys($table->head);
         $lastkey = end($keys);
         foreach ($table->head as $key => $heading) {
-                $matrix[0][$key] = str_replace("\n",' ',htmlspecialchars_decode(strip_tags(nl2br($heading))));
+                $matrix[0][$key] = str_replace("\n", ' ', htmlspecialchars_decode(strip_tags(nl2br($heading))));
         }
     }
 
     if (!empty($table->data)) {
         foreach ($table->data as $rkey => $row) {
             foreach ($row as $key => $item) {
-                $matrix[$rkey + 1][$key] = str_replace("\n",' ',htmlspecialchars_decode(strip_tags(nl2br($item))));
+                $matrix[$rkey + 1][$key] = str_replace("\n", ' ', htmlspecialchars_decode(strip_tags(nl2br($item))));
             }
         }
     }
 
     $downloadfilename = clean_filename($filename);
-    /// Creating a workbook
+    // Creating a workbook.
     $workbook = new MoodleExcelWorkbook("-");
-    /// Sending HTTP headers
+    // Sending HTTP headers.
     $workbook->send($downloadfilename);
-    /// Adding the worksheet
+    // Adding the worksheet.
     $myxls =& $workbook->add_worksheet($filename);
 
-    foreach($matrix as $ri=>$col){
-        foreach($col as $ci=>$cv){
-            $myxls->write_string($ri,$ci,$cv);
+    foreach ($matrix as $ri => $col) {
+        foreach ($col as $ci => $cv) {
+            $myxls->write_string($ri, $ci, $cv);
         }
     }
 
@@ -492,13 +487,11 @@ function cr_get_context($context, $id = null, $flags = null) {
     return get_context_instance($context, $id, $flags);
 }
 
-function cr_make_categories_list(&$list, &$parents, $requiredcapability = '',
-        $excludeid = 0, $category = NULL, $path = "") {
+function cr_make_categories_list(&$list, &$parents, $requiredcapability = '', $excludeid = 0, $category = null, $path = '') {
     global $CFG, $DB;
     require_once($CFG->libdir.'/coursecatlib.php');
 
-
-    // For categories list use just this one function:
+    // For categories list use just this one function.
     if (empty($list)) {
         $list = array();
     }
@@ -506,7 +499,7 @@ function cr_make_categories_list(&$list, &$parents, $requiredcapability = '',
 
     // Building the list of all parents of all categories in the system is highly undesirable and hardly ever needed.
     // Usually user needs only parents for one particular category, in which case should be used:
-    // coursecat::get($categoryid)->get_parents()
+    // coursecat::get($categoryid)->get_parents().
     if (empty($parents)) {
         $parents = array();
     }
@@ -526,16 +519,16 @@ function cr_import_xml($xml, $course) {
     require_once($CFG->dirroot.'/lib/xmlize.php');
     $data = xmlize($xml, 1, 'UTF-8');
 
-    if(isset($data['report']['@']['version'])){
+    if (isset($data['report']['@']['version'])) {
         $newreport = new stdclass;
-        foreach($data['report']['#'] as $key=>$val){
-            if($key == 'components') {
+        foreach ($data['report']['#'] as $key => $val) {
+            if ($key == 'components') {
                 $val[0]['#'] = base64_decode(trim($val[0]['#']));
-                // fix url_encode " and ' when importing SQL queries
-                $temp_components = cr_unserialize($val[0]['#']);
-                $temp_components['customsql']['config']->querysql = str_replace("\'","'",$temp_components['customsql']['config']->querysql);
-                $temp_components['customsql']['config']->querysql = str_replace('\"','"',$temp_components['customsql']['config']->querysql);
-                $val[0]['#'] = cr_serialize($temp_components);
+                // Fix url_encode " and ' when importing SQL queries.
+                $tempcomponents = cr_unserialize($val[0]['#']);
+                $tempcomponents['customsql']['config']->querysql = str_replace("\'", "'", $tempcomponents['customsql']['config']->querysql);
+                $tempcomponents['customsql']['config']->querysql = str_replace('\"', '"', $tempcomponents['customsql']['config']->querysql);
+                $val[0]['#'] = cr_serialize($tempcomponents);
             }
             $newreport->{$key} = trim($val[0]['#']);
         }
@@ -543,7 +536,7 @@ function cr_import_xml($xml, $course) {
         $newreport->ownerid = $USER->id;
         $newreport->name .= " (" . userdate(time()) . ")";
 
-        if(!$DB->insert_record('block_configurable_reports',$newreport)) {
+        if (!$DB->insert_record('block_configurable_reports', $newreport)) {
             return false;
         }
         return true;
@@ -551,7 +544,7 @@ function cr_import_xml($xml, $course) {
     return false;
 }
 
-// For avoid warnings in versions minor than 2.7
+// For avoid warnings in versions minor than 2.7.
 function cr_add_to_log($courseid, $module, $action, $url='', $info='', $cm=0, $user=0) {
     global $CFG;
 
