@@ -476,8 +476,3 @@ $string['datatables_loadingrecords'] = 'Loading...';
 $string['datatables_processing'] = 'Processing...';
 $string['datatables_search'] = 'Search:';
 $string['datatables_zerorecords'] = 'No matching records found';
-
-// New features: Graph new column.
-$string['others'] = 'Others';
-$string['limitcategories'] = 'Limit categories in a graph';
-$string['decimals'] = 'Number of decimals';

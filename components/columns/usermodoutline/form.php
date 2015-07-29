@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -15,59 +14,59 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-/** Configurable Reports
-  * A Moodle block for creating customizable reports
-  * @package blocks
-  * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
-  * @date: 2009
-  */
+/**
+ * Configurable Reports
+ * A Moodle block for creating customizable reports
+ * @package blocks
+ * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @date: 2009
+ */
 
 if (!defined('MOODLE_INTERNAL')) {
-    die('Direct access to this script is forbidden.');    ///  It must be included from a Moodle page
+    //  It must be included from a Moodle page.
+    die('Direct access to this script is forbidden.');
 }
 
 require_once($CFG->libdir.'/formslib.php');
 
 class usermodoutline_form extends moodleform {
-    function definition() {
+    public function definition() {
         global $DB, $USER, $CFG;
 
         $mform =& $this->_form;
 
-        $mform->addElement('header',  'crformheader' ,get_string('usermodoutline','block_configurable_reports'), '');
+        $mform->addElement('header',  'crformheader', get_string('usermodoutline', 'block_configurable_reports'), '');
 
-		$columns = $DB->get_columns('user');
+        $columns = $DB->get_columns('user');
 
-		$modules = array();
+        $modules = array();
 
-		// Fix for http://tracker.moodle.org/browse/CONTRIB-2945
-		require_once($CFG->dirroot."/course/lib.php");
-		get_all_mods($this->_customdata['report']->courseid, $mods, $modnames, $modnamesplural, $modnamesused);
+        // Fix for http://tracker.moodle.org/browse/CONTRIB-2945.
+        require_once($CFG->dirroot."/course/lib.php");
+        get_all_mods($this->_customdata['report']->courseid, $mods, $modnames, $modnamesplural, $modnamesused);
 
-		if($mods){
-			foreach($mods as $m){
-				$instance = $DB->get_record("$m->modname",array( "id" =>  "$m->instance"));
-				$modules[$m->id] = $instance->name;
-			}
-		}
+        if ($mods) {
+            foreach ($mods as $m) {
+                $instance = $DB->get_record("$m->modname", array('id' => "$m->instance"));
+                $modules[$m->id] = $instance->name;
+            }
+        }
 
-        $mform->addElement('select', 'cmid', get_string('module','block_configurable_reports'), $modules);
-		$mform->addElement('checkbox', 'donotshowtime', get_string('donotshowtime','block_configurable_reports'));
+        $mform->addElement('select', 'cmid', get_string('module', 'block_configurable_reports'), $modules);
+        $mform->addElement('checkbox', 'donotshowtime', get_string('donotshowtime', 'block_configurable_reports'));
 
-		$this->_customdata['compclass']->add_form_elements($mform,$this);
+        $this->_customdata['compclass']->add_form_elements($mform, $this);
 
-        // buttons
+        // Buttons.
         $this->add_action_buttons(true, get_string('add'));
 
     }
 
-	function validation($data, $files){
-		$errors = parent::validation($data, $files);
+    public function validation($data, $files) {
+        $errors = parent::validation($data, $files);
 
-		$errors = $this->_customdata['compclass']->validate_form_elements($data,$errors);
+        $errors = $this->_customdata['compclass']->validate_form_elements($data, $errors);
 
-		return $errors;
-	}
-
+        return $errors;
+    }
 }
-

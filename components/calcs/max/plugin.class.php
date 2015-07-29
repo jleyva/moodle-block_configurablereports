@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -15,84 +14,83 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-/** Configurable Reports
-  * A Moodle block for creating customizable reports
-  * @package blocks
-  * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
-  * @date: 2009
-  */
+/**
+ * Configurable Reports
+ * A Moodle block for creating customizable reports
+ * @package blocks
+ * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @date: 2009
+ */
 
 require_once($CFG->dirroot.'/blocks/configurable_reports/plugin.class.php');
 
 class plugin_max extends plugin_base{
 
-	public function init(){
-		$this->form = true;
-		$this->unique = false;
-		$this->fullname = get_string('max','block_configurable_reports');
-		$this->reporttypes = array('courses','users','sql','timeline','categories');
-	}
+    public function init() {
+        $this->form = true;
+        $this->unique = false;
+        $this->fullname = get_string('max', 'block_configurable_reports');
+        $this->reporttypes = array('courses', 'users', 'sql', 'timeline', 'categories');
+    }
 
-	public function summary($data){
-		global $DB, $CFG;
+    public function summary($data) {
+        global $DB, $CFG;
 
-		if($this->report->type != 'sql'){
-			$components = cr_unserialize($this->report->components);
-			if(!is_array($components) || empty($components['columns']['elements']))
-				print_error('nocolumns');
+        if ($this->report->type != 'sql') {
+            $components = cr_unserialize($this->report->components);
+            if (!is_array($components) || empty($components['columns']['elements'])) {
+                print_error('nocolumns');
+            }
 
-			$columns = $components['columns']['elements'];
-			$i = 0;
-			foreach($columns as $c){
-				if($i == $data->column)
-					return $c['summary'];
-				$i++;
-			}
-		}
-		else{
+            $columns = $components['columns']['elements'];
+            $i = 0;
+            foreach ($columns as $c) {
+                if ($i == $data->column) {
+                    return $c['summary'];
+                }
+                $i++;
+            }
+        } else {
 
-			require_once($CFG->dirroot.'/blocks/configurable_reports/report.class.php');
-			require_once($CFG->dirroot.'/blocks/configurable_reports/reports/'.$this->report->type.'/report.class.php');
+            require_once($CFG->dirroot.'/blocks/configurable_reports/report.class.php');
+            require_once($CFG->dirroot.'/blocks/configurable_reports/reports/'.$this->report->type.'/report.class.php');
 
-			$reportclassname = 'report_'.$this->report->type;
-			$reportclass = new $reportclassname($this->report);
+            $reportclassname = 'report_'.$this->report->type;
+            $reportclass = new $reportclassname($this->report);
 
-			$components = cr_unserialize($this->report->components);
-			$config = (isset($components['customsql']['config']))? $components['customsql']['config'] : new stdclass;
+            $components = cr_unserialize($this->report->components);
+            $config = (isset($components['customsql']['config'])) ? $components['customsql']['config'] : new \stdclass;
 
-			if(isset($config->querysql)){
+            if (isset($config->querysql)) {
 
-				$sql =$config->querysql;
-				$sql = $reportclass->prepare_sql($sql);
-				if($rs = $reportclass->execute_query($sql)){
-					foreach($rs as $row){
-						$i = 0;
-						foreach($row as $colname=>$value){
-							if($i == $data->column)
-								return str_replace('_', ' ', $colname);
-							$i++;
-						}
-						break;
-					}
-					$rs->close();
-				}
-			}
-		}
+                $sql = $config->querysql;
+                $sql = $reportclass->prepare_sql($sql);
+                if ($rs = $reportclass->execute_query($sql)) {
+                    foreach ($rs as $row) {
+                        $i = 0;
+                        foreach ($row as $colname => $value) {
+                            if ($i == $data->column) {
+                                return str_replace('_', ' ', $colname);
+                            }
+                            $i++;
+                        }
+                        break;
+                    }
+                    $rs->close();
+                }
+            }
+        }
 
-		return '';
-	}
+        return '';
+    }
 
-	function execute($rows){
-
-		$result = 0;
-
-		foreach($rows as $r){
-			if(is_numeric($r) && $result < $r)
-				$result = $r;
-		}
-
-		return $result;
-	}
-
+    public function execute($rows) {
+        $result = 0;
+        foreach ($rows as $r) {
+            if (is_numeric($r) && $result < $r) {
+                $result = $r;
+            }
+        }
+        return $result;
+    }
 }
-

@@ -14,7 +14,8 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-/** Configurable Reports
+/**
+ * Configurable Reports
  * A Moodle block for creating customizable reports
  * @package blocks
  * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
@@ -32,6 +33,9 @@ class block_configurable_reports extends block_list {
         $this->title = get_string('pluginname', 'block_configurable_reports');
     }
 
+    /**
+     * Act on instance data.
+     */
     public function specialization() {
         if (empty($this->config->title)) {
             $this->title = get_string('pluginname', 'block_configurable_reports');
@@ -113,7 +117,10 @@ class block_configurable_reports extends block_list {
                 foreach ($reports as $report) {
                     if ($report->visible && cr_check_report_permissions($report, $USER->id, $context)) {
                         $rname = format_string($report->name);
-                        $this->content->items[] = '<a href= "'.$CFG->wwwroot.'/blocks/configurable_reports/viewreport.php?id='.$report->id.'&courseid='.$course->id.'" alt="'.$rname.'">'.$rname.'</a>';
+                        $params = ['id' => $report->id, 'courseid' => $course->id];
+                        $url = new \moodle_url('/blocks/configurable_reports/viewreport.php', $params);
+                        $attrs = ['alt' => $rname];
+                        $this->content->items[] = \html_writer::link($url, $rname, $attrs);
                     }
                 }
                 if (!empty($this->content->items)) {
@@ -132,7 +139,10 @@ class block_configurable_reports extends block_list {
                 foreach ($reports as $report) {
                     if (!$report->global && $report->visible && cr_check_report_permissions($report, $USER->id, $context)) {
                         $rname = format_string($report->name);
-                        $this->content->items[] = '<a href= "'.$CFG->wwwroot.'/blocks/configurable_reports/viewreport.php?id='.$report->id.'&courseid='.$course->id.'" alt="'.$rname.'">'.$rname.'</a>';
+                        $params = ['id' => $report->id, 'courseid' => $course->id];
+                        $url = new \moodle_url('/blocks/configurable_reports/viewreport.php', $params);
+                        $attrs = ['alt' => $rname];
+                        $this->content->items[] = \html_writer::link($url, $rname, $attrs);
                     }
                 }
                 if (!empty($this->content->items)) {
@@ -143,7 +153,9 @@ class block_configurable_reports extends block_list {
 
         if (has_capability('block/configurable_reports:managereports', $context)
             || has_capability('block/configurable_reports:manageownreports', $context)) {
-            $this->content->items[] = '<a href="'.$CFG->wwwroot.'/blocks/configurable_reports/managereport.php?courseid='.$course->id.'">'.(get_string('managereports', 'block_configurable_reports')).'</a>';
+            $url = new \moodle_url('/blocks/configurable_reports/managereport.php', ['courseid' => $course->id]);
+            $linktext = get_string('managereports', 'block_configurable_reports');
+            $this->content->items[] = \html_writer::link($url, $linktext);
         }
 
         return $this->content;
@@ -170,8 +182,6 @@ class block_configurable_reports extends block_list {
         }
 
         // Starting to run...
-        //$DB->set_field('blocks', 'lastcron',time(), array('name' => 'configurable_reports'));
-
         require_once($CFG->dirroot."/blocks/configurable_reports/locallib.php");
         require_once($CFG->dirroot.'/blocks/configurable_reports/report.class.php');
         require_once($CFG->dirroot.'/blocks/configurable_reports/reports/sql/report.class.php');
@@ -190,7 +200,7 @@ class block_configurable_reports extends block_list {
                     mtrace("\nExecuting query '$report->name'");
 
                     $components = cr_unserialize($reportclass->config->components);
-                    $config = (isset($components['customsql']['config']))? $components['customsql']['config'] : new stdclass;
+                    $config = (isset($components['customsql']['config'])) ? $components['customsql']['config'] : new \stdclass;
                     $sql = $reportclass->prepare_sql($config->querysql);
 
                     $sqlqueries = explode(';', $sql);
@@ -198,7 +208,11 @@ class block_configurable_reports extends block_list {
                     foreach ($sqlqueries as $sql) {
                         mtrace(substr($sql, 0, 60)); // Show some SQL.
                         $results = $reportclass->execute_query($sql);
-                        mtrace(($results==1) ? '...OK time='.round((microtime(true) - $starttime) * 1000).'mSec' : 'Some SQL Error'.'\n');
+                        if ($results == 1) {
+                            mtrace('...OK time='.round((microtime(true) - $starttime) * 1000).'mSec');
+                        } else {
+                            mtrace('Some SQL Error'.'\n');
+                        }
                     }
                     unset($reportclass);
                 }
