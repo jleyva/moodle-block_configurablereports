@@ -56,10 +56,9 @@ class plugin_coursemodules extends plugin_base {
                 $replace = ' '.$output[1].' ';
                 $finalelements = str_replace('%%FILTER_COURSEMODULEFIELDS:'.$output[1].'%%', $replace, $finalelements);
             }
-
             if (preg_match("/%%FILTER_COURSEMODULE:([^%]+)%%/i", $finalelements, $output)) {
                 $module = $remotedb->get_record('modules', array('id' => $filtercoursemoduleid));
-                $replace = ' JOIN mdl_'.$module->name.' AS m ON m.id = '.$output[1].' ';
+                $replace = ' JOIN {'.$module->name.'} AS m ON m.id = '.$output[1].' ';
                 $finalelements = str_replace('%%FILTER_COURSEMODULE:'.$output[1].'%%', $replace, $finalelements);
             }
         }
