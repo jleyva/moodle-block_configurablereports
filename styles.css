@@ -22,7 +22,8 @@
 
 /* Left align Setting INPUT TEXT boxes
 */
-.dir-rtl .settingsform input[type=text], .dir-rtl .settingsform input[type=password] {text-align: left;direction: ltr;}
+#page-admin-setting-blocksettingconfigurable_reports.dir-rtl .settingsform input[type=text],
+#page-admin-setting-blocksettingconfigurable_reports.dir-rtl .settingsform input[type=password] {text-align: left;direction: ltr;}
 
 /* Table usability & UI fixes
 */
