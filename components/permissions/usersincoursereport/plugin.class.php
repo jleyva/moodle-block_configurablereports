@@ -40,6 +40,11 @@ class plugin_usersincoursereport extends plugin_base{
 	function execute($userid, $context, $data){
 		global $DB, $CFG;
 		
+		// Everyone should be enrolled at the system level.
+		if($context == context_system::instance()) {
+			return true;
+		}
+
 		return is_enrolled($context, $userid);
 
 	}
