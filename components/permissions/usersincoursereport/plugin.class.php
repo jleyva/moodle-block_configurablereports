@@ -24,20 +24,26 @@
 
 require_once($CFG->dirroot.'/blocks/configurable_reports/plugin.class.php');
 
-class plugin_usersincoursereport extends plugin_base {
-    public function init() {
-        $this->form = false;
-        $this->unique = true;
-        $this->fullname = get_string('usersincoursereport', 'block_configurable_reports');
-        $this->reporttypes = array('courses', 'sql', 'users', 'timeline', 'categories');
-    }
+class plugin_usersincoursereport extends plugin_base{
+
+	function init(){
+		$this->form = false;
+		$this->unique = true;
+		$this->fullname = get_string('usersincoursereport','block_configurable_reports');
+		$this->reporttypes = array('courses','sql','users','timeline','categories');
+	}
 
     public function summary($data) {
         return get_string('usersincoursereport_summary', 'block_configurable_reports');
     }
 
     public function execute($userid, $context, $data) {
-        global $DB, $CFG;
+
+        // Everyone should be enrolled at the system level.
+        if($context == context_system::instance()) {
+            return true;
+        }
+
         return is_enrolled($context, $userid);
     }
 }
