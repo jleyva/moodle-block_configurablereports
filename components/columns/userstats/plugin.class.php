@@ -113,7 +113,8 @@ class plugin_userstats extends plugin_base{
             // Code from Course Dedication Block
             if ($logs) {
                 // This should be a config value in some where
-                $limitinseconds = 30*60;
+                $limitinseconds = (!empty($data->sessionlimittime)) ? $data->sessionlimittime : 30*60;
+
                 $previouslog = array_shift($logs);
                 $previouslogtime = $previouslog->time;
                 $sessionstart = $previouslogtime;

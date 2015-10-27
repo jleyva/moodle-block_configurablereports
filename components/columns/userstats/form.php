@@ -41,6 +41,15 @@ class userstats_form extends moodleform {
 
 		$mform->addElement('select', 'stat', get_string('stat','block_configurable_reports'), $userstats);
 
+    $limitoptions = array();
+    for ($i = 5; $i <= 150; $i+=5) {
+        $limitoptions[$i * 60] = $i;
+    }
+    $mform->addElement('select', 'sessionlimittime', get_string('sessionlimittime', 'block_configurable_reports'), $limitoptions);
+    $mform->addHelpButton('sessionlimittime', 'sessionlimittime', 'block_configurable_reports');
+    $mform->setDefault('sessionlimittime', 30*60);
+    $mform->disabledIf('sessionlimittime', 'stat', 'neq', 'coursededicationtime');
+
 		$this->_customdata['compclass']->add_form_elements($mform,$this);
 
         // buttons
