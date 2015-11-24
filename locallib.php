@@ -65,7 +65,13 @@ function cr_add_jsdatatables($cssid) {
         'datatables_zerorecords',
     ), 'block_configurable_reports');
 
-    echo html_writer::script(false, new moodle_url('/blocks/configurable_reports/js/datatables/media/js/jquery.js'));
+    $script = new moodle_url('/blocks/configurable_reports/js/datatables/media/js/jquery.js');
+    $script = '
+        if (typeof jQuery == "undefined") {
+            document.write(unescape("%3Cscript type=\"text/javascript\" src=\"'.$script.'\"%3E%3C/script%3E"));
+        }
+    ';
+    echo html_writer::script($script);
     echo html_writer::script(false, new moodle_url('/blocks/configurable_reports/js/datatables/media/js/jquery.dataTables.min.js'));
     echo html_writer::script(false, new moodle_url('/blocks/configurable_reports/js/datatables/extras/FixedHeader/js/FixedHeader.js'));
 
@@ -106,7 +112,15 @@ function cr_add_jsdatatables($cssid) {
 
 function cr_add_jsordering($cssid) {
     global $DB, $CFG, $OUTPUT;
-    echo html_writer::script(false, new moodle_url('/blocks/configurable_reports/js/jquery-latest.js'));
+
+    $script = new moodle_url('/blocks/configurable_reports/js/datatables/media/js/jquery.js');
+    $script = '
+        if (typeof jQuery == "undefined") {
+            document.write(unescape("%3Cscript type=\"text/javascript\" src=\"'.$script.'\"%3E%3C/script%3E"));
+        }
+    ';
+    echo html_writer::script($script);
+
     echo html_writer::script(false, new moodle_url('/blocks/configurable_reports/js/jquery.tablesorter.min.js'));
     $script = '$(document).ready(function() {
         // call the tablesorter plugin
