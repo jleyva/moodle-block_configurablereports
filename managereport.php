@@ -42,7 +42,8 @@ if ($course->id == SITEID) {
     $context = \context_course::instance($course->id);
 }
 
-if (!has_capability('block/configurable_reports:managereports', $context) && ! has_capability('block/configurable_reports:manageownreports', $context)) {
+if (!has_capability('block/configurable_reports:managereports', $context) &&
+        !has_capability('block/configurable_reports:manageownreports', $context)) {
     print_error('badpermissions');
 }
 
@@ -152,13 +153,15 @@ if ($reports) {
         if (!empty($export)) {
             foreach ($export as $e) {
                 if ($e) {
-                    $download .= '<a href="viewreport.php?id='.$r->id.'&amp;download=1&amp;format='.$e.'"><img src="'.$CFG->wwwroot.'/blocks/configurable_reports/export/'.$e.'/pix.gif" alt="'.$e.'">&nbsp;'.(strtoupper($e)).'</a>&nbsp;&nbsp;';
+                    $download .= '<a href="viewreport.php?id='.$r->id.'&amp;download=1&amp;format='.$e.'">
+                        <img src="'.$CFG->wwwroot.'/blocks/configurable_reports/export/'.$e.'/pix.gif" alt="'.$e.'">
+                            &nbsp;'.(strtoupper($e)).'</a>&nbsp;&nbsp;';
                 }
             }
         }
 
         $table->data[] = [
-            '<a href="viewreport.php?id='.$r->id.'">'.$r->name.'</a>',
+            '<a href="viewreport.php?id='.$r->id.'">'.format_string($r->name).'</a>',
             $coursename,
             get_string('report_'.$r->type, 'block_configurable_reports'),
             $owner,
