@@ -128,6 +128,7 @@ class report_sql extends report_base {
 					}
                     $array_row = array_values((array) $row);
                     foreach($array_row as $ii => $cell) {
+                        $cell = format_text($cell, FORMAT_HTML, array('trusted' => true,'noclean' => true, 'para' => false));
                         $array_row[$ii] = str_replace('[[QUESTIONMARK]]', '?', $cell);
                     }
                     $totalrecords++;

@@ -151,7 +151,7 @@ if($reports){
                 }
         }
 
-        $table->data[] = array('<a href="viewreport.php?id='.$r->id.'">'.$r->name.'</a>',$coursename,get_string('report_'.$r->type,'block_configurable_reports'), $owner, $editcell, $download);
+        $table->data[] = array('<a href="viewreport.php?id='.$r->id.'">'.format_string($r->name).'</a>',$coursename,get_string('report_'.$r->type,'block_configurable_reports'), $owner, $editcell, $download);
     }
 
     $table->id = 'reportslist';
