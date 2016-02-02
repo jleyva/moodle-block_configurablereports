@@ -20,13 +20,11 @@ class github extends \curl {
 		return true;
 	}
 
-	public function get($endpoint) {
+	public function get($endpoint, $params = array(), $options = array()) {
 		$url = 'https://api.github.com/repos/';
 		$url .= $this->repo;
 		$url .= $endpoint;
-		$params = [];
-		$opts = [];
-		$result = parent::get($url, $params, $opts);
+		$result = parent::get($url, $params, $options);
 		return $result;
 	}
 }
