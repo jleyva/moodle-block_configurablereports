@@ -210,6 +210,10 @@ if ($editform->is_cancelled()) {
         $data->remote = 0;
     }
 
+    if (!isset($data->cron)) {
+        $data->cron = 0;
+    }
+
     if (empty($report)) {
         $data->ownerid = $USER->id;
         $data->courseid = $courseid;
