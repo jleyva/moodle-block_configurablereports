@@ -69,7 +69,7 @@
         $script = '
             if (typeof jQuery == "undefined") {
                 document.write(unescape("%3Cscript type=\"text/javascript\" src=\"'.$script.'\"%3E%3C/script%3E"));
-            }                    
+            }
         ';
         echo html_writer::script($script);
 
@@ -117,7 +117,7 @@
     $script = '
         if (typeof jQuery == "undefined") {
             document.write(unescape("%3Cscript type=\"text/javascript\" src=\"'.$script.'\"%3E%3C/script%3E"));
-        }                    
+        }
     ';
     echo html_writer::script($script);
     echo html_writer::script(false, new moodle_url('/blocks/configurable_reports/js/jquery.tablesorter.min.js'));
@@ -515,7 +515,7 @@ function cr_make_categories_list(&$list, &$parents, $requiredcapability = '',
     if (empty($list)) {
         $list = array();
     }
-    $list += coursecat::cr_make_categories_list($requiredcapability, $excludeid);
+    $list += coursecat::make_categories_list($requiredcapability, $excludeid);
 
     // Building the list of all parents of all categories in the system is highly undesirable and hardly ever needed.
     // Usually user needs only parents for one particular category, in which case should be used:
