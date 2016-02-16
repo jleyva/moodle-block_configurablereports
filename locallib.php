@@ -509,7 +509,7 @@ function cr_make_categories_list(&$list, &$parents, $requiredcapability = '', $e
     if (empty($list)) {
         $list = array();
     }
-    $list += coursecat::cr_make_categories_list($requiredcapability, $excludeid);
+    $list += coursecat::make_categories_list($requiredcapability, $excludeid);
 
     // Building the list of all parents of all categories in the system is highly undesirable and hardly ever needed.
     // Usually user needs only parents for one particular category, in which case should be used:
