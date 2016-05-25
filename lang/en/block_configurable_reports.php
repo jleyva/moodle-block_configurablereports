@@ -288,6 +288,7 @@ $string['yaxis'] = 'Y Axis';
 $string['serieid'] = 'Serie column';
 $string['groupseries'] = 'Group series';
 $string['linesummary'] = 'A line graph with multiple series of data';
+$string['xandynotequal'] = 'X and Y axis need to be different';
 
 $string['coursestats'] = 'Course stats';
 $string['statstotalenrolments'] = 'Total enrolments';

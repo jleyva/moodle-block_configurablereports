@@ -87,8 +87,10 @@ class bar_form extends moodleform {
 
         $mform->addElement('text', 'width', get_string('width', 'block_configurable_reports'));
         $mform->setDefault('width', 900);
+        $mform->setType("width", PARAM_INT);
         $mform->addElement('text', 'height', get_string('height', 'block_configurable_reports'));
         $mform->setDefault('height', 500);
+        $mform->setType("height", PARAM_INT);
 
         /* Shouldn't use these without a way to automatically
          * calculate colors for the text and bars that contrast
