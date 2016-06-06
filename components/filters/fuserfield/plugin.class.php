@@ -118,7 +118,11 @@ class plugin_fuserfield extends plugin_base {
         $reportclass = new $reportclassname($this->report);
 
         if ($this->report->type == 'sql') {
-            $userlist = array_keys($remotedb->get_records('user'));
+            $conditions = array();
+            if ($data->excludedeletedusers) {
+                $conditions['deleted'] = 0;
+            }
+            $userlist = array_keys($remotedb->get_records('user', $conditions));
         } else {
             $components = cr_unserialize($this->report->components);
             $conditions = array_key_exists('conditions', $components) ?

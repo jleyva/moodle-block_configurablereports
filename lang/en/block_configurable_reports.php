@@ -484,3 +484,5 @@ $string['limitcategories'] = 'Limit categories in a graph';
 $string['decimals'] = 'Number of decimals';
 $string['sessionlimittime'] = 'Limit between clicks (in minutes)';
 $string['sessionlimittime_help'] = 'The limit between clicks defines if two clicks are part of the same session or not';
+
+$string['excludedeletedusers'] = 'Exclude deleted users (only for SQL reports)';
