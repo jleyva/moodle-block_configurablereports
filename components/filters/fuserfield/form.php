@@ -55,7 +55,9 @@ class fuserfield_form extends moodleform {
 
         $mform->addElement('select', 'field', get_string('field','block_configurable_reports'), $usercolumns);
 
-        // buttons
+        $mform->addElement('advcheckbox', 'excludedeletedusers', get_string('excludedeletedusers', 'block_configurable_reports'));
+
+        // Buttons.
         $this->add_action_buttons(true, get_string('add'));
 
     }
