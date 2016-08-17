@@ -150,7 +150,7 @@ function cr_add_jsordering($cssid) {
 
 function urlencode_recursive($var) {
     if (is_object($var)) {
-        $newvar = new \object();
+        $newvar = new \stdClass();
         $properties = get_object_vars($var);
         foreach ($properties as $property => $value) {
             $newvar->$property = urlencode_recursive($value);
@@ -172,7 +172,7 @@ function urlencode_recursive($var) {
 
 function urldecode_recursive($var) {
     if (is_object($var)) {
-        $newvar = new \object();
+        $newvar = new \stdClass();
         $properties = get_object_vars($var);
         foreach ($properties as $property => $value) {
             $newvar->$property = urldecode_recursive($value);
