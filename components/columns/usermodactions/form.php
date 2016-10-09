@@ -41,15 +41,10 @@ class usermodactions_form extends moodleform {
 
         $modules = array();
 
-        // Fix for http://tracker.moodle.org/browse/CONTRIB-2945.
-        require_once($CFG->dirroot."/course/lib.php");
-        get_all_mods($this->_customdata['report']->courseid, $mods, $modnames, $modnamesplural, $modnamesused);
-
-        if ($mods) {
-            foreach ($mods as $m) {
-                $instance = $DB->get_record("$m->modname", array('id' => "$m->instance"));
-                $modules[$m->id] = $instance->name;
-            }
+        get_fast_modinfo($this->_customdata['report']->courseid);
+        $mods = get_fast_modinfo($this->_customdata['report']->courseid)->get_cms();
+        foreach ($mods as $m) {
+            $modules[$m->id] = $m->get_formatted_name();
         }
 
         $mform->addElement('select', 'cmid', get_string('module', 'block_configurable_reports'), $modules);
