@@ -34,7 +34,7 @@
 				tmpw.document.open();
 				tmpw.document.write('<html><body>');
 				tmpw.document.write(cdiv.innerHTML);
-				tmpw.document.write('</body></html>');
+				tmpw.document.write('</'+'body></html>');
 				tmpw.document.close();
 				tmpw.print();
 				tmpw.close();
