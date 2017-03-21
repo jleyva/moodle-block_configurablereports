@@ -97,7 +97,7 @@ $string['filtersemester_summary'] = 'מאפשר סינון לפני סמסטרי
 $string['filtersemester_list'] = 'סמסטר א,סמסטר ב,סמסטר ג,סמינריון';
 $string['subcategories'] = 'Category (Include sub categories)';
 $string['filtersubcategories'] = 'Category (Include sub categories)';
-$string['filtersubcategories_summary'] = 'Use: %%FILTER_SUBCATEGORIES:mdl_course_category.path%%';
+$string['filtersubcategories_summary'] = 'Use: %%FILTER_CATEGORIES:mdl_course_category.path%%';
 $string['yearnumeric'] = 'Year (Numeric)';
 $string['filteryearnumeric'] = 'Year (Numeric)';
 $string['filteryearnumeric_summary'] = 'Filter is using numeric years (2013,...)';
@@ -288,7 +288,6 @@ $string['yaxis'] = 'Y Axis';
 $string['serieid'] = 'Serie column';
 $string['groupseries'] = 'Group series';
 $string['linesummary'] = 'A line graph with multiple series of data';
-$string['xandynotequal'] = 'X and Y axis need to be different';
 
 $string['coursestats'] = 'Course stats';
 $string['statstotalenrolments'] = 'Total enrolments';
@@ -486,4 +485,5 @@ $string['decimals'] = 'Number of decimals';
 $string['sessionlimittime'] = 'Limit between clicks (in minutes)';
 $string['sessionlimittime_help'] = 'The limit between clicks defines if two clicks are part of the same session or not';
 
-$string['excludedeletedusers'] = 'Exclude deleted users (only for SQL reports)';
+// New plots & exports
+$string['stdComparative'] = 'Line and points - standard comparative';
