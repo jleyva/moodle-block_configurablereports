@@ -149,7 +149,7 @@
 
   function urlencode_recursive($var) {
     if (is_object($var)) {
-        $new_var = new object();
+        $new_var = new stdClass();
         $properties = get_object_vars($var);
         foreach($properties as $property => $value) {
             $new_var->$property = urlencode_recursive($value);
@@ -173,7 +173,7 @@
 
   function urldecode_recursive($var) {
     if (is_object($var)) {
-        $new_var = new object();
+        $new_var = new stdClass();
         $properties = get_object_vars($var);
         foreach($properties as $property => $value) {
             $new_var->$property = urldecode_recursive($value);
