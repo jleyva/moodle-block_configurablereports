@@ -68,22 +68,14 @@ class plugin_subcategories extends plugin_base {
 
             $subcategorieslist = $reportclass->elements_by_conditions($conditions);
         } else {
-            $subcategorieslist = array_keys($remotedb->get_records('course_categories'));
+            require_once($CFG->libdir. '/coursecatlib.php');
+            $subcategorieslist = coursecat::make_categories_list();
+
         }
 
-        $courseoptions = array();
-        $courseoptions[0] = get_string('filter_all', 'block_configurable_reports');
+        array_unshift($subcategorieslist,get_string('filter_all', 'block_configurable_reports'));
 
-        if (!empty($subcategorieslist)) {
-            list($usql, $params) = $remotedb->get_in_or_equal($subcategorieslist);
-            $subcategories = $remotedb->get_records_select('course_categories', "id $usql", $params);
-
-            foreach ($subcategories as $c) {
-                $courseoptions[$c->id] = format_string($c->name);
-            }
-        }
-
-        $mform->addElement('select', 'filter_subcategories', get_string('category'), $courseoptions);
+        $mform->addElement('select', 'filter_subcategories', get_string('category'), $subcategorieslist);
         $mform->setType('filter_subcategories', PARAM_INT);
     }
 }
