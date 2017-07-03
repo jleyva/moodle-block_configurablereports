@@ -486,4 +486,4 @@ $string['sessionlimittime'] = 'Limit between clicks (in minutes)';
 $string['sessionlimittime_help'] = 'The limit between clicks defines if two clicks are part of the same session or not';
 
 // New plots & exports
-$string['stdComparative'] = 'Line and points - standard comparative';
+$string['stdComparative'] = 'Comparativa de estándares - Líneas y Puntos';
