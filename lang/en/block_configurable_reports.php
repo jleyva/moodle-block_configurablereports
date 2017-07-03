@@ -121,6 +121,8 @@ $string['filterusers_summary'] = 'Filter a user (by id) from system user list';
 $string['filterenrolledstudents'] = 'Enrolled course students';
 $string['filterenrolledstudents_summary'] = 'Filter a user (by id) from enrolled course students';
 $string['student'] = 'Student';
+$string['studentrole'] = 'Student role';
+$string['studentroleinfo'] = 'The role use for student enrolment';
 
 // Calcs
 $string['nocalcsyet'] = "No calculations yet";

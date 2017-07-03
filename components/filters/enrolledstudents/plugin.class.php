@@ -58,7 +58,7 @@ class plugin_enrolledstudents extends plugin_base{
 		global $remotedb, $COURSE;
 
 		//$filter_enrolledstudents = optional_param('filter_enrolledstudents',0,PARAM_INT);
-
+		$studentrole = get_config('block_configurable_reports','studentrole');
 		$reportclassname = 'report_'.$this->report->type;
 		$reportclass = new $reportclassname($this->report);
 
@@ -79,7 +79,7 @@ class plugin_enrolledstudents extends plugin_base{
             $sql = "SELECT ra.userid
                         FROM {role_assignments} AS ra
                         JOIN {context} AS context ON ra.contextid = context.id AND context.contextlevel = 50
-                        WHERE ra.roleid=5 AND context.instanceid = {$COURSE->id}";
+                        WHERE ra.roleid=$studentrole AND context.instanceid = {$COURSE->id}";
 
             //echo $sql;die;
             $studentlist = $remotedb->get_records_sql($sql);

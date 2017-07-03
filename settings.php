@@ -34,6 +34,8 @@ if ($ADMIN->fulltree) {
     $settings->add(new admin_setting_configtext('block_configurable_reports/reportlimit', get_string('reportlimit', 'block_configurable_reports'),
         get_string('reportlimitinfo', 'block_configurable_reports'), '5000', PARAM_INT, 6));
 
+    $settings->add(new admin_setting_configselect('block_configurable_reports/studentrole', get_string('studentrole', 'block_configurable_reports'),
+        get_string('studentroleinfo', 'block_configurable_reports'), '5', $choices));
 //    $settings->add(new admin_setting_configcheckbox('block_configurable_reports/datatables', get_string('datatables', 'block_configurable_reports'),
 //        get_string('datatablesinfo', 'block_configurable_reports'), 0));
 
