@@ -62,24 +62,29 @@ class plugin_subcategories extends plugin_base {
         $reportclassname = 'report_'.$this->report->type;
         $reportclass = new $reportclassname($this->report);
 
+        $courseoptions = array();
+        $courseoptions[0] = get_string('filter_all', 'block_configurable_reports');
+
         if ($this->report->type != 'sql') {
             $components = cr_unserialize($this->report->components);
             $conditions = $components['conditions'];
 
             $subcategorieslist = $reportclass->elements_by_conditions($conditions);
+
+            if (!empty($subcategorieslist)) {
+                list($usql, $params) = $remotedb->get_in_or_equal($subcategorieslist);
+                $subcategories = $remotedb->get_records_select('course_categories', "id $usql", $params);
+
+                foreach ($subcategories as $c) {
+                    $courseoptions[$c->id] = format_string($c->name);
+                }
+            }
         } else {
-            $subcategorieslist = array_keys($remotedb->get_records('course_categories'));
-        }
+            require_once($CFG->libdir. '/coursecatlib.php');
+            $subcategorieslist = coursecat::make_categories_list();
 
-        $courseoptions = array();
-        $courseoptions[0] = get_string('filter_all', 'block_configurable_reports');
-
-        if (!empty($subcategorieslist)) {
-            list($usql, $params) = $remotedb->get_in_or_equal($subcategorieslist);
-            $subcategories = $remotedb->get_records_select('course_categories', "id $usql", $params);
-
-            foreach ($subcategories as $c) {
-                $courseoptions[$c->id] = format_string($c->name);
+            if (!empty($subcategorieslist)) {
+                $courseoptions += $subcategorieslist;
             }
         }
 
