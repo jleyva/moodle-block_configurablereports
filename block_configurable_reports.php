@@ -109,53 +109,95 @@ class block_configurable_reports extends block_list {
             $context = context_course::instance($course->id);
         }
 
-        // Site (Shared) reports.
-        if (!empty($this->config->displayglobalreports)) {
-            $reports = $DB->get_records('block_configurable_reports', array('global' => 1), 'name ASC');
+        // Show tiles.
+        if ($this->config->displaytiles) {
 
-            if ($reports) {
-                foreach ($reports as $report) {
-                    if ($report->visible && cr_check_report_permissions($report, $USER->id, $context)) {
-                        $rname = format_string($report->name);
-                        $params = ['id' => $report->id, 'courseid' => $course->id];
-                        $url = new \moodle_url('/blocks/configurable_reports/viewreport.php', $params);
-                        $attrs = ['alt' => $rname];
-                        $this->content->items[] = \html_writer::link($url, $rname, $attrs);
+            // Get the subtitle.
+            if (\core_text::strlen($this->config->subtitle)) {
+                $this->content->items[] = $this->config->subtitle;
+            }
+
+            // Get the list of reports.
+            $reportids = [];
+
+            foreach ($this->config as $key => $value) {
+                // Check for the cr reportid config.
+                if (!(\core_text::strpos($key, 'cr_tile_reportid_') === 0)) {
+                    continue;
+                }
+
+                // Reports that are set to no don't get displayed.
+                if ($value === 0) {
+                    continue;
+                }
+
+                // Just get the id out of the setting.
+                $reportids[] = str_replace('cr_tile_reportid_', '', $key);
+            }
+
+            // No reports.
+            if (!$reportids) {
+                return $this->content;
+            }
+
+            // Get the reports.
+            list($insql, $params) = $DB->get_in_or_equal($reportids);
+            $reports = $DB->get_records_sql("SELECT * FROM {block_configurable_reports} WHERE id {$insql}", $params);
+
+            foreach ($reports as $report) {
+                // Todo: Add support for report being "tileable".
+
+                // Todo: Make a tile of the report.
+            }
+        } else {
+            // Site (Shared) reports.
+            if (!empty($this->config->displayglobalreports)) {
+                $reports = $DB->get_records('block_configurable_reports', array('global' => 1), 'name ASC');
+
+                if ($reports) {
+                    foreach ($reports as $report) {
+                        if ($report->visible && cr_check_report_permissions($report, $USER->id, $context)) {
+                            $rname = format_string($report->name);
+                            $params = ['id' => $report->id, 'courseid' => $course->id];
+                            $url = new \moodle_url('/blocks/configurable_reports/viewreport.php', $params);
+                            $attrs = ['alt' => $rname];
+                            $this->content->items[] = \html_writer::link($url, $rname, $attrs);
+                        }
+                    }
+                    if (!empty($this->content->items)) {
+                        $this->content->items[] = '========';
                     }
                 }
-                if (!empty($this->content->items)) {
-                    $this->content->items[] = '========';
-                }
             }
-        }
 
-        // Course reports.
-        if (!property_exists($this, 'config')
-            or !isset($this->config->displayreportslist)
-            or $this->config->displayreportslist) {
-            $reports = $DB->get_records('block_configurable_reports', array('courseid' => $course->id), 'name ASC');
+            // Course reports.
+            if (!property_exists($this, 'config')
+                    or !isset($this->config->displayreportslist)
+                    or $this->config->displayreportslist) {
+                $reports = $DB->get_records('block_configurable_reports', array('courseid' => $course->id), 'name ASC');
 
-            if ($reports) {
-                foreach ($reports as $report) {
-                    if (!$report->global && $report->visible && cr_check_report_permissions($report, $USER->id, $context)) {
-                        $rname = format_string($report->name);
-                        $params = ['id' => $report->id, 'courseid' => $course->id];
-                        $url = new \moodle_url('/blocks/configurable_reports/viewreport.php', $params);
-                        $attrs = ['alt' => $rname];
-                        $this->content->items[] = \html_writer::link($url, $rname, $attrs);
+                if ($reports) {
+                    foreach ($reports as $report) {
+                        if (!$report->global && $report->visible && cr_check_report_permissions($report, $USER->id, $context)) {
+                            $rname = format_string($report->name);
+                            $params = ['id' => $report->id, 'courseid' => $course->id];
+                            $url = new \moodle_url('/blocks/configurable_reports/viewreport.php', $params);
+                            $attrs = ['alt' => $rname];
+                            $this->content->items[] = \html_writer::link($url, $rname, $attrs);
+                        }
+                    }
+                    if (!empty($this->content->items)) {
+                        $this->content->items[] = '========';
                     }
                 }
-                if (!empty($this->content->items)) {
-                    $this->content->items[] = '========';
-                }
             }
-        }
 
-        if (has_capability('block/configurable_reports:managereports', $context)
-            || has_capability('block/configurable_reports:manageownreports', $context)) {
-            $url = new \moodle_url('/blocks/configurable_reports/managereport.php', ['courseid' => $course->id]);
-            $linktext = get_string('managereports', 'block_configurable_reports');
-            $this->content->items[] = \html_writer::link($url, $linktext);
+            if (has_capability('block/configurable_reports:managereports', $context)
+                    || has_capability('block/configurable_reports:manageownreports', $context)) {
+                $url = new \moodle_url('/blocks/configurable_reports/managereport.php', ['courseid' => $course->id]);
+                $linktext = get_string('managereports', 'block_configurable_reports');
+                $this->content->items[] = \html_writer::link($url, $linktext);
+            }
         }
 
         return $this->content;
