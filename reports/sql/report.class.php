@@ -27,7 +27,7 @@ defined('BLOCK_CONFIGURABLE_REPORTS_MAX_RECORDS') || define('BLOCK_CONFIGURABLE_
 class report_sql extends report_base {
 
     public function init() {
-        $this->components = array('customsql', 'filters', 'template', 'permissions', 'calcs', 'plot');
+        $this->components = array('customsql', 'filters', 'template', 'permissions', 'calcs', 'plot', 'tilereport');
     }
 
     public function prepare_sql($sql) {
