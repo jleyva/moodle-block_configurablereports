@@ -550,3 +550,11 @@ $string['checksql_execution'] = 'Block Configurable Reports SQL execution';
 $string['checksql_execution_ok'] = 'SQL execution is disabled.';
 $string['checksql_execution_warning'] = 'It is recommended to disable SQL execution to avoid execution of arbitrary SQL code in your server.';
 $string['checksql_execution_details'] = 'By allowing SQL code execution there is a potential security issue with users adding arbitrary code. SQL code execution should be disable to only allow SQL queries for reading/retreaving data. SQL execution can be disabled in your config.php file by setting $CFG->block_configurable_reports_enable_sql_execution to 0';
+
+// Tile report component.
+$string['tilereport'] = 'Tile';
+
+$string['tilename'] = 'Tile name';
+$string['tilename_help'] = 'Give the report a shorter name when blocks are set to display as a tile.';
+$string['comp_tilereport'] = 'Tiles';
+$string['comp_tilereport_help'] = '<p>You can display reports as a tiles instead of a list.</p>';
