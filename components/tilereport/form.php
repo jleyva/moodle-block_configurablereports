@@ -35,8 +35,11 @@ class tilereport_form extends \moodleform {
 
         $mform =& $this->_form;
 
+        $mform->addElement('header', 'general', get_string('general'));
+        $mform->setExpanded('general');
+
         // Enable tileability.
-        $mform->addElement('selectyesno', 'tileable', 'Show on tiles');
+        $mform->addElement('selectyesno', 'tileable', get_string('showontiles', 'block_configurable_reports'));
         $mform->setDefault('tileable', 0);
 
         // Tile name.
@@ -51,6 +54,10 @@ class tilereport_form extends \moodleform {
 
         $mform->addRule('tilename', null, 'required', null, 'client');
         $mform->disabledIf('tilename', 'tileable', 0);
+
+        // Tile report configs.
+        $mform->addElement('header', 'header_reportsummary', get_string('tilereportsummary', 'block_configurable_reports'));
+        $mform->setExpanded('header_reportsummary');
 
         // Buttons.
         $this->add_action_buttons(true, get_string('add'));

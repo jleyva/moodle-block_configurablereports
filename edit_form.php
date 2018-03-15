@@ -23,7 +23,7 @@
  */
 
 class block_configurable_reports_edit_form extends block_edit_form {
-    protected function specific_definition(\MoodleQuickForm $mform) {
+    protected function specific_definition($mform) {
         global $USER, $CFG, $COURSE;
 
         // Tap into some cr functions.
@@ -32,7 +32,7 @@ class block_configurable_reports_edit_form extends block_edit_form {
         $mform->addElement('header', 'configheader', get_string('blocksettings', 'block'));
 
         $mform->addElement('text', 'config_title', get_string('name'));
-        $mform->setType('config_title', PARAM_MULTILANG);
+        $mform->setType('config_title', PARAM_TEXT);
         $mform->setDefault('config_title', get_string('pluginname', 'block_configurable_reports'));
 
         // Get a bunch of cr reports.
@@ -43,27 +43,29 @@ class block_configurable_reports_edit_form extends block_edit_form {
             $mform->addElement('hidden', 'config_displaytiles', 0);
             $mform->setType('config_displaytiles', PARAM_INT);
         } else {
-            // There were some reports for this user in this course. Provide an option to display as tiles. Todo: Use lang strings.
-            $mform->addElement('selectyesno', 'config_displaytiles', 'Display tiles');
+            // There were some reports for this user in this course. Provide an option to display as tiles.
+            $mform->addElement('selectyesno', 'config_displaytiles', get_string('displayastiles', 'block_configurable_reports'));
             $mform->setDefault('config_displaytiles', 0);
 
             // Subtitle option for tile reports. Todo: Use lang strings.
             $mform->addElement('text', 'config_subtitle', 'Subtitle');
+            $mform->setType('config_subtitle', PARAM_TEXT);
             $mform->disabledIf('config_subtitle', 'config_displaytiles', 'eq', 0);
         }
 
-
-        $mform->addElement('selectyesno', 'config_displayreportslist', get_string('displayreportslist', 'block_configurable_reports'));
+        // Option to display reports as a list.
+        $mform->addElement('selectyesno', 'config_displayreportslist', get_string('tileablereports', 'block_configurable_reports'));
         $mform->setDefault('config_displayreportslist', 1);
         $mform->disabledIf('config_displayreportslist', 'config_displaytiles', 'eq', 1);
 
+        // Option to display global reports. I think this was already here.
         $mform->addElement('selectyesno', 'config_displayglobalreports', get_string('displayglobalreports', 'block_configurable_reports'));
         $mform->setDefault('config_displayglobalreports', 1);
         $mform->disabledIf('config_displayglobalreports', 'config_displaytiles', 'eq', 1);
 
         // Show a separate group with a list of reports that can be displayed as tiles.
         if (!empty($reports)) {
-            $mform->addElement('header', 'heading_cr_list', 'List of reports');
+            $mform->addElement('header', 'heading_cr_list', get_string('tileablereports', 'block_configurable_reports'));
             $mform->setExpanded('heading_cr_list');
 
             // Select the reports.
@@ -73,6 +75,20 @@ class block_configurable_reports_edit_form extends block_edit_form {
                     continue;
                 }
 
+                // Get the report components.
+                $reportconfig = cr_get_tilereport_config($report);
+
+                // No config means no display.
+                if (is_null($reportconfig)) {
+                    continue;
+                }
+
+                // Check report tileability.
+                if (!$reportconfig->tileable) {
+                    continue;
+                }
+
+                // This report is tileability.
                 $mform->addElement('selectyesno', "config_cr_tile_reportid_{$reportid}", $report->name);
             }
         }

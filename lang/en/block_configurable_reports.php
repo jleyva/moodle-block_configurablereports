@@ -558,3 +558,7 @@ $string['tilename'] = 'Tile name';
 $string['tilename_help'] = 'Give the report a shorter name when blocks are set to display as a tile.';
 $string['comp_tilereport'] = 'Tiles';
 $string['comp_tilereport_help'] = '<p>You can display reports as a tiles instead of a list.</p>';
+$string['tileablereports'] = 'Tileable reports';
+$string['displayastiles'] = 'Display as tiles';
+$string['tilereportsummary'] = 'Report summary';
+$string['showontiles'] = 'Show on tiles';

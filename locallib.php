@@ -570,3 +570,65 @@ function cr_logging_info() {
 
     return array($uselegacyreader, $useinternalreader, $logtable);
 }
+
+/**
+ * Get all the components for a tilereport.
+ *
+ * @param $tilereport   The tilereport to get the components for.
+ * @param string $name  The name of the component to return. Default is all components.
+ * @return mixed|null
+ */
+function cr_get_tilereport_components(stdClass $tilereport, $name = '') {
+    global $DB;
+
+    // The id property should exist.
+    if (!isset($tilereport->id)) {
+        debugging('Can not get components for a report without an id.');
+        return null;
+    }
+
+    // Check that the report exists.
+    if (!$tilereport = $DB->get_record('block_configurable_reports', ['id' => $tilereport->id])) {
+        debugging("Could not find a configurable report with the id {$tilereport->id}");
+        return null;
+    }
+
+    //
+    if (empty($tilereport->components)) {
+        return null;
+    }
+
+    // Get the components.
+    $tilereportcomponents = cr_unserialize($tilereport->components);
+
+    // No configs set. Todo: Should there be some defaults? Maybe not set is a no?
+    if (!isset($tilereportcomponents['tilereport'])) {
+        return null;
+    }
+
+    // By default return all the components.
+    if (empty($name)) {
+        return $tilereportcomponents['tilereport'];
+    } else if (!isset($tilereportcomponents['tilereport'][$name])) {
+        // Trying to get a component that doesn't exist. Return all components instead and inform developers.
+        debugging("Could not find the component $name for the configurable report with id {$tilereport->id}. Returned all components instead.");
+
+        // Return all of the tilereport components.
+        return $tilereportcomponents['tilereport'];
+    } else {
+        // Return a specific component.
+        return $tilereportcomponents['tilereport'][$name];
+    }
+
+    // This should never be reached.
+}
+
+/**
+ * Get the config for a tile report.
+ *
+ * @param $tilereport   The tilereport to get the config component for.
+ * @return mixed|null
+ */
+function cr_get_tilereport_config($tilereport) {
+    return cr_get_tilereport_components($tilereport, 'config');
+}
