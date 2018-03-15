@@ -27,6 +27,17 @@
 defined('MOODLE_INTERNAL') || die();
 
 class component_tilereport extends component_base {
+
+    /**
+     * Defines a tile report whose summary reporting is set to count the total records.
+     */
+    const SUMMARY_COUNT     = 1;
+
+    /**
+     * Defines a tile report whose summary reporting is set to custom.
+     */
+    const SUMMARY_CUSTOM    = 2;
+
     public function init() {
         global $PAGE;
 

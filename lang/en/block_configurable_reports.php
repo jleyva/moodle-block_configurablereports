@@ -489,7 +489,6 @@ $string['excludedeletedusers'] = 'Exclude deleted users (only for SQL reports)';
 
 // Tile report component.
 $string['tilereport'] = 'Tile';
-
 $string['tilename'] = 'Tile name';
 $string['tilename_help'] = 'Give the report a shorter name when blocks are set to display as a tile.';
 $string['comp_tilereport'] = 'Tiles';
@@ -498,3 +497,6 @@ $string['tileablereports'] = 'Tileable reports';
 $string['displayastiles'] = 'Display as tiles';
 $string['tilereportsummary'] = 'Report summary';
 $string['showontiles'] = 'Show on tiles';
+$string['countsummary'] = 'Count summary';
+$string['customsummary'] = 'Custom summary';
+$string['summaryoptions'] = 'Display report summary';
