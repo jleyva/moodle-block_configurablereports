@@ -29,6 +29,9 @@ defined('MOODLE_INTERNAL') || die();
 global $CFG;
 require_once($CFG->libdir.'/formslib.php');
 
+// One day I will be namespaced. This better be the tilereport component.
+require_once(dirname(__FILE__).'/component.class.php');
+
 class tilereport_form extends \moodleform {
     public function definition() {
         global $DB, $USER, $CFG;
@@ -58,6 +61,13 @@ class tilereport_form extends \moodleform {
         // Tile report configs.
         $mform->addElement('header', 'header_reportsummary', get_string('tilereportsummary', 'block_configurable_reports'));
         $mform->setExpanded('header_reportsummary');
+
+        // Options to choose summary options.
+        $options = [
+                component_tilereport::SUMMARY_COUNT     => get_string('countsummary', 'block_configurable_reports'),
+                component_tilereport::SUMMARY_CUSTOM    => get_string('customsummary', 'block_configurable_reports')
+        ];
+        $mform->addElement('select', 'summaryoptions', get_string('summaryoptions', 'block_configurable_reports'), $options);
 
         // Buttons.
         $this->add_action_buttons(true, get_string('add'));
