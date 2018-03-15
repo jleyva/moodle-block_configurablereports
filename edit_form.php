@@ -47,16 +47,11 @@ class block_configurable_reports_edit_form extends block_edit_form {
             $mform->addElement('selectyesno', 'config_displaytiles', get_string('displayastiles', 'block_configurable_reports'));
             $mform->setDefault('config_displaytiles', 0);
 
-            // Subtitle option for tile reports. Todo: Use lang strings.
+            // Subtitle option for tile reports.
             $mform->addElement('text', 'config_subtitle', 'Subtitle');
             $mform->setType('config_subtitle', PARAM_TEXT);
             $mform->disabledIf('config_subtitle', 'config_displaytiles', 'eq', 0);
         }
-
-        // Option to display reports as a list.
-        $mform->addElement('selectyesno', 'config_displayreportslist', get_string('tileablereports', 'block_configurable_reports'));
-        $mform->setDefault('config_displayreportslist', 1);
-        $mform->disabledIf('config_displayreportslist', 'config_displaytiles', 'eq', 1);
 
         // Option to display global reports. I think this was already here.
         $mform->addElement('selectyesno', 'config_displayglobalreports', get_string('displayglobalreports', 'block_configurable_reports'));
