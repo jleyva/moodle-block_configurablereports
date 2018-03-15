@@ -99,20 +99,49 @@
      top:1px;
  }
 
- /**
-  * Styling for tileability.
-  */
+/**
+ * Styling for first li assuming it is tiled and is the subtitle.
+ */
+.displaytiles .content li:first-child {
+    margin: 0 0 30px;
+}
+
+/**
+ * Stying for first li assuming it is tiled and is the subtitle for side-pre.
+ */
+.side-pre .displaytiles .content li:first-child {
+
+}
+
+/**
+ * Styling for tileability.
+ */
 .displaytiles .content li:not(:first-child) {
     background-color:   #00464F;
     min-width:          22%;
     height:             150px;
     color:              #FFFFFF;
     text-align:         center;
-    line-height:        150px;
     display:            inline-block;
     margin-right:       25px;
 }
 
 /**
- * Stying for tileability when side-pre.
+ * Report name styling.
  */
+.displaytiles .tile.reportname {
+    height:         70px;
+    max-height:     70px;
+    line-height:    70px;
+    vertical-align: middle;
+}
+
+/**
+ * Report summary data styling.
+ */
+.displaytiles .tile.summarydata {
+    font-size:      40px;
+    margin-top:     20px;
+    line-height:    60px;
+    vertical-align: middle;
+}
