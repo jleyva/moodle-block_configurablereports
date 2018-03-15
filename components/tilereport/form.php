@@ -43,7 +43,7 @@ class tilereport_form extends \moodleform {
         $mform->setDefault('tileable', 0);
 
         // Tile name.
-        $mform->addElement('text', 'tilename', 'Tile name', array('maxlength' => 60, 'size' => 58));
+        $mform->addElement('text', 'tilename', get_string('tilename', 'block_configurable_reports'), ['maxlength' => 60, 'size' => 58]);
         $mform->addHelpButton('tilename', 'tilename', 'block_configurable_reports');
 
         if (!empty($CFG->formatstringstriptags)) {
