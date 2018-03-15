@@ -78,6 +78,20 @@ class block_configurable_reports extends block_list {
         return false;
     }
 
+    public function html_attributes() {
+        $attributes = parent::html_attributes();
+
+        if (!isset($this->config->displaytiles)) {
+            return $attributes;
+        } else if (!$this->config->displaytiles) {
+            return $attributes;
+        } else {
+            // Add another class so we can style the li elements.
+            $attributes['class'] .= ' displaytiles';
+            return $attributes;
+        }
+    }
+
     /**
      * Gets the contents of the block (course view)
      *
@@ -99,6 +113,7 @@ class block_configurable_reports extends block_list {
         }
 
         require_once($CFG->dirroot."/blocks/configurable_reports/locallib.php");
+        require_once($CFG->dirroot."/blocks/configurable_reports/components/tilereport/component.class.php");
 
         $course = $DB->get_record('course', array('id' => $COURSE->id));
 
@@ -113,8 +128,7 @@ class block_configurable_reports extends block_list {
         }
 
         // Show tiles.
-        if ($this->config->displaytiles) {
-
+        if (isset($this->config->displaytiles) && $this->config->displaytiles) {
             // Get the subtitle.
             if (\core_text::strlen($this->config->subtitle)) {
                 $this->content->items[] = $this->config->subtitle;
@@ -148,9 +162,38 @@ class block_configurable_reports extends block_list {
             $reports = $DB->get_records_sql("SELECT * FROM {block_configurable_reports} WHERE id {$insql}", $params);
 
             foreach ($reports as $report) {
-                // Todo: Add support for report being "tileable".
+                // Don't bother if the reports tileability is false.
+                if (!cr_tilereport_is_tileable($report)) {
+                    continue;
+                }
+
+                // Get the tilereport configs.
+                //      1. tileable
+                //      2. tilename
+                //      3. summaryoptions
+                $tilereportconfig = cr_get_tilereport_config($report);
+
+                // Get the report.
+                $tilereport = cr_get_tilereport_customsql_report($report);
 
                 // Todo: Make a tile of the report.
+
+                // Count the data.
+                if ($tilereportconfig->summaryoptions == component_tilereport::SUMMARY_COUNT) {
+                    // Give the report some life.
+                    $tilereport->create_report();
+
+                    // Name the report. Tilename should never be empty but just in case.
+                    $reportname = !empty($tilereportconfig->tilename) ? $tilereportconfig->tilename : $report->name;
+
+                    // Get the number of records for this report.
+                    $numberofrecords = count($tilereport->finalreport->table->data);
+
+                    // Show this data.
+                    $this->content->items[] = "$numberofrecords - $reportname";
+                } else {
+                    // Assume custom summary.
+                }
             }
         } else {
             // Site (Shared) reports.

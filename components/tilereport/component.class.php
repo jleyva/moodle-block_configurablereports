@@ -26,6 +26,11 @@
 // No direct access.
 defined('MOODLE_INTERNAL') || die();
 
+if (!class_exists('component_base')) {
+    global $CFG;
+    require_once($CFG->dirroot.'/blocks/configurable_reports/component.class.php');
+}
+
 class component_tilereport extends component_base {
 
     /**
