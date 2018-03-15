@@ -35,60 +35,22 @@ class block_configurable_reports_edit_form extends block_edit_form {
         $mform->setType('config_title', PARAM_TEXT);
         $mform->setDefault('config_title', get_string('pluginname', 'block_configurable_reports'));
 
-        // Get a bunch of cr reports.
-        $reports = cr_get_my_reports($COURSE->id, $USER);
+        // Report display options.
+        $reportdisplayoptions = [
+                CR_BLOCK_DISPLAY_LIST   => get_string('displayreportsaslist', 'block_configurable_reports'),
+                CR_BLOCK_DISPLAY_TILES  => get_string('displayreportsastiles', 'block_configurable_reports')
+        ];
+        $mform->addElement('select', 'config_displayreportsas', get_string('displayreportsas', 'block_configurable_reports'), $reportdisplayoptions);
 
-        if (empty($reports)) {
-            // There were no cr reports for this user in this course.
-            $mform->addElement('hidden', 'config_displaytiles', 0);
-            $mform->setType('config_displaytiles', PARAM_INT);
-        } else {
-            // There were some reports for this user in this course. Provide an option to display as tiles.
-            debugging('Make a select option for display reports as => none, a list of reports (cr default) and as tiles');
-            $mform->addElement('selectyesno', 'config_displaytiles', get_string('displayastiles', 'block_configurable_reports'));
-            $mform->setDefault('config_displaytiles', 0);
-
-            // Subtitle option for tile reports.
-            $mform->addElement('text', 'config_subtitle', 'Subtitle');
-            $mform->setType('config_subtitle', PARAM_TEXT);
-            $mform->disabledIf('config_subtitle', 'config_displaytiles', 'eq', 0);
-        }
+        // Subtitle option for tile reports.
+        $mform->addElement('text', 'config_subtitle', 'Subtitle');
+        $mform->setType('config_subtitle', PARAM_TEXT);
+        $mform->disabledIf('config_subtitle', 'config_displayreportsas', 'eq', CR_BLOCK_DISPLAY_LIST);
 
         // Option to display global reports. I think this was already here.
         $mform->addElement('selectyesno', 'config_displayglobalreports', get_string('displayglobalreports', 'block_configurable_reports'));
         $mform->setDefault('config_displayglobalreports', 1);
-        $mform->disabledIf('config_displayglobalreports', 'config_displaytiles', 'eq', 1);
-
-        // Todo: Add this later. Specific block instance controlling the reports to show.
-        // Show a separate group with a list of reports that can be displayed as tiles.
-        if (!empty($reports) && false) {
-            $mform->addElement('header', 'heading_cr_list', get_string('tileablereports', 'block_configurable_reports'));
-            $mform->setExpanded('heading_cr_list');
-
-            // Select the reports.
-            foreach ($reports as $reportid => $report) {
-                // Reports that aren't visible shouldn't be selected.
-                if (!$report->visible) {
-                    continue;
-                }
-
-                // Get the report components.
-                $reportconfig = cr_get_tilereport_config($report);
-
-                // No config means no display.
-                if (is_null($reportconfig)) {
-                    continue;
-                }
-
-                // Check report tileability.
-                if (!$reportconfig->tileable) {
-                    continue;
-                }
-
-                // This report is tileability.
-                $mform->addElement('selectyesno', "config_cr_tile_reportid_{$reportid}", $report->name);
-            }
-        }
+        $mform->disabledIf('config_displayglobalreports', 'config_displayreportsas', 'eq', CR_BLOCK_DISPLAY_TILES);
 
         // End of block instance editing.
     }

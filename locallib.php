@@ -22,6 +22,16 @@
  * @date: 2009
  */
 
+/**
+ * Defines a setting for displaying reports as a list in the block instance settings.
+ */
+define('CR_BLOCK_DISPLAY_LIST', 1);
+
+/**
+ * Defines a setting for displaying reports as tiles in the block instance settings.
+ */
+define('CR_BLOCK_DISPLAY_TILES', 2);
+
 function cr_print_js_function() {
 ?>
     <script type="text/javascript">
@@ -662,6 +672,12 @@ function cr_tilereport_is_tileable($tilereport) {
     }
 }
 
+/**
+ * Gets a report sql instance of a tileable report.
+ *
+ * @param $tilereport
+ * @return report_sql
+ */
 function cr_get_tilereport_customsql_report($tilereport) {
     global $CFG;
 
@@ -672,4 +688,23 @@ function cr_get_tilereport_customsql_report($tilereport) {
     $report = new \report_sql($tilereport);
 
     return $report;
+}
+
+/**
+ * Get the reports that are tileable.
+ *
+ * @param int $courseid
+ * @param int $userid
+ * @return array
+ */
+function cr_get_tileable_reports($courseid = 0, $userid = 0) {
+    $reports = cr_get_my_reports($courseid, $userid);
+
+    foreach ($reports as $id => $reportdata) {
+        if (!cr_tilereport_is_tileable($reportdata)) {
+            unset($reports[$id]);
+        }
+    }
+
+    return $reports;
 }
