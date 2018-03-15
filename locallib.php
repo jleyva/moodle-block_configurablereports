@@ -620,6 +620,7 @@ function cr_logging_info() {
  *
  * @param $tilereport   The tilereport to get the components for.
  * @param string $name  The name of the component to return. Default is all components.
+ * @param bool $all     All components. Not just the tilereport ones.
  * @return mixed|null
  */
 function cr_get_tilereport_components(stdClass $tilereport, $name = '') {
@@ -637,7 +638,6 @@ function cr_get_tilereport_components(stdClass $tilereport, $name = '') {
         return null;
     }
 
-    //
     if (empty($tilereport->components)) {
         return null;
     }
@@ -675,4 +675,45 @@ function cr_get_tilereport_components(stdClass $tilereport, $name = '') {
  */
 function cr_get_tilereport_config($tilereport) {
     return cr_get_tilereport_components($tilereport, 'config');
+}
+
+/**
+ * Check if a report is tileable.
+ *
+ * @param $tilereport   The report to check for tileability.
+ * @return bool         Returns whether or not the report is tileability.
+ */
+function cr_tilereport_is_tileable($tilereport) {
+    // Get this tile reports config.
+    $config = cr_get_tilereport_config($tilereport);
+
+    // May have possibly gone too far with the below.
+    if (is_null($config)) {
+        // No config default is a no.
+        return false;
+    } else if (!isset($config->tileable)) {
+        // No set tileable is a no also.
+        return false;
+    } else if ($config->tileable === '1') {
+        // A 1 as a string is a yes.
+        return true;
+    } else if ($config->tileable === 1) {
+        // A 1 as an int is a yes also.
+        return true;
+    } else {
+        // Ensure everything else is a no.
+        return false;
+    }
+}
+
+function cr_get_tilereport_customsql_report($tilereport) {
+    global $CFG;
+
+    // Get some classes.
+    require_once($CFG->dirroot.'/blocks/configurable_reports/report.class.php');
+    require_once($CFG->dirroot.'/blocks/configurable_reports/reports/sql/report.class.php');
+
+    $report = new \report_sql($tilereport);
+
+    return $report;
 }

@@ -500,3 +500,4 @@ $string['showontiles'] = 'Show on tiles';
 $string['countsummary'] = 'Count summary';
 $string['customsummary'] = 'Custom summary';
 $string['summaryoptions'] = 'Display report summary';
+$string['moveblocktocontentarea'] = 'To view tile reports please move this block into the content area. Make sure that you refresh the page after this is moved.';

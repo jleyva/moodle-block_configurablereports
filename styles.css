@@ -98,3 +98,21 @@
      position:relative;
      top:1px;
  }
+
+ /**
+  * Styling for tileability.
+  */
+.displaytiles .content li:not(:first-child) {
+    background-color:   #00464F;
+    min-width:          22%;
+    height:             150px;
+    color:              #FFFFFF;
+    text-align:         center;
+    line-height:        150px;
+    display:            inline-block;
+    margin-right:       25px;
+}
+
+/**
+ * Stying for tileability when side-pre.
+ */
