@@ -79,17 +79,16 @@ class block_configurable_reports extends block_list {
     }
 
     public function html_attributes() {
+        global $CFG;
+        require_once($CFG->dirroot.'/blocks/configurable_reports/locallib.php');
+
         $attributes = parent::html_attributes();
 
-        if (!isset($this->config->displaytiles)) {
-            return $attributes;
-        } else if (!$this->config->displaytiles) {
-            return $attributes;
-        } else {
+        if ($this->config->displayreportsas == CR_BLOCK_DISPLAY_TILES) {
             // Add another class so we can style the li elements.
-            $attributes['class'] .= ' displaytiles';
-            return $attributes;
-        }
+            $attributes['class'] .= ' displaytiles';}
+
+        return $attributes;
     }
 
     /**
@@ -140,7 +139,13 @@ class block_configurable_reports extends block_list {
             $reports = cr_get_tileable_reports($course->id, $USER->id);
 
             if (empty($reports)) {
-                // Todo: Do we need a message here?
+                if (has_capability('block/configurable_reports:managereports', $context)
+                        || has_capability('block/configurable_reports:manageownreports', $context)) {
+                    $url = new \moodle_url('/blocks/configurable_reports/managereport.php', ['courseid' => $course->id]);
+                    $linktext = get_string('managereports', 'block_configurable_reports');
+                    $this->content->items[] = \html_writer::link($url, $linktext);
+                }
+
                 return $this->content;
             }
 
@@ -170,7 +175,11 @@ class block_configurable_reports extends block_list {
 
                     // Show this data.
                     $tilesummarydata    = \html_writer::div($numberofrecords, 'tile summarydata');
-                    $tilereportname     = \html_writer::div($reportname, 'tile reportname');
+                    $tilereportname     = \html_writer::link(
+                        new \moodle_url('/blocks/configurable_reports/viewreport.php', ['id' => $report->id, 'courseid' => $course->id]),
+                        \html_writer::div($reportname, 'tile reportname'),
+                        ['title' => $report->name, 'alt' => $report->name]
+                    );
                     $tile = \html_writer::div($tilesummarydata.$tilereportname);
 
                     $this->content->items[] = $tile;
