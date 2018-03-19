@@ -136,17 +136,17 @@ if ($reports) {
         }
 
         $editcell = '';
-        $editcell .= '<a title="'.$stredit.'"  href="editreport.php?id='.$r->id.'"><img src="'.$OUTPUT->pix_url('/t/edit').'" class="iconsmall" alt="'.$stredit.'" /></a>&nbsp;&nbsp;';
-        $editcell .= '<a title="'.$strdelete.'"  href="editreport.php?id='.$r->id.'&amp;delete=1&amp;sesskey='.$USER->sesskey.'"><img src="'.$OUTPUT->pix_url('/t/delete').'" class="iconsmall" alt="'.$strdelete.'" /></a>&nbsp;&nbsp;';
+        $editcell .= '<a title="'.$stredit.'"  href="editreport.php?id='.$r->id.'"><img src="'.$OUTPUT->image_url('/t/edit').'" class="iconsmall" alt="'.$stredit.'" /></a>&nbsp;&nbsp;';
+        $editcell .= '<a title="'.$strdelete.'"  href="editreport.php?id='.$r->id.'&amp;delete=1&amp;sesskey='.$USER->sesskey.'"><img src="'.$OUTPUT->image_url('/t/delete').'" class="iconsmall" alt="'.$strdelete.'" /></a>&nbsp;&nbsp;';
 
 
         if (!empty($r->visible)) {
-            $editcell .= '<a title="'.$strhide.'" href="editreport.php?id='.$r->id.'&amp;hide=1&amp;sesskey='.$USER->sesskey.'">'.'<img src="'.$OUTPUT->pix_url('/t/hide').'" class="iconsmall" alt="'.$strhide.'" /></a> ';
+            $editcell .= '<a title="'.$strhide.'" href="editreport.php?id='.$r->id.'&amp;hide=1&amp;sesskey='.$USER->sesskey.'">'.'<img src="'.$OUTPUT->image_url('/t/hide').'" class="iconsmall" alt="'.$strhide.'" /></a> ';
         } else {
-            $editcell .= '<a title="'.$strshow.'" href="editreport.php?id='.$r->id.'&amp;show=1&amp;sesskey='.$USER->sesskey.'">'.'<img src="'.$OUTPUT->pix_url('/t/show').'" class="iconsmall" alt="'.$strshow.'" /></a> ';
+            $editcell .= '<a title="'.$strshow.'" href="editreport.php?id='.$r->id.'&amp;show=1&amp;sesskey='.$USER->sesskey.'">'.'<img src="'.$OUTPUT->image_url('/t/show').'" class="iconsmall" alt="'.$strshow.'" /></a> ';
         }
-        $editcell .= '<a title="'.$strcopy.'" href="editreport.php?id='.$r->id.'&amp;duplicate=1&amp;sesskey='.$USER->sesskey.'"><img src="'.$OUTPUT->pix_url('/t/copy').'" class="iconsmall" alt="'.$strcopy.'" /></a>&nbsp;&nbsp;';
-        $editcell .= '<a title="'.$strexport.'" href="export.php?id='.$r->id.'&amp;sesskey='.$USER->sesskey.'"><img src="'.$OUTPUT->pix_url('/i/backup').'" class="iconsmall" alt="'.$strexport.'" /></a>&nbsp;&nbsp;';
+        $editcell .= '<a title="'.$strcopy.'" href="editreport.php?id='.$r->id.'&amp;duplicate=1&amp;sesskey='.$USER->sesskey.'"><img src="'.$OUTPUT->image_url('/t/copy').'" class="iconsmall" alt="'.$strcopy.'" /></a>&nbsp;&nbsp;';
+        $editcell .= '<a title="'.$strexport.'" href="export.php?id='.$r->id.'&amp;sesskey='.$USER->sesskey.'"><img src="'.$OUTPUT->image_url('/i/backup').'" class="iconsmall" alt="'.$strexport.'" /></a>&nbsp;&nbsp;';
 
         $download = '';
         $export = explode(',', $r->export);

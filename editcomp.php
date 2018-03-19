@@ -161,16 +161,16 @@ if ($elements) {
         $editcell = '';
 
         if ($pluginclass->form) {
-            $editcell .= '<a href="editplugin.php?id='.$id.'&comp='.$comp.'&pname='.$e['pluginname'].'&cid='.$e['id'].'"><img src="'.$OUTPUT->pix_url('/t/edit').'" class="iconsmall"></a>';
+            $editcell .= '<a href="editplugin.php?id='.$id.'&comp='.$comp.'&pname='.$e['pluginname'].'&cid='.$e['id'].'"><img src="'.$OUTPUT->image_url('/t/edit').'" class="iconsmall"></a>';
         }
 
-        $editcell .= '<a href="editplugin.php?id='.$id.'&comp='.$comp.'&pname='.$e['pluginname'].'&cid='.$e['id'].'&delete=1&amp;sesskey='.sesskey().'"><img src="'.$OUTPUT->pix_url('/t/delete').'" class="iconsmall"></a>';
+        $editcell .= '<a href="editplugin.php?id='.$id.'&comp='.$comp.'&pname='.$e['pluginname'].'&cid='.$e['id'].'&delete=1&amp;sesskey='.sesskey().'"><img src="'.$OUTPUT->image_url('/t/delete').'" class="iconsmall"></a>';
 
         if ($compclass->ordering && $i != 0 && count($elements) > 1) {
-            $editcell .= '<a href="editplugin.php?id='.$id.'&comp='.$comp.'&pname='.$e['pluginname'].'&cid='.$e['id'].'&moveup=1&amp;sesskey='.sesskey().'"><img src="'.$OUTPUT->pix_url('/t/up').'" class="iconsmall"></a>';
+            $editcell .= '<a href="editplugin.php?id='.$id.'&comp='.$comp.'&pname='.$e['pluginname'].'&cid='.$e['id'].'&moveup=1&amp;sesskey='.sesskey().'"><img src="'.$OUTPUT->image_url('/t/up').'" class="iconsmall"></a>';
         }
         if ($compclass->ordering && $i != count($elements) - 1) {
-            $editcell .= '<a href="editplugin.php?id='.$id.'&comp='.$comp.'&pname='.$e['pluginname'].'&cid='.$e['id'].'&movedown=1&amp;sesskey='.sesskey().'"><img src="'.$OUTPUT->pix_url('/t/down').'" class="iconsmall"></a>';
+            $editcell .= '<a href="editplugin.php?id='.$id.'&comp='.$comp.'&pname='.$e['pluginname'].'&cid='.$e['id'].'&movedown=1&amp;sesskey='.sesskey().'"><img src="'.$OUTPUT->image_url('/t/down').'" class="iconsmall"></a>';
         }
 
         $table->data[] = ['c'.($i + 1), $e['pluginfullname'], $e['summary'], $editcell];
