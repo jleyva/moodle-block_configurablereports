@@ -104,9 +104,13 @@ class tilereport_form extends \moodleform {
         } else {
             // Todo: Message that Custom report summary is not available.
         }
-
+        
         // Buttons.
-        $this->add_action_buttons(true, get_string('add'));
+        $buttonarray = array();
+        $buttonarray[] = $mform->createElement('submit', 'save', get_string('save', 'admin'));
+        $buttonarray[] = $mform->createElement('cancel');
+        $mform->addGroup($buttonarray, 'buttonar', '', array(' '), false);
+        $mform->closeHeaderBefore('buttonar');
     }
 
     public function validation($data, $files) {
