@@ -24,6 +24,11 @@
 
 defined('BLOCK_CONFIGURABLE_REPORTS_MAX_RECORDS') || define('BLOCK_CONFIGURABLE_REPORTS_MAX_RECORDS', 5000);
 
+if (!class_exists('component_tilereport')) {
+    global $CFG;
+    require_once($CFG->dirroot.'/blocks/configurable_reports/components/tilereport/component.class.php');
+}
+
 class report_sql extends report_base {
 
     private $forExport = false;
@@ -118,6 +123,8 @@ class report_sql extends report_base {
         $config = (isset($components['customsql']['config'])) ? $components['customsql']['config'] : new \stdclass;
         $totalrecords = 0;
 
+        $reportconfig = cr_get_tilereport_config($this->config);
+
         $sql = '';
         if (isset($config->querysql)) {
             // Filters.
@@ -129,6 +136,15 @@ class report_sql extends report_base {
                     $class = new $classname($this->config);
                     $sql = $class->execute($sql, $f['formdata']);
                 }
+            }
+
+            if (isset($reportconfig->summaryoptions) && $reportconfig->summaryoptions == component_tilereport::SUMMARY_CUSTOM) {
+                // Inject our custom summary. Todo: Does the alias need to be unique?
+                $displaycolumn      = $reportconfig->displaycolumn;
+                $evaluationcolumn   = $reportconfig->evaluationcolumn;
+                $evaluation         = $reportconfig->evaluation == component_tilereport::EVALUATION_LOWEST ? 'ASC' : 'DESC';
+
+                $sql = "SELECT {$displaycolumn}, {$evaluationcolumn} FROM ($sql) AS temptable ORDER BY {$evaluationcolumn} {$evaluation}";
             }
 
             $sql = $this->prepare_sql($sql);
@@ -153,6 +169,7 @@ class report_sql extends report_base {
             }
         }
         $this->sql = $sql;
+
         $this->totalrecords = $totalrecords;
 
         // Calcs.
