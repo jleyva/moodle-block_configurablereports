@@ -62,44 +62,48 @@ class tilereport_form extends \moodleform {
         $mform->addElement('header', 'header_reportsummary', get_string('tilereportsummary', 'block_configurable_reports'));
         $mform->setExpanded('header_reportsummary');
 
-        // Options to choose summary options.
-        $options = ['' => get_string('choosedots')] + component_tilereport::get_summary_options();
-        $mform->addElement('select', 'summaryoptions', get_string('summaryoptions', 'block_configurable_reports'), $options);
-        $mform->disabledIf('summaryoptions', 'tileable', 'eq', 0);
-
-        // Custom summary options.
-        $mform->addElement('header', 'header_customsummary', get_string('tilereportcustomsummary', 'block_configurable_reports'));
-        $mform->setExpanded('header_customsummary');
-
         // Get the report from the customdata. By the time we get here this "should" exist.
         $report = $this->_customdata['report'];
         $report = cr_get_tilereport_customsql_report($report);
 
         // Let there be life.
-        $report->create_report(true);
+        $report->create_report();
 
-        // Get the columns.
-        $columns = ['' => get_string('choosedots')] + $report->finalreport->table->head;
+        // Options to choose summary options.
+        $options = component_tilereport::get_summary_options($report->totalrecords);
+        $mform->addElement('select', 'summaryoptions', get_string('summaryoptions', 'block_configurable_reports'), $options);
+        $mform->disabledIf('summaryoptions', 'tileable', 'eq', 0);
 
-        // 1. Display column.
-        $mform->addElement('select', 'displaycolumn', get_string('summaryoptions_displaycolumn', 'block_configurable_reports'), $columns);
-        $mform->disabledIf('displaycolumn', 'summaryoptions', 'eq', component_tilereport::SUMMARY_COUNT);
-        $mform->disabledIf('displaycolumn', 'tileable', 'eq', 0);
-        $mform->addRule('displaycolumn', null, 'required', null, 'client');
+        if ($report->totalrecords > 0) {
+            // Custom summary options.
+            $mform->addElement('header', 'header_customsummary', get_string('tilereportcustomsummary', 'block_configurable_reports'));
+            $mform->setExpanded('header_customsummary');
+
+            // Get the columns.
+            $columns = ['' => get_string('choosedots')] + $report->finalreport->table->head;
+
+            // 1. Display column.
+            $mform->addElement('select', 'displaycolumn', get_string('summaryoptions_displaycolumn', 'block_configurable_reports'), $columns);
+            $mform->disabledIf('displaycolumn', 'summaryoptions', 'eq', component_tilereport::SUMMARY_COUNT);
+            $mform->disabledIf('displaycolumn', 'tileable', 'eq', 0);
+            $mform->addRule('displaycolumn', null, 'required', null, 'client');
 
 
-        // 2. Evaluation column.
-        $mform->addElement('select', 'evaluationcolumn', get_string('summaryoptions_evaluationcolumn', 'block_configurable_reports'), $columns);
-        $mform->disabledIf('evaluationcolumn', 'summaryoptions', 'eq', component_tilereport::SUMMARY_COUNT);
-        $mform->disabledIf('evaluationcolumn', 'tileable', 'eq', 0);
-        $mform->addRule('evaluationcolumn', null, 'required', null, 'client');
+            // 2. Evaluation column.
+            $mform->addElement('select', 'evaluationcolumn', get_string('summaryoptions_evaluationcolumn', 'block_configurable_reports'), $columns);
+            $mform->disabledIf('evaluationcolumn', 'summaryoptions', 'eq', component_tilereport::SUMMARY_COUNT);
+            $mform->disabledIf('evaluationcolumn', 'tileable', 'eq', 0);
+            $mform->addRule('evaluationcolumn', null, 'required', null, 'client');
 
-        // 3. Evaluation - Highest, Lowest, First, Last.
-        $evaluationoptions = ['' => get_string('choosedots')] + component_tilereport::get_evaluation_options();
-        $mform->addElement('select', 'evaluation', get_string('summaryoptions_evaluation', 'block_configurable_reports'), $evaluationoptions);
-        $mform->disabledIf('evaluation', 'summaryoptions', 'eq', component_tilereport::SUMMARY_COUNT);
-        $mform->disabledIf('evaluation', 'tileable', 'eq', 0);
-        $mform->addRule('evaluation', null, 'required', null, 'client');
+            // 3. Evaluation - Highest, Lowest, First, Last.
+            $evaluationoptions = ['' => get_string('choosedots')] + component_tilereport::get_evaluation_options();
+            $mform->addElement('select', 'evaluation', get_string('summaryoptions_evaluation', 'block_configurable_reports'), $evaluationoptions);
+            $mform->disabledIf('evaluation', 'summaryoptions', 'eq', component_tilereport::SUMMARY_COUNT);
+            $mform->disabledIf('evaluation', 'tileable', 'eq', 0);
+            $mform->addRule('evaluation', null, 'required', null, 'client');
+        } else {
+            // Todo: Message that Custom report summary is not available.
+        }
 
         // Buttons.
         $this->add_action_buttons(true, get_string('add'));

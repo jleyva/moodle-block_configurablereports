@@ -63,16 +63,29 @@ class component_tilereport extends component_base {
     }
 
     /**
-     * Get the summary options.
+     * Get the summary options. If the total records is zero then only
+     * return count summary as an option otherwise return both options.
      *
+     * @param null $totalrecords
      * @return array
      * @throws coding_exception
      */
-    public static function get_summary_options() {
-        return [
+    public static function get_summary_options($totalrecords = null) {
+        if (is_null($totalrecords)) {
+            throw new \coding_exception('Missing parameter $totalrecords.');
+        }
+
+        $options = [
                 self::SUMMARY_COUNT     => get_string('countsummary', 'block_configurable_reports'),
                 self::SUMMARY_CUSTOM    => get_string('customsummary', 'block_configurable_reports')
         ];
+
+        if ($totalrecords == 0) {
+            // Remove the custom summary option.
+            unset($options[self::SUMMARY_CUSTOM]);
+        }
+
+        return $options;
     }
 
     /**
@@ -82,10 +95,12 @@ class component_tilereport extends component_base {
      * @throws coding_exception
      */
     public static function get_evaluation_options() {
-        return [
+        $options = [
             self::EVALUATION_LOWEST     => get_string('evaluationlowest', 'block_configurable_reports'),
             self::EVALUATION_HIGHEST    => get_string('evaluationhighest', 'block_configurable_reports')
         ];
+
+        return $options;
     }
 
     public function form_process_data(&$cform) {
