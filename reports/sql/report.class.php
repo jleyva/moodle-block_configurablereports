@@ -68,14 +68,18 @@ class report_sql extends report_base {
         return $sql;
     }
 
-    public function execute_query($sql, $limitnum = BLOCK_CONFIGURABLE_REPORTS_MAX_RECORDS) {
+    public function execute_query($sql, $limittoonerecord = false) {
         global $remotedb, $DB, $CFG;
 
         $sql = preg_replace('/\bprefix_(?=\w+)/i', $CFG->prefix, $sql);
 
-        $reportlimit = get_config('block_configurable_reports', 'reportlimit');
-        if (empty($reportlimit) or $reportlimit == '0') {
-                $reportlimit = BLOCK_CONFIGURABLE_REPORTS_MAX_RECORDS;
+        if ($limittoonerecord) {
+            $reportlimit = 1;
+        } else {
+            $reportlimit = get_config('block_configurable_reports', 'reportlimit');
+            if (empty($reportlimit) or $reportlimit == '0') {
+                    $reportlimit = BLOCK_CONFIGURABLE_REPORTS_MAX_RECORDS;
+            }
         }
 
         $starttime = microtime(true);
@@ -97,7 +101,7 @@ class report_sql extends report_base {
         return $results;
     }
 
-    public function create_report() {
+    public function create_report($limittoonerecord = false) {
         global $DB, $CFG;
 
         $components = cr_unserialize($this->config->components);
@@ -129,7 +133,7 @@ class report_sql extends report_base {
 
             $sql = $this->prepare_sql($sql);
 
-            if ($rs = $this->execute_query($sql)) {
+            if ($rs = $this->execute_query($sql, $limittoonerecord)) {
                 foreach ($rs as $row) {
                     if (empty($finaltable)) {
                         foreach ($row as $colname => $value) {

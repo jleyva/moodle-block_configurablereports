@@ -43,6 +43,16 @@ class component_tilereport extends component_base {
      */
     const SUMMARY_CUSTOM    = 2;
 
+    /**
+     * Defines a custom summary that returns the First or Lowest record of the results.
+     */
+    const EVALUATION_LOWEST     = 1;
+
+    /**
+     * Defines a custom summary that returns the Last or Highest record of the results.
+     */
+    const EVALUATION_HIGHEST    = 2;
+
     public function init() {
         global $PAGE;
 
@@ -50,6 +60,32 @@ class component_tilereport extends component_base {
         $this->ordering = false;
         $this->form = true;
         $this->help = true;
+    }
+
+    /**
+     * Get the summary options.
+     *
+     * @return array
+     * @throws coding_exception
+     */
+    public static function get_summary_options() {
+        return [
+                self::SUMMARY_COUNT     => get_string('countsummary', 'block_configurable_reports'),
+                self::SUMMARY_CUSTOM    => get_string('customsummary', 'block_configurable_reports')
+        ];
+    }
+
+    /**
+     * Get the evaluation options.
+     *
+     * @return array
+     * @throws coding_exception
+     */
+    public static function get_evaluation_options() {
+        return [
+            self::EVALUATION_LOWEST     => get_string('evaluationlowest', 'block_configurable_reports'),
+            self::EVALUATION_HIGHEST    => get_string('evaluationhighest', 'block_configurable_reports')
+        ];
     }
 
     public function form_process_data(&$cform) {

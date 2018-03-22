@@ -162,10 +162,11 @@ class block_configurable_reports extends block_list {
 
                 // Todo: 1. Make a tile of the report. 2. Make a link to the report.
 
+                // Give the report some life.
+                $tilereport->create_report();
+
                 // Count the data.
                 if ($tilereportconfig->summaryoptions == component_tilereport::SUMMARY_COUNT) {
-                    // Give the report some life.
-                    $tilereport->create_report();
 
                     // Name the report. Tilename should never be empty but just in case.
                     $reportname = !empty($tilereportconfig->tilename) ? $tilereportconfig->tilename : $report->name;
