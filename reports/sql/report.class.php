@@ -144,7 +144,7 @@ class report_sql extends report_base {
                 $evaluationcolumn   = $reportconfig->evaluationcolumn;
                 $evaluation         = $reportconfig->evaluation == component_tilereport::EVALUATION_LOWEST ? 'ASC' : 'DESC';
 
-                $sql = "SELECT {$displaycolumn}, {$evaluationcolumn} FROM ($sql) AS temptable ORDER BY {$evaluationcolumn} {$evaluation}";
+                $sql = "SELECT `{$displaycolumn}`, `{$evaluationcolumn}` FROM ($sql) AS temptable ORDER BY `{$evaluationcolumn}` {$evaluation}";
             }
 
             $sql = $this->prepare_sql($sql);

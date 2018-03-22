@@ -44,10 +44,11 @@ class component_customsql extends component_base {
             $components = cr_unserialize($this->config->components);
             $components['customsql']['config'] = $data;
 
-            // Unset the summaryoptions.
-            if (isset($components['tilereport']['config'])) {
-                unset($components['tilereport']['config']);
+            if (!isset($components['tilereport'])) {
+                $components['tilereport'] = [];
             }
+
+            $components['tilereport']['config'] = [];
 
             $this->config->components = cr_serialize($components);
             $DB->update_record('block_configurable_reports', $this->config);
