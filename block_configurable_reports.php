@@ -157,13 +157,10 @@ class block_configurable_reports extends block_list {
                 // Get the report.
                 $tilereport = cr_get_tilereport_customsql_report($report);
 
-                // Todo: 1. Make a tile of the report. 2. Make a link to the report.
-
-                // Give the report some life.
-                $tilereport->create_report();
-
                 // Count the data.
                 if ($tilereportconfig->summaryoptions == component_tilereport::SUMMARY_COUNT) {
+                    // Give the report some life.
+                    $tilereport->create_report();
 
                     // Name the report. Tilename should never be empty but just in case.
                     $reportname = !empty($tilereportconfig->tilename) ? $tilereportconfig->tilename : $report->name;
@@ -183,6 +180,25 @@ class block_configurable_reports extends block_list {
                     $this->content->items[] = $tile;
                 } else {
                     // Assume custom summary.
+                    $tilereport->create_report(true);
+
+                    // Name the report. Tilename should never be empty but just in case.
+                    $reportname = !empty($tilereportconfig->tilename) ? $tilereportconfig->tilename : $report->name;
+
+                    if (!empty($tilereport->finalreport->table->data)) {
+                        $customsummarydata = reset($tilereport->finalreport->table->data)[0];
+                    }
+
+                    // Show this data.
+                    $tilesummarydata    = \html_writer::div($customsummarydata, 'tile summarydata');
+                    $tilereportname     = \html_writer::link(
+                            new \moodle_url('/blocks/configurable_reports/viewreport.php', ['id' => $report->id, 'courseid' => $course->id]),
+                            \html_writer::div($reportname, 'tile reportname'),
+                            ['title' => $report->name, 'alt' => $report->name]
+                    );
+                    $tile = \html_writer::div($tilesummarydata.$tilereportname);
+
+                    $this->content->items[] = $tile;
                 }
             }
         } else {

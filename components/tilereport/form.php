@@ -80,7 +80,11 @@ class tilereport_form extends \moodleform {
             $mform->setExpanded('header_customsummary');
 
             // Get the columns.
-            $columns = ['' => get_string('choosedots')] + $report->finalreport->table->head;
+            $columns = ['' => get_string('choosedots')];
+
+            foreach ($report->finalreport->table->head as $column) {
+                $columns[$column] = $column;
+            }
 
             // 1. Display column.
             $mform->addElement('select', 'displaycolumn', get_string('summaryoptions_displaycolumn', 'block_configurable_reports'), $columns);
