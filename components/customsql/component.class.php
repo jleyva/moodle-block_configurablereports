@@ -43,6 +43,12 @@ class component_customsql extends component_base {
             // Function cr_serialize() will add slashes.
             $components = cr_unserialize($this->config->components);
             $components['customsql']['config'] = $data;
+
+            // Unset the summaryoptions.
+            if (isset($components['tilereport']['config'])) {
+                unset($components['tilereport']['config']);
+            }
+
             $this->config->components = cr_serialize($components);
             $DB->update_record('block_configurable_reports', $this->config);
         }
