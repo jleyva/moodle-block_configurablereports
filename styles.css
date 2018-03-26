@@ -682,6 +682,15 @@ span.CodeMirror-selectedtext { background: none; }
 }
 
 /**
+ * Styling for blocks in the side bit.
+ */
+#block-region-side-pre .block_configurable_reports.displaytiles .content ul li {
+    float:      left;
+    width:      100%;
+    display:    block;
+}
+
+/**
  * Styling for tileability.
  */
 .displaytiles .content li:not(:first-child) {
