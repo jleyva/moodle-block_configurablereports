@@ -190,14 +190,12 @@ class block_configurable_reports extends block_list {
                     $reportname = !empty($tilereportconfig->tilename) ? $tilereportconfig->tilename : $report->name;
 
                     if (empty($tilereport->finalreport->table->data)) {
-                        continue;
+                        $customsummarydata = get_string('reporthasnorecords', 'block_configurable_reports');
+                    } else if (!isset(reset($tilereport->finalreport->table->data)[0])) {
+                        $customsummarydata = get_string('reporthasnorecords', 'block_configurable_reports');
+                    } else {
+                        $customsummarydata = reset($tilereport->finalreport->table->data)[0];
                     }
-
-                    if (!isset(reset($tilereport->finalreport->table->data)[0])) {
-                        continue;
-                    }
-
-                    $customsummarydata = reset($tilereport->finalreport->table->data)[0];
 
                     // Show this data.
                     $tilesummarydata    = \html_writer::div($customsummarydata, 'tile summarydata');
@@ -207,7 +205,6 @@ class block_configurable_reports extends block_list {
                             ['title' => $report->name, 'alt' => $report->name]
                     );
                     $tile = \html_writer::div($tilesummarydata.$tilereportname);
-
                     $this->content->items[] = $tile;
                 }
             }
