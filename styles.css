@@ -691,7 +691,26 @@ span.CodeMirror-selectedtext { background: none; }
     color:              #FFFFFF;
     text-align:         center;
     display:            inline-block;
-    margin-right:       25px;
+    float:              left;
+    width:              100%;
+    margin:             0 0 15px;
+    padding:            0;
+    clear:              both;
+}
+
+.displaytiles .content li:not(:first-child) .column {
+    width:      100%;
+    display:    block;
+}
+
+.displaytiles .content li:not(:first-child) .tile.summarydata,
+.displaytiles .content li:not(:first-child) .tile.reportname {
+    text-overflow:  ellipsis;
+    overflow:       hidden;
+}
+
+.displaytiles .content li:not(:first-child) .tile.summarydata {
+    height: 60px;
 }
 
 /**
@@ -712,4 +731,28 @@ span.CodeMirror-selectedtext { background: none; }
     margin-top:     20px;
     line-height:    60px;
     vertical-align: middle;
+}
+
+@media only screen and (min-width: 600px) {
+    .displaytiles .content li:not(:first-child) {
+        float:          left;
+        width:          49%;
+        clear:          none;
+        margin-right:   1.5%;
+    }
+    .displaytiles .content li:nth-child(2n + 1) {
+        margin-right: 0;
+    }
+}
+
+@media only screen and (min-width: 1025px) {
+    .displaytiles .content li:not(:first-child) {
+        float:          left;
+        width:          24%;
+        clear:          none;
+        margin-right:   1.2%;
+    }
+    .displaytiles .content li:nth-child(4n + 1) {
+        margin-right: 0;
+    }
 }
