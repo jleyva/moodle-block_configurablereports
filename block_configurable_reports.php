@@ -79,14 +79,17 @@ class block_configurable_reports extends block_list {
     }
 
     public function html_attributes() {
-        global $CFG;
+        global $CFG, $USER, $COURSE;
         require_once($CFG->dirroot.'/blocks/configurable_reports/locallib.php');
 
         $attributes = parent::html_attributes();
 
-        if ($this->config->displayreportsas == CR_BLOCK_DISPLAY_TILES) {
+        $reports = cr_get_tileable_reports($COURSE->id, $USER->id);
+
+        if ($this->config->displayreportsas == CR_BLOCK_DISPLAY_TILES && !empty($reports)) {
             // Add another class so we can style the li elements.
-            $attributes['class'] .= ' displaytiles';}
+            $attributes['class'] .= ' displaytiles';
+        }
 
         return $attributes;
     }
@@ -143,6 +146,7 @@ class block_configurable_reports extends block_list {
                         || has_capability('block/configurable_reports:manageownreports', $context)) {
                     $url = new \moodle_url('/blocks/configurable_reports/managereport.php', ['courseid' => $course->id]);
                     $linktext = get_string('managereports', 'block_configurable_reports');
+                    $this->content->items[] = '========';
                     $this->content->items[] = \html_writer::link($url, $linktext);
                 }
 
@@ -188,9 +192,15 @@ class block_configurable_reports extends block_list {
                     // Name the report. Tilename should never be empty but just in case.
                     $reportname = !empty($tilereportconfig->tilename) ? $tilereportconfig->tilename : $report->name;
 
-                    if (!empty($tilereport->finalreport->table->data)) {
-                        $customsummarydata = reset($tilereport->finalreport->table->data)[0];
+                    if (empty($tilereport->finalreport->table->data)) {
+                        continue;
                     }
+
+                    if (!isset(reset($tilereport->finalreport->table->data)[0])) {
+                        continue;
+                    }
+
+                    $customsummarydata = reset($tilereport->finalreport->table->data)[0];
 
                     // Show this data.
                     $tilesummarydata    = \html_writer::div($customsummarydata, 'tile summarydata');
