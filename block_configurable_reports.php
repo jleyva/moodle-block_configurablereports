@@ -83,7 +83,7 @@ class block_configurable_reports extends block_list {
 
         $reports = cr_get_tileable_reports($COURSE->id, $USER->id);
 
-        if ($this->config->displayreportsas == CR_BLOCK_DISPLAY_TILES && !empty($reports)) {
+        if (isset($this->config) && isset($this->config->displayreportsas) && $this->config->displayreportsas == CR_BLOCK_DISPLAY_TILES && !empty($reports)) {
             // Add another class so we can style the li elements.
             $attributes['class'] .= ' displaytiles';
         }
