@@ -68,21 +68,63 @@ class tilereport_form extends \moodleform {
         // Let there be life.
         $report->create_report();
 
+        // Get the report config from the components.
+        $reportcomponents = cr_unserialize($report->config->components);
+
+        // Check for any existing tilereport configs.
+        if (isset($reportcomponents['tilereport']['config'])) {
+            $tileconfig = $reportcomponents['tilereport']['config'];
+        } else {
+            $tileconfig = null;
+        }
+
+        // Check if this report is already set to custom summary. Used to help with already configured tiles that don't return any results any more.
+        $isalreadycustomsummary = (!is_null($tileconfig) && isset($tileconfig->summaryoptions) && $tileconfig->summaryoptions == component_tilereport::SUMMARY_CUSTOM);
+
         // Options to choose summary options.
-        $options = component_tilereport::get_summary_options($report->totalrecords);
+        if ($report->totalrecords > 0 || $isalreadycustomsummary) {
+            // Force options to to return all summary options.
+            $options = component_tilereport::get_summary_options(1);
+        } else {
+            // Only return count summary evaluation option.
+            $options = component_tilereport::get_evaluation_options($report->totalrecords);
+        }
+
+        // Add the summary options to the form and set disabled if tileable is not tileable aka 0.
         $mform->addElement('select', 'summaryoptions', get_string('summaryoptions', 'block_configurable_reports'), $options);
         $mform->disabledIf('summaryoptions', 'tileable', 'eq', 0);
 
-        if ($report->totalrecords > 0) {
-            // Custom summary options.
+        if ($report->totalrecords > 0 || $isalreadycustomsummary) {
+            // Custom summary options for reports that have results or reports that were already configured with a custom summary but now have zero results.
             $mform->addElement('header', 'header_customsummary', get_string('tilereportcustomsummary', 'block_configurable_reports'));
             $mform->setExpanded('header_customsummary');
 
             // Get the columns.
             $columns = ['' => get_string('choosedots')];
 
-            foreach ($report->finalreport->table->head as $column) {
-                $columns[$column] = $column;
+            if ($report->totalrecords < 1) {
+                // Set the columns from the previous config.
+                foreach ($tileconfig as $key => $value) {
+                    if (strpos($key, 'crtilescolumn_') !== 0) {
+                        continue;
+                    }
+
+                    $mform->addElement('hidden', $key, $value);
+                    $mform->setType($key, PARAM_TEXT);
+
+                    $columns[$tileconfig->$key] = $tileconfig->$key;
+                }
+            } else {
+                // Get the columns from the actual report.
+                foreach ($report->finalreport->table->head as $column) {
+                    // Add a hidden element to store the columns for setting when the report returns 0 records.
+                    $columnname = "crtilescolumn_{$column}";
+
+                    $mform->addElement('hidden', $columnname, $column);
+                    $mform->setType($columnname, PARAM_TEXT);
+
+                    $columns[$column] = $column;
+                }
             }
 
             // 1. Display column.

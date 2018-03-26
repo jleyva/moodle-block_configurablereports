@@ -576,3 +576,4 @@ $string['summaryoptions_evaluation'] = 'How the evaluation column will be evalua
 $string['evaluationlowest'] = 'Display the First/Lowest record';
 $string['evaluationhighest'] = 'Display the Last/Highest record';
 $string['customsummarynotavailable'] = 'Custom summary report is not available';
+$string['reporthasnorecords'] = 'No results';
