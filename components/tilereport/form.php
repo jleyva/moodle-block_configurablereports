@@ -55,7 +55,6 @@ class tilereport_form extends \moodleform {
             $mform->setType('tilename', PARAM_NOTAGS);
         }
 
-        $mform->addRule('tilename', null, 'required', null, 'client');
         $mform->disabledIf('tilename', 'tileable', 'eq', 0);
 
         // Tile report configs.
