@@ -694,10 +694,9 @@ span.CodeMirror-selectedtext { background: none; }
  * Styling for tileability.
  */
 .displaytiles .content li:not(:first-child) {
-    background-color:   #00464F;
+    background-color:   #CCC;
     min-width:          22%;
     height:             150px;
-    color:              #FFFFFF;
     text-align:         center;
     display:            inline-block;
     float:              left;
