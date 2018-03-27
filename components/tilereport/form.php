@@ -142,8 +142,6 @@ class tilereport_form extends \moodleform {
             $mform->addElement('select', 'evaluation', get_string('summaryoptions_evaluation', 'block_configurable_reports'), $evaluationoptions);
             $mform->disabledIf('evaluation', 'summaryoptions', 'eq', component_tilereport::SUMMARY_COUNT);
             $mform->disabledIf('evaluation', 'tileable', 'eq', 0);
-        } else {
-            // Todo: Message that Custom report summary is not available.
         }
         
         // Buttons.
