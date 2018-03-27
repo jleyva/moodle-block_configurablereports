@@ -751,10 +751,39 @@ span.CodeMirror-selectedtext { background: none; }
     }
 }
 
-@media only screen and (min-width: 1025px) {
+@media only screen and (min-width: 995px) {
     .displaytiles .content li:not(:first-child) {
         float:          left;
-        width:          24%;
+        min-width:      220px;
+        max-width:      370px;
+        clear:          none;
+        margin-right:   1.5%;
+    }
+    .displaytiles .content li:nth-child(2n + 1) {
+        margin-right: 0;
+    }
+}
+
+@media only screen and (min-width: 1306px) {
+    .displaytiles .content li:not(:first-child) {
+        float:          left;
+        min-width:      220px;
+        max-width:      290px;
+        width:          100%;
+        clear:          none;
+        margin-right:   1.2%;
+    }
+    .displaytiles .content li:nth-child(3n + 1) {
+        margin-right: 0;
+    }
+}
+
+@media only screen and (min-width: 1641px) {
+    .displaytiles .content li:not(:first-child) {
+        float:          left;
+        min-width:      220px;
+        max-width:      280px;
+        width:          100%;
         clear:          none;
         margin-right:   1.2%;
     }
