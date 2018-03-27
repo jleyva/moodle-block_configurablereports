@@ -107,16 +107,14 @@
 }
 
 /**
- * Stying for first li assuming it is tiled and is the subtitle for side-pre.
- */
-.side-pre .displaytiles .content li:first-child {
-
-}
-
-/**
  * Styling for blocks in the side bit.
  */
-#block-region-side-pre .block_configurable_reports.displaytiles .content ul li {
+#block-region-side-pre .displaytiles,
+.displaytiles {
+    display: inline-block;
+}
+
+#block-region-side-pre .displaytiles .content ul li {
     float:      left;
     width:      100%;
     display:    block;
