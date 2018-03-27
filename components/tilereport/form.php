@@ -87,7 +87,7 @@ class tilereport_form extends \moodleform {
             $options = component_tilereport::get_summary_options(1);
         } else {
             // Only return count summary evaluation option.
-            $options = component_tilereport::get_evaluation_options($report->totalrecords);
+            $options = component_tilereport::get_summary_options($report->totalrecords);
         }
 
         // Add the summary options to the form and set disabled if tileable is not tileable aka 0.
