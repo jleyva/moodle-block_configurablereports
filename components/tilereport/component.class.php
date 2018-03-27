@@ -76,8 +76,8 @@ class component_tilereport extends component_base {
         }
 
         $options = [
-                self::SUMMARY_COUNT     => get_string('countsummary', 'block_configurable_reports'),
-                self::SUMMARY_CUSTOM    => get_string('customsummary', 'block_configurable_reports')
+            self::SUMMARY_COUNT     => get_string('countsummary', 'block_configurable_reports'),
+            self::SUMMARY_CUSTOM    => get_string('customsummary', 'block_configurable_reports')
         ];
 
         if ($totalrecords == 0) {
