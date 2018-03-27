@@ -680,6 +680,7 @@ span.CodeMirror-selectedtext { background: none; }
 #block-region-side-pre .displaytiles,
 .displaytiles {
     display: inline-block;
+    width: 100%;
 }
 
 #block-region-side-pre .displaytiles .content ul li {
