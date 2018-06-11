@@ -146,12 +146,18 @@ class report_sql extends report_base {
 
                 // Error handling.
                 if (empty($displaycolumn) || empty($evaluationcolumn)) {
+                    // These better exist!
+                    $reportid   = $this->config->id;
+                    $reportname = $this->config->name;
+
+                    $reporturl  = new \moodle_url('/blocks/configurable_reports/editcomp.php', ['id' => $reportid, 'comp' => 'tilereport']);
                     $okstring   = get_string('ok', 'block_configurable_reports');
                     $fixstring  = get_string('fix', 'block_configurable_reports');
 
                     $a = [
                         'displaycolumn'     => empty($displaycolumn) ? $fixstring : $okstring,
-                        'evaluationcolumn'  => empty($evaluationcolumn) ? $fixstring : $okstring
+                        'evaluationcolumn'  => empty($evaluationcolumn) ? $fixstring : $okstring,
+                        'report'            => \html_writer::link($reporturl, $reportname)
                     ];
                     \core\notification::error(get_string('customsummary:invalidconfig', 'block_configurable_reports', $a));
                 } else {
