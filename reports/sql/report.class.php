@@ -134,7 +134,20 @@ class report_sql extends report_base {
                 $evaluationcolumn   = $reportconfig->evaluationcolumn;
                 $evaluation         = $reportconfig->evaluation == component_tilereport::EVALUATION_LOWEST ? 'ASC' : 'DESC';
 
-                $sql = "SELECT `{$displaycolumn}`, `{$evaluationcolumn}` FROM ($sql) AS temptable ORDER BY `{$evaluationcolumn}` {$evaluation}";
+                // Error handling.
+                if (empty($displaycolumn) || empty($evaluationcolumn)) {
+                    $okstring   = get_string('ok', 'block_configurable_reports');
+                    $fixstring  = get_string('fix', 'block_configurable_reports');
+
+                    $a = [
+                        'displaycolumn'     => empty($displaycolumn) ? $fixstring : $okstring,
+                        'evaluationcolumn'  => empty($evaluationcolumn) ? $fixstring : $okstring
+                    ];
+                    \core\notification::error(get_string('customsummary:invalidconfig', 'block_configurable_reports', $a));
+                } else {
+                    $sql = "SELECT `{$displaycolumn}`, `{$evaluationcolumn}` FROM ($sql) AS temptable ORDER BY `{$evaluationcolumn}` {$evaluation}";
+                }
+
             }
 
             $sql = $this->prepare_sql($sql);
