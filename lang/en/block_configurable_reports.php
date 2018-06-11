@@ -577,3 +577,6 @@ $string['evaluationlowest'] = 'Display the First/Lowest record';
 $string['evaluationhighest'] = 'Display the Last/Highest record';
 $string['customsummarynotavailable'] = 'Custom summary report is not available';
 $string['reporthasnorecords'] = 'No results';
+$string['customsummary:invalidconfig'] = 'Invalid config for custom summary. The following required configs need to be resolved: Display column: {$a->displaycolumn}, Evaluation column: {$a->evaluationcolumn}.';
+$string['ok'] = 'OK';
+$string['fix'] = 'Fix';
