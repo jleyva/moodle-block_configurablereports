@@ -129,10 +129,12 @@ class block_configurable_reports extends block_list {
         // Show tiles.
         if (isset($this->config->displayreportsas) && $this->config->displayreportsas == CR_BLOCK_DISPLAY_TILES) {
             // There must always be a subtitle due to styling.
-            if (\core_text::strlen($this->config->subtitle)) {
-                $this->content->items[] = $this->config->subtitle;
-            } else {
-                $this->content->items[] = '';
+            if (has_any_capability(['block/configurable_reports:managereports', 'block/configurable_reports:manageownreports'], $context)) {
+                if (\core_text::strlen($this->config->subtitle)) {
+                    $this->content->items[] = $this->config->subtitle;
+                } else {
+                    $this->content->items[] = '';
+                }
             }
 
             // Get the tilable reports.
