@@ -490,4 +490,5 @@ $string['sessionlimittime_help'] = 'The limit between clicks defines if two clic
 
 $string['excludedeletedusers'] = 'Exclude deleted users (only for SQL reports)';
 
-$string['privacy:metadata'] = 'Configurable Report block does not store any personal data.)';
+$string['privacy:metadata'] = 'Configurable Report block does not store any personal data.';
+$string['privacy:metadata:messageexplanation'] = 'Messages are sent to other users.';
