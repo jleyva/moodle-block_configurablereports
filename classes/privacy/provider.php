@@ -35,8 +35,7 @@ defined('MOODLE_INTERNAL') || die();
  * The block_configurable_reports does not store any data.
  *
  */
-class provider implements \core_privacy\local\metadata\provider,
-    \core_privacy\local\request\plugin\provider {
+class provider implements \core_privacy\local\metadata\provider, \core_privacy\local\request\plugin\provider {
 
     /**
      * Returns meta data about this system.
@@ -44,9 +43,7 @@ class provider implements \core_privacy\local\metadata\provider,
      * @param   collection $collection The initialised collection to add items to.
      * @return  collection     A listing of user data stored through this system.
      */
-    public static function get_metadata(collection $collection): collection
-    {
-        // TODO: Implement get_metadata() method.
+    public static function get_metadata(collection $collection): collection {
         $collection->add_subsystem_link('core_message', [], 'privacy:metadata:messageexplanation');
         return $collection;
     }
@@ -57,9 +54,7 @@ class provider implements \core_privacy\local\metadata\provider,
      * @param   int $userid The user to search.
      * @return  contextlist   $contextlist  The contextlist containing the list of contexts used in this plugin.
      */
-    public static function get_contexts_for_userid(int $userid): contextlist
-    {
-        // TODO: Implement get_contexts_for_userid() method.
+    public static function get_contexts_for_userid(int $userid): contextlist {
         $contextlist = new contextlist();
         return $contextlist;
     }
@@ -69,9 +64,7 @@ class provider implements \core_privacy\local\metadata\provider,
      *
      * @param   approved_contextlist $contextlist The approved contexts to export information for.
      */
-    public static function export_user_data(approved_contextlist $contextlist)
-    {
-        // TODO: Implement export_user_data() method.
+    public static function export_user_data(approved_contextlist $contextlist) {
     }
 
     /**
@@ -79,9 +72,7 @@ class provider implements \core_privacy\local\metadata\provider,
      *
      * @param   context $context The specific context to delete data for.
      */
-    public static function delete_data_for_all_users_in_context(\context $context)
-    {
-        // TODO: Implement delete_data_for_all_users_in_context() method.
+    public static function delete_data_for_all_users_in_context(\context $context) {
     }
 
     /**
@@ -89,8 +80,6 @@ class provider implements \core_privacy\local\metadata\provider,
      *
      * @param   approved_contextlist $contextlist The approved contexts and user information to delete information for.
      */
-    public static function delete_data_for_user(approved_contextlist $contextlist)
-    {
-        // TODO: Implement delete_data_for_user() method.
+    public static function delete_data_for_user(approved_contextlist $contextlist) {
     }
 }
