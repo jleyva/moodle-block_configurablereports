@@ -27,6 +27,7 @@ By Tim Hunt
 
 Versions history
 
+3.1.2 (2016020104) added pages to allow embedding reports in other places in Moodle, bhaensel
 
 Added support for Moodle 2.7
 
