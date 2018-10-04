@@ -1,0 +1,184 @@
+
+table {
+	font-family: "Calibri";
+	display: table;
+
+	margin: 0;
+	border-spacing: 0;
+    -webkit-border-horizontal-spacing: 0px;
+    -webkit-border-vertical-spacing: 0px;
+}
+
+tbody:hover td[rowspan], tr:hover td {
+   background: whitesmoke; 
+}
+
+.striped tbody tr:nth-child(odd) {
+    background-color: #fff;
+}
+.striped tbody tr:nth-child(even) {
+    background-color: #EEF7EE;
+}
+
+
+.wrapper {
+
+  text-align: left;
+
+  -webkit-transform: translateZ(0); /* webkit flicker fix */
+  -webkit-font-smoothing: antialiased; /* webkit text rendering fix */
+}
+
+.wrapper .tooltip {
+font-size: 10px;
+  width: 450px;
+  background: #6085c8;
+  color: #fff;
+  display: block;
+  left: 20px;
+  margin-top: 10px;
+  opacity: 0;
+  padding: 20px;
+  pointer-events: none;
+  position: absolute;
+  -webkit-transform: translateY(-10px);
+     -moz-transform: translateY(-10px);
+      -ms-transform: translateY(-10px);
+       -o-transform: translateY(-10px);
+          transform: translateY(-10px);
+  -webkit-transition: all .25s ease-out;
+     -moz-transition: all .25s ease-out;
+      -ms-transition: all .25s ease-out;
+       -o-transition: all .25s ease-out;
+          transition: all .25s ease-out;
+  -webkit-box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.28);
+     -moz-box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.28);
+      -ms-box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.28);
+       -o-box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.28);
+          box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.28);
+}
+
+/* This bridges the gap so you can mouse into the tooltip without it disappearing */
+.wrapper .tooltip:before {
+  bottom: -20px;
+  content: " ";
+  display: block;
+  height: 20px;
+  left: 0;
+  position: absolute;
+  width: 100%;
+}  
+
+/* CSS Triangles - see Trevor's post */
+.wrapper .tooltip:after {
+  border-left: solid transparent 10px;
+  border-right: solid transparent 10px;
+  border-bottom: solid #6085c8 10px;
+  top: -10px;
+  content: " ";
+  height: 0;
+  left: 10%;
+  margin-left: -13px;
+  position: absolute;
+  width: 0;
+}
+  
+.wrapper:hover .tooltip {
+  opacity: 1;
+  pointer-events: auto;
+  -webkit-transform: translateY(0px);
+     -moz-transform: translateY(0px);
+      -ms-transform: translateY(0px);
+       -o-transform: translateY(0px);
+          transform: translateY(0px);
+}
+
+/* IE can just show/hide with no transition */
+.lte8 .wrapper .tooltip {
+  display: none;
+}
+
+.lte8 .wrapper:hover .tooltip {
+  display: block;
+}
+
+.rwrapper {
+
+  text-align: left;
+  -webkit-transform: translateZ(0); /* webkit flicker fix */
+  -webkit-font-smoothing: antialiased; /* webkit text rendering fix */
+}
+
+.rwrapper .tooltip {
+font-size: 10px;
+  width: 300px;
+  background: #6085c8;
+  color: #fff;
+  display: block;
+  right: 90px;
+  margin-top: 10px;
+  opacity: 0;
+  padding: 20px;
+  pointer-events: none;
+  position: absolute;
+  -webkit-transform: translateY(-10px);
+     -moz-transform: translateY(-10px);
+      -ms-transform: translateY(-10px);
+       -o-transform: translateY(-10px);
+          transform: translateY(-10px);
+  -webkit-transition: all .25s ease-out;
+     -moz-transition: all .25s ease-out;
+      -ms-transition: all .25s ease-out;
+       -o-transition: all .25s ease-out;
+          transition: all .25s ease-out;
+  -webkit-box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.28);
+     -moz-box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.28);
+      -ms-box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.28);
+       -o-box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.28);
+          box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.28);
+}
+
+/* This bridges the gap so you can mouse into the tooltip without it disappearing */
+.rwrapper .tooltip:before {
+  bottom: -20px;
+  content: " ";
+  display: block;
+  height: 20px;
+  left: 0;
+  position: absolute;
+  width: 100%;
+}  
+
+/* CSS Triangles - see Trevor's post */
+.rwrapper .tooltip:after {
+  border-left: solid transparent 10px;
+  border-right: solid transparent 10px;
+  border-bottom: solid #6085c8 10px;
+  top: -10px;
+  content: " ";
+  height: 0;
+  left: 90%;
+  margin-left: -13px;
+  position: absolute;
+  width: 0;
+}
+  
+.rwrapper:hover .tooltip {
+  opacity: 1;
+  pointer-events: auto;
+  -webkit-transform: translateY(0px);
+     -moz-transform: translateY(0px);
+      -ms-transform: translateY(0px);
+       -o-transform: translateY(0px);
+          transform: translateY(0px);
+}
+
+/* IE can just show/hide with no transition */
+.lte8 .wrapper .tooltip {
+  display: none;
+}
+
+.lte8 .rwrapper:hover .tooltip {
+  display: block;
+}
+
