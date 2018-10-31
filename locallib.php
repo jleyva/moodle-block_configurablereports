@@ -49,7 +49,7 @@ function cr_print_js_function() {
             setTimeout(function() {
                 tmpw.print();
                 tmpw.close();
-            }, 100);
+            }, 1000);
         }
     </script>
 <?php

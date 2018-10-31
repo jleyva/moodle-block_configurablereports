@@ -23,6 +23,10 @@ global $PAGE, $USER, $DB, $COURSE;
 $context = context_course::instance($COURSE->id);
 $PAGE->set_context($context);
 
+if (!has_capability('block/configurable_reports:managereports', $context) && !has_capability('block/configurable_reports:manageownreports', $context)) {
+    print_error('badpermissions');
+}
+
 class sendemail_form extends moodleform {
 
     public function definition() {
