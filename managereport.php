@@ -182,7 +182,7 @@ if ($reports) {
     }
 
     $table->id = 'reportslist';
-    cr_add_jsordering("#reportslist");
+    cr_add_jsordering("#reportslist", $PAGE);
     cr_print_table($table);
 } else {
     echo $OUTPUT->heading(get_string('noreportsavailable', 'block_configurable_reports'));

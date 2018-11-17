@@ -45,109 +45,58 @@ function cr_print_js_function() {
 <?php
 }
 
-function cr_add_jsdatatables($cssid) {
-    global $DB, $CFG, $OUTPUT, $PAGE;
+function cr_add_jsdatatables($cssid, \moodle_page $page) {
+    global $OUTPUT;
+    $data = array();
+    $data['selector'] = $cssid;
+    $data['images'] = array();
+    $data['images']['sorting'] = $OUTPUT->image_url('datatable/sort_both', 'block_configurable_reports')->out();
+    $data['images']['sorting_asc'] = $OUTPUT->image_url('datatable/sort_asc', 'block_configurable_reports')->out();
+    $data['images']['sorting_desc'] = $OUTPUT->image_url('datatable/sort_desc', 'block_configurable_reports')->out();
+    $data['images']['paginate_enabled_previous'] = $OUTPUT->image_url('datatable/back_enabled', 'block_configurable_reports')->out();
+    $data['images']['paginate_disabled_previous'] = $OUTPUT->image_url('datatable/back_disabled', 'block_configurable_reports')->out();
+    $data['images']['paginate_enabled_next'] = $OUTPUT->image_url('datatable/forward_enabled', 'block_configurable_reports')->out();
+    $data['images']['paginate_disabled_next'] = $OUTPUT->image_url('datatable/forward_disabled', 'block_configurable_reports')->out();
 
-    $PAGE->requires->string_for_js('thousandssep', 'langconfig');
-    $PAGE->requires->strings_for_js(array(
-        'datatables_sortascending',
-        'datatables_sortdescending',
-        'datatables_first',
-        'datatables_last',
-        'datatables_next',
-        'datatables_previous',
-        'datatables_emptytable',
-        'datatables_info',
-        'datatables_infoempty',
-        'datatables_infofiltered',
-        'datatables_lengthmenu',
-        'datatables_loadingrecords',
-        'datatables_processing',
-        'datatables_search',
-        'datatables_zerorecords',
-    ), 'block_configurable_reports');
+    $page->requires->string_for_js('thousandssep', 'langconfig');
+    $page->requires->strings_for_js(
+        array(
+            'datatables_sortascending',
+            'datatables_sortdescending',
+            'datatables_first',
+            'datatables_last',
+            'datatables_next',
+            'datatables_previous',
+            'datatables_emptytable',
+            'datatables_info',
+            'datatables_infoempty',
+            'datatables_infofiltered',
+            'datatables_lengthmenu',
+            'datatables_loadingrecords',
+            'datatables_processing',
+            'datatables_search',
+            'datatables_zerorecords',
+            ),
+        'block_configurable_reports');
 
-    $script = new moodle_url('/blocks/configurable_reports/js/datatables/media/js/jquery.js');
-    $script = '
-        if (typeof jQuery == "undefined") {
-            document.write(unescape("%3Cscript type=\"text/javascript\" src=\"'.$script.'\"%3E%3C/script%3E"));
-        }
-    ';
-    echo html_writer::script($script);
-    echo html_writer::script(false, new moodle_url('/blocks/configurable_reports/js/datatables/media/js/jquery.dataTables.min.js'));
-    echo html_writer::script(false, new moodle_url('/blocks/configurable_reports/js/datatables/extras/FixedHeader/js/FixedHeader.js'));
-
-    $script = "$(document).ready(function() {
-        var oTable = $('$cssid').dataTable({
-            'bAutoWidth': false,
-            'sPaginationType': 'full_numbers',
-//                'sScrollX': '100%',
-//                'sScrollXInner': '110%',
-//                'bScrollCollapse': true
-            'oLanguage': {
-                'oAria': {
-                    'sSortAscending': M.str.block_configurable_reports.datatables_sortascending,
-                    'sSortDescending': M.str.block_configurable_reports.datatables_sortdescending,
-                },
-                'oPaginate': {
-                    'sFirst': M.str.block_configurable_reports.datatables_first,
-                    'sLast': M.str.block_configurable_reports.datatables_last,
-                    'sNext': M.str.block_configurable_reports.datatables_next,
-                    'sPrevious': M.str.block_configurable_reports.datatables_previous
-                },
-                'sEmptyTable': M.str.block_configurable_reports.datatables_emptytable,
-                'sInfo': M.str.block_configurable_reports.datatables_info,
-                'sInfoEmpty': M.str.block_configurable_reports.datatables_infoempty,
-                'sInfoFiltered': M.str.block_configurable_reports.datatables_infofiltered,
-                'sInfoThousands': M.str.langconfig.thousandssep,
-                'sLengthMenu': M.str.block_configurable_reports.datatables_lengthmenu,
-                'sLoadingRecords': M.str.block_configurable_reports.datatables_loadingrecords,
-                'sProcessing': M.str.block_configurable_reports.datatables_processing,
-                'sSearch': M.str.block_configurable_reports.datatables_search,
-                'sZeroRecords': M.str.block_configurable_reports.datatables_zerorecords
-            }
-        });
-        new FixedHeader( oTable );
-    } );";
-    echo html_writer::script($script);
+    $page->requires->js_call_amd('block_configurable_reports/main', 'add_jsdatatables', array($data));
 }
 
-function cr_add_jsordering($cssid) {
-    global $DB, $CFG, $OUTPUT;
+/**
+ * @param $cssid
+ * @param \moodle_page $page
+ */
+function cr_add_jsordering($cssid, \moodle_page $page = null) {
+    global $OUTPUT;
 
-    $script = new moodle_url('/blocks/configurable_reports/js/datatables/media/js/jquery.js');
-    $script = '
-        if (typeof jQuery == "undefined") {
-            document.write(unescape("%3Cscript type=\"text/javascript\" src=\"'.$script.'\"%3E%3C/script%3E"));
-        }
-    ';
-    echo html_writer::script($script);
-
-    echo html_writer::script(false, new moodle_url('/blocks/configurable_reports/js/jquery.tablesorter.min.js'));
-    $script = '$(document).ready(function() {
-        // call the tablesorter plugin
-        $("'.$cssid.'").tablesorter();
-    });';
-    echo html_writer::script($script);
-    ?>
-
-        <style type="text/css">
-        <?php echo $cssid; ?> th.header{
-            background-image:url(<?php echo $OUTPUT->image_url('normal', 'block_configurable_reports'); ?>);
-            background-position:right center;
-            background-repeat:no-repeat;
-            cursor:pointer;
-        }
-
-        <?php echo $cssid; ?> th.headerSortUp{
-         background-image:url(<?php echo $OUTPUT->image_url('asc', 'block_configurable_reports');?>);
-        }
-
-        <?php echo $cssid; ?> th.headerSortDown{
-         background-image:url(<?php echo $OUTPUT->image_url('desc', 'block_configurable_reports');?>);
-        }
-        </style>
-    <?php
+    if(!empty($page)) {
+        $data = array();
+        $data['selector'] = $cssid;
+        $data['background'] = $OUTPUT->image_url('normal', 'block_configurable_reports')->out();
+        $data['backgroundasc'] = $OUTPUT->image_url('asc', 'block_configurable_reports')->out();
+        $data['backgrounddesc'] = $OUTPUT->image_url('desc', 'block_configurable_reports')->out();
+        $page->requires->js_call_amd('block_configurable_reports/main', 'js_order', array($data));
+    }
 }
 
 function urlencode_recursive($var) {

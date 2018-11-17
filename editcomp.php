@@ -60,8 +60,6 @@ $PAGE->set_url('/blocks/configurable_reports/editreport.php', ['id' => $id, 'com
 $PAGE->set_context($context);
 $PAGE->set_pagelayout('incourse');
 
-$PAGE->requires->js('/blocks/configurable_reports/js/codemirror/lib/codemirror.js');
-$PAGE->requires->css('/blocks/configurable_reports/js/codemirror/lib/codemirror.css');
 $PAGE->requires->js('/blocks/configurable_reports/js/configurable_reports.js');
 
 $hasreportscap = has_capability('block/configurable_reports:managereports', $context);

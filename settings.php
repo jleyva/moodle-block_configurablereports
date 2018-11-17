@@ -39,11 +39,11 @@ if ($ADMIN->fulltree) {
         get_string('sharedsqlrepositoryinfo', 'block_configurable_reports'), 'jleyva/moodle-custom_sql_report_queries', PARAM_URL, 40));
 
     $settings->add(new admin_setting_configcheckbox('block_configurable_reports/sqlsyntaxhighlight', get_string('sqlsyntaxhighlight', 'block_configurable_reports'),
-        get_string('sqlsyntaxhighlightinfo', 'block_configurable_reports'), 0));
+        get_string('sqlsyntaxhighlightinfo', 'block_configurable_reports'), 1));
 
     $reporttableoptions = array('html' => 'Simple', 'jquery' => 'jQuery', 'datatables' => 'DataTables JS');
     $settings->add(new admin_setting_configselect('block_configurable_reports/reporttableui', get_string('reporttableui', 'block_configurable_reports'),
-        get_string('reporttableuiinfo', 'block_configurable_reports'), 'jquery', $reporttableoptions ));
+        get_string('reporttableuiinfo', 'block_configurable_reports'), 'datatables', $reporttableoptions ));
 
     $settings->add(new admin_setting_configtext('block_configurable_reports/reportlimit', get_string('reportlimit', 'block_configurable_reports'),
         get_string('reportlimitinfo', 'block_configurable_reports'), '5000', PARAM_INT, 6));
