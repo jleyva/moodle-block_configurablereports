@@ -101,7 +101,7 @@ if (!$download) {
     }
 
     // Print the report HTML.
-    $reportclass->print_report_page($context);
+    $reportclass->print_report_page($PAGE);
 
 } else {
 
