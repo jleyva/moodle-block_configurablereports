@@ -71,7 +71,7 @@ class plugin_enrolledstudents extends plugin_base{
                       JOIN {context} ctx ON ra.contextid = ctx.id AND ctx.contextlevel = 50
                      WHERE ra.roleid = 5 AND ctx.instanceid = ?';
 
-            $studentlist = $remotedb->get_records_sql($sql. [$COURSE->id]);
+            $studentlist = $remotedb->get_records_sql($sql, [$COURSE->id]);
             foreach ($studentlist as $student) {
                 $enrolledstudentslist[] = $student->userid;
             }
