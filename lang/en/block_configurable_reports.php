@@ -489,3 +489,17 @@ $string['sessionlimittime'] = 'Limit between clicks (in minutes)';
 $string['sessionlimittime_help'] = 'The limit between clicks defines if two clicks are part of the same session or not';
 
 $string['excludedeletedusers'] = 'Exclude deleted users (only for SQL reports)';
+
+// Privacy provider.
+$string['privacy:metadata:block_configurable_reports'] = 'The configurable reports block contains customizable course reports.';
+$string['privacy:metadata:block_configurable_reports:courseid'] = 'Course ID';
+$string['privacy:metadata:block_configurable_reports:ownerid'] = 'The ID of the user who created the report';
+$string['privacy:metadata:block_configurable_reports:visible'] = 'Whether the report is visible or not';
+$string['privacy:metadata:block_configurable_reports:global'] = 'Whether the report is accessible from all the courses or not';
+$string['privacy:metadata:block_configurable_reports:name'] = 'The name of the report';
+$string['privacy:metadata:block_configurable_reports:summary'] = 'The description of the report';
+$string['privacy:metadata:block_configurable_reports:type'] = 'The type of the report';
+$string['privacy:metadata:block_configurable_reports:components'] = 'The configuration of the report. It contains the query,
+ the filters...';
+$string['privacy:metadata:block_configurable_reports:lastexecutiontime'] = 'Time this report took to run last time it was executed,
+ in milliseconds.';
