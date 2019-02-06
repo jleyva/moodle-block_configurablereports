@@ -33,15 +33,7 @@ class component_customsql extends component_base {
 
         if (get_config('block_configurable_reports', 'sqlsyntaxhighlight')) {
             $PAGE->requires->js_call_amd('block_configurable_reports/main', 'cmirror');
-            /*
-            $PAGE->requires->js('/blocks/configurable_reports/js/codemirror/lib/codemirror.js');
-            $PAGE->requires->js('/blocks/configurable_reports/js/codemirror/mode/sql/sql.js');
-            $PAGE->requires->js('/blocks/configurable_reports/js/codemirror/addon/display/fullscreen.js');
-            $PAGE->requires->js('/blocks/configurable_reports/js/codemirror/addon/edit/matchbrackets.js');
-            */
         }
-
-        //$PAGE->requires->js_init_call('M.block_configurable_reports.init');
     }
 
     public function form_process_data(&$cform) {

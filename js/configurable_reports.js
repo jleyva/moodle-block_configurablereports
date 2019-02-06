@@ -18,13 +18,6 @@ M.block_configurable_reports = {
             lineNumbers: true,
             matchBrackets : true,
             autofocus: true,
-            extraKeys: {
-                "F11": function(cm) {
-                    cm.setOption("fullScreen", !cm.getOption("fullScreen"));
-                },
-                "Esc": function(cm) {
-                    if (cm.getOption("fullScreen")) cm.setOption("fullScreen", false);
-                }}
             });
 
         editor_remotequerysql = CodeMirror.fromTextArea(document.getElementById('id_remotequerysql'), {
