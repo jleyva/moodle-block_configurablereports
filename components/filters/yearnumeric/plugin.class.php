@@ -63,8 +63,9 @@ class plugin_yearnumeric extends plugin_base {
         $reportclassname = 'report_'.$this->report->type;
         $reportclass = new $reportclassname($this->report);
 
-        foreach (explode(',', get_string('filteryearnumeric_list', 'block_configurable_reports')) as $value) {
-            $yearnumeric[$value] = $value;
+        $calendartype = \core_calendar\type_factory::get_calendar_instance();
+        for($year = $calendartype->get_min_year(); $year < $calendartype->get_max_year(); $year++) {
+            $yearnumeric[$year] = $year;
         }
 
         if ($this->report->type != 'sql') {
