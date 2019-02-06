@@ -1,4 +1,14 @@
-(function(factory){if (typeof define === 'function' && define.amd){define(['jquery'], factory);} else if (typeof module === 'object' && typeof module.exports === 'object'){module.exports = factory(require('jquery'));} else {factory(jQuery);}}(function(jQuery){
+/*eslint-disable*/
+(function(factory){
+	if (typeof define === 'function' && define.amd){
+		define(['jquery'], factory);
+	} else if (typeof module === 'object' && typeof module.exports === 'object'){
+		module.exports = factory(require('jquery'));
+	} else {
+		factory(jQuery);
+	}
+}(function(jQuery){
+
 /*! TableSorter (FORK) v2.31.0 *//*
 * Client-side table sorting with ease!
 * @requires jQuery v1.2.6+

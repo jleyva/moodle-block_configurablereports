@@ -52,19 +52,10 @@ define(
                     'sZeroRecords': M.str.block_configurable_reports.datatables_zerorecords
                 }
             });
-            $('.sorting').css('background', 'url(' + params.images.sorting + ') no-repeat center right');
-            $('.sorting_asc').css('background', 'url(' + params.images.sorting_asc + ') no-repeat center right');
-            $('.sorting_desc').css('background', 'url(' + params.images.sorting_desc + ') no-repeat center right');
-            $('.paginate_enabled_previous').css('background', 'url(' + params.images.paginate_enabled_previous + ') no-repeat top left');
-
-            $('.paginate_disabled_previous').css('background', 'url(' + params.images.paginate_disabled_previous + ') no-repeat top left');
-            $('.paginate_enabled_next').css('background', 'url(' + params.images.paginate_enabled_next + ') no-repeat top right');
-
-            $('.paginate_disabled_next').css('background', 'url(' + params.images.paginate_disabled_next + ') no-repeat top right');
         },
         cmirror: function() {
             // Documentation can be found @ http://codemirror.net/
-            editor_querysql = CodeMirror.fromTextArea(document.getElementById('id_querysql'), {
+            CodeMirror.fromTextArea(document.getElementById('id_querysql'), {
                 mode: "text/x-mysql",
                 rtlMoveVisually: true,
                 indentWithTabs: true,
@@ -73,7 +64,7 @@ define(
                 autofocus: true,
             });
 
-            editor_remotequerysql = CodeMirror.fromTextArea(document.getElementById('id_remotequerysql'), {
+            CodeMirror.fromTextArea(document.getElementById('id_remotequerysql'), {
                 mode: "text/x-mysql",
                 rtlMoveVisually: true,
                 indentWithTabs: true,
@@ -82,5 +73,5 @@ define(
                 //    autofocus: true
             });
         }
-    }
+    };
 });

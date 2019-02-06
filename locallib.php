@@ -49,14 +49,6 @@ function cr_add_jsdatatables($cssid, \moodle_page $page) {
     global $OUTPUT;
     $data = array();
     $data['selector'] = $cssid;
-    $data['images'] = array();
-    $data['images']['sorting'] = $OUTPUT->image_url('datatable/sort_both', 'block_configurable_reports')->out();
-    $data['images']['sorting_asc'] = $OUTPUT->image_url('datatable/sort_asc', 'block_configurable_reports')->out();
-    $data['images']['sorting_desc'] = $OUTPUT->image_url('datatable/sort_desc', 'block_configurable_reports')->out();
-    $data['images']['paginate_enabled_previous'] = $OUTPUT->image_url('datatable/back_enabled', 'block_configurable_reports')->out();
-    $data['images']['paginate_disabled_previous'] = $OUTPUT->image_url('datatable/back_disabled', 'block_configurable_reports')->out();
-    $data['images']['paginate_enabled_next'] = $OUTPUT->image_url('datatable/forward_enabled', 'block_configurable_reports')->out();
-    $data['images']['paginate_disabled_next'] = $OUTPUT->image_url('datatable/forward_disabled', 'block_configurable_reports')->out();
 
     $page->requires->string_for_js('thousandssep', 'langconfig');
     $page->requires->strings_for_js(

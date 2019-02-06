@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<libraries>
+    <library>
+        <location>amd/src/codemirror.js</location>
+        <name>CodeMirror</name>
+        <version>5.41.0</version>
+        <license>MIT</license>
+        <licenseversion></licenseversion>
+    </library>
+    <library>
+        <location>amd/src/jquery.dataTables.js</location>
+        <name>DataTables</name>
+        <version>1.9.4</version>
+        <license>GPL</license>
+        <licenseversion>2.0</licenseversion>
+    </library>
+    <library>
+        <location>amd/src/jquery.tablesorter.js</location>
+        <name>TableSorter</name>
+        <version>2.31.0</version>
+        <license>MIT</license>
+        <licenseversion></licenseversion>
+    </library>
+</libraries>
