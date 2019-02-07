@@ -161,6 +161,7 @@ function cr_serialize($var) {
 }
 
 function cr_unserialize($var) {
+    $var = preg_replace('/O:6:"object"/', 'O:8:"stdClass"', $var);
     return urldecode_recursive(unserialize($var));
 }
 
@@ -483,8 +484,10 @@ function cr_import_xml($xml, $course) {
                 $val[0]['#'] = base64_decode(trim($val[0]['#']));
                 // Fix url_encode " and ' when importing SQL queries.
                 $tempcomponents = cr_unserialize($val[0]['#']);
-                $tempcomponents['customsql']['config']->querysql = str_replace("\'", "'", $tempcomponents['customsql']['config']->querysql);
-                $tempcomponents['customsql']['config']->querysql = str_replace('\"', '"', $tempcomponents['customsql']['config']->querysql);
+                if (array_key_exists('customsql', $tempcomponents)) {
+                    $tempcomponents['customsql']['config']->querysql = str_replace("\'", "'", $tempcomponents['customsql']['config']->querysql);
+                    $tempcomponents['customsql']['config']->querysql = str_replace('\"', '"', $tempcomponents['customsql']['config']->querysql);
+                }
                 $val[0]['#'] = cr_serialize($tempcomponents);
             }
             $newreport->{$key} = trim($val[0]['#']);
