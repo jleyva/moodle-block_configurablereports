@@ -161,7 +161,12 @@ function cr_serialize($var) {
 }
 
 function cr_unserialize($var) {
+    // It's needed to convert the object to stdClass to avoid __PHP_Incomplete_Class error.
     $var = preg_replace('/O:6:"object"/', 'O:8:"stdClass"', $var);
+    // To make SQL queries compatible with PostgreSQL it's needed to replace " to '.
+    $var = preg_replace('/THEN\+%22(.+?)%22/', 'THEN+%27${1}%27', $var);
+    $var = preg_replace('/%60/', '+++', $var);
+
     return urldecode_recursive(unserialize($var));
 }
 
