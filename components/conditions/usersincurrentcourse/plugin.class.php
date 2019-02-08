@@ -42,7 +42,7 @@ class plugin_usersincurrentcourse extends plugin_base{
         global $DB;
 
         $context = cr_get_context(CONTEXT_COURSE, $courseid);
-        if ($users = get_role_users($data->roles, $context, false, 'u.id', 'u.id')) {
+        if ($users = get_role_users($data->roles, $context, false, 'ra.id, u.id', 'u.id')) {
             return array_keys($users);
         }
 
