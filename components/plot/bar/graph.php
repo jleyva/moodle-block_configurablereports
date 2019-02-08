@@ -111,7 +111,7 @@ if (!$reportclass->check_permissions($USER->id, $context)) {
             $colorb = property_exists($g['formdata'], "color_b") ? $g['formdata']->color_b : 87;
             $padding = 30;
             $fontsize = 8;
-            $fontpath = $CFG->dirroot."/blocks/configurable_reports/lib/pChart2/Fonts";
+            $fontpath = $CFG->dirroot."/blocks/configurable_reports/lib/pChart2/fonts";
             $labeloffset = $longestlabel * ($fontsize / 2);
             $minlabeloffset = $padding + 100;
             $maxlabeloffset = $height / 2 + $padding;

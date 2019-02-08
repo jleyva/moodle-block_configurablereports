@@ -101,3 +101,23 @@ Instructions to import 'TableSorter' into Moodle:
 
 3. Execute grunt to compile js
    grunt js
+
+
+=======================
+pChart
+=======================
+http://www.pchart.net/
+
+Instructions to import 'pChart' into Moodle:
+
+1. Access to the 'lib/' folder
+
+2. Remove the 'pChart2' folder.
+
+3. Download the latest release for this library compatible with PHP 7 from
+https://github.com/bozhinov/pChart2.0-for-PHP7 using the following command:
+
+git clone -b 7.x-compatible https://github.com/bozhinov/pChart2.0-for-PHP7.git pChart2
+
+   3.a. Remove the folders 'examples' and 'cache' and the file 'index.php'.
+
