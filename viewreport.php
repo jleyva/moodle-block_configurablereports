@@ -108,7 +108,9 @@ if (!$download) {
     $reportclass->print_report_page($PAGE);
 
 } else {
-
+    // Large exports are likely to take their time and memory.
+    core_php_time_limit::raise();
+    raise_memory_limit(MEMORY_EXTRA);
     $exportplugin = $CFG->dirroot.'/blocks/configurable_reports/export/'.$format.'/export.php';
     if (file_exists($exportplugin)) {
         require_once($exportplugin);
