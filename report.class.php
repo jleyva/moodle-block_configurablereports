@@ -162,6 +162,8 @@ class report_base {
             if ($request) {
                 foreach ($request as $key => $val) {
                     if (strpos($key, 'filter_') !== false) {
+                        $key = clean_param($key, PARAM_CLEANHTML);
+                        $val = clean_param($val, PARAM_CLEANHTML);
                         $formdata->{$key} = $val;
                     }
                 }
@@ -213,14 +215,19 @@ class report_base {
         $wwwpath = $CFG->wwwroot;
         $request = array_merge($_POST, $_GET);
         if ($request) {
-            $wwwpath = 'viewreport.php?id='.$request['id'];
+            $id = clean_param($request['id'], PARAM_INT);
+            $wwwpath = 'viewreport.php?id='.$id;
             unset($request['id']);
             foreach ($request as $key => $val) {
+                $key = clean_param($key, PARAM_CLEANHTML);
                 if (is_array($val)) {
                     foreach ($val as $k => $v) {
+                        $k = clean_param($k, PARAM_CLEANHTML);
+                        $v = clean_param($v, PARAM_CLEANHTML);
                         $wwwpath .= "&amp;{$key}[$k]=".$v;
                     }
                 } else {
+                    $val = clean_param($val, PARAM_CLEANHTML);
                     $wwwpath .= "&amp;$key=".$val;
                 }
             }
@@ -587,11 +594,15 @@ class report_base {
             if ($request) {
                 foreach ($request as $key => $val) {
                     if (strpos($key, 'filter_') !== false) {
+                        $key = clean_param($key, PARAM_CLEANHTML);
                         if (is_array($val)) {
                             foreach ($val as $k => $v) {
+                                $k = clean_param($k, PARAM_CLEANHTML);
+                                $v = clean_param($v, PARAM_CLEANHTML);
                                 $postfiltervars .= "&amp;{$key}[$k]=".$v;
                             }
                         } else {
+                            $val = clean_param($val, PARAM_CLEANHTML);
                             $postfiltervars .= "&amp;$key=".$val;
                         }
                     }
@@ -713,11 +724,15 @@ class report_base {
                 if ($request) {
                     foreach ($request as $key => $val) {
                         if (strpos($key, 'filter_') !== false) {
+                            $key = clean_param($key, PARAM_CLEANHTML);
                             if (is_array($val)) {
                                 foreach ($val as $k => $v) {
+                                    $k = clean_param($k, PARAM_CLEANHTML);
+                                    $v = clean_param($v, PARAM_CLEANHTML);
                                     $postfiltervars .= "&amp;{$key}[$k]=".$v;
                                 }
                             } else {
+                                $val = clean_param($val, PARAM_CLEANHTML);
                                 $postfiltervars .= "&amp;$key=".$val;
                             }
                         }
