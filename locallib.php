@@ -84,9 +84,11 @@ function cr_add_jsordering($cssid, \moodle_page $page = null) {
     if(!empty($page)) {
         $data = array();
         $data['selector'] = $cssid;
-        $data['background'] = $OUTPUT->image_url('normal', 'block_configurable_reports')->out();
-        $data['backgroundasc'] = $OUTPUT->image_url('asc', 'block_configurable_reports')->out();
-        $data['backgrounddesc'] = $OUTPUT->image_url('desc', 'block_configurable_reports')->out();
+        if (method_exists($OUTPUT, 'image_url')) {
+            $data['background'] = $OUTPUT->image_url('normal', 'block_configurable_reports')->out();
+            $data['backgroundasc'] = $OUTPUT->image_url('asc', 'block_configurable_reports')->out();
+            $data['backgrounddesc'] = $OUTPUT->image_url('desc', 'block_configurable_reports')->out();
+        }
         $page->requires->js_call_amd('block_configurable_reports/main', 'js_order', array($data));
     }
 }
