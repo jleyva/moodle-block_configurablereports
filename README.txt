@@ -25,95 +25,188 @@ http://moodle.org/mod/data/view.php?d=13&rid=2884
 By Tim Hunt
 
 
-Versions history
+VERSIONS HISTORY
+
+3.6.0 (2019021500) for Moodle 3.0, 3.1, 3.2, 3.3, 3.4, 3.5, 3.6
+Release date: Friday, 15 Feb 2017
+----------------------------------------------------------------------
+- Implement Privacy API
+- Replace deprecated methods:
+  * htmleditor
+  * pix_url
+  * coursecat
+- Move JS to AMD modules
+- Upgrade some 3rd party JS libraries
+- Fix import from XML
+- Review the year filter to take min and max years from the calendar factory
+- Other fixes and improvements:
+  * Remove CSS files not found error in JS console
+  * Show breadcrumbs for users without manage report capability
+  * Fix DB query function call for the enrolled students filter
+  * Raise the memory limit when exporting
+  * Clean some request parameters before using them
+  * Fix error with user field search box filter
+  * Improve compatibility with PostgreSQL when importing
+
+Thanks Alex (agrowe), Donald (emyb2), sopnep15, Danniel (dannielarriola) and all the contributors who have sent several
+fixes and improvements.
+And special thanks also to Sander, Moodle HQ and Juan for letting Sara work on this during the project week.
 
 
-Added support for Moodle 2.7
+3.1.1 (2016020103) for Moodle 3.0, 3.1
+Release date: Monday, 10 Oct 2016
+----------------------------------------------------------------------
+- Fix a critical bug when adding user action/outline statistics, see https://tracker.moodle.org/browse/CONTRIB-4600
 
-Added new user column plugin (final grade in current course)
+Thanks Marina Glancy for the fix
 
-Added options for limit the max number of records in SQL queries (previously the limit was hard coded to 5000)
 
-2.3.4 (2011040114)Moodle 2.2, 2.3, 2.4, 2.5, 2.6, 2.7
+3.1.0 (2016020102) for Moodle 3.0, 3.1
+Release date: Wednesday, 25 May 2016
+----------------------------------------------------------------------
+- Several bug fixes
+
+
+3.0.1 (2016020101) for Moodle 3.0
+2.3.9 (2011040121) for Moodle 2.2, 2.3, 2.4, 2.5, 2.6, 2.7, 2.8, 2.9
+Release date: Wednesday, 17 Feb 2016
+----------------------------------------------------------------------
+- Fix bug when creating the category list
+
+
+3.0.0 (2016020100) for Moodle 3.0
+Release date: Tuesday, 02 Feb 2016
+----------------------------------------------------------------------
+- Compatible version with Moodle 3.0
+
+
+2.3.8 (2011040120) for Moodle 2.2, 2.3, 2.4, 2.5, 2.6, 2.7, 2.8, 2.9
+Release date: Tuesday, 02 Feb 2016
+----------------------------------------------------------------------
+- Release including bug fixes
+
+
+2.3.7 (2011040119) for Moodle 2.2, 2.3, 2.4, 2.5, 2.6, 2.7, 2.8, 2.9
+Release date: Monday, 03 Aug 2015
+----------------------------------------------------------------------
+- Several bug fixes
+- Fixed installation for old moodle versions
+- Improved pie chats
+
+Thanks CV&A and Carlos Escobedo for the contribution
+
+
+2.3.6 (2011040118) for Moodle 2.2, 2.3, 2.4, 2.5, 2.6, 2.7, 2.8, 2.9
+Release date: Wednesday, 27 May 2015
+----------------------------------------------------------------------
+- Minor release fixing a regression
+
+Thanks to Dan Marsden for the fix
+
+
+2.3.5 (2011040116) for Moodle 2.2, 2.3, 2.4, 2.5, 2.6, 2.7, 2.8, 2.9
+Release date: Wednesday, 06 May 2015
+----------------------------------------------------------------------
+- Added support for Moodle 2.8 and 2.9
+- Added support to the new logging system
+- Improved the color palette for graphics with lots of elements
+- Allow translations of DataTable strings
+- Restored the fsearchuserfield plugin
+- Minor issues fixes
+
+Thanks albergasset and jpeak5 for their fixes
+
+
+2.3.4 (2011040114) for Moodle 2.2, 2.3, 2.4, 2.5, 2.6, 2.7
 Release date: Thursday, 26 June 2014, 18:16
+----------------------------------------------------------------------
+- New fullname user field column
+- Several bug fixes
 
-New fullname user field column
-Several bug fixes
 
-2.3.3 (2011040113)Moodle 2.2, 2.3, 2.4, 2.5, 2.6, 2.7
+2.3.3 (2011040113) for Moodle 2.2, 2.3, 2.4, 2.5, 2.6, 2.7
 Release date: Friday, 13 June 2014, 18:16
+----------------------------------------------------------------------
+- Fixed layout and notice/warnings problems
 
-Fixed layout and notice/warnings problems
 
-2.3.2 (2011040110)Moodle 2.2, 2.3, 2.4, 2.5, 2.6
+2.3.2 (2011040110) for Moodle 2.2, 2.3, 2.4, 2.5, 2.6
 Release date: Friday, 14 February 2014, 11:14 AM
+----------------------------------------------------------------------
+- Several bug fixes
 
-Several bug fixes
 
-2.3.2 (2011040109)Moodle 2.2, 2.3, 2.4, 2.5, 2.6
+2.3.2 (2011040109) for Moodle 2.2, 2.3, 2.4, 2.5, 2.6
 Release date: Thursday, 30 January 2014, 10:33 AM
+----------------------------------------------------------------------
+- Fixed invalid table reference in cron
 
-Fixed invalid table reference in cron
 
 2.3.2 (2011040108) for Moodle  2.2, 2.3, 2.4, 2.5m 2.6
 Release date Thursday, 16 January 2014, 15:25 AM
-Some bug fixes
-New CSV export
+----------------------------------------------------------------------
+- Some bug fixes
+- New CSV export
+
 
 2.3.1 (2011040107) for Moodle 2.0, 2.1, 2.2, 2.3, 2.4, 2.5m 2.6
 Release date Monday, 16 December 2013, 10:25 AM
-Some minor bug fixes
-SQL syntax by default is disabled
-New block instance settings (change name and also show/hide global reports)
-New users cohorts condition
+----------------------------------------------------------------------
+- Some minor bug fixes
+- SQL syntax by default is disabled
+- New block instance settings (change name and also show/hide global reports)
+- New users cohorts condition
 
 
 2.3 (2011040106) for Moodle 2.0, 2.1, 2.2, 2.3, 2.4, 2.5m 2.6
 Release date Friday, 13 December 2013, 4:35 PM
-
-Support for Moodle 2.6
-Multiple bugs fixed
-Global report that can be shared in all courses
-Public reports repository with multiple sample reports available
-Ppublic SQL queries repository
-Reports can run on a different DB that the current (production) DB
-Reports can run on a CRON scheduler
-Several filter plugins added
-Integrated DataTables.js for the report table
-Integrated CodeMirror.js for highlighting SQL query code, while editing.
-New security settings
+----------------------------------------------------------------------
+- Support for Moodle 2.6
+- Multiple bugs fixed
+- Global report that can be shared in all courses
+- Public reports repository with multiple sample reports available
+- Public SQL queries repository
+- Reports can run on a different DB that the current (production) DB
+- Reports can run on a CRON scheduler
+- Several filter plugins added
+- Integrated DataTables.js for the report table
+- Integrated CodeMirror.js for highlighting SQL query code, while editing.
+- New security settings
 
 Thanks to Nadav Kavalerchik for providing most of the new features
 
 
 2.2 (2011040105) for Moodle 2.0, 2.1, 2.2, 2.3, 2.4, 2.5
 Release date Wednesday, 27 February 2013, 9:35 AM
-
-Support for Moodle 2.4 and 2.5
-Bugs fixed
+----------------------------------------------------------------------
+- Support for Moodle 2.4 and 2.5
+- Bugs fixed
 
 
 2.1 (2011040103) for Moodle 2.0, 2.1, 2.2, 2.3
 Release date Friday, 6 July 2012, 1:29 PM
-
-Support for Moodle 2.3
-Bugs fixed
+----------------------------------------------------------------------
+- Support for Moodle 2.3
+- Bugs fixed
 
 
 2.0.2 (2011040102) for Moodle 2.0, 2.1, 2.2
 Release date Monday, 9 January 2012, 11:41 AM
-
-Support for Moodle 2.2
-Bugs fixed
+----------------------------------------------------------------------
+- Support for Moodle 2.2
+- Bugs fixed
 
 
 2.0.1 (2011040101) for Moodle 2.0, 2.1
 Release date Thursday, 13 October 2011, 12:55 AM
+----------------------------------------------------------------------
 
 
 2.0 (2011040100) for Moodle 2.0, 2.1
 Release date Thursday, 29 September 2011, 10:47 AM
+----------------------------------------------------------------------
 
 
 1.0 (2010090100) for Moodle 1.9
 Release date Thursday, 29 September 2011, 10:38 AM
+----------------------------------------------------------------------
