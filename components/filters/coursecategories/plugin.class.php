@@ -56,7 +56,7 @@ class plugin_coursecategories extends plugin_base {
                 $coursecache[$course] = $remotedb->get_record('course', array('id' => $course));
             }
             $course = $coursecache[$course];
-            if ($category != $course->category and !in_array($category, $parents[$course->id])) {
+            if ($category != $course->category and (empty($parents[$course->id]) || !in_array($category, $parents[$course->id]))) {
                 unset($finalelements[$key]);
             }
         }
