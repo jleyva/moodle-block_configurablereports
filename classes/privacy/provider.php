@@ -32,6 +32,7 @@ use core_privacy\local\request\contextlist;
 use core_privacy\local\request\userlist;
 use core_privacy\local\request\transform;
 use core_privacy\local\request\writer;
+use core_privacy\local\legacy_polyfill;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -52,7 +53,7 @@ class provider implements
     \core_privacy\local\request\plugin\provider {
 
     // This trait must be included to provide the relevant polyfill for the metadata provider.
-    use core_privacy\local\legacy_polyfill;
+    use legacy_polyfill;
 
     /**
      * Returns metadata.
