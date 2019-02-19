@@ -163,7 +163,11 @@ class report_base {
                 foreach ($request as $key => $val) {
                     if (strpos($key, 'filter_') !== false) {
                         $key = clean_param($key, PARAM_CLEANHTML);
-                        $val = clean_param($val, PARAM_CLEANHTML);
+                        if (is_array($val)) {
+                            $val = clean_param_array($val, PARAM_CLEANHTML);
+                        } else {
+                            $val = clean_param($val, PARAM_CLEANHTML);
+                        }
                         $formdata->{$key} = $val;
                     }
                 }
