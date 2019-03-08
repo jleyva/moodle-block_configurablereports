@@ -151,6 +151,7 @@ $string['reportscapabilities_summary'] = "Users with the capability moodle/site:
 $string['sum'] = "Sum";
 $string['max'] = "Maximum";
 $string['min'] = "Minimum";
+$string['percent'] = "Percentage";
 $string['average'] = "Average";
 $string['pie'] = "Pie";
 $string['piesummary'] = "A pie graph";
