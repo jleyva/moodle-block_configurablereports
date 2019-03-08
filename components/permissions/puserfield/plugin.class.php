@@ -28,7 +28,7 @@ class plugin_puserfield extends plugin_base {
 
     public function init() {
         $this->form = true;
-        $this->unique = true;
+        $this->unique = false;
         $this->fullname = get_string('puserfield', 'block_configurable_reports');
         $this->reporttypes = array('courses', 'sql', 'users', 'timeline', 'categories');
     }
