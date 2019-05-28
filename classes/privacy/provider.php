@@ -52,7 +52,7 @@ class provider implements
     \core_privacy\local\request\plugin\provider {
 
     // This trait must be included to provide the relevant polyfill for the metadata provider.
-    use core_privacy\local\legacy_polyfill;
+    use \core_privacy\local\legacy_polyfill;
 
     /**
      * Returns metadata.
