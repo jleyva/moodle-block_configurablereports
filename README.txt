@@ -27,8 +27,24 @@ By Tim Hunt
 
 VERSIONS HISTORY
 
+3.7.0 (2019060300) for Moodle 3.0, 3.1, 3.2, 3.3, 3.4, 3.5, 3.6, 3.7
+Release date: Monday, 3 Jun 2019
+----------------------------------------------------------------------
+- Add a new calculation type: percentage
+- Allow userfields to be used more than once in the permissions
+- Other fixes and improvements:
+  * Fix error when using templates
+  * Fix error when using the Start/End filter
+  * Fix legacy_polyfill error when running unit tests
+  * Display custom title for the block
+
+
+Thanks David (davidpesce), Dimitrii (dmitriim) and all the contributors who have sent several fixes and improvements.
+And special thanks also to Sander, Moodle HQ and Juan for letting Sara work on this again during the project week.
+
+
 3.6.0 (2019021500) for Moodle 3.0, 3.1, 3.2, 3.3, 3.4, 3.5, 3.6
-Release date: Friday, 15 Feb 2017
+Release date: Friday, 15 Feb 2019
 ----------------------------------------------------------------------
 - Implement Privacy API
 - Replace deprecated methods:
