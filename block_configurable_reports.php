@@ -39,8 +39,9 @@ class block_configurable_reports extends block_list {
     public function specialization() {
 
         if ($this->config) {
-            $this->title = $this->config->title ? get_string('pluginname', 'block_configurable_reports') : $this->config->title;
+            $this->title = $this->config->title ? $this->config->title : get_string('pluginname', 'block_configurable_reports');
         } else {
+            $this->title = get_string('pluginname', 'block_configurable_reports');
             $this->config = new stdClass();
             $this->config->displayglobalreports = true;
         }
