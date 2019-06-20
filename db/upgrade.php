@@ -96,5 +96,31 @@ function xmldb_block_configurable_reports_upgrade($oldversion) {
 
         upgrade_plugin_savepoint(true, 2019020600, 'block', 'configurable_reports');
     }
+
+    if ($oldversion < 2019062000) {
+
+        $table = new xmldb_table('block_configurable_reports');
+
+        // Make sure these fields match install.xml.
+        $field = new xmldb_field('global', XMLDB_TYPE_INTEGER, '4', XMLDB_UNSIGNED, XMLDB_NOTNULL, null, '0', null);
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->change_field_default($table, $field);
+            $dbman->change_field_notnull($table, $field);
+        }
+
+        $field = new xmldb_field('lastexecutiontime', XMLDB_TYPE_INTEGER, '10', XMLDB_UNSIGNED, XMLDB_NOTNULL, null, '0', null);
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->change_field_default($table, $field);
+            $dbman->change_field_notnull($table, $field);
+        }
+
+        $field = new xmldb_field('cron', XMLDB_TYPE_INTEGER, '4', XMLDB_UNSIGNED, XMLDB_NOTNULL, null, '0', null);
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->change_field_precision($table, $field);
+            $dbman->change_field_notnull($table, $field);
+        }
+        upgrade_plugin_savepoint(true, 2019062000, 'block', 'configurable_reports');
+    }
+
     return true;
 }
