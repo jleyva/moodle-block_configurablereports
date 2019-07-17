@@ -504,3 +504,10 @@ $string['privacy:metadata:block_configurable_reports:components'] = 'The configu
  the filters...';
 $string['privacy:metadata:block_configurable_reports:lastexecutiontime'] = 'Time this report took to run last time it was executed,
  in milliseconds.';
+
+// Pie Chart Strings
+$string['legendheader'] = 'Legend label order and colors';
+$string['piechart_label'] = 'Label - {$a}';
+$string['piechart_label_color'] = 'Label color - {$a}';
+$string['invalidcolorcode'] = 'Invalid color code';
+

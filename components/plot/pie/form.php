@@ -78,7 +78,30 @@ class pie_form extends moodleform {
         $mform->addElement('select', 'areavalue', get_string('pieareavalue', 'block_configurable_reports'), $options);
         $mform->addElement('checkbox', 'group', get_string('groupvalues', 'block_configurable_reports'));
 
+        $mform->addElement('header',  'legendheader', get_string('legendheader', 'block_configurable_reports'), '');
+
+        for ($i = 0; $i < 5; $i++) {
+            $mform->addElement('text', 'label'.$i, get_string('piechart_label', 'block_configurable_reports', $i));
+            $mform->setType('label'.$i, PARAM_TEXT);
+
+            $mform->addElement('text', 'labelcolor'.$i, get_string('piechart_label_color', 'block_configurable_reports', $i));
+            $mform->setType('labelcolor'.$i, PARAM_TEXT);
+        }
+
         // Buttons.
         $this->add_action_buttons(true, get_string('add'));
+    }
+
+    function validation($data, $files) {
+        $errors = array();
+
+        for ($i = 0; $i < 5; $i++) {
+            if ($data['labelcolor'.$i] ) {
+                if (!preg_match('/^#+([a-fA-F0-9]{6}|[a-fA-F0-9]{3})$/', $data['labelcolor'.$i])) {
+                    $errors['labelcolor'.$i]= get_string('invalidcolorcode', 'block_configurable_reports');
+                }
+            }
+        }
+        return $errors;
     }
 }
