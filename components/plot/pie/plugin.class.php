@@ -74,19 +74,17 @@ class plugin_pie extends plugin_base{
 
         for ($i = 0; $i < 5; $i++) {
             if (!empty($data->{'label'.$i})) {
-                $sortorder[] = $data->{'label'.$i};
-
+                $target = $data->{'label'.$i};
                 $colorcode = ltrim($data->{'labelcolor'.$i}, '#');
-                list($r, $g, $b) = array_map(function($c){return hexdec(str_pad($c, 2, $c));}, str_split($colorcode, strlen($colorcode) > 4 ? 2 : 1));
-                $colors[$i] = implode('|', array_map(function($c){return hexdec(str_pad($c, 2, $c));}, str_split($colorcode, strlen($colorcode) > 4 ? 2 : 1)));
-
+                $sortorder[$target] = $colorcode;
             }
         }
 
         $serie0sorted = [];
         $serie1sorted = [];
+        $i = 0;
 
-        foreach ($sortorder as $item) {
+        foreach ($sortorder as $item => $color) {
             foreach ($series[0] as $index => $serie) {
                 $serie = strip_tags($serie);
                 if ($item == $serie) {
@@ -94,6 +92,9 @@ class plugin_pie extends plugin_base{
                     $serie1sorted[] = $series[1][$index];
                     unset($series[0][$index]);
                     unset($series[1][$index]);
+
+                    $colors[$i] = implode('|', array_map(function($c){return hexdec(str_pad($c, 2, $c));}, str_split($color, strlen($color) > 4 ? 2 : 1)));
+                    $i++;
                 }
             }
         }
@@ -104,9 +105,6 @@ class plugin_pie extends plugin_base{
                 $serie1sorted[] = $series[1][$index];
             }
         }
-
-        // $serie0 = base64_encode(strip_tags(implode(',', $series[0])));
-        // $serie1 = base64_encode(implode(',', $series[1]));
 
         $serie0 = base64_encode(strip_tags(implode(',', $serie0sorted)));
         $serie1 = base64_encode(implode(',', $serie1sorted));
