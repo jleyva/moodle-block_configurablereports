@@ -97,7 +97,29 @@ function xmldb_block_configurable_reports_upgrade($oldversion) {
         upgrade_plugin_savepoint(true, 2019020600, 'block', 'configurable_reports');
     }
 
-    if ($oldversion < 2019062000) {
+    if ($oldversion < 2019062001) {
+
+        // Change NULL to 0.
+        $rs = $DB->get_recordset('block_configurable_reports', null, '', 'id, global, lastexecutiontime, cron');
+        foreach ($rs as $f) {
+            $update = false;
+            if (is_null($f->global)) {
+                $update = true;
+                $f->global = 0;
+            }
+            if (is_null($f->lastexecutiontime)) {
+                $update = true;
+                $f->lastexecutiontime = 0;
+            }
+            if (is_null($f->cron)) {
+                $update = true;
+                $f->cron = 0;
+            }
+            if ($update) {
+                $DB->update_record('block_configurable_reports', $f);
+            }
+        }
+        $rs->close();
 
         $table = new xmldb_table('block_configurable_reports');
 
@@ -119,7 +141,7 @@ function xmldb_block_configurable_reports_upgrade($oldversion) {
             $dbman->change_field_precision($table, $field);
             $dbman->change_field_notnull($table, $field);
         }
-        upgrade_plugin_savepoint(true, 2019062000, 'block', 'configurable_reports');
+        upgrade_plugin_savepoint(true, 2019062001, 'block', 'configurable_reports');
     }
 
     return true;
