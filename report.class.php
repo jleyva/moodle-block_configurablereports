@@ -667,7 +667,12 @@ class report_base {
             }
 
             foreach ($this->finalreport->table->data as $r) {
-                $recordtext = $recordtpl;
+                if (is_array($recordtpl)) {
+                    $recordtext = $recordtpl['text'];
+                } else {
+                    $recordtext = $recordtpl;
+                }
+                
                 foreach ($this->finalreport->table->head as $key => $c) {
                     $recordtext = str_ireplace("[[$c]]", $r[$key], $recordtext);
                 }
