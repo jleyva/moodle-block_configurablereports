@@ -55,7 +55,7 @@ class plugin_enrolledstudents extends plugin_base{
     }
 
     public function print_filter(&$mform) {
-        global $remotedb, $COURSE;
+        global $remotedb, $COURSE, $PAGE, $CFG;
 
         $reportclassname = 'report_'.$this->report->type;
         $reportclass = new $reportclassname($this->report);
@@ -81,11 +81,23 @@ class plugin_enrolledstudents extends plugin_base{
         $enrolledstudentsoptions[0] = get_string('filter_all', 'block_configurable_reports');
 
         if (!empty($enrolledstudentslist)) {
+            if (has_capability('moodle/site:viewfullnames', $PAGE->context)) {
+               $nameformat = $CFG->alternativefullnameformat;
+            } else {
+               $nameformat = $CFG->fullnamedisplay;
+            }
+
+            if ($nameformat == 'language') {
+                $nameformat = get_string('fullnamedisplay');
+            }
+
+            $sort = implode(',', order_in_string(get_all_user_name_fields(), $nameformat));
+
             list($usql, $params) = $remotedb->get_in_or_equal($enrolledstudentslist);
-            $enrolledstudents = $remotedb->get_records_select('user', "id $usql", $params);
+            $enrolledstudents = $remotedb->get_records_select('user', "id " . $usql, $params, $sort, 'id,' .get_all_user_name_fields(true));
 
             foreach ($enrolledstudents as $c) {
-                $enrolledstudentsoptions[$c->id] = format_string($c->lastname.' '.$c->firstname);
+                $enrolledstudentsoptions[$c->id] = fullname($c);
             }
         }
 
