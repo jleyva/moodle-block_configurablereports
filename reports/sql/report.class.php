@@ -123,7 +123,7 @@ class report_sql extends report_base {
                 foreach ($rs as $row) {
                     if (empty($finaltable)) {
                         foreach ($row as $colname => $value) {
-                            $tablehead[] = str_replace('_', ' ', $colname);
+                            $tablehead[] = $colname;
                         }
                     }
                     $arrayrow = array_values((array) $row);
