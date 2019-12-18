@@ -53,7 +53,7 @@ function export_report($report) {
     // Sending HTTP headers.
     $workbook->send($downloadfilename);
     // Adding the worksheet.
-    $myxls =& $workbook->add_worksheet($filename);
+    $myxls = $workbook->add_worksheet($filename);
 
     foreach ($matrix as $ri => $col) {
         foreach ($col as $ci => $cv) {
