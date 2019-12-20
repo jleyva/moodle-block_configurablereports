@@ -39,7 +39,7 @@ Release date: Friday, 20 Dec 2019
   * Review supported Moodle versions, because the core_userlist_provider interface is only supported from 3.4 onwards - #125
 
 
-Thanks Mike McDougal (mcdoogs), Tuan Ngoc Nguyen (tuanngocnguyen), Mike Henry (mhenry79mnet), safatshahinsd, kristian-94 and all the contributors who have sent several fixes and improvements.
+Thanks Daniel Neis (danielneis), Mike McDougal (mcdoogs), Tuan Ngoc Nguyen (tuanngocnguyen), Mike Henry (mhenry79mnet), safatshahinsd, kristian-94 and all the contributors who have sent several fixes and improvements.
 And special thanks also to Carlos, Moodle HQ and Juan for letting Sara work on this again during the project week.
 
 
@@ -73,7 +73,7 @@ Release date: Friday, 20 Dec 2019
   * Improve compatibility with PostgreSQL when importing
 
 
-Thanks Mike McDougal (mcdoogs), Tuan Ngoc Nguyen (tuanngocnguyen), Mike Henry (mhenry79mnet), safatshahinsd, kristian-94, David (davidpesce), Dimitrii (dmitriim), Alex (agrowe), Donald (emyb2), sopnep15, Danniel (dannielarriola) and all the contributors who have sent several fixes and improvements.
+Thanks Daniel Neis (danielneis), Mike McDougal (mcdoogs), Tuan Ngoc Nguyen (tuanngocnguyen), Mike Henry (mhenry79mnet), safatshahinsd, kristian-94, David (davidpesce), Dimitrii (dmitriim), Alex (agrowe), Donald (emyb2), sopnep15, Danniel (dannielarriola) and all the contributors who have sent several fixes and improvements.
 And special thanks also to Carlos, Sander, Moodle HQ and Juan for letting Sara work on this again during the project week.
 
 
