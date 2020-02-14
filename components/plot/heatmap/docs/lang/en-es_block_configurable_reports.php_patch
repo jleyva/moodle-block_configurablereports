@@ -1,0 +1,4 @@
+488a489,491
+> // New plots & exports
+> $string['stdComparative'] = 'Line and points - standard comparative';
+> $string['heatmap'] = 'heatmap';

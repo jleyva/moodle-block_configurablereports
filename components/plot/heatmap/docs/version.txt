@@ -1,0 +1,19 @@
+// Plot "HEATMAP"
+* v0.2 (20190617)
+* BETA
+
+// BLOCK_CONFIGURABLE_REPORTS (included on)
+$plugin->version = 2011040121;  // Plugin version.
+$plugin->requires = 2011120500; // require Moodle version (2.2).
+$plugin->maturity = MATURITY_STABLE;
+$plugin->release = '2.3.9';
+$plugin->component = 'block_configurable_reports'; // Full name of the plugin (used for diagnostics)
+
+// MOODLE (tested on)
+$version  = 2014051209.00;              // 20140512      = branching date YYYYMMDD - do not modify!
+                                        //         RR    = release increments - 00 in DEV branches.
+                                        //           .XX = incremental changes.
+$release  = '2.7.9 (Build: 20150706)'; // Human-friendly version name
+
+$branch   = '27';                       // This version's branch.
+$maturity = MATURITY_STABLE;             // This version's maturity level.
