@@ -504,3 +504,12 @@ $string['privacy:metadata:block_configurable_reports:components'] = 'The configu
  the filters...';
 $string['privacy:metadata:block_configurable_reports:lastexecutiontime'] = 'Time this report took to run last time it was executed,
  in milliseconds.';
+
+// Filter forms.
+$string['add'] = 'Add';
+$string['description'] = 'Description';
+$string['description_help'] = 'Text used to describe the filter that will be displayed in the summary on the filters page.';
+$string['label'] = 'Label';
+$string['label_help'] = 'Text describing the filter to be displayed on the report page.';
+$string['idnumber'] = 'ID Number';
+$string['idnumber_help'] = 'Used to differentiate between filters of the same type. Case-sensitive. Example usage: %%FILTER_SEARCHTEXT_username:u.username:~%%';
