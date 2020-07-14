@@ -79,9 +79,6 @@ if (!$reportclass->check_permissions($USER->id, $context)) {
 
             // Dataset definition.
             $dataset = new pData();
-            $f = fopen("/tmp/bar.series-pre", "w");
-            fwrite($f, print_r($series, true));
-            fclose($f);
             $labels = array_shift($series);
 
             // Invert/Reverse Hebrew labels so it can be rendered using PHP imagettftext()
@@ -94,9 +91,7 @@ if (!$reportclass->check_permissions($USER->id, $context)) {
             }
             $dataset->addPoints($invertedlabels, "Labels");
             $dataset->setAbscissa("Labels");
-            $f = fopen("/tmp/bar.series", "w");
-            fwrite($f, print_r($series, true));
-            fclose($f);
+
             $longestlegend = 0;
             foreach ($series as $name => $valueset) {
                 $legendlen = strlen($name);
