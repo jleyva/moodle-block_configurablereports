@@ -509,5 +509,6 @@ $string['privacy:metadata:block_configurable_reports:lastexecutiontime'] = 'Time
 $string['legendheader'] = 'Legend label order and colors';
 $string['piechart_label'] = 'Label - {$a}';
 $string['piechart_label_color'] = 'Label color - {$a}';
+$string['piechart_add_colors'] = 'Add color';
 $string['invalidcolorcode'] = 'Invalid color code';
 

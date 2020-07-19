@@ -72,11 +72,14 @@ class plugin_pie extends plugin_base{
         $sortorder = [];
         $colors = [];
 
-        for ($i = 0; $i < 5; $i++) {
-            if (!empty($data->{'label'.$i})) {
-                $target = $data->{'label'.$i};
-                $colorcode = ltrim($data->{'labelcolor'.$i}, '#');
-                $sortorder[$target] = $colorcode;
+        if (isset($data->{'piechart_label'})) {
+            $length = count($data->{'piechart_label'});
+            for ($i = 0; $i < $length; $i++) {
+                if (!empty($data->{'piechart_label'}[$i])) {
+                    $target = $data->{'piechart_label'}[$i];
+                    $colorcode = ltrim($data->{'piechart_label_color'}[$i], '#');
+                    $sortorder[$target] = $colorcode;
+                }
             }
         }
 
