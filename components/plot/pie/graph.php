@@ -105,7 +105,9 @@ if (!$reportclass->check_permissions($USER->id, $context)) {
             // Custom colors.
             if ($colors) {
                 foreach ($colors as $index => $color) {
-                    $test->Palette[$index] = array("R" => $color[0],"G" => $color[1],"B" => $color[2]);
+                    if (!empty($color)) {
+                        $test->Palette[$index] = array("R" => $color[0], "G" => $color[1], "B" => $color[2]);
+                    }
                 }
             }
 

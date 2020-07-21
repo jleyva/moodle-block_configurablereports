@@ -69,16 +69,27 @@ class plugin_pie extends plugin_base{
         }
 
         // Custom sort.
-        $sortorder = [];
         $colors = [];
+        $mappedcolors = [];
+        $unmappedcolors = [];
 
-        if (isset($data->{'piechart_label'})) {
+        if (!empty($data->{'piechart_label'})) {
             $length = count($data->{'piechart_label'});
             for ($i = 0; $i < $length; $i++) {
                 if (!empty($data->{'piechart_label'}[$i])) {
-                    $target = $data->{'piechart_label'}[$i];
+                    $key = $data->{'piechart_label'}[$i];
                     $colorcode = ltrim($data->{'piechart_label_color'}[$i], '#');
-                    $sortorder[$target] = $colorcode;
+                    $mappedcolors[$key] = $colorcode;
+                }
+            }
+        }
+        $mappedcolorkeys = array_keys($mappedcolors);
+
+        if (!empty($data->{'generalcolorpalette'})) {
+            $rawunmappedcolors = explode(PHP_EOL, $data->{'generalcolorpalette'});
+            foreach ($rawunmappedcolors as $rawcolor) {
+                if (!empty($rawcolor)) {
+                    $unmappedcolors[] = ltrim(trim($rawcolor), '#');
                 }
             }
         }
@@ -86,27 +97,21 @@ class plugin_pie extends plugin_base{
         $serie0sorted = [];
         $serie1sorted = [];
         $i = 0;
-
-        foreach ($sortorder as $item => $color) {
-            foreach ($series[0] as $index => $serie) {
-                $serie = strip_tags($serie);
-                if ($item == $serie) {
-                    $serie0sorted[] = $serie;
-                    $serie1sorted[] = $series[1][$index];
-                    unset($series[0][$index]);
-                    unset($series[1][$index]);
-
-                    $colors[$i] = implode('|', array_map(function($c){return hexdec(str_pad($c, 2, $c));}, str_split($color, strlen($color) > 4 ? 2 : 1)));
-                    $i++;
-                }
+        $unmappedindex = 0;
+        $unmappedcolorcount = count($unmappedcolors);
+        foreach ($series[0] as $index => $serie) {
+            $serie = strip_tags($serie);
+            $serie0sorted[] = $serie;
+            $serie1sorted[] = $series[1][$index];
+            if (in_array($serie, $mappedcolorkeys)) {
+                $colors[$i] = $this->parse_color($mappedcolors[$serie]);
+            } else if ($unmappedindex < $unmappedcolorcount) {
+                $colors[$i] = $this->parse_color($unmappedcolors[$unmappedindex]);
+                $unmappedindex++;
+            } else {
+                $colors[$i] = '';
             }
-        }
-
-        if (!empty($series[0])) {
-            foreach ($series[0] as $index => $serie) {
-                $serie0sorted[] = strip_tags($series[0][$index]);
-                $serie1sorted[] = $series[1][$index];
-            }
+            $i++;
         }
 
         $serie0 = base64_encode(strip_tags(implode(',', $serie0sorted)));
@@ -127,10 +132,21 @@ class plugin_pie extends plugin_base{
         if ($colorpalette = optional_param('colorpalette', '', PARAM_RAW)) {
             $colorpalette = explode(',', base64_decode($colorpalette));
             foreach ($colorpalette as $index => $item) {
-                $colorpalette[$index] = explode('|', $item);
+                if (!empty($item)) {
+                    $colorpalette[$index] = explode('|', $item);
+                } else {
+                    unset($colorpalette[$index]);
+                }
             }
             return $colorpalette;
         }
         return null;
+    }
+
+    public function parse_color($colorcode) {
+        return implode('|', array_map(
+                function ($c) {
+                    return hexdec(str_pad($c, 2, $c));
+                }, str_split($colorcode, strlen($colorcode) > 4 ? 2 : 1)));
     }
 }

@@ -506,9 +506,13 @@ $string['privacy:metadata:block_configurable_reports:lastexecutiontime'] = 'Time
  in milliseconds.';
 
 // Pie Chart Strings
-$string['legendheader'] = 'Legend label order and colors';
-$string['piechart_label'] = 'Label - {$a}';
-$string['piechart_label_color'] = 'Label color - {$a}';
+$string['description'] = 'Description';
+$string['legendheader'] = 'Mapped Palette';
+$string['legendheaderdesc'] = 'Map color codes to specific keys in the pie chart legend.';
+$string['piechart_label'] = 'Key - {$a}';
+$string['piechart_label_color'] = 'Color - {$a}';
 $string['piechart_add_colors'] = 'Add color';
 $string['invalidcolorcode'] = 'Invalid color code';
-
+$string['generalcolorpaletteheader'] = 'General color palette';
+$string['generalcolorpalette'] = 'Unmapped Palette';
+$string['generalcolorpalette_help'] = 'Hexadecimal color codes for general use in the pie chart. Codes should be separated by new lines in the order you wish them to be used in the pie chart.';
