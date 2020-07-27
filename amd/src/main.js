@@ -29,6 +29,7 @@ define(
                 'bAutoWidth': false,
                 'sPaginationType': 'full_numbers',
                 'fixedHeader': true,
+                'aaSorting': [],
                 'oLanguage': {
                     'oAria': {
                         'sSortAscending': M.str.block_configurable_reports.datatables_sortascending,
