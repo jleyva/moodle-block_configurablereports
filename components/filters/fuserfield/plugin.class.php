@@ -168,8 +168,39 @@ class plugin_fuserfield extends plugin_base {
     }
 
     private function sql_replace($filtersearchtext, $filterstrmatch, $finalelements) {
+        $operators = array('=', '<', '>', '<=', '>=', '~', 'in');
+
         if (preg_match("/%%$filterstrmatch:([^%]+)%%/i", $finalelements, $output)) {
-            $replace = ' AND '.$output[1].' LIKE '. "'%$filtersearchtext%'";
+            list($field, $operator) = preg_split('/:/', $output[1]);
+            if (empty($operator)) {
+                $operator = '~';
+            } else if (!in_array($operator, $operators)) {
+                print_error('nosuchoperator');
+            }
+            if ($operator == '~') {
+                $replace = " AND " . $field . " LIKE '%" . $filtersearchtext . "%'";
+            } else if ($operator == 'in') {
+                $processeditems = array();
+                // Accept comma-separated values, allowing for '\,' as a literal comma.
+                foreach (preg_split("/(?<!\\\\),/", $filtersearchtext) as $searchitem) {
+                    // Strip leading/trailing whitespace and quotes (we'll add our own quotes later).
+                    $searchitem = trim($searchitem);
+                    $searchitem = trim($searchitem, '"\'');
+
+                    // We can also safely remove escaped commas now.
+                    $searchitem = str_replace('\\,', ',', $searchitem);
+
+                    // Escape and quote strings...
+                    if (!is_numeric($searchitem)) {
+                        $searchitem = "'" . addslashes($searchitem) . "'";
+                    }
+                    $processeditems[] = "$field like $searchitem";
+                }
+                // Despite the name, by not actually using in() we can support wildcards, and maybe be more portable as well.
+                $replace = " AND (" . implode(" OR ", $processeditems) . ")";
+            } else {
+                $replace = ' AND ' . $field . ' ' . $operator . ' ' . $filtersearchtext;
+            }
             $finalelements = str_replace('%%' . $filterstrmatch . ':' . $output[1] . '%%', $replace, $finalelements);
         }
 
