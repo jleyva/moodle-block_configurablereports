@@ -45,21 +45,18 @@ class plugin_competencyframeworks extends plugin_base{
     }
 
     public function execute($finalelements, $data) {
-		error_log("******EXECUTE****");
+		
         $filtercompetencyframeworks = optional_param('filter_competencyframeworks', 0, PARAM_INT);
         if (!$filtercompetencyframeworks) {
             return $finalelements;
         }
 
         if ($this->report->type != 'sql') {
-			error_log(print_r("**** NOT SQL *****"));
             return array($filtercompetencyframeworks);
         } else {
-			error_log(print_r("**** SQL *****"));
             if (preg_match("/%%FILTER_COMPETENCYFRAMEWORKS:([^%]+)%%/i", $finalelements, $output)) {
                 $replace = ' AND '.$output[1].' = '.$filtercompetencyframeworks;
                 return str_replace('%%FILTER_COMPETENCYFRAMEWORKS:'.$output[1].'%%', $replace, $finalelements);
-				error_log(print_r($output[1]));
             }
         }
         return $finalelements;
@@ -81,14 +78,10 @@ class plugin_competencyframeworks extends plugin_base{
                       FROM {role_assignments} ra, mdl_competency_framework cf
                       ';
             $studentlist = $remotedb->get_records_sql($sql);
-			/* error_log("*******studentlist**********");
-			error_log(print_r($studentlist, true));
-			error_log(var_dump($studentlist)); */
             foreach ($studentlist as $student) {
                 $competencyframeworkslist[] = $student->userid;
             }
-			/* error_log("*******competencyframeworkslist**********");
-			error_log(print_r($competencyframeworkslist, true)); */
+			
         }
 
         $competencyframeworksoptions = array();
@@ -108,18 +101,13 @@ class plugin_competencyframeworks extends plugin_base{
             $sort = implode(',', order_in_string(get_all_user_name_fields(), $nameformat));
 
             list($usql, $params) = $remotedb->get_in_or_equal($competencyframeworkslist);
-            //$competencyframeworks = $remotedb->get_records_select('user', "id " . $usql, $params, $sort, 'id,' .get_all_user_name_fields(true));
             $competencyframeworks = $remotedb->get_records_sql($sql);
-			/* error_log("*******competencyframeworks**********");
-			error_log(print_r($competencyframeworks, true)); */
 
             foreach ($competencyframeworks as $c) {
-                //$competencyframeworksoptions[$c->id] = fullname($c);
                 $competencyframeworksoptions[$c->id] = $c->shortname;
             }
         }
 
-        //$elestr = get_string('competencyframeworks', 'block_configurable_reports');
         $elestr = get_string('competencyframeworks', 'tool_lp');
         $mform->addElement('select', 'filter_competencyframeworks', $elestr, $competencyframeworksoptions);
         $mform->setType('filter_competencyframeworks', PARAM_INT);
