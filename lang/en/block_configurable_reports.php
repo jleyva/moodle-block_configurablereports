@@ -121,6 +121,10 @@ $string['enrolledstudents'] = 'Enrolled students';
 $string['filterusers_summary'] = 'Filter a user (by id) from system user list';
 $string['filterenrolledstudents'] = 'Enrolled course students';
 $string['filterenrolledstudents_summary'] = 'Filter a user (by id) from enrolled course students';
+$string['filtercompetencyframeworks'] = 'Competency Frameworks';
+$string['competencyframeworks'] = 'Competency Frameworks';
+$string['filtercompetencyframeworks'] = 'Competency Frameworks';
+$string['filtercompetencyframeworks_summary'] = 'Filter competencies from framework';
 $string['student'] = 'Student';
 
 // Calcs
