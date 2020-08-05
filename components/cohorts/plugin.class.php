@@ -133,7 +133,7 @@ class plugin_cohorts extends plugin_base{
             }
         }
 
-        $elestr = get_string('cohorts', 'tool_lp');
+        $elestr = get_string('cohorts', 'block_configurable_reports');
         $mform->addElement('select', 'filter_cohorts', $elestr, $cohortsoptions);
         $mform->setType('filter_cohorts', PARAM_INT);
     }
