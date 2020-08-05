@@ -32,7 +32,7 @@
 
  /* example of report query
  ***********
- * Shows the courses in which the competencies of a framework are used
+ * Display the courses in which the competencies of a framework are used
  ***********
 SELECT  ccc.id, ccc.courseid, ccc.competencyid, cf.shortname as 'referentiel', cf.idnumber as 'framework Id', c.fullname as 'cours', comp.shortname
 FROM  prefix_competency_coursecomp ccc

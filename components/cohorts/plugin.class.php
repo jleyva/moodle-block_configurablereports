@@ -31,7 +31,7 @@
  
  /* example of report query
  ***********
- * Shows the students from a cohort and all the courses they are enrolled in
+ * Display the students from a cohort and all the courses they are enrolled in
  ***********
 SELECT
 u.firstname AS Firstname,
