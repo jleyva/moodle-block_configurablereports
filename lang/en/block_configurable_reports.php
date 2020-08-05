@@ -123,10 +123,10 @@ $string['filterenrolledstudents'] = 'Enrolled course students';
 $string['filterenrolledstudents_summary'] = 'Filter a user (by id) from enrolled course students';
 $string['competencyframeworks'] = 'Competency Frameworks';
 $string['filtercompetencyframeworks'] = 'Competency Frameworks';
-$string['filtercompetencyframeworks_summary'] = 'Use: %%FILTER_COMPETENCYFRAMEWORKS:cf.id%%';
+$string['filtercompetencyframeworks_summary'] = 'Use: %%FILTER_COMPETENCYFRAMEWORKS:prefix_competency_framework.id%%';
 $string['cohorts'] = 'Cohorts';
 $string['filtercohorts'] = 'Cohorts';
-$string['filtercohorts_summary'] = 'Use: %%FILTER_COHORTS:h.id%%';
+$string['filtercohorts_summary'] = 'Use: %%FILTER_COHORTS:prefix_cohort.id%%';
 $string['student'] = 'Student';
 
 // Calcs
