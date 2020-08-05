@@ -127,7 +127,7 @@ class plugin_competencyframeworks extends plugin_base{
             }
         }
 
-        $elestr = get_string('competencyframeworks', 'tool_lp');
+        $elestr = get_string('competencyframeworks', 'block_configurable_reports');
         $mform->addElement('select', 'filter_competencyframeworks', $elestr, $competencyframeworksoptions);
         $mform->setType('filter_competencyframeworks', PARAM_INT);
     }
