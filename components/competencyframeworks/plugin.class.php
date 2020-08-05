@@ -98,9 +98,9 @@ class plugin_competencyframeworks extends plugin_base{
                 $nameformat = get_string('fullnamedisplay');
             }
 
-            $sort = implode(',', order_in_string(get_all_user_name_fields(), $nameformat));
+            //$sort = implode(',', order_in_string(get_all_user_name_fields(), $nameformat));
 
-            list($usql, $params) = $remotedb->get_in_or_equal($competencyframeworkslist);
+            //list($usql, $params) = $remotedb->get_in_or_equal($competencyframeworkslist);
             $competencyframeworks = $remotedb->get_records_sql($sql);
 
             foreach ($competencyframeworks as $c) {
