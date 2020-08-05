@@ -75,7 +75,7 @@ class plugin_competencyframeworks extends plugin_base{
             $competencyframeworkslist = $reportclass->elements_by_conditions($conditions);
         } else {
             $sql = 'SELECT  cf.id, cf.shortname
-                      FROM {role_assignments} ra, mdl_competency_framework cf
+                      FROM {competency_framework} cf
                       ';
             $studentlist = $remotedb->get_records_sql($sql);
             foreach ($studentlist as $student) {
