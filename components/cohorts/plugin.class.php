@@ -23,11 +23,36 @@
  */
  
  /**
- * COMPETENCY FRAMEWORK FILTER
+ * COHORT FILTER
  * A filter for configurable reports
  * @author: François Parlant <https://www.linkedin.com/in/francois-parlant/>
  * @date: 2020
  */ 
+ 
+ /* example of report query
+ ***********
+ * Shows the students from a cohort and all the courses they are enrolled in
+ ***********
+SELECT
+u.firstname AS Firstname,
+u.lastname AS Lastname,
+u.email AS Email,
+c.fullname AS Course
+
+FROM prefix_course AS c 
+JOIN prefix_enrol AS en ON en.courseid = c.id
+JOIN prefix_user_enrolments AS ue ON ue.enrolid = en.id
+JOIN prefix_user AS u ON ue.userid = u.id
+WHERE u.id in (SELECT u.id
+FROM prefix_cohort AS h
+JOIN prefix_cohort_members AS hm ON h.id = hm.cohortid
+JOIN prefix_user AS u ON hm.userid = u.id
+WHERE 1=1
+%%FILTER_COHORTS:h.id%%
+ORDER BY u.firstname)
+ 
+ */
+ 
 
 require_once($CFG->dirroot.'/blocks/configurable_reports/plugin.class.php');
 
