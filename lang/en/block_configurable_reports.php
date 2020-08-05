@@ -126,7 +126,7 @@ $string['filtercompetencyframeworks'] = 'Competency Frameworks';
 $string['filtercompetencyframeworks_summary'] = 'Use: %%FILTER_COMPETENCYFRAMEWORKS:cf.id%%';
 $string['cohorts'] = 'Cohorts';
 $string['filtercohorts'] = 'Cohorts';
-$string['filtercohorts_summary'] = 'Use: %%FILTER_COHORTS:cf.id%%';
+$string['filtercohorts_summary'] = 'Use: %%FILTER_COHORTS:h.id%%';
 $string['student'] = 'Student';
 
 // Calcs
