@@ -29,6 +29,25 @@
  * @date: 2020
  */ 
 
+
+ /* example of report query
+ ***********
+ * Shows the courses in which the competencies of a framework are used
+ ***********
+SELECT  ccc.id, ccc.courseid, ccc.competencyid, cf.shortname as 'referentiel', cf.idnumber as 'framework Id', c.fullname as 'cours', comp.shortname
+FROM  prefix_competency_coursecomp ccc
+INNER JOIN prefix_course AS c ON c.id = ccc.courseid
+INNER JOIN prefix_competency AS comp ON comp.id = ccc.competencyid
+INNER JOIN prefix_competency_framework AS cf ON cf.id = comp.competencyframeworkid
+JOIN prefix_course_categories cc ON c.category = cc.id
+WHERE 1=1
+%%FILTER_COMPETENCYFRAMEWORKS:cf.id%%
+%%FILTER_SUBCATEGORIES:cc.path%%
+%%FILTER_STARTTIME:c.startdate:>=%% %%FILTER_ENDTIME:c.startdate:<=%%
+ 
+ */
+
+
 require_once($CFG->dirroot.'/blocks/configurable_reports/plugin.class.php');
 
 class plugin_competencyframeworks extends plugin_base{
