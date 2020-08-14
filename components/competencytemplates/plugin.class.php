@@ -34,16 +34,7 @@
  ***********
  * Display the courses in which the competencies of a template are used
  ***********
-SELECT  ccc.id, ccc.courseid, ccc.competencyid, cf.shortname as 'referentiel', cf.idnumber as 'template Id', c.fullname as 'cours', comp.shortname
-FROM  prefix_competency_coursecomp ccc
-INNER JOIN prefix_course AS c ON c.id = ccc.courseid
-INNER JOIN prefix_competency AS comp ON comp.id = ccc.competencyid
-INNER JOIN prefix_competency_template AS cf ON cf.id = comp.competencytemplateid
-JOIN prefix_course_categories cc ON c.category = cc.id
-WHERE 1=1
-%%FILTER_COMPETENCYTEMPLATES:cf.id%%
-%%FILTER_SUBCATEGORIES:cc.path%%
-%%FILTER_STARTTIME:c.startdate:>=%% %%FILTER_ENDTIME:c.startdate:<=%%
+
  
  */
 
