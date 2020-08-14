@@ -107,19 +107,7 @@ class plugin_competencyframeworks extends plugin_base{
         $competencyframeworksoptions[0] = get_string('filter_all', 'block_configurable_reports');
 
         if (!empty($competencyframeworkslist)) {
-            if (has_capability('moodle/site:viewfullnames', $PAGE->context)) {
-               $nameformat = $CFG->alternativefullnameformat;
-            } else {
-               $nameformat = $CFG->fullnamedisplay;
-            }
 
-            if ($nameformat == 'language') {
-                $nameformat = get_string('fullnamedisplay');
-            }
-
-            //$sort = implode(',', order_in_string(get_all_user_name_fields(), $nameformat));
-
-            //list($usql, $params) = $remotedb->get_in_or_equal($competencyframeworkslist);
             $competencyframeworks = $remotedb->get_records_sql($sql);
 
             foreach ($competencyframeworks as $c) {
