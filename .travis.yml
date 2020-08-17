@@ -1,0 +1,55 @@
+language: php
+
+sudo: required
+
+addons:
+  firefox: "47.0.1"
+  postgresql: "9.6"
+  apt:
+    packages:
+      - openjdk-8-jre-headless
+      - chromium-chromedriver
+      - redis-server
+
+services:
+  - redis-server
+  - mysql
+
+cache:
+  directories:
+    - $HOME/.composer/cache
+    - $HOME/.npm
+
+# Alternate tests with MySQL and PostgreSQL
+matrix:
+  include:
+      # PHP 7.4
+    - php: 7.4
+      env: DB=pgsql MOODLE_BRANCH=MOODLE_39_STABLE NODE_VERSION=14.2.0
+    - php: 7.4
+      env: DB=mysqli  MOODLE_BRANCH=MOODLE_39_STABLE NODE_VERSION=14.2.0
+    # PHP 7.2
+    - php: 7.2
+      env: DB=pgsql MOODLE_BRANCH=MOODLE_39_STABLE NODE_VERSION=14.2.0
+    - php: 7.2
+      env: DB=mysqli  MOODLE_BRANCH=MOODLE_39_STABLE NODE_VERSION=14.2.0
+
+before_install:
+  - phpenv config-rm xdebug.ini
+  - cd ../..
+  - nvm install $NODE_VERSION
+  - nvm use $NODE_VERSION
+  - composer create-project -n --no-dev --prefer-dist blackboard-open-source/moodle-plugin-ci ci ^2;
+  - export PATH="$(cd ci/bin; pwd):$(cd ci/vendor/bin; pwd):$PATH"
+  - PATH=$(echo "$PATH" | sed -e 's/:\/usr\/local\/lib\/jvm\/openjdk11\/bin//') JAVA_HOME=/usr/lib/jvm/java-1.8.0-openjdk-amd64
+
+install:
+  - moodle-plugin-ci install -vvv
+
+script:
+  - moodle-plugin-ci validate
+  - moodle-plugin-ci phplint
+  - moodle-plugin-ci phpmd
+  - moodle-plugin-ci savepoints
+  - moodle-plugin-ci phpunit
+  - moodle-plugin-ci behat
