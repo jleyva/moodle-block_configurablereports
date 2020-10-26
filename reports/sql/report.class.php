@@ -26,6 +26,16 @@ defined('BLOCK_CONFIGURABLE_REPORTS_MAX_RECORDS') || define('BLOCK_CONFIGURABLE_
 
 class report_sql extends report_base {
 
+    private $forExport = false;
+
+    public function setForExport(bool $isForExport) {
+        $this->forExport = $isForExport;
+    }
+
+    public function isForExport() {
+        return $this->forExport;
+    }
+
     public function init() {
         $this->components = array('customsql', 'filters', 'template', 'permissions', 'calcs', 'plot');
     }
@@ -128,7 +138,9 @@ class report_sql extends report_base {
                     }
                     $arrayrow = array_values((array) $row);
                     foreach ($arrayrow as $ii => $cell) {
-                        $cell = format_text($cell, FORMAT_HTML, array('trusted' => true, 'noclean' => true, 'para' => false));
+                        if (!$this->isForExport()) {
+                            $cell = format_text($cell, FORMAT_HTML, array('trusted' => true, 'noclean' => true, 'para' => false));
+                        }
                         $arrayrow[$ii] = str_replace('[[QUESTIONMARK]]', '?', $cell);
                     }
                     $totalrecords++;
