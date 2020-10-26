@@ -546,3 +546,7 @@ $string['invalidcolorcode'] = 'Invalid color code';
 $string['generalcolorpaletteheader'] = 'General color palette';
 $string['generalcolorpalette'] = 'Unmapped Palette';
 $string['generalcolorpalette_help'] = 'Hexadecimal color codes for general use in the pie chart. Codes should be separated by new lines in the order you wish them to be used in the pie chart.';
+$string['checksql_execution'] = 'Block Configurable Reports SQL execution';
+$string['checksql_execution_ok'] = 'SQL execution is disabled.';
+$string['checksql_execution_warning'] = 'It is recommended to disable SQL execution to avoid execution of arbitrary SQL code in your server.';
+$string['checksql_execution_details'] = 'By allowing SQL code execution there is a potential security issue with users adding arbitrary code. SQL code execution should be disable to only allow SQL queries for reading/retreaving data. SQL execution can be disabled in your config.php file by setting $CFG->block_configurable_reports_enable_sql_execution to 0';

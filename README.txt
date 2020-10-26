@@ -27,6 +27,14 @@ By Tim Hunt
 
 VERSIONS HISTORY
 
+3.9.0 (2019122000) for Moodle 3.4, 3.5, 3.6, 3.7, 3.8, 3.9
+----------------------------------------------------------------------
+- Starting this version for allowing SQL queries performing data insertion/creation the following configuration variable set to 1
+  is required in your site root /config.php:
+  $CFG->block_configurable_reports_enable_sql_execution = 1;
+  Otherwise, previous Custom SQL reports performing data insertion/creation will stop working.
+
+
 3.8.0 (2019122000) for Moodle 3.4, 3.5, 3.6, 3.7, 3.8
 Release date: Friday, 20 Dec 2019
 ----------------------------------------------------------------------

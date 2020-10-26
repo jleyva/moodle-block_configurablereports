@@ -80,7 +80,7 @@ class report_sql extends report_base {
 
         $starttime = microtime(true);
 
-        if (preg_match('/\b(INSERT|INTO|CREATE)\b/i', $sql)) {
+        if (preg_match('/\b(INSERT|INTO|CREATE)\b/i', $sql) && !empty($CFG->block_configurable_reports_enable_sql_execution)) {
             // Run special (dangerous) queries directly.
             $results = $remotedb->execute($sql);
         } else {
