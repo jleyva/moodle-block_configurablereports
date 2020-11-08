@@ -37,9 +37,12 @@ class bar_form extends moodleform {
             }
 
             $columns = $components['columns']['elements'];
+            $i = 0;
             foreach ($columns as $c) {
                 if (!empty($c['summary'])) {
-                    $options[] = $c['summary'];
+                    $key = "$i," . $c['summary'];
+                    $options[$key] = str_replace('_', ' ', $c['summary']);
+                    $i++;
                 }
             }
         } else {

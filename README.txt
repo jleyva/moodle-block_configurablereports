@@ -27,6 +27,29 @@ By Tim Hunt
 
 VERSIONS HISTORY
 
+3.9.0 (2019122000) for Moodle 3.4, 3.5, 3.6, 3.7, 3.8, 3.9
+Release date: Tuesday, 3 November 2020
+----------------------------------------------------------------------
+- Starting this version for allowing SQL queries performing data insertion/creation the following configuration variable set to 1
+  is required in your site root /config.php:
+  $CFG->block_configurable_reports_enable_sql_execution = 1;
+  Otherwise, previous Custom SQL reports performing data insertion/creation will stop working.
+- Added matching colors to pie charts
+- Added unmapped palette for general colors to pie charts
+- Changed fuserfield to allow for multiple instances of the filter
+- Added alphabetical sort to courses filter
+- Added webservice to get reports data
+- Added new filters for competencies
+- Other fixes and improvements:
+  * Fix offset error for bar graphs when not using SQL reporting
+  * Removed default sorting from DataTables JS UI
+  * Fixed issue where colors would mismatch if values weren't present
+  * Fixed STARTTIME and ENDTIME variable substitution
+  * Avoid text filtering when exporting
+
+Thanks Alex Rowe, David Saylor, Michael Gardener, Muhammad Osama Arshad, Daniel Poggenpohl, Daniel Neis, François Parlant and all the contributors who have sent several fixes and improvements.
+
+
 3.8.0 (2019122000) for Moodle 3.4, 3.5, 3.6, 3.7, 3.8
 Release date: Friday, 20 Dec 2019
 ----------------------------------------------------------------------

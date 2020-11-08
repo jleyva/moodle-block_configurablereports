@@ -68,9 +68,10 @@ $PAGE->set_pagelayout('incourse');
 $PAGE->set_url('/blocks/configurable_reports/viewreport.php', ['id' => $id]);
 $PAGE->requires->jquery();
 
-$reportclass->create_report();
-
 $download = ($download && $format && strpos($report->export, $format.',') !== false) ? true : false;
+
+if ($download && $report->type == "sql") $reportclass->setForExport(true);
+$reportclass->create_report();
 
 $action = (!empty($download)) ? 'download' : 'view';
 cr_add_to_log($report->courseid, 'configurable_reports', $action, '/block/configurable_reports/viewreport.php?id='.$id, $report->name);

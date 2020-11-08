@@ -1,4 +1,18 @@
 <?php
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 $string['pluginname'] = "Configurable Reports";
 $string['blockname'] = "Configurable Reports";
@@ -370,7 +384,7 @@ $string['comp_customsql_help'] = '<p>Add a working SQL query. Do no use the mood
 
 <p>You can find a lot of SQL Reports here: <a href="http://docs.moodle.org/en/ad-hoc_contributed_reports" target="_blank">ad-hoc contributed reports</a></p>
 
-<p>An updated layout of Moodle\'s tables and their interconnected relations: <a href="https://docs.moodle.org/dev/Database_Schema" target="_blank">Database schema</a></p> 
+<p>An updated layout of Moodle\'s tables and their interconnected relations: <a href="https://docs.moodle.org/dev/Database_Schema" target="_blank">Database schema</a></p>
 
 <p>Since this block supports Tim Hunt\'s CustomSQL Queries Reports, you can use any query.</p>
 
@@ -513,3 +527,26 @@ $string['privacy:metadata:block_configurable_reports:components'] = 'The configu
  the filters...';
 $string['privacy:metadata:block_configurable_reports:lastexecutiontime'] = 'Time this report took to run last time it was executed,
  in milliseconds.';
+// Filter forms.
+$string['add'] = 'Add';
+$string['description'] = 'Description';
+$string['description_help'] = 'Text used to describe the filter that will be displayed in the summary on the filters page.';
+$string['label'] = 'Label';
+$string['label_help'] = 'Text describing the filter to be displayed on the report page.';
+$string['idnumber'] = 'ID Number';
+$string['idnumber_help'] = 'Used to differentiate between filters of the same type. Case-sensitive. Example usage: %%FILTER_SEARCHTEXT_username:u.username:~%%';
+// Pie Chart Strings
+$string['description'] = 'Description';
+$string['legendheader'] = 'Mapped Palette';
+$string['legendheaderdesc'] = 'Map color codes to specific keys in the pie chart legend.';
+$string['piechart_label'] = 'Key - {$a}';
+$string['piechart_label_color'] = 'Color - {$a}';
+$string['piechart_add_colors'] = 'Add color';
+$string['invalidcolorcode'] = 'Invalid color code';
+$string['generalcolorpaletteheader'] = 'General color palette';
+$string['generalcolorpalette'] = 'Unmapped Palette';
+$string['generalcolorpalette_help'] = 'Hexadecimal color codes for general use in the pie chart. Codes should be separated by new lines in the order you wish them to be used in the pie chart.';
+$string['checksql_execution'] = 'Block Configurable Reports SQL execution';
+$string['checksql_execution_ok'] = 'SQL execution is disabled.';
+$string['checksql_execution_warning'] = 'It is recommended to disable SQL execution to avoid execution of arbitrary SQL code in your server.';
+$string['checksql_execution_details'] = 'By allowing SQL code execution there is a potential security issue with users adding arbitrary code. SQL code execution should be disable to only allow SQL queries for reading/retreaving data. SQL execution can be disabled in your config.php file by setting $CFG->block_configurable_reports_enable_sql_execution to 0';

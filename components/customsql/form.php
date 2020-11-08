@@ -140,12 +140,13 @@ class customsql_form extends moodleform {
         $sql = $data['querysql'];
         $sql = trim($sql);
 
-        if (empty($this->_customdata['report']->runstatistics) OR $this->_customdata['report']->runstatistics == 0) {
-            // Simple test to avoid evil stuff in the SQL.
-            // Allow cron SQL queries to run CREATE|INSERT|INTO queries.
-            if (preg_match('/\b(ALTER|DELETE|DROP|GRANT|TRUNCATE|UPDATE|SET|VACUUM|REINDEX|DISCARD|LOCK)\b/i', $sql)) {
-                $errors['querysql'] = get_string('notallowedwords', 'block_configurable_reports');
-            }
+        if (preg_match('/\b(ALTER|DELETE|DROP|GRANT|TRUNCATE|UPDATE|SET|VACUUM|REINDEX|DISCARD|LOCK)\b/i', $sql)) {
+            // Only allow INSERT|INTO|CREATE in low security.
+            $errors['querysql'] = get_string('notallowedwords', 'block_configurable_reports');
+
+        } else if (preg_match('/\b(INSERT|INTO|CREATE)\b/i', $sql) && empty($CFG->block_configurable_reports_enable_sql_execution)) {
+            // Only allow INSERT|INTO|CREATE in low security when SQL execution is enabled in the server.
+            $errors['querysql'] = get_string('notallowedwords', 'block_configurable_reports');
         } else {
             // Now try running the SQL, and ensure it runs without errors.
             $sql = $this->_customdata['reportclass']->prepare_sql($sql);

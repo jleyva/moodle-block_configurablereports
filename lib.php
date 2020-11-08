@@ -15,24 +15,22 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Version details
+ * Library with callbacks.
  *
- * Configurable Reports - A Moodle block for creating customizable reports
- *
- * @package     block_configurable_reports
- * @author:     Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date:       2013-09-07
- *
- * @copyright  Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @package    block_configurable_reports
+ * @category   check
+ * @copyright  2020 Juan Leyva <juan@moodle.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version = 2020110300;  // Plugin version.
-$plugin->requires = 2017111300; // require Moodle version (3.4).
-$plugin->maturity = MATURITY_STABLE;
-$plugin->release = '3.9.0';
-$plugin->component = 'block_configurable_reports'; // Full name of the plugin (used for diagnostics)
-$plugin->cron      = 86400; // = Once in 24h, Set min time between cron executions.
-                            // Should probably be at night to off load CPU load.
+/**
+ * Add security check.
+ *
+ * @return array check
+ */
+function block_configurable_reports_security_checks() {
+    return [new block_configurable_reports\check\sql_execution()];
+}
+
