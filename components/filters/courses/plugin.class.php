@@ -72,8 +72,9 @@ class plugin_courses extends plugin_base{
             $courselist = array_keys($remotedb->get_records('course'));
         }
 
+        $sortedcourseoptions = array();
         $courseoptions = array();
-        $courseoptions[0] = get_string('filter_all', 'block_configurable_reports');
+        $sortedcourseoptions[0] = get_string('filter_all', 'block_configurable_reports');
 
         if (!empty($courselist)) {
             list($usql, $params) = $remotedb->get_in_or_equal($courselist);
@@ -82,9 +83,13 @@ class plugin_courses extends plugin_base{
             foreach ($courses as $c) {
                 $courseoptions[$c->id] = format_string($c->fullname);
             }
+
+            asort($courseoptions);
         }
 
-        $mform->addElement('select', 'filter_courses', get_string('course'), $courseoptions);
+        $sortedcourseoptions += $courseoptions;
+
+        $mform->addElement('select', 'filter_courses', get_string('course'), $sortedcourseoptions);
         $mform->setType('filter_courses', PARAM_INT);
     }
 }

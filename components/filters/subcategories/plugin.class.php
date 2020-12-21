@@ -80,8 +80,12 @@ class plugin_subcategories extends plugin_base {
                 }
             }
         } else {
-            require_once($CFG->libdir. '/coursecatlib.php');
-            $subcategorieslist = coursecat::make_categories_list();
+            if (class_exists('core_course_category')) {
+                $subcategorieslist = core_course_category::make_categories_list();
+            } else {
+                require_once($CFG->libdir. '/coursecatlib.php');
+                $subcategorieslist = coursecat::make_categories_list();
+            }
 
             if (!empty($subcategorieslist)) {
                 $courseoptions += $subcategorieslist;

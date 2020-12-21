@@ -22,6 +22,16 @@
  * @date: 2009
  */
 
+/**
+ * Defines a setting for displaying reports as a list in the block instance settings.
+ */
+define('CR_BLOCK_DISPLAY_LIST', 1);
+
+/**
+ * Defines a setting for displaying reports as tiles in the block instance settings.
+ */
+define('CR_BLOCK_DISPLAY_TILES', 2);
+
 function cr_print_js_function() {
 ?>
     <script type="text/javascript">
@@ -45,109 +55,52 @@ function cr_print_js_function() {
 <?php
 }
 
-function cr_add_jsdatatables($cssid) {
-    global $DB, $CFG, $OUTPUT, $PAGE;
+function cr_add_jsdatatables($cssid, \moodle_page $page) {
+    global $OUTPUT;
+    $data = array();
+    $data['selector'] = $cssid;
 
-    $PAGE->requires->string_for_js('thousandssep', 'langconfig');
-    $PAGE->requires->strings_for_js(array(
-        'datatables_sortascending',
-        'datatables_sortdescending',
-        'datatables_first',
-        'datatables_last',
-        'datatables_next',
-        'datatables_previous',
-        'datatables_emptytable',
-        'datatables_info',
-        'datatables_infoempty',
-        'datatables_infofiltered',
-        'datatables_lengthmenu',
-        'datatables_loadingrecords',
-        'datatables_processing',
-        'datatables_search',
-        'datatables_zerorecords',
-    ), 'block_configurable_reports');
+    $page->requires->string_for_js('thousandssep', 'langconfig');
+    $page->requires->strings_for_js(
+        array(
+            'datatables_sortascending',
+            'datatables_sortdescending',
+            'datatables_first',
+            'datatables_last',
+            'datatables_next',
+            'datatables_previous',
+            'datatables_emptytable',
+            'datatables_info',
+            'datatables_infoempty',
+            'datatables_infofiltered',
+            'datatables_lengthmenu',
+            'datatables_loadingrecords',
+            'datatables_processing',
+            'datatables_search',
+            'datatables_zerorecords',
+            ),
+        'block_configurable_reports');
 
-    $script = new moodle_url('/blocks/configurable_reports/js/datatables/media/js/jquery.js');
-    $script = '
-        if (typeof jQuery == "undefined") {
-            document.write(unescape("%3Cscript type=\"text/javascript\" src=\"'.$script.'\"%3E%3C/script%3E"));
-        }
-    ';
-    echo html_writer::script($script);
-    echo html_writer::script(false, new moodle_url('/blocks/configurable_reports/js/datatables/media/js/jquery.dataTables.min.js'));
-    echo html_writer::script(false, new moodle_url('/blocks/configurable_reports/js/datatables/extras/FixedHeader/js/FixedHeader.js'));
-
-    $script = "$(document).ready(function() {
-        var oTable = $('$cssid').dataTable({
-            'bAutoWidth': false,
-            'sPaginationType': 'full_numbers',
-//                'sScrollX': '100%',
-//                'sScrollXInner': '110%',
-//                'bScrollCollapse': true
-            'oLanguage': {
-                'oAria': {
-                    'sSortAscending': M.str.block_configurable_reports.datatables_sortascending,
-                    'sSortDescending': M.str.block_configurable_reports.datatables_sortdescending,
-                },
-                'oPaginate': {
-                    'sFirst': M.str.block_configurable_reports.datatables_first,
-                    'sLast': M.str.block_configurable_reports.datatables_last,
-                    'sNext': M.str.block_configurable_reports.datatables_next,
-                    'sPrevious': M.str.block_configurable_reports.datatables_previous
-                },
-                'sEmptyTable': M.str.block_configurable_reports.datatables_emptytable,
-                'sInfo': M.str.block_configurable_reports.datatables_info,
-                'sInfoEmpty': M.str.block_configurable_reports.datatables_infoempty,
-                'sInfoFiltered': M.str.block_configurable_reports.datatables_infofiltered,
-                'sInfoThousands': M.str.langconfig.thousandssep,
-                'sLengthMenu': M.str.block_configurable_reports.datatables_lengthmenu,
-                'sLoadingRecords': M.str.block_configurable_reports.datatables_loadingrecords,
-                'sProcessing': M.str.block_configurable_reports.datatables_processing,
-                'sSearch': M.str.block_configurable_reports.datatables_search,
-                'sZeroRecords': M.str.block_configurable_reports.datatables_zerorecords
-            }
-        });
-        new FixedHeader( oTable );
-    } );";
-    echo html_writer::script($script);
+    $page->requires->js_call_amd('block_configurable_reports/main', 'add_jsdatatables', array($data));
 }
 
-function cr_add_jsordering($cssid) {
-    global $DB, $CFG, $OUTPUT;
+/**
+ * @param $cssid
+ * @param \moodle_page $page
+ */
+function cr_add_jsordering($cssid, \moodle_page $page = null) {
+    global $OUTPUT;
 
-    $script = new moodle_url('/blocks/configurable_reports/js/datatables/media/js/jquery.js');
-    $script = '
-        if (typeof jQuery == "undefined") {
-            document.write(unescape("%3Cscript type=\"text/javascript\" src=\"'.$script.'\"%3E%3C/script%3E"));
+    if(!empty($page)) {
+        $data = array();
+        $data['selector'] = $cssid;
+        if (method_exists($OUTPUT, 'image_url')) {
+            $data['background'] = $OUTPUT->image_url('normal', 'block_configurable_reports')->out();
+            $data['backgroundasc'] = $OUTPUT->image_url('asc', 'block_configurable_reports')->out();
+            $data['backgrounddesc'] = $OUTPUT->image_url('desc', 'block_configurable_reports')->out();
         }
-    ';
-    echo html_writer::script($script);
-
-    echo html_writer::script(false, new moodle_url('/blocks/configurable_reports/js/jquery.tablesorter.min.js'));
-    $script = '$(document).ready(function() {
-        // call the tablesorter plugin
-        $("'.$cssid.'").tablesorter();
-    });';
-    echo html_writer::script($script);
-    ?>
-
-        <style type="text/css">
-        <?php echo $cssid; ?> th.header{
-            background-image:url(<?php echo $OUTPUT->pix_url('normal', 'block_configurable_reports'); ?>);
-            background-position:right center;
-            background-repeat:no-repeat;
-            cursor:pointer;
-        }
-
-        <?php echo $cssid; ?> th.headerSortUp{
-         background-image:url(<?php echo $OUTPUT->pix_url('asc', 'block_configurable_reports');?>);
-        }
-
-        <?php echo $cssid; ?> th.headerSortDown{
-         background-image:url(<?php echo $OUTPUT->pix_url('desc', 'block_configurable_reports');?>);
-        }
-        </style>
-    <?php
+        $page->requires->js_call_amd('block_configurable_reports/main', 'js_order', array($data));
+    }
 }
 
 function urlencode_recursive($var) {
@@ -220,6 +173,12 @@ function cr_serialize($var) {
 }
 
 function cr_unserialize($var) {
+    // It's needed to convert the object to stdClass to avoid __PHP_Incomplete_Class error.
+    $var = preg_replace('/O:6:"object"/', 'O:8:"stdClass"', $var);
+    // To make SQL queries compatible with PostgreSQL it's needed to replace " to '.
+    $var = preg_replace('/THEN\+%22(.+?)%22/', 'THEN+%27${1}%27', $var);
+    $var = preg_replace('/%60/', '+++', $var);
+
     return urldecode_recursive(unserialize($var));
 }
 
@@ -505,13 +464,18 @@ function cr_get_context($context, $id = null, $flags = null) {
 
 function cr_make_categories_list(&$list, &$parents, $requiredcapability = '', $excludeid = 0, $category = null, $path = '') {
     global $CFG, $DB;
-    require_once($CFG->libdir.'/coursecatlib.php');
 
     // For categories list use just this one function.
     if (empty($list)) {
         $list = array();
     }
-    $list += coursecat::make_categories_list($requiredcapability, $excludeid);
+
+    if (class_exists('core_course_category')) {
+        $list += core_course_category::make_categories_list($requiredcapability, $excludeid);
+    } else {
+        require_once($CFG->libdir. '/coursecatlib.php');
+        $list += coursecat::make_categories_list($requiredcapability, $excludeid);
+    }
 
     // Building the list of all parents of all categories in the system is highly undesirable and hardly ever needed.
     // Usually user needs only parents for one particular category, in which case should be used:
@@ -542,8 +506,10 @@ function cr_import_xml($xml, $course) {
                 $val[0]['#'] = base64_decode(trim($val[0]['#']));
                 // Fix url_encode " and ' when importing SQL queries.
                 $tempcomponents = cr_unserialize($val[0]['#']);
-                $tempcomponents['customsql']['config']->querysql = str_replace("\'", "'", $tempcomponents['customsql']['config']->querysql);
-                $tempcomponents['customsql']['config']->querysql = str_replace('\"', '"', $tempcomponents['customsql']['config']->querysql);
+                if (array_key_exists('customsql', $tempcomponents)) {
+                    $tempcomponents['customsql']['config']->querysql = str_replace("\'", "'", $tempcomponents['customsql']['config']->querysql);
+                    $tempcomponents['customsql']['config']->querysql = str_replace('\"', '"', $tempcomponents['customsql']['config']->querysql);
+                }
                 $val[0]['#'] = cr_serialize($tempcomponents);
             }
             $newreport->{$key} = trim($val[0]['#']);
@@ -613,4 +579,132 @@ function cr_logging_info() {
     }
 
     return array($uselegacyreader, $useinternalreader, $logtable);
+}
+
+/**
+ * Get all the components for a tilereport.
+ *
+ * @param $tilereport   The tilereport to get the components for.
+ * @param string $name  The name of the component to return. Default is all components.
+ * @param bool $all     All components. Not just the tilereport ones.
+ * @return mixed|null
+ */
+function cr_get_tilereport_components(stdClass $tilereport, $name = '') {
+    global $DB;
+
+    // The id property should exist.
+    if (!isset($tilereport->id)) {
+        debugging('Can not get components for a report without an id.');
+        return null;
+    }
+
+    // Check that the report exists.
+    if (!$tilereport = $DB->get_record('block_configurable_reports', ['id' => $tilereport->id])) {
+        debugging("Could not find a configurable report with the id {$tilereport->id}");
+        return null;
+    }
+
+    if (empty($tilereport->components)) {
+        return null;
+    }
+
+    // Get the components.
+    $tilereportcomponents = cr_unserialize($tilereport->components);
+
+    // No configs set. Todo: Should there be some defaults? Maybe not set is a no?
+    if (!isset($tilereportcomponents['tilereport'])) {
+        return null;
+    }
+
+    // By default return all the components.
+    if (empty($name)) {
+        return $tilereportcomponents['tilereport'];
+    } else if (!isset($tilereportcomponents['tilereport'][$name])) {
+        // Trying to get a component that doesn't exist. Return all components instead and inform developers.
+        debugging("Could not find the component $name for the configurable report with id {$tilereport->id}. Returned all components instead.");
+
+        // Return all of the tilereport components.
+        return $tilereportcomponents['tilereport'];
+    } else {
+        // Return a specific component.
+        return $tilereportcomponents['tilereport'][$name];
+    }
+
+    // This should never be reached.
+}
+
+/**
+ * Get the config for a tile report.
+ *
+ * @param $tilereport   The tilereport to get the config component for.
+ * @return mixed|null
+ */
+function cr_get_tilereport_config($tilereport) {
+    return cr_get_tilereport_components($tilereport, 'config');
+}
+
+/**
+ * Check if a report is tileable.
+ *
+ * @param $tilereport   The report to check for tileability.
+ * @return bool         Returns whether or not the report is tileability.
+ */
+function cr_tilereport_is_tileable($tilereport) {
+    // Get this tile reports config.
+    $config = cr_get_tilereport_config($tilereport);
+
+    // May have possibly gone too far with the below.
+    if (is_null($config)) {
+        // No config default is a no.
+        return false;
+    } else if (!isset($config->tileable)) {
+        // No set tileable is a no also.
+        return false;
+    } else if ($config->tileable === '1') {
+        // A 1 as a string is a yes.
+        return true;
+    } else if ($config->tileable === 1) {
+        // A 1 as an int is a yes also.
+        return true;
+    } else {
+        // Ensure everything else is a no.
+        return false;
+    }
+}
+
+/**
+ * Gets a report sql instance of a tileable report.
+ *
+ * @param $tilereport
+ * @return report_sql
+ */
+function cr_get_tilereport_customsql_report($tilereport) {
+    global $CFG;
+
+    // Get some classes.
+    require_once($CFG->dirroot.'/blocks/configurable_reports/report.class.php');
+    require_once($CFG->dirroot.'/blocks/configurable_reports/reports/sql/report.class.php');
+
+    $report = new \report_sql($tilereport);
+
+    return $report;
+}
+
+/**
+ * Get the reports that are tileable.
+ *
+ * @param int $courseid
+ * @param int $userid
+ * @return array
+ */
+function cr_get_tileable_reports($courseid = 0, $userid = 0) {
+    $reports = cr_get_my_reports($courseid, $userid);
+
+    foreach ($reports as $id => $reportdata) {
+        if (!cr_tilereport_is_tileable($reportdata)) {
+            unset($reports[$id]);
+        }
+    }
+
+    return $reports;
 }

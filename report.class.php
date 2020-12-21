@@ -162,6 +162,12 @@ class report_base {
             if ($request) {
                 foreach ($request as $key => $val) {
                     if (strpos($key, 'filter_') !== false) {
+                        $key = clean_param($key, PARAM_CLEANHTML);
+                        if (is_array($val)) {
+                            $val = clean_param_array($val, PARAM_CLEANHTML);
+                        } else {
+                            $val = clean_param($val, PARAM_CLEANHTML);
+                        }
                         $formdata->{$key} = $val;
                     }
                 }
@@ -213,14 +219,19 @@ class report_base {
         $wwwpath = $CFG->wwwroot;
         $request = array_merge($_POST, $_GET);
         if ($request) {
-            $wwwpath = 'viewreport.php?id='.$request['id'];
+            $id = clean_param($request['id'], PARAM_INT);
+            $wwwpath = 'viewreport.php?id='.$id;
             unset($request['id']);
             foreach ($request as $key => $val) {
+                $key = clean_param($key, PARAM_CLEANHTML);
                 if (is_array($val)) {
                     foreach ($val as $k => $v) {
+                        $k = clean_param($k, PARAM_CLEANHTML);
+                        $v = clean_param($v, PARAM_CLEANHTML);
                         $wwwpath .= "&amp;{$key}[$k]=".$v;
                     }
                 } else {
+                    $val = clean_param($val, PARAM_CLEANHTML);
                     $wwwpath .= "&amp;$key=".$val;
                 }
             }
@@ -538,13 +549,13 @@ class report_base {
 
     }
 
-    public function add_jsordering() {
+    public function add_jsordering(\moodle_page $moodle_page) {
         switch (get_config('block_configurable_reports', 'reporttableui')) {
             case 'datatables':
-                cr_add_jsdatatables('#reporttable');
+                cr_add_jsdatatables('#reporttable', $moodle_page);
                 break;
             case 'jquery':
-                cr_add_jsordering('#reporttable');
+                cr_add_jsordering('#reporttable', $moodle_page);
                 echo html_writer::tag('style',
                     '#page-blocks-configurable_reports-viewreport .generaltable {
                     overflow: auto;
@@ -564,7 +575,7 @@ class report_base {
 
     }
 
-    public function print_template($config) {
+    public function print_template($config, \moodle_page $moodle_page) {
         global $DB, $CFG, $OUTPUT;
 
         $pagecontents = array();
@@ -587,11 +598,15 @@ class report_base {
             if ($request) {
                 foreach ($request as $key => $val) {
                     if (strpos($key, 'filter_') !== false) {
+                        $key = clean_param($key, PARAM_CLEANHTML);
                         if (is_array($val)) {
                             foreach ($val as $k => $v) {
+                                $k = clean_param($k, PARAM_CLEANHTML);
+                                $v = clean_param($v, PARAM_CLEANHTML);
                                 $postfiltervars .= "&amp;{$key}[$k]=".$v;
                             }
                         } else {
+                            $val = clean_param($val, PARAM_CLEANHTML);
                             $postfiltervars .= "&amp;$key=".$val;
                         }
                     }
@@ -628,12 +643,17 @@ class report_base {
         }
 
         if ($this->config->jsordering) {
-            $this->add_jsordering();
+            $this->add_jsordering($moodle_page);
         }
         $this->print_filters();
 
         echo "<div id=\"printablediv\">\n";
-        echo format_text($pagecontents['header'], FORMAT_HTML);
+        // Print the header.
+        if (is_array($pagecontents['header'])) {
+            echo format_text($pagecontents['header']['text'], $pagecontents['header']['format']);
+        } else {
+            echo format_text($pagecontents['header'], FORMAT_HTML);
+        }
 
         $a = new \stdClass();
         $a->totalrecords = $this->totalrecords;
@@ -647,7 +667,12 @@ class report_base {
             }
 
             foreach ($this->finalreport->table->data as $r) {
-                $recordtext = $recordtpl;
+                if (is_array($recordtpl)) {
+                    $recordtext = $recordtpl['text'];
+                } else {
+                    $recordtext = $recordtpl;
+                }
+                
                 foreach ($this->finalreport->table->head as $key => $c) {
                     $recordtext = str_ireplace("[[$c]]", $r[$key], $recordtext);
                 }
@@ -655,7 +680,13 @@ class report_base {
             }
         }
 
-        echo format_text($pagecontents['footer'], FORMAT_HTML);
+        // Print the footer.
+        if (is_array($pagecontents['footer'])) {
+            echo format_text($pagecontents['footer']['text'], $pagecontents['footer']['format']);
+        } else {
+            echo format_text($pagecontents['footer'], FORMAT_HTML);
+        }
+
         echo "</div>\n";
         echo '<div class="centerpara"><br />';
         echo $OUTPUT->pix_icon('print', get_string('printreport', 'block_configurable_reports'), 'block_configurable_reports');
@@ -663,7 +694,7 @@ class report_base {
         echo "</div>\n";
     }
 
-    public function print_report_page() {
+    public function print_report_page(\moodle_page $moodlepage) {
         global $DB, $CFG, $OUTPUT, $USER;
 
         cr_print_js_function();
@@ -672,7 +703,7 @@ class report_base {
         $template = (isset($components['template']['config']) && $components['template']['config']->enabled && $components['template']['config']->record) ? $components['template']['config'] : false;
 
         if ($template) {
-            $this->print_template($template);
+            $this->print_template($template, $moodlepage);
             return true;
         }
 
@@ -695,7 +726,7 @@ class report_base {
             $this->print_graphs();
 
             if ($this->config->jsordering) {
-                $this->add_jsordering();
+                $this->add_jsordering($moodlepage);
             }
 
             $this->totalrecords = count($this->finalreport->table->data);
@@ -713,11 +744,15 @@ class report_base {
                 if ($request) {
                     foreach ($request as $key => $val) {
                         if (strpos($key, 'filter_') !== false) {
+                            $key = clean_param($key, PARAM_CLEANHTML);
                             if (is_array($val)) {
                                 foreach ($val as $k => $v) {
+                                    $k = clean_param($k, PARAM_CLEANHTML);
+                                    $v = clean_param($v, PARAM_CLEANHTML);
                                     $postfiltervars .= "&amp;{$key}[$k]=".$v;
                                 }
                             } else {
+                                $val = clean_param($val, PARAM_CLEANHTML);
                                 $postfiltervars .= "&amp;$key=".$val;
                             }
                         }

@@ -68,10 +68,57 @@ class plugin_pie extends plugin_base{
             }
         }
 
-        $serie0 = base64_encode(strip_tags(implode(',', $series[0])));
-        $serie1 = base64_encode(implode(',', $series[1]));
+        // Custom sort.
+        $colors = [];
+        $mappedcolors = [];
+        $unmappedcolors = [];
 
-        return $CFG->wwwroot.'/blocks/configurable_reports/components/plot/pie/graph.php?reportid='.$this->report->id.'&id='.$id.'&serie0='.$serie0.'&serie1='.$serie1;
+        if (!empty($data->{'piechart_label'})) {
+            $length = count($data->{'piechart_label'});
+            for ($i = 0; $i < $length; $i++) {
+                if (!empty($data->{'piechart_label'}[$i])) {
+                    $key = $data->{'piechart_label'}[$i];
+                    $colorcode = ltrim($data->{'piechart_label_color'}[$i], '#');
+                    $mappedcolors[$key] = $colorcode;
+                }
+            }
+        }
+        $mappedcolorkeys = array_keys($mappedcolors);
+
+        if (!empty($data->{'generalcolorpalette'})) {
+            $rawunmappedcolors = explode(PHP_EOL, $data->{'generalcolorpalette'});
+            foreach ($rawunmappedcolors as $rawcolor) {
+                if (!empty($rawcolor)) {
+                    $unmappedcolors[] = ltrim(trim($rawcolor), '#');
+                }
+            }
+        }
+
+        $serie0sorted = [];
+        $serie1sorted = [];
+        $i = 0;
+        $unmappedindex = 0;
+        $unmappedcolorcount = count($unmappedcolors);
+        foreach ($series[0] as $index => $serie) {
+            $serie = strip_tags($serie);
+            $serie0sorted[] = $serie;
+            $serie1sorted[] = $series[1][$index];
+            if (in_array($serie, $mappedcolorkeys)) {
+                $colors[$i] = $this->parse_color($mappedcolors[$serie]);
+            } else if ($unmappedindex < $unmappedcolorcount) {
+                $colors[$i] = $this->parse_color($unmappedcolors[$unmappedindex]);
+                $unmappedindex++;
+            } else {
+                $colors[$i] = '';
+            }
+            $i++;
+        }
+
+        $serie0 = base64_encode(strip_tags(implode(',', $serie0sorted)));
+        $serie1 = base64_encode(implode(',', $serie1sorted));
+        $colorpalette = base64_encode(implode(',', $colors));
+
+        return $CFG->wwwroot.'/blocks/configurable_reports/components/plot/pie/graph.php?reportid='.$this->report->id.'&id='.$id.'&serie0='.$serie0.'&serie1='.$serie1.'&colorpalette='.$colorpalette;
     }
 
     public function get_series($data) {
@@ -79,5 +126,27 @@ class plugin_pie extends plugin_base{
         $serie1 = required_param('serie1', PARAM_RAW);
 
         return array(explode(',', base64_decode($serie0)), explode(',', base64_decode($serie1)));
+    }
+    
+    public function get_color_palette($data) {
+        if ($colorpalette = optional_param('colorpalette', '', PARAM_RAW)) {
+            $colorpalette = explode(',', base64_decode($colorpalette));
+            foreach ($colorpalette as $index => $item) {
+                if (!empty($item)) {
+                    $colorpalette[$index] = explode('|', $item);
+                } else {
+                    unset($colorpalette[$index]);
+                }
+            }
+            return $colorpalette;
+        }
+        return null;
+    }
+
+    public function parse_color($colorcode) {
+        return implode('|', array_map(
+                function ($c) {
+                    return hexdec(str_pad($c, 2, $c));
+                }, str_split($colorcode, strlen($colorcode) > 4 ? 2 : 1)));
     }
 }

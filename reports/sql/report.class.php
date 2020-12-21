@@ -24,10 +24,25 @@
 
 defined('BLOCK_CONFIGURABLE_REPORTS_MAX_RECORDS') || define('BLOCK_CONFIGURABLE_REPORTS_MAX_RECORDS', 5000);
 
+if (!class_exists('component_tilereport')) {
+    global $CFG;
+    require_once($CFG->dirroot.'/blocks/configurable_reports/components/tilereport/component.class.php');
+}
+
 class report_sql extends report_base {
 
+    private $forExport = false;
+
+    public function setForExport(bool $isForExport) {
+        $this->forExport = $isForExport;
+    }
+
+    public function isForExport() {
+        return $this->forExport;
+    }
+
     public function init() {
-        $this->components = array('customsql', 'filters', 'template', 'permissions', 'calcs', 'plot');
+        $this->components = array('customsql', 'filters', 'template', 'permissions', 'calcs', 'plot', 'tilereport');
     }
 
     public function prepare_sql($sql) {
@@ -58,19 +73,23 @@ class report_sql extends report_base {
         return $sql;
     }
 
-    public function execute_query($sql, $limitnum = BLOCK_CONFIGURABLE_REPORTS_MAX_RECORDS) {
+    public function execute_query($sql, $limittoonerecord = false) {
         global $remotedb, $DB, $CFG;
 
         $sql = preg_replace('/\bprefix_(?=\w+)/i', $CFG->prefix, $sql);
 
-        $reportlimit = get_config('block_configurable_reports', 'reportlimit');
-        if (empty($reportlimit) or $reportlimit == '0') {
-                $reportlimit = BLOCK_CONFIGURABLE_REPORTS_MAX_RECORDS;
+        if ($limittoonerecord) {
+            $reportlimit = 1;
+        } else {
+            $reportlimit = get_config('block_configurable_reports', 'reportlimit');
+            if (empty($reportlimit) or $reportlimit == '0') {
+                    $reportlimit = BLOCK_CONFIGURABLE_REPORTS_MAX_RECORDS;
+            }
         }
 
         $starttime = microtime(true);
 
-        if (preg_match('/\b(INSERT|INTO|CREATE)\b/i', $sql)) {
+        if (preg_match('/\b(INSERT|INTO|CREATE)\b/i', $sql) && !empty($CFG->block_configurable_reports_enable_sql_execution)) {
             // Run special (dangerous) queries directly.
             $results = $remotedb->execute($sql);
         } else {
@@ -87,7 +106,7 @@ class report_sql extends report_base {
         return $results;
     }
 
-    public function create_report() {
+    public function create_report($limittoonerecord = false) {
         global $DB, $CFG;
 
         $components = cr_unserialize($this->config->components);
@@ -104,6 +123,8 @@ class report_sql extends report_base {
         $config = (isset($components['customsql']['config'])) ? $components['customsql']['config'] : new \stdclass;
         $totalrecords = 0;
 
+        $reportconfig = cr_get_tilereport_config($this->config);
+
         $sql = '';
         if (isset($config->querysql)) {
             // Filters.
@@ -117,18 +138,48 @@ class report_sql extends report_base {
                 }
             }
 
+            if (isset($reportconfig->summaryoptions) && $reportconfig->summaryoptions == component_tilereport::SUMMARY_CUSTOM) {
+                // Inject our custom summary. Todo: Does the alias need to be unique?
+                $displaycolumn      = $reportconfig->displaycolumn;
+                $evaluationcolumn   = $reportconfig->evaluationcolumn;
+                $evaluation         = $reportconfig->evaluation == component_tilereport::EVALUATION_LOWEST ? 'ASC' : 'DESC';
+
+                // Error handling.
+                if (empty($displaycolumn) || empty($evaluationcolumn)) {
+                    // These better exist!
+                    $reportid   = $this->config->id;
+                    $reportname = $this->config->name;
+
+                    $reporturl  = new \moodle_url('/blocks/configurable_reports/editcomp.php', ['id' => $reportid, 'comp' => 'tilereport']);
+                    $okstring   = get_string('ok', 'block_configurable_reports');
+                    $fixstring  = get_string('fix', 'block_configurable_reports');
+
+                    $a = [
+                        'displaycolumn'     => empty($displaycolumn) ? $fixstring : $okstring,
+                        'evaluationcolumn'  => empty($evaluationcolumn) ? $fixstring : $okstring,
+                        'report'            => \html_writer::link($reporturl, $reportname)
+                    ];
+                    \core\notification::error(get_string('customsummary:invalidconfig', 'block_configurable_reports', $a));
+                } else {
+                    $sql = "SELECT `{$displaycolumn}`, `{$evaluationcolumn}` FROM ($sql) AS temptable ORDER BY `{$evaluationcolumn}` {$evaluation}";
+                }
+
+            }
+
             $sql = $this->prepare_sql($sql);
 
-            if ($rs = $this->execute_query($sql)) {
+            if ($rs = $this->execute_query($sql, $limittoonerecord)) {
                 foreach ($rs as $row) {
                     if (empty($finaltable)) {
                         foreach ($row as $colname => $value) {
-                            $tablehead[] = str_replace('_', ' ', $colname);
+                            $tablehead[] = $colname;
                         }
                     }
                     $arrayrow = array_values((array) $row);
                     foreach ($arrayrow as $ii => $cell) {
-                        $cell = format_text($cell, FORMAT_HTML, array('trusted' => true, 'noclean' => true, 'para' => false));
+                        if (!$this->isForExport()) {
+                            $cell = format_text($cell, FORMAT_HTML, array('trusted' => true, 'noclean' => true, 'para' => false));
+                        }
                         $arrayrow[$ii] = str_replace('[[QUESTIONMARK]]', '?', $cell);
                     }
                     $totalrecords++;
@@ -137,6 +188,7 @@ class report_sql extends report_base {
             }
         }
         $this->sql = $sql;
+
         $this->totalrecords = $totalrecords;
 
         // Calcs.

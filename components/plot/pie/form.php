@@ -78,7 +78,52 @@ class pie_form extends moodleform {
         $mform->addElement('select', 'areavalue', get_string('pieareavalue', 'block_configurable_reports'), $options);
         $mform->addElement('checkbox', 'group', get_string('groupvalues', 'block_configurable_reports'));
 
+        $mform->addElement('header',  'legendheader', get_string('legendheader', 'block_configurable_reports'), '');
+        $mform->addElement('static', 'legendheaderdesc', get_string('description', 'block_configurable_reports'),
+                get_string('legendheaderdesc', 'block_configurable_reports'));
+
+        $repeatarray = [];
+        $repeatarray[] = $mform->createElement('text', 'piechart_label', get_string('piechart_label', 'block_configurable_reports', '{no}'));
+        $repeatarray[] = $mform->createElement('text', 'piechart_label_color', get_string('piechart_label_color', 'block_configurable_reports', '{no}'));
+        $mform->setType('piechart_label', PARAM_TEXT);
+        $mform->setType('piechart_label_color', PARAM_TEXT);
+
+        $repeatno = 3;
+        $repeateloptions = [];
+
+        $this->repeat_elements($repeatarray, $repeatno,
+                $repeateloptions, 'piechart_label_repeats', 'piechart_add_colors', 1,
+                get_string('piechart_add_colors', 'block_configurable_reports'), true);
+
+        $mform->addElement('header',  'generalcolorpaletteheader', get_string('generalcolorpalette', 'block_configurable_reports'), '');
+        $mform->addElement('textarea', 'generalcolorpalette', get_string('generalcolorpalette', 'block_configurable_reports'), 'rows="10" cols="7"');
+        $mform->addHelpButton('generalcolorpalette', 'generalcolorpalette', 'block_configurable_reports');
+
         // Buttons.
         $this->add_action_buttons(true, get_string('add'));
+    }
+
+    function validation($data, $files) {
+        $errors = array();
+
+        $length = count($data['piechart_label']);
+        for ($i = 0; $i < $length; $i++) {
+            if (!empty($data['piechart_label'][$i])) {
+                if (empty($data['piechart_label_color'][$i]) ||
+                        !preg_match('/^#+([a-fA-F0-9]{6}|[a-fA-F0-9]{3})$/', $data['piechart_label_color'][$i])) {
+                        $errors["piechart_label_color[$i]"] = get_string('invalidcolorcode', 'block_configurable_reports');
+                }
+            }
+        }
+
+        if (!empty($data['generalcolorpalette'])) {
+            $colors = explode(PHP_EOL, $data['generalcolorpalette']);
+            foreach ($colors as $color) {
+                if (!empty($color) && !preg_match('/^#+([a-fA-F0-9]{6}|[a-fA-F0-9]{3})$/', trim($color))) {
+                    $errors['generalcolorpalette'] = get_string('invalidcolorcode', 'block_configurable_reports');
+                }
+            }
+        }
+        return $errors;
     }
 }

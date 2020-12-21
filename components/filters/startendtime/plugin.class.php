@@ -81,8 +81,8 @@ class plugin_startendtime extends plugin_base {
             $finalelements = str_replace('%%FILTER_ENDTIME:'.$output[1].'%%', $replace, $finalelements);
         }
 
-        $finalelements = str_replace('%STARTTIME%%', $filterstarttime, $finalelements);
-        $finalelements = str_replace('%ENDTIME%%', $filterendtime, $finalelements);
+        $finalelements = str_replace('%%STARTTIME%%', $filterstarttime, $finalelements);
+        $finalelements = str_replace('%%ENDTIME%%', $filterendtime, $finalelements);
 
         return $finalelements;
     }

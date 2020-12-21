@@ -1,4 +1,18 @@
 <?php
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 $string['pluginname'] = "Configurable Reports";
 $string['blockname'] = "Configurable Reports";
@@ -121,6 +135,15 @@ $string['enrolledstudents'] = 'Enrolled students';
 $string['filterusers_summary'] = 'Filter a user (by id) from system user list';
 $string['filterenrolledstudents'] = 'Enrolled course students';
 $string['filterenrolledstudents_summary'] = 'Filter a user (by id) from enrolled course students';
+$string['competencyframeworks'] = 'Competency Frameworks';
+$string['filtercompetencyframeworks'] = 'Competency Frameworks';
+$string['filtercompetencyframeworks_summary'] = 'Use: %%FILTER_COMPETENCYFRAMEWORKS:prefix_competency_framework.id%%';
+$string['competencytemplates'] = 'Competency Templates';
+$string['filtercompetencytemplates'] = 'Competency templates';
+$string['filtercompetencytemplates_summary'] = 'Use: %%FILTER_COMPETENCYTEMPLATES:prefix_competency_template.id%%';
+$string['cohorts'] = 'Cohorts';
+$string['filtercohorts'] = 'Cohorts';
+$string['filtercohorts_summary'] = 'Use: %%FILTER_COHORTS:prefix_cohort.id%%';
 $string['student'] = 'Student';
 
 // Calcs
@@ -151,6 +174,7 @@ $string['reportscapabilities_summary'] = "Users with the capability moodle/site:
 $string['sum'] = "Sum";
 $string['max'] = "Maximum";
 $string['min'] = "Minimum";
+$string['percent'] = "Percentage";
 $string['average'] = "Average";
 $string['pie'] = "Pie";
 $string['piesummary'] = "A pie graph";
@@ -360,7 +384,7 @@ $string['comp_customsql_help'] = '<p>Add a working SQL query. Do no use the mood
 
 <p>You can find a lot of SQL Reports here: <a href="http://docs.moodle.org/en/ad-hoc_contributed_reports" target="_blank">ad-hoc contributed reports</a></p>
 
-<p>An updated layout of Moodle\'s tables and their interconnected relations: <a href="https://docs.moodle.org/dev/Database_Schema" target="_blank">Database schema</a></p> 
+<p>An updated layout of Moodle\'s tables and their interconnected relations: <a href="https://docs.moodle.org/dev/Database_Schema" target="_blank">Database schema</a></p>
 
 <p>Since this block supports Tim Hunt\'s CustomSQL Queries Reports, you can use any query.</p>
 
@@ -489,3 +513,70 @@ $string['sessionlimittime'] = 'Limit between clicks (in minutes)';
 $string['sessionlimittime_help'] = 'The limit between clicks defines if two clicks are part of the same session or not';
 
 $string['excludedeletedusers'] = 'Exclude deleted users (only for SQL reports)';
+
+// Privacy provider.
+$string['privacy:metadata:block_configurable_reports'] = 'The configurable reports block contains customizable course reports.';
+$string['privacy:metadata:block_configurable_reports:courseid'] = 'Course ID';
+$string['privacy:metadata:block_configurable_reports:ownerid'] = 'The ID of the user who created the report';
+$string['privacy:metadata:block_configurable_reports:visible'] = 'Whether the report is visible or not';
+$string['privacy:metadata:block_configurable_reports:global'] = 'Whether the report is accessible from all the courses or not';
+$string['privacy:metadata:block_configurable_reports:name'] = 'The name of the report';
+$string['privacy:metadata:block_configurable_reports:summary'] = 'The description of the report';
+$string['privacy:metadata:block_configurable_reports:type'] = 'The type of the report';
+$string['privacy:metadata:block_configurable_reports:components'] = 'The configuration of the report. It contains the query,
+ the filters...';
+$string['privacy:metadata:block_configurable_reports:lastexecutiontime'] = 'Time this report took to run last time it was executed,
+ in milliseconds.';
+// Filter forms.
+$string['add'] = 'Add';
+$string['description'] = 'Description';
+$string['description_help'] = 'Text used to describe the filter that will be displayed in the summary on the filters page.';
+$string['label'] = 'Label';
+$string['label_help'] = 'Text describing the filter to be displayed on the report page.';
+$string['idnumber'] = 'ID Number';
+$string['idnumber_help'] = 'Used to differentiate between filters of the same type. Case-sensitive. Example usage: %%FILTER_SEARCHTEXT_username:u.username:~%%';
+// Pie Chart Strings
+$string['description'] = 'Description';
+$string['legendheader'] = 'Mapped Palette';
+$string['legendheaderdesc'] = 'Map color codes to specific keys in the pie chart legend.';
+$string['piechart_label'] = 'Key - {$a}';
+$string['piechart_label_color'] = 'Color - {$a}';
+$string['piechart_add_colors'] = 'Add color';
+$string['invalidcolorcode'] = 'Invalid color code';
+$string['generalcolorpaletteheader'] = 'General color palette';
+$string['generalcolorpalette'] = 'Unmapped Palette';
+$string['generalcolorpalette_help'] = 'Hexadecimal color codes for general use in the pie chart. Codes should be separated by new lines in the order you wish them to be used in the pie chart.';
+$string['checksql_execution'] = 'Block Configurable Reports SQL execution';
+$string['checksql_execution_ok'] = 'SQL execution is disabled.';
+$string['checksql_execution_warning'] = 'It is recommended to disable SQL execution to avoid execution of arbitrary SQL code in your server.';
+$string['checksql_execution_details'] = 'By allowing SQL code execution there is a potential security issue with users adding arbitrary code. SQL code execution should be disable to only allow SQL queries for reading/retreaving data. SQL execution can be disabled in your config.php file by setting $CFG->block_configurable_reports_enable_sql_execution to 0';
+
+// Tile report component.
+$string['tilereport'] = 'Tile';
+$string['tilename'] = 'Tile name';
+$string['tilename_help'] = 'Give the report a shorter name when blocks are set to display as a tile.';
+$string['comp_tilereport'] = 'Tiles';
+$string['comp_tilereport_help'] = '<p>You can display reports as a tiles instead of a list.</p>';
+$string['tileablereports'] = 'Tileable reports';
+$string['displayastiles'] = 'Display as tiles';
+$string['tilereportsummary'] = 'Report summary';
+$string['showontiles'] = 'Show on tiles';
+$string['countsummary'] = 'Count summary';
+$string['customsummary'] = 'Custom summary';
+$string['summaryoptions'] = 'Display report summary';
+$string['moveblocktocontentarea'] = 'To view tile reports please move this block into the content area. Make sure that you refresh the page after this is moved.';
+$string['displayreportsas'] = 'Display reports as';
+$string['displayreportsaslist'] = 'A list in the block body';
+$string['displayreportsastiles'] = 'Tiles';
+$string['tilereportcustomsummary'] = 'Custom summary';
+$string['customsqlcomponentnotfound'] = 'Could not find the component custom sql for report {$a}';
+$string['summaryoptions_displaycolumn'] = 'The column with the result to display on the tile.';
+$string['summaryoptions_evaluationcolumn'] = 'The column that will be evaluated.';
+$string['summaryoptions_evaluation'] = 'How the evaluation column will be evaluated.';
+$string['evaluationlowest'] = 'Display the First/Lowest record';
+$string['evaluationhighest'] = 'Display the Last/Highest record';
+$string['customsummarynotavailable'] = 'Custom summary report is not available';
+$string['reporthasnorecords'] = 'No results';
+$string['customsummary:invalidconfig'] = 'Invalid custom summary config value detected for report {$a->report}. The following custom summary configs need to be resolved: Display column: {$a->displaycolumn}, Evaluation column: {$a->evaluationcolumn}.';
+$string['ok'] = 'OK';
+$string['fix'] = 'Fix';

@@ -69,6 +69,7 @@ class plugin_coursestats extends plugin_base{
         $endtime = ($filterendtime) ? $filterendtime : $endtime;
 
         $extrasql = "";
+        $limit = 0;
 
         switch($data->stat){
             case 'activityview':
@@ -84,13 +85,15 @@ class plugin_coursestats extends plugin_base{
             case 'activeenrolments':
                 $total = 'stat2';
                 $stattype = 'enrolments';
-                $extrasql = " ORDER BY timeend DESC LIMIT 1";
+                $extrasql = " ORDER BY timeend DESC";
+                $limit = 1;
                 break;
             case 'totalenrolments':
             default:
                 $total = 'stat1';
                 $stattype = 'enrolments';
-                $extrasql = " ORDER BY timeend DESC LIMIT 1";
+                $extrasql = " ORDER BY timeend DESC";
+                $limit = 1;
         }
         $sql = "SELECT $total as total FROM {stats_daily} WHERE stattype = ? AND courseid = ?";
         $params = array($stattype, $row->id);
@@ -104,7 +107,7 @@ class plugin_coursestats extends plugin_base{
 
         $sql .= $extrasql;
 
-        if ($res = $DB->get_records_sql($sql, $params)) {
+        if ($res = $DB->get_records_sql($sql, $params, 0, $limit)) {
             $res = array_shift($res);
             if ($res->total != null) {
                 return $res->total;

@@ -46,12 +46,16 @@ class plugin_fuserfield extends plugin_base {
     }
 
     private function execute_sql($finalelements, $data) {
-        $filterfuserfield = optional_param('filter_fuserfield_'.$data->field, 0, PARAM_RAW);
-        $filter = clean_param(base64_decode($filterfuserfield), PARAM_CLEAN);
+        $filterfuserfield = optional_param('filter_fuserfield_'.$data->field, 0, PARAM_BASE64);
+        $filter = base64_decode($filterfuserfield);
 
-        if ($filterfuserfield && preg_match("/%%FILTER_USERS:([^%]+)%%/i", $finalelements, $output)) {
-            $replace = ' AND '.$output[1].' LIKE '. "'%$filter%'";
-            return str_replace('%%FILTER_USERS:'.$output[1].'%%', $replace, $finalelements);
+        if ($filterfuserfield) {
+            // For backwards compatibility with existing reports
+            $filtermatch = "FILTER_USERS";
+            $finalelements = $this->sql_replace($filter, $filtermatch, $finalelements);
+
+            $filtermatch = "FILTER_USERS_{$data->field}";
+            $finalelements = $this->sql_replace($filter, $filtermatch, $finalelements);
         }
 
         return $finalelements;
@@ -60,10 +64,9 @@ class plugin_fuserfield extends plugin_base {
     private function execute_users($finalelements, $data) {
         global $remotedb, $CFG;
 
-        $filterfuserfield = optional_param('filter_fuserfield_'.$data->field, 0, PARAM_RAW);
+        $filterfuserfield = optional_param('filter_fuserfield_'.$data->field, 0, PARAM_BASE64);
         if ($filterfuserfield) {
-            // Function addslashes is done in clean param.
-            $filter = clean_param(base64_decode($filterfuserfield), PARAM_RAW);
+            $filter = base64_decode($filterfuserfield);
 
             if (strpos($data->field, 'profile_') === 0) {
                 $conditions = array('shortname' => str_replace('profile_', '', $data->field));
@@ -162,5 +165,45 @@ class plugin_fuserfield extends plugin_base {
 
         $mform->addElement('select', 'filter_fuserfield_'.$data->field, $selectname, $filteroptions);
         $mform->setType('filter_fuserfield_'.$data->field, PARAM_BASE64);
+    }
+
+    private function sql_replace($filtersearchtext, $filterstrmatch, $finalelements) {
+        $operators = array('=', '<', '>', '<=', '>=', '~', 'in');
+
+        if (preg_match("/%%$filterstrmatch:([^%]+)%%/i", $finalelements, $output)) {
+            list($field, $operator) = preg_split('/:/', $output[1]);
+            if (empty($operator)) {
+                $operator = '~';
+            } else if (!in_array($operator, $operators)) {
+                print_error('nosuchoperator');
+            }
+            if ($operator == '~') {
+                $replace = " AND " . $field . " LIKE '%" . $filtersearchtext . "%'";
+            } else if ($operator == 'in') {
+                $processeditems = array();
+                // Accept comma-separated values, allowing for '\,' as a literal comma.
+                foreach (preg_split("/(?<!\\\\),/", $filtersearchtext) as $searchitem) {
+                    // Strip leading/trailing whitespace and quotes (we'll add our own quotes later).
+                    $searchitem = trim($searchitem);
+                    $searchitem = trim($searchitem, '"\'');
+
+                    // We can also safely remove escaped commas now.
+                    $searchitem = str_replace('\\,', ',', $searchitem);
+
+                    // Escape and quote strings...
+                    if (!is_numeric($searchitem)) {
+                        $searchitem = "'" . addslashes($searchitem) . "'";
+                    }
+                    $processeditems[] = "$field like $searchitem";
+                }
+                // Despite the name, by not actually using in() we can support wildcards, and maybe be more portable as well.
+                $replace = " AND (" . implode(" OR ", $processeditems) . ")";
+            } else {
+                $replace = ' AND ' . $field . ' ' . $operator . ' ' . $filtersearchtext;
+            }
+            $finalelements = str_replace('%%' . $filterstrmatch . ':' . $output[1] . '%%', $replace, $finalelements);
+        }
+
+        return $finalelements;
     }
 }

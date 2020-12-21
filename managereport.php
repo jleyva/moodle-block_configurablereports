@@ -136,26 +136,37 @@ if ($reports) {
         }
 
         $editcell = '';
-        $editcell .= '<a title="'.$stredit.'"  href="editreport.php?id='.$r->id.'"><img src="'.$OUTPUT->pix_url('/t/edit').'" class="iconsmall" alt="'.$stredit.'" /></a>&nbsp;&nbsp;';
-        $editcell .= '<a title="'.$strdelete.'"  href="editreport.php?id='.$r->id.'&amp;delete=1&amp;sesskey='.$USER->sesskey.'"><img src="'.$OUTPUT->pix_url('/t/delete').'" class="iconsmall" alt="'.$strdelete.'" /></a>&nbsp;&nbsp;';
-
+        $editcell .= '<a title="'.$stredit.'"  href="editreport.php?id='.$r->id.'">'.
+                     $OUTPUT->pix_icon('t/edit', $stredit).
+                     '</a>&nbsp;&nbsp;';
+        $editcell .= '<a title="'.$strdelete.'"  href="editreport.php?id='.$r->id.'&amp;delete=1&amp;sesskey='.$USER->sesskey.'">'.
+                     $OUTPUT->pix_icon('t/delete', $strdelete).
+                     '</a>&nbsp;&nbsp;';
 
         if (!empty($r->visible)) {
-            $editcell .= '<a title="'.$strhide.'" href="editreport.php?id='.$r->id.'&amp;hide=1&amp;sesskey='.$USER->sesskey.'">'.'<img src="'.$OUTPUT->pix_url('/t/hide').'" class="iconsmall" alt="'.$strhide.'" /></a> ';
+            $editcell .= '<a title="'.$strhide.'" href="editreport.php?id='.$r->id.'&amp;hide=1&amp;sesskey='.$USER->sesskey.'">'.
+                         $OUTPUT->pix_icon('t/hide', $strhide).
+                         '</a> ';
         } else {
-            $editcell .= '<a title="'.$strshow.'" href="editreport.php?id='.$r->id.'&amp;show=1&amp;sesskey='.$USER->sesskey.'">'.'<img src="'.$OUTPUT->pix_url('/t/show').'" class="iconsmall" alt="'.$strshow.'" /></a> ';
+            $editcell .= '<a title="'.$strshow.'" href="editreport.php?id='.$r->id.'&amp;show=1&amp;sesskey='.$USER->sesskey.'">'.
+                         $OUTPUT->pix_icon('t/show', $strshow).
+                         '</a> ';
         }
-        $editcell .= '<a title="'.$strcopy.'" href="editreport.php?id='.$r->id.'&amp;duplicate=1&amp;sesskey='.$USER->sesskey.'"><img src="'.$OUTPUT->pix_url('/t/copy').'" class="iconsmall" alt="'.$strcopy.'" /></a>&nbsp;&nbsp;';
-        $editcell .= '<a title="'.$strexport.'" href="export.php?id='.$r->id.'&amp;sesskey='.$USER->sesskey.'"><img src="'.$OUTPUT->pix_url('/i/backup').'" class="iconsmall" alt="'.$strexport.'" /></a>&nbsp;&nbsp;';
+        $editcell .= '<a title="'.$strcopy.'" href="editreport.php?id='.$r->id.'&amp;duplicate=1&amp;sesskey='.$USER->sesskey.'">'.
+                     $OUTPUT->pix_icon('t/copy', $strcopy).
+                     '</a>&nbsp;&nbsp;';
+        $editcell .= '<a title="'.$strexport.'" href="export.php?id='.$r->id.'&amp;sesskey='.$USER->sesskey.'">'.
+                     $OUTPUT->pix_icon('t/backup', $strexport).
+                     '</a>&nbsp;&nbsp;';
 
         $download = '';
         $export = explode(',', $r->export);
         if (!empty($export)) {
             foreach ($export as $e) {
                 if ($e) {
-                    $download .= '<a href="viewreport.php?id='.$r->id.'&amp;download=1&amp;format='.$e.'">
-                        <img src="'.$CFG->wwwroot.'/blocks/configurable_reports/export/'.$e.'/pix.gif" alt="'.$e.'">
-                            &nbsp;'.(strtoupper($e)).'</a>&nbsp;&nbsp;';
+                    $download .= '<a href="viewreport.php?id='.$r->id.'&amp;download=1&amp;format='.$e.'">'.
+                        '<img src="'.$CFG->wwwroot.'/blocks/configurable_reports/export/'.$e.'/pix.gif" alt="'.$e.'">'.
+                        '&nbsp;'.(strtoupper($e)).'</a>&nbsp;&nbsp;';
                 }
             }
         }
@@ -171,14 +182,17 @@ if ($reports) {
     }
 
     $table->id = 'reportslist';
-    cr_add_jsordering("#reportslist");
+    cr_add_jsordering("#reportslist", $PAGE);
     cr_print_table($table);
 } else {
     echo $OUTPUT->heading(get_string('noreportsavailable', 'block_configurable_reports'));
 }
 
-echo $OUTPUT->heading('<div class="addbutton"><a class="linkbutton" href="'.$CFG->wwwroot.'/blocks/configurable_reports/editreport.php?courseid='.$course->id.'">'.(get_string('addreport', 'block_configurable_reports')).'</a></div>');
-
+$addreporturl = $CFG->wwwroot.'/blocks/configurable_reports/editreport.php?courseid='.$course->id;
+echo $OUTPUT->heading('<div class="addbutton">
+                       <a href="'.$addreporturl.'" class="btn btn-secondary">'.
+                       get_string('addreport', 'block_configurable_reports').
+                       '</a> </div>');
 
 // Repository report import.
 if ($userandrepo = get_config('block_configurable_reports', 'crrepository')) {

@@ -47,9 +47,8 @@ class report_edit_form extends moodleform {
         }
         $mform->addRule('name', null, 'required', null, 'client');
 
-        $mform->addElement('htmleditor', 'summary', get_string('summary'));
-        $mform->setType('summary', PARAM_RAW);
-
+        $mform->addElement('editor', 'summary_editor', get_string('summary'), null, $this->get_editor_options());
+        $mform->setType('summary_editor', PARAM_RAW);
         $typeoptions = cr_get_report_plugins($this->_customdata['courseid']);
 
         $eloptions = array();
@@ -110,5 +109,53 @@ class report_edit_form extends moodleform {
     public function validation($data, $files) {
         $errors = parent::validation($data, $files);
         return $errors;
+    }
+
+    /**
+     * Used to reformat the data from the editor component.
+     *
+     * @return stdClass
+     */
+    function get_data() {
+        $data = parent::get_data();
+
+        if ($data !== null and isset($data->summary_editor)) {
+            $data->summaryformat = $data->summary_editor['format'];
+            $data->summary = $data->summary_editor['text'];
+        }
+
+        return $data;
+    }
+
+    /**
+     * Load in existing data as form defaults.
+     *
+     * @param stdClass|array $default_values object or array of default values.
+     */
+    function set_data($default_values) {
+        if (!is_object($default_values)) {
+            // We need object for file_prepare_standard_editor.
+            $default_values = (object)$default_values;
+        }
+        $default_values = file_prepare_standard_editor($default_values, 'summary', $this->get_editor_options());
+
+        parent::set_data($default_values);
+    }
+
+
+    /**
+     * Get editor options for this form.
+     *
+     * @return array An array of options.
+     */
+    function get_editor_options() {
+        $editoroptions = [
+            'subdirs' => 0,
+            'maxbytes' => 0,
+            'maxfiles' => 0,
+            'noclean' => false,
+            'trusttext' => false
+        ];
+        return $editoroptions;
     }
 }

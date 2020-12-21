@@ -54,7 +54,7 @@ class plugin_user extends plugin_base {
     }
 
     public function print_filter(&$mform) {
-        global $remotedb, $COURSE;
+        global $remotedb, $COURSE, $PAGE, $CFG;
 
         $reportclassname = 'report_'.$this->report->type;
         $reportclass = new $reportclassname($this->report);
@@ -72,11 +72,23 @@ class plugin_user extends plugin_base {
         $useroptions[0] = get_string('filter_all', 'block_configurable_reports');
 
         if (!empty($userlist)) {
+            if (has_capability('moodle/site:viewfullnames', $PAGE->context)) {
+               $nameformat = $CFG->alternativefullnameformat;
+            } else {
+               $nameformat = $CFG->fullnamedisplay;
+            }
+
+            if ($nameformat == 'language') {
+                $nameformat = get_string('fullnamedisplay');
+            }
+
+            $sort = implode(',', order_in_string(get_all_user_name_fields(), $nameformat));
+
             list($usql, $params) = $remotedb->get_in_or_equal($userlist);
-            $users = $remotedb->get_records_select('user', "id $usql", $params);
+            $users = $remotedb->get_records_select('user', "id " . $usql, $params, $sort, 'id,' .get_all_user_name_fields(true));
 
             foreach ($users as $c) {
-                $useroptions[$c->id] = format_string($c->lastname.' '.$c->firstname);
+                $useroptions[$c->id] = fullname($c);
             }
         }
 

@@ -73,11 +73,14 @@ class plugin_fcoursefield extends plugin_base {
         $reportclass = new $reportclassname($this->report);
 
         $components = cr_unserialize($this->report->components);
-        $conditions = $components['conditions'];
+        $conditions = '';
+        if (array_key_exists('conditions', $components)) {
+            $conditions = $components['conditions'];
+        }
         $courselist = $reportclass->elements_by_conditions($conditions);
 
         if (!empty($courselist)) {
-            $sql = 'SELECT DISTINCT('.$data->field.') as ufield FROM {course} WHERE '.$data->field.' <> "" ORDER BY ufield ASC';
+            $sql = 'SELECT DISTINCT('.$data->field.') as ufield FROM {course} WHERE '.$data->field." <> '' ORDER BY ufield ASC";
             if ($rs = $remotedb->get_recordset_sql($sql, null)) {
                 foreach ($rs as $u) {
                     $filteroptions[base64_encode($u->ufield)] = $u->ufield;

@@ -60,8 +60,6 @@ $PAGE->set_url('/blocks/configurable_reports/editreport.php', ['id' => $id, 'com
 $PAGE->set_context($context);
 $PAGE->set_pagelayout('incourse');
 
-$PAGE->requires->js('/blocks/configurable_reports/js/codemirror/lib/codemirror.js');
-$PAGE->requires->css('/blocks/configurable_reports/js/codemirror/lib/codemirror.css');
 $PAGE->requires->js('/blocks/configurable_reports/js/configurable_reports.js');
 
 $hasreportscap = has_capability('block/configurable_reports:managereports', $context);
@@ -161,16 +159,27 @@ if ($elements) {
         $editcell = '';
 
         if ($pluginclass->form) {
-            $editcell .= '<a href="editplugin.php?id='.$id.'&comp='.$comp.'&pname='.$e['pluginname'].'&cid='.$e['id'].'"><img src="'.$OUTPUT->pix_url('/t/edit').'" class="iconsmall"></a>';
+            $editcell .= '<a href="editplugin.php?id='.$id.'&comp='.$comp.'&pname='.$e['pluginname'].'&cid='.$e['id'].'">'.
+                         $OUTPUT->pix_icon('t/edit', get_string('edit')).
+                         '</a>';
         }
 
-        $editcell .= '<a href="editplugin.php?id='.$id.'&comp='.$comp.'&pname='.$e['pluginname'].'&cid='.$e['id'].'&delete=1&amp;sesskey='.sesskey().'"><img src="'.$OUTPUT->pix_url('/t/delete').'" class="iconsmall"></a>';
+        $editcell .= '<a href="editplugin.php?id='.$id.'&comp='.$comp.'&pname='.$e['pluginname'].
+                     '&cid='.$e['id'].'&delete=1&amp;sesskey='.sesskey().'">'.
+                     $OUTPUT->pix_icon('t/delete', get_string('delete')).
+                     '</a>';
 
         if ($compclass->ordering && $i != 0 && count($elements) > 1) {
-            $editcell .= '<a href="editplugin.php?id='.$id.'&comp='.$comp.'&pname='.$e['pluginname'].'&cid='.$e['id'].'&moveup=1&amp;sesskey='.sesskey().'"><img src="'.$OUTPUT->pix_url('/t/up').'" class="iconsmall"></a>';
+            $editcell .= '<a href="editplugin.php?id='.$id.'&comp='.$comp.'&pname='.$e['pluginname'].'&cid='.$e['id'].
+                         '&moveup=1&amp;sesskey='.sesskey().'">'.
+                         $OUTPUT->pix_icon('t/up', get_string('moveup')).
+                         '</a>';
         }
         if ($compclass->ordering && $i != count($elements) - 1) {
-            $editcell .= '<a href="editplugin.php?id='.$id.'&comp='.$comp.'&pname='.$e['pluginname'].'&cid='.$e['id'].'&movedown=1&amp;sesskey='.sesskey().'"><img src="'.$OUTPUT->pix_url('/t/down').'" class="iconsmall"></a>';
+            $editcell .= '<a href="editplugin.php?id='.$id.'&comp='.$comp.'&pname='.$e['pluginname'].'&cid='.$e['id'].
+                         '&movedown=1&amp;sesskey='.sesskey().'">'.
+                         $OUTPUT->pix_icon('t/down', get_string('movedown')).
+                         '</a>';
         }
 
         $table->data[] = ['c'.($i + 1), $e['pluginfullname'], $e['summary'], $editcell];

@@ -84,7 +84,7 @@ class template_form extends moodleform {
         $mform->addElement('select', 'enabled', get_string('template', 'block_configurable_reports'), $optionsenabled);
         $mform->setDefault('enabled', 0);
 
-        $mform->addElement('htmleditor', 'header', get_string('header', 'block_configurable_reports'));
+        $mform->addElement('editor', 'header', get_string('header', 'block_configurable_reports'));
         $mform->disabledIf('header', 'enabled', 'eq', 0);
         $mform->addHelpButton('header', 'template_marks', 'block_configurable_reports');
 
@@ -96,10 +96,10 @@ class template_form extends moodleform {
         }
 
         $mform->addElement('static', 'statictext', get_string('availablemarks', 'block_configurable_reports'), $availablemarksrec);
-        $mform->addElement('htmleditor', 'record', get_string('templaterecord', 'block_configurable_reports'));
+        $mform->addElement('editor', 'record', get_string('templaterecord', 'block_configurable_reports'));
         $mform->disabledIf('record', 'enabled', 'eq', 0);
 
-        $mform->addElement('htmleditor', 'footer', get_string('footer', 'block_configurable_reports'));
+        $mform->addElement('editor', 'footer', get_string('footer', 'block_configurable_reports'));
         $mform->disabledIf('footer', 'enabled', 'eq', 0);
         $mform->addHelpButton('footer', 'template_marks', 'block_configurable_reports');
 
