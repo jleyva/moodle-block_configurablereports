@@ -34,3 +34,15 @@ function block_configurable_reports_security_checks() {
     return [new block_configurable_reports\check\sql_execution()];
 }
 
+function block_configurable_reports_pluginfile($course, $birecord, $context, $filearea, $args, $forcedownload, $sendfileoptions) {
+    global $CFG;
+    if ($filearea !== 'export') {
+        send_file_not_found();
+    }
+    $ext = $args[0];
+    if (!in_array($ext, ['csv','json', 'ods', 'xls']) ){
+        send_file_not_found();
+    }
+    $filename = $CFG->dirroot.'/blocks/configurable_reports/'.$filearea.'/'.$ext.'/pix.gif';
+    send_file($filename, $ext.".gif", null , 0, false, false, '', false, array("immutable"=>1, "cacheability"=>"public"));
+}

@@ -164,8 +164,9 @@ if ($reports) {
         if (!empty($export)) {
             foreach ($export as $e) {
                 if ($e) {
+                    $cid = $context->id;
                     $download .= '<a href="viewreport.php?id='.$r->id.'&amp;download=1&amp;format='.$e.'">'.
-                        '<img src="'.$CFG->wwwroot.'/blocks/configurable_reports/export/'.$e.'/pix.gif" alt="'.$e.'">'.
+                        '<img src="'.$CFG->wwwroot.'/pluginfile.php/'.$cid.'/block_configurable_reports/export/'.$e.'" alt="'.$e.'">'.
                         '&nbsp;'.(strtoupper($e)).'</a>&nbsp;&nbsp;';
                 }
             }
