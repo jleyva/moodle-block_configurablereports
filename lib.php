@@ -39,10 +39,10 @@ function block_configurable_reports_pluginfile($course, $birecord, $context, $fi
     if ($filearea !== 'export') {
         send_file_not_found();
     }
-    $ext = $args[0];
-    if (!in_array($ext, ['csv','json', 'ods', 'xls']) ){
+    $export_type = $args[0];
+    if (!in_array($export_type, ['csv','json', 'ods', 'xls']) ){
         send_file_not_found();
     }
-    $filename = $CFG->dirroot.'/blocks/configurable_reports/'.$filearea.'/'.$ext.'/pix.gif';
-    send_file($filename, $ext.".gif", null , 0, false, false, '', false, array("immutable"=>1, "cacheability"=>"public"));
+    $filename = $CFG->dirroot.'/blocks/configurable_reports/'.$filearea.'/'.$export_type.'/pix.gif';
+    send_file($filename, $export_type.".gif", null , 0, false, false, '', false, array("immutable"=>1, "cacheability"=>"public"));
 }
