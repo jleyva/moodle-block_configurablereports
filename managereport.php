@@ -165,8 +165,9 @@ if ($reports) {
             foreach ($export as $e) {
                 if ($e) {
                     $cid = $context->id;
+                    $url = moodle_url::make_pluginfile_url($cid, 'block_configurable_reports', 'export', null, '/', $e);
                     $download .= '<a href="viewreport.php?id='.$r->id.'&amp;download=1&amp;format='.$e.'">'.
-                        '<img src="'.$CFG->wwwroot.'/pluginfile.php/'.$cid.'/block_configurable_reports/export/'.$e.'" alt="'.$e.'">'.
+                        '<img src="'.$url.'" alt="'.$e.'">'.
                         '&nbsp;'.(strtoupper($e)).'</a>&nbsp;&nbsp;';
                 }
             }
