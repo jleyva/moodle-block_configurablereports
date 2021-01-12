@@ -56,7 +56,7 @@ class external extends external_api {
         return new external_function_parameters(
             array(
                 'reportid' => new external_value(PARAM_INT, 'The report id', VALUE_REQUIRED),
-                'courseid' => new external_value(PARAM_INT, 'The course id', VALUE_OPTIONAL)
+                'courseid' => new external_value(PARAM_INT, 'The course id', VALUE_DEFAULT, 1)
             )
         );
     }
@@ -64,8 +64,8 @@ class external extends external_api {
     /**
      * Returns data of given report id.
      *
-     * @param int $reportid
-     * @param int $courseid
+     * @param int $reportid the report id
+     * @param int $courseid course id (default to site)
      * @return array An array with a 'data' JSON string and a 'warnings' string
      */
     public static function get_report_data($reportid, $courseid = 1) {
