@@ -190,7 +190,7 @@ function cr_get_report_plugins($courseid) {
 
     if ($plugins) {
         foreach ($plugins as $p) {
-            if ($p == 'sql' && !has_capability('block/configurable_reports:managesqlreports', $context)) {
+            if ($p == 'sql' && !block_configurable_reports_can_managesqlreports($context)) {
                 continue;
             }
             $pluginoptions[$p] = get_string('report_'.$p, 'block_configurable_reports');
@@ -569,4 +569,28 @@ function cr_logging_info() {
     }
 
     return array($uselegacyreader, $useinternalreader, $logtable);
+}
+
+/**
+ * Check if the current user is allowed to manage sql reports.
+ *
+ * @param $context
+ * @return bool
+ * @throws coding_exception
+ * @throws dml_exception
+ */
+function block_configurable_reports_can_managesqlreports($context) {
+    global $USER;
+    if (has_capability('block/configurable_reports:managesqlreports', $context)) {
+        $allowedusers = get_config('block_configurable_reports', 'allowedsqlusers');
+        if (!empty($allowedusers)) {
+            $allowedusers = explode(',', $allowedusers);
+            if (in_array($USER->username, $allowedusers)) {
+                return true;
+            }
+        } else {
+            return true;
+        }
+    }
+    return false;
 }

@@ -70,6 +70,10 @@ if ($id) {
     if (!$hasmanagereportcap && $report->ownerid != $USER->id) {
         print_error('badpermissions', 'block_configurable_reports');
     }
+    // Extra check.
+    if ($report->type == 'sql' && !block_configurable_reports_can_managesqlreports($context)) {
+        print_error('nosqlpermissions');
+    }
 
     $title = format_string($report->name);
 
@@ -221,7 +225,7 @@ if ($editform->is_cancelled()) {
         $data->components = '';
 
         // Extra check.
-        if ($data->type == 'sql' && !has_capability('block/configurable_reports:managesqlreports', $context)) {
+        if ($data->type == 'sql' && !block_configurable_reports_can_managesqlreports($context)) {
             print_error('nosqlpermissions');
         }
 

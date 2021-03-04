@@ -134,30 +134,33 @@ if ($reports) {
         } else {
             $owner = get_string('deleted');
         }
-
-        $editcell = '';
-        $editcell .= '<a title="'.$stredit.'"  href="editreport.php?id='.$r->id.'">'.
-                     $OUTPUT->pix_icon('t/edit', $stredit).
-                     '</a>&nbsp;&nbsp;';
-        $editcell .= '<a title="'.$strdelete.'"  href="editreport.php?id='.$r->id.'&amp;delete=1&amp;sesskey='.$USER->sesskey.'">'.
-                     $OUTPUT->pix_icon('t/delete', $strdelete).
-                     '</a>&nbsp;&nbsp;';
-
-        if (!empty($r->visible)) {
-            $editcell .= '<a title="'.$strhide.'" href="editreport.php?id='.$r->id.'&amp;hide=1&amp;sesskey='.$USER->sesskey.'">'.
-                         $OUTPUT->pix_icon('t/hide', $strhide).
-                         '</a> ';
+        if ($r->type == 'sql' && !block_configurable_reports_can_managesqlreports($context)) {
+            $editcell = '';
         } else {
-            $editcell .= '<a title="'.$strshow.'" href="editreport.php?id='.$r->id.'&amp;show=1&amp;sesskey='.$USER->sesskey.'">'.
-                         $OUTPUT->pix_icon('t/show', $strshow).
-                         '</a> ';
+            $editcell = '<a title="'.$stredit.'"  href="editreport.php?id='.$r->id.'">'.
+                $OUTPUT->pix_icon('t/edit', $stredit).
+                '</a>&nbsp;&nbsp;';
+            $editcell .= '<a title="'.$strdelete.'"  href="editreport.php?id='.$r->id.'&amp;delete=1&amp;sesskey='.$USER->sesskey.'">'.
+                $OUTPUT->pix_icon('t/delete', $strdelete).
+                '</a>&nbsp;&nbsp;';
+
+            if (!empty($r->visible)) {
+                $editcell .= '<a title="'.$strhide.'" href="editreport.php?id='.$r->id.'&amp;hide=1&amp;sesskey='.$USER->sesskey.'">'.
+                    $OUTPUT->pix_icon('t/hide', $strhide).
+                    '</a> ';
+            } else {
+                $editcell .= '<a title="'.$strshow.'" href="editreport.php?id='.$r->id.'&amp;show=1&amp;sesskey='.$USER->sesskey.'">'.
+                    $OUTPUT->pix_icon('t/show', $strshow).
+                    '</a> ';
+            }
+            $editcell .= '<a title="'.$strcopy.'" href="editreport.php?id='.$r->id.'&amp;duplicate=1&amp;sesskey='.$USER->sesskey.'">'.
+                $OUTPUT->pix_icon('t/copy', $strcopy).
+                '</a>&nbsp;&nbsp;';
+            $editcell .= '<a title="'.$strexport.'" href="export.php?id='.$r->id.'&amp;sesskey='.$USER->sesskey.'">'.
+                $OUTPUT->pix_icon('t/backup', $strexport).
+                '</a>&nbsp;&nbsp;';
+
         }
-        $editcell .= '<a title="'.$strcopy.'" href="editreport.php?id='.$r->id.'&amp;duplicate=1&amp;sesskey='.$USER->sesskey.'">'.
-                     $OUTPUT->pix_icon('t/copy', $strcopy).
-                     '</a>&nbsp;&nbsp;';
-        $editcell .= '<a title="'.$strexport.'" href="export.php?id='.$r->id.'&amp;sesskey='.$USER->sesskey.'">'.
-                     $OUTPUT->pix_icon('t/backup', $strexport).
-                     '</a>&nbsp;&nbsp;';
 
         $download = '';
         $export = explode(',', $r->export);

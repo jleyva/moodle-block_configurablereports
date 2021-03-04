@@ -461,7 +461,8 @@ $string['email_send'] = 'Send';
 
 $string['sqlsecurity'] = 'SQL Security';
 $string['sqlsecurityinfo'] = 'Disable for executing SQL queries with statements for inserting data';
-
+$string['allowedsqlusers'] = 'SQL report users';
+$string['allowedsqlusersinfo'] = 'If you wish to only allow certain admin users to manage sql reports, add a list of usernames separated by commas. They must also have the block/configurable_reports:managesqlreports capability.';
 $string['global'] = 'Global report';
 $string['enableglobal'] = 'This is a global report (accesible from any course)';
 $string['global_help'] = 'Global report can be accessed from any course in the platform just appending &courseid=MY_COURSE_ID in the report URL';
