@@ -244,7 +244,10 @@ class report_base {
             $output .= get_string('downloadreport', 'block_configurable_reports').': ';
             foreach ($export as $e) {
                 if ($e) {
-                    $output .= '<a href="'.$wwwpath.'&amp;download=1&amp;format='.$e.'"><img src="'.$CFG->wwwroot.'/blocks/configurable_reports/export/'.$e.'/pix.gif" alt="'.$e.'">&nbsp;'.(strtoupper($e)).'</a>&nbsp;';
+                    $context = \context_system::instance();
+                    $cid = $context->id;
+                    $url = moodle_url::make_pluginfile_url($cid, 'block_configurable_reports', 'export', null, '/', $e);
+                    $output .= '<a href="'.$wwwpath.'&amp;download=1&amp;format='.$e.'"><img src="'.$url.'" alt="'.$e.'">&nbsp;'.(strtoupper($e)).'</a>&nbsp;';
                 }
             }
             $output .= '</div>';
