@@ -67,9 +67,12 @@ if (!$hasreportscap && !has_capability('block/configurable_reports:manageownrepo
     print_error('badpermissions');
 }
 
-
 if (!$hasreportscap && $report->ownerid != $USER->id) {
     print_error('badpermissions');
+}
+
+if ($report->type == 'sql' && !block_configurable_reports_can_managesqlreports($context)) {
+    print_error('nosqlpermissions');
 }
 
 require_once($CFG->dirroot.'/blocks/configurable_reports/reports/'.$report->type.'/report.class.php');
