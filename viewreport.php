@@ -88,11 +88,11 @@ if (!$download) {
     if ($hasmanageallcap || ($hasmanageowncap && $report->ownerid == $USER->id)) {
         $managereporturl = new \moodle_url('/blocks/configurable_reports/managereport.php', ['courseid' => $report->courseid]);
         $PAGE->navbar->add(get_string('managereports', 'block_configurable_reports'), $managereporturl);
-        $PAGE->navbar->add($report->name);
+        $PAGE->navbar->add($reportname);
     } else {
         // These users don't have the capability to manage reports but we still want them to see some breadcrumbs.
         $PAGE->navbar->add(get_string('viewreport', 'block_configurable_reports'));
-        $PAGE->navbar->add($report->name);
+        $PAGE->navbar->add($reportname);
     }
 
     $PAGE->set_title($reportname);
