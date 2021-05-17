@@ -51,6 +51,7 @@ $string['configurable_reports:managesqlreports'] = "Manage SQL reports";
 $string['configurable_reports:viewreports'] = "View reports";
 
 $string['exportoptions'] = "Export options";
+$string['embedoptions'] = "Embed options";
 $string['field'] = "Field";
 
 // Report form
@@ -66,6 +67,12 @@ $string['norecordsfound'] = "No records found";
 $string['jsordering'] = 'JavaScript Ordering';
 $string['cron'] = 'Auto run daily';
 $string['crondescription'] = 'Schedule this query to run each day (At night)';
+$string['displaytotalrecords'] = 'Total Records';
+$string['displaytotalrecordsdescription'] = 'Displays the total number of results in the report';
+$string['displayprintbutton'] = 'Print Button';
+$string['displayprintbuttondescription'] = 'Displays the print button at the bottom of the report';
+$string['embedlink'] = 'Embed Link';
+$string['embedlinkdescription'] = 'You can copy this link to embed the report in an HTML block';
 $string['cron_help'] = 'Schedule this query to run each day (At night)';
 $string['remote'] = 'Run on remote db';
 $string['remotedescription'] = 'Do you want to run this query on the remote db';

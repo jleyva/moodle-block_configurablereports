@@ -29,6 +29,7 @@ $id = required_param('id', PARAM_INT);
 $download = optional_param('download', false, PARAM_BOOL);
 $format = optional_param('format', '', PARAM_ALPHA);
 $courseid = optional_param('courseid', null, PARAM_INT);
+$embed = optional_param('embed', false, PARAM_BOOL);
 
 if (!$report = $DB->get_record('block_configurable_reports', ['id' => $id])) {
     print_error('reportdoesnotexists', 'block_configurable_reports');
@@ -98,9 +99,13 @@ if (!$download) {
     $PAGE->set_title($reportname);
     $PAGE->set_heading( $reportname);
     $PAGE->set_cacheable( true);
+    if ($embed) {
+        $PAGE->set_pagelayout('embedded');
+    }
     echo $OUTPUT->header();
 
-    if ($hasmanageallcap || ($hasmanageowncap && $report->ownerid == $USER->id)) {
+    $canmanage = ($hasmanageallcap || ($hasmanageowncap && $report->ownerid == $USER->id));
+    if (!$embed && $canmanage) {
         $currenttab = 'viewreport';
         include('tabs.php');
     }

@@ -218,6 +218,14 @@ if ($editform->is_cancelled()) {
         $data->cron = 0;
     }
 
+    if (!isset($data->displaytotalrecords)) {
+        $data->displaytotalrecords = 0;
+    }
+
+    if (!isset($data->displayprintbutton)) {
+        $data->displayprintbutton = 0;
+    }
+
     if (empty($report)) {
         $data->ownerid = $USER->id;
         $data->courseid = $courseid;
