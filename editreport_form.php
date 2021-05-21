@@ -74,6 +74,10 @@ class report_edit_form extends moodleform {
         $mform->addHelpButton('jsordering', 'jsordering', 'block_configurable_reports');
         $mform->setDefault('jsordering', 1);
 
+        $mform->addElement('checkbox', 'displaytotalrecords', get_string('displaytotalrecords', 'block_configurable_reports'), get_string('displaytotalrecordsdescription', 'block_configurable_reports'));
+        $mform->addElement('checkbox', 'displayprintbutton', get_string('displayprintbutton', 'block_configurable_reports'), get_string('displayprintbuttondescription', 'block_configurable_reports'));
+
+
         $mform->addElement('checkbox', 'cron', get_string('cron', 'block_configurable_reports'), get_string('crondescription', 'block_configurable_reports'));
         $mform->addHelpButton('cron', 'cron', 'block_configurable_reports');
         $mform->setDefault('cron', 0);
@@ -82,6 +86,25 @@ class report_edit_form extends moodleform {
         $mform->addElement('checkbox', 'remote', get_string('remote', 'block_configurable_reports'), get_string('remotedescription', 'block_configurable_reports'));
         $mform->addHelpButton('remote', 'remote', 'block_configurable_reports');
         $mform->setDefault('remote', 0);
+
+        // Adds an embed link for easy copy/paste once the report is saved.
+        if (isset($this->_customdata['report']->id) && $this->_customdata['report']->id) {
+
+            $params = [
+                'id' => $this->_customdata['report']->id,
+                'courseid' => $this->_customdata['courseid'],
+                'embed' => true
+            ];
+            $url = new \moodle_url('/blocks/configurable_reports/viewreport.php', $params);
+
+            $mform->addElement('static', 'embedlink',
+                get_string('embedlink', 'block_configurable_reports'),
+                html_writer::tag('pre', $url, ['class' => 'mb-0']).
+                get_string('embedlinkdescription', 'block_configurable_reports')
+            );
+
+        }
+
 
         $mform->addElement('header', 'exportoptions', get_string('exportoptions', 'block_configurable_reports'));
         $options = cr_get_export_plugins();
@@ -102,8 +125,14 @@ class report_edit_form extends moodleform {
             $mform->setType('courseid', PARAM_INT);
         }
 
+        // Submit button string.
+        $submitstring = get_string('add');
+        if (!empty($this->_customdata['report']->id)) {
+            $submitstring = get_string('update');
+        }
+
         // Buttons.
-        $this->add_action_buttons(true, get_string('add'));
+        $this->add_action_buttons(true, $submitstring);
     }
 
     public function validation($data, $files) {
