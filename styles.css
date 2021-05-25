@@ -21,6 +21,10 @@
 #page-admin-setting-blocksettingconfigurable_reports.dir-rtl .settingsform input[type=text],
 #page-admin-setting-blocksettingconfigurable_reports.dir-rtl .settingsform input[type=password] {text-align: left;direction: ltr;}
 
+#page-blocks-configurable_reports-editreport.dir-rtl #fitem_id_querysql [data-fieldtype="textarea"] {
+    direction: ltr;
+}
+
 /* Table usability & UI fixes
 */
 #page-blocks-configurable_reports-viewreport .generaltable {
@@ -50,7 +54,8 @@
 */
 .addbutton {text-align: center;}
 
-.linkbutton {
+.linkbutton,
+.rtl .linkbutton {
     -moz-box-shadow:inset 0px 1px 0px 0px #dcecfb;
     -webkit-box-shadow:inset 0px 1px 0px 0px #dcecfb;
     box-shadow:inset 0px 1px 0px 0px #dcecfb;
@@ -324,7 +329,8 @@ table.dataTable thead td:active {
 
 /* BASICS */
 
-.CodeMirror {
+.CodeMirror,
+.dir-rtl .CodeMirror{
   /* Set height, width, borders, and global font properties here */
   font-family: monospace;
   height: 300px;
@@ -346,14 +352,16 @@ table.dataTable thead td:active {
 }
 
 /* GUTTER */
-
-.CodeMirror-gutters {
+.CodeMirror-gutters,
+.dir-rtl .CodeMirror-gutters {
+  position: absolute; left: 0; top: 0;
   border-right: 1px solid #ddd;
   background-color: #f7f7f7;
   white-space: nowrap;
 }
-.CodeMirror-linenumbers {}
-.CodeMirror-linenumber {
+
+.CodeMirror-linenumber,
+.dir-rtl .CodeMirror-linenumber {
   padding: 0 3px 0 5px;
   min-width: 20px;
   text-align: right;
@@ -365,14 +373,15 @@ table.dataTable thead td:active {
 .CodeMirror-guttermarker-subtle { color: #999; }
 
 /* CURSOR */
-
-.CodeMirror-cursor {
+.CodeMirror-cursor,
+.dir-rtl .CodeMirror-cursor {
   border-left: 1px solid black;
   border-right: none;
   width: 0;
 }
 /* Shown when moving in bi-directional text */
-.CodeMirror div.CodeMirror-secondarycursor {
+.CodeMirror div.CodeMirror-secondarycursor,
+.dir-rtl .CodeMirror div.CodeMirror-secondarycursor {
   border-left: 1px solid silver;
 }
 .cm-fat-cursor .CodeMirror-cursor {
@@ -423,7 +432,8 @@ table.dataTable thead td:active {
   left: 0; right: 0; top: -50px; bottom: -20px;
   overflow: hidden;
 }
-.CodeMirror-ruler {
+.CodeMirror-ruler,
+.dir-rtl .CodeMirror-ruler {
   border-left: 1px solid #ccc;
   top: 0; bottom: 0;
   position: absolute;
@@ -485,7 +495,8 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {color: #a22;}
   background: white;
 }
 
-.CodeMirror-scroll {
+.CodeMirror-scroll,
+.dir-rtl .CodeMirror-scroll {
   overflow: scroll !important; /* Things will break if this is overridden */
   /* 30px is the magic margin used to hide the element's real scrollbars */
   /* See overflow: hidden in .CodeMirror */
@@ -495,7 +506,9 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {color: #a22;}
   outline: none; /* Prevent dragging from highlighting the element */
   position: relative;
 }
-.CodeMirror-sizer {
+
+.CodeMirror-sizer,
+.dir-rtl .CodeMirror-sizer {
   position: relative;
   border-right: 30px solid transparent;
 }
@@ -508,25 +521,31 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {color: #a22;}
   z-index: 6;
   display: none;
 }
-.CodeMirror-vscrollbar {
+
+.CodeMirror-vscrollbar
+.dir-rtl .CodeMirror-vscrollbar {
   right: 0; top: 0;
   overflow-x: hidden;
   overflow-y: scroll;
 }
-.CodeMirror-hscrollbar {
+.CodeMirror-hscrollbar,
+.dir-rtl .CodeMirror-hscrollbar {
   bottom: 0; left: 0;
   overflow-y: hidden;
   overflow-x: scroll;
 }
+
+.dir-rtl .CodeMirror-scrollbar-filler,
 .CodeMirror-scrollbar-filler {
   right: 0; bottom: 0;
 }
-.CodeMirror-gutter-filler {
+
+.CodeMirror-gutter-filler,
+.dir-rtl .CodeMirror-gutter-filler {
   left: 0; bottom: 0;
 }
 
 .CodeMirror-gutters {
-  position: absolute; left: 0; top: 0;
   min-height: 100%;
   z-index: 3;
 }
