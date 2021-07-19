@@ -1,0 +1,6 @@
+DOCs content (brief explanation):
+* authoring.txt, about developers.
+* /example, with examples such as Heat Map tested reports (.xml).
+* /imgs, relevant images from the plot and report usages.
+* /lang, internationalization terms to add
+

@@ -1,0 +1,4 @@
+#Colour Range tested and interesting
+//RGB1 $mySurface->drawSurface( array("Border"=>TRUE,"Surrounding"=>40,"ShadeR1"=>110,"ShadeG1"=>110,"ShadeB1"=>110,"ShadeR2"=>125,"ShadeG2"=>125,"ShadeB2"=>125 ) );
+//RGB2 $mySurface->drawSurface( array("Border"=>TRUE,"Surrounding"=>40,"ShadeR1"=>145,"ShadeG1"=>22,"ShadeB1"=>0,"ShadeR2"=>160,"ShadeG2"=>41,"ShadeB2"=>11 ) );
+
