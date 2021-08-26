@@ -50,7 +50,7 @@ class fuserfield_form extends moodleform {
 
         if ($profile = $remotedb->get_records('user_info_field')) {
             foreach ($profile as $p) {
-                $usercolumns['profile_'.$p->shortname] = $p->name;
+                $usercolumns['profile_'.$p->shortname] = format_string($p->name);
             }
         }
 
