@@ -14,6 +14,16 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+/**
+ * Configurable Reports
+ * 
+ * A Moodle block for creating customizable reports
+ * @package     block_configurable_reports
+ * @author      Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @copyright   Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
 defined('MOODLE_INTERNAL') || die;
 
 if ($ADMIN->fulltree) {
