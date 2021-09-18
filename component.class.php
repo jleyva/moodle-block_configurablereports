@@ -16,18 +16,52 @@
 
 /**
  * Configurable Reports
+ * 
  * A Moodle block for creating customizable reports
- * @package blocks
- * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date: 2009
+ * @package     block_configurable_reports
+ * @author      Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @copyright   Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-class component_base {
+ /**
+  * Undocumented class
+  */
+class component_base 
+{
+    /**
+     * TODO: Write description.
+     *
+     * @var boolean
+     */
     public $plugins = false;
+
+    /**
+     * TODO: Write description.
+     *
+     * @var boolean
+     */
     public $ordering = false;
+
+    /**
+     * TODO: Write description.
+     *
+     * @var boolean
+     */
     public $form = false;
+
+    /**
+     * TODO: Write description.
+     *
+     * @var string
+     */
     public $help = '';
 
+    /**
+     * TODO: Write description.
+     *
+     * @param [type] $report
+     */
     public function __construct($report) {
         global $DB, $CFG;
 
@@ -39,6 +73,13 @@ class component_base {
         $this->init();
     }
 
+    /**
+     * Deprecated method.
+     *
+     * @param [type] $mform
+     * @param [type] $fullform
+     * @return bool
+     */
     public function add_form_elements(&$mform, $fullform) {
         return false;
     }
