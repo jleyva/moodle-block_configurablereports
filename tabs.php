@@ -16,10 +16,12 @@
 
 /**
  * Configurable Reports
+ * 
  * A Moodle block for creating customizable reports
- * @package blocks
- * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date: 2009
+ * @package block_configurable_reports
+ * @author Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @copyright   Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 if (!defined('MOODLE_INTERNAL')) {
