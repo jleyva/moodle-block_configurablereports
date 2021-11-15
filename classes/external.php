@@ -56,7 +56,7 @@ class external extends external_api {
         return new external_function_parameters(
             array(
                 'reportid' => new external_value(PARAM_INT, 'The report id', VALUE_REQUIRED),
-                'courseid' => new external_value(PARAM_INT, 'The course id', VALUE_OPTIONAL)
+                'courseid' => new external_value(PARAM_INT, 'The course id', VALUE_REQUIRED)
             )
         );
     }
