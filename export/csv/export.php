@@ -47,7 +47,7 @@ function export_report($report) {
         }
     }
 
-    $csvexport = new csv_export_writer();
+    $csvexport = new csv_export_writer(/*delimiter:*/ 'cfg', /*enclosure:*/ '"', /*mimetype:*/ 'application/download', /*bom:*/ true);
     $csvexport->set_filename($filename);
 
     foreach ($matrix as $ri => $col) {
