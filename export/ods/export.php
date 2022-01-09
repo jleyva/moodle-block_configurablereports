@@ -28,7 +28,8 @@ function export_report($report) {
 
     $table = $report->table;
     $matrix = array();
-    $filename = 'report_'.(time()).'.ods';
+    $report_name = $report->name ?? 'report';
+    $filename = $report_name.'_'.(time()).'.ods';
 
     if (!empty($table->head)) {
         $countcols = count($table->head);
