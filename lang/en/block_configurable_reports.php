@@ -59,6 +59,7 @@ $string['enablejsordering'] = "Enable JavaScript ordering";
 $string['enablejspagination'] = "Enable JavaScript Pagination";
 $string['export_csv'] = "Export in CSV format";
 $string['export_ods'] = "Export in ODS format";
+$string['export_slk'] = "Export in SYLK format";
 $string['export_xls'] = "Export in XLS format";
 $string['export_json'] = "Export in JSON format";
 $string['viewreport'] = "View report";
