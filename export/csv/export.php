@@ -28,7 +28,7 @@ function export_report($report) {
 
     $table = $report->table;
     $matrix = array();
-    $filename = 'report';
+    $filename = $report->name ?? 'report';
 
     if (!empty($table->head)) {
         $countcols = count($table->head);
@@ -47,7 +47,7 @@ function export_report($report) {
         }
     }
 
-    $csvexport = new csv_export_writer();
+    $csvexport = new csv_export_writer(/*delimiter:*/ 'cfg', /*enclosure:*/ '"', /*mimetype:*/ 'application/download', /*bom:*/ true);
     $csvexport->set_filename($filename);
 
     foreach ($matrix as $ri => $col) {
