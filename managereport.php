@@ -167,9 +167,13 @@ if ($reports) {
         if (!empty($export)) {
             foreach ($export as $e) {
                 if ($e) {
-                    $download .= '<a href="viewreport.php?id='.$r->id.'&amp;download=1&amp;format='.$e.'">'.
-                        '<img src="'.$CFG->wwwroot.'/blocks/configurable_reports/export/'.$e.'/pix.gif" alt="'.$e.'">'.
-                        '&nbsp;'.(strtoupper($e)).'</a>&nbsp;&nbsp;';
+                    $cid = $context->id;
+                    $imageurl = moodle_url::make_pluginfile_url($cid, 'block_configurable_reports', 'export', null, '/', $e);
+                    $image = html_writer::img($imageurl, $e, array('alt' => $e));
+                    $params = ['id' => $r->id, 'download' => 1, 'format' => $e];
+                    $downloadurl = new moodle_url('/blocks/configurable_reports/viewreport.php', $params);
+                    $download .= html_writer::link($downloadurl, $image . '&nbsp;' . (strtoupper($e)));
+                    $download .=  '&nbsp;&nbsp;';
                 }
             }
         }
