@@ -28,6 +28,8 @@ class report_sql extends report_base {
 
     private $forExport = false;
 
+    private $filtervar = null;
+
     public function setForExport(bool $isForExport) {
         $this->forExport = $isForExport;
     }
@@ -50,10 +52,13 @@ class report_sql extends report_base {
         // Security warning !!! can be used for sql injection.
         // Use %%FILTER_VAR%% in your sql code with caution.
         $filtervar = optional_param('filter_var', '', PARAM_RAW);
-        if (!empty($filtervar)) {
-            $sql = str_replace('%%FILTER_VAR%%', $filtervar, $sql);
+        if (empty($filtervar)) {
+            $filtervar = $this->filtervar;
         }
-
+        if (empty($filtervar)) {
+            $filtervar = "0";
+        }
+        $sql = str_replace('%%FILTER_VAR%%', $filtervar, $sql);
         $sql = str_replace('%%USERID%%', $USER->id, $sql);
         $sql = str_replace('%%COURSEID%%', $COURSE->id, $sql);
         $sql = str_replace('%%CATEGORYID%%', $COURSE->category, $sql);
@@ -174,5 +179,12 @@ class report_sql extends report_base {
         return true;
     }
 
+    /**
+     * Set FILTER_VAR to be used in web services
+     *
+     * @param mixed String or int to be used in sql query
+     */
+    public function set_filter_var($value) {
+        $this->filtervar = $value;
+    }
 }
-
