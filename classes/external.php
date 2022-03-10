@@ -56,7 +56,8 @@ class external extends external_api {
         return new external_function_parameters(
             array(
                 'reportid' => new external_value(PARAM_INT, 'The report id', VALUE_REQUIRED),
-                'courseid' => new external_value(PARAM_INT, 'The course id', VALUE_DEFAULT, 1)
+                'courseid' => new external_value(PARAM_INT, 'The course id', VALUE_DEFAULT, 1),
+                'filtervar' => new external_value(PARAM_INT, 'The filter var', VALUE_DEFAULT, 0),
             )
         );
     }
@@ -68,25 +69,25 @@ class external extends external_api {
      * @param int $courseid course id (default to site)
      * @return array An array with a 'data' JSON string and a 'warnings' string
      */
-    public static function get_report_data($reportid, $courseid = 1) {
+    public static function get_report_data($reportid, $courseid = 1, $filtervar = null) {
         global $CFG, $DB;
 
         $params = self::validate_parameters(
             self::get_report_data_parameters(),
-            array('reportid' => $reportid, 'courseid' => $courseid)
+            array('reportid' => $reportid, 'courseid' => $courseid, 'filtervar' => $filtervar)
         );
 
-        if ($courseid == SITEID) {
+        if ($params['courseid'] == SITEID) {
             $context = context_system::instance();
         } else {
-            $context = context_course::instance($courseid);
+            $context = context_course::instance($params['courseid']);
         }
 
         self::validate_context($context);
 
         $json = [];
         $warnings = '';
-        if (!$report = $DB->get_record('block_configurable_reports', ['id' => $reportid])) {
+        if (!$report = $DB->get_record('block_configurable_reports', ['id' => $params['reportid']])) {
             $warnings = get_string('reportdoesnotexists', 'block_configurable_reports');
         } else {
 
@@ -100,6 +101,9 @@ class external extends external_api {
                 $warnings = get_string('badpermissions', 'block_configurable_reports');
             }
 
+            if ($report->type == "sql") {
+                $reportclass->set_filter_var($params['filtervar']);
+            }
             $reportclass->create_report();
             $table = $reportclass->finalreport->table;
             $headers = $table->head;
