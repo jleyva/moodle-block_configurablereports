@@ -55,6 +55,13 @@ class plugin_startendtime extends plugin_base {
         if (!$filterstarttime || !$filterendtime) {
             return $finalelements;
         }
+        
+        global $USER;
+        $calendartype = \core_calendar\type_factory::get_calendar_instance($USER->calendartype);
+        $filterstarttime = $calendartype->convert_to_gregorian($filterstarttime['year'], $filterstarttime['month'],
+            $filterstarttime['day'], $filterstarttime['hour'], $filterstarttime['minute']);
+        $filterendtime = $calendartype->convert_to_gregorian($filterendtime['year'], $filterendtime['month'],
+            $filterendtime['day'], $filterendtime['hour'], $filterendtime['minute']);
 
         $filterstarttime = make_timestamp($filterstarttime['year'], $filterstarttime['month'], $filterstarttime['day'],
             $filterstarttime['hour'], $filterstarttime['minute']);
