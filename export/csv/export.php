@@ -47,7 +47,8 @@ function export_report($report) {
         }
     }
 
-    $csvexport = new csv_export_writer();
+    $csvdelimiter = get_config('block_configurable_reports', 'csvdelimiter');
+    $csvexport = new csv_export_writer("$csvdelimiter");
     $csvexport->set_filename($filename);
 
     foreach ($matrix as $ri => $col) {
