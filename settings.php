@@ -50,4 +50,8 @@ if ($ADMIN->fulltree) {
 
     $settings->add(new admin_setting_configtext('block_configurable_reports/allowedsqlusers', get_string('allowedsqlusers', 'block_configurable_reports'),
         get_string('allowedsqlusersinfo', 'block_configurable_reports'), '', PARAM_TEXT));
+    // csv delimiters used in get_delimiter() of moodle lib/csvlib.class.php
+    $csvdelimiteroptions= array('cfg'=>'cfg','colon'=>'colon','comma'=>'comma','semicolon'=>'semicolon','tab'=>'tab');
+    $settings->add(new admin_setting_configselect('block_configurable_reports/csvdelimiter', get_string('csvdelimiter', 'block_configurable_reports'), 
+        get_string('csvdelimiterinfo', 'block_configurable_reports'), 'cfg', $csvdelimiteroptions));
 }
