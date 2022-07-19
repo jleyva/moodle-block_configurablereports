@@ -35,19 +35,20 @@ function export_report($report) {
         $keys = array_keys($table->head);
         $lastkey = end($keys);
         foreach ($table->head as $key => $heading) {
-            $matrix[0][$key] = str_replace("\n", ' ', htmlspecialchars_decode(strip_tags(nl2br($heading))));
+            $matrix[0][$key] = str_replace("\n", ' ', htmlspecialchars_decode(strip_tags(nl2br(format_string($heading)))));
         }
     }
 
     if (!empty($table->data)) {
         foreach ($table->data as $rkey => $row) {
             foreach ($row as $key => $item) {
-                $matrix[$rkey + 1][$key] = str_replace("\n", ' ', htmlspecialchars_decode(strip_tags(nl2br($item))));
+                $matrix[$rkey + 1][$key] = str_replace("\n", ' ', htmlspecialchars_decode(strip_tags(nl2br(format_string($item)))));
             }
         }
     }
 
-    $csvexport = new csv_export_writer();
+    $csvdelimiter = get_config('block_configurable_reports', 'csvdelimiter');
+    $csvexport = new csv_export_writer("$csvdelimiter");
     $csvexport->set_filename($filename);
 
     foreach ($matrix as $ri => $col) {
