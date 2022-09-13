@@ -129,7 +129,7 @@ class report_sql extends report_base {
 
             $sql = $this->prepare_sql($sql);
 
-            if ($rs = $this->execute_query($sql)) {
+            if (isset($this->filterform) && $this->filterform->get_data() && $rs = $this->execute_query($sql)) {
                 foreach ($rs as $row) {
                     if (empty($finaltable)) {
                         foreach ($row as $colname => $value) {

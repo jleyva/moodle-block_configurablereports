@@ -71,6 +71,7 @@ $PAGE->requires->jquery();
 $download = ($download && $format && strpos($report->export, $format.',') !== false) ? true : false;
 
 if ($download && $report->type == "sql") $reportclass->setForExport(true);
+$reportclass->check_filters_request();
 $reportclass->create_report();
 
 $action = (!empty($download)) ? 'download' : 'view';
@@ -78,7 +79,6 @@ cr_add_to_log($report->courseid, 'configurable_reports', $action, '/block/config
 
 // No download, build navigation header etc..
 if (!$download) {
-    $reportclass->check_filters_request();
     $reportname = format_string($report->name);
     $navlinks = array();
 
