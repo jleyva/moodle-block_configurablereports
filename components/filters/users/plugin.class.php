@@ -67,7 +67,7 @@ class plugin_users extends plugin_base {
 
             $userslist = $reportclass->elements_by_conditions($conditions);
         } else {
-            $userslist = array_keys($remotedb->get_records('user'));
+            $userslist = array_keys($remotedb->get_records('user',['deleted'=>0])); // Filter out deleted users from the select 
         }
 
         $usersoptions = array();
