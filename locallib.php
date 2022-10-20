@@ -557,12 +557,14 @@ function cr_logging_info() {
                 if ($readerpluginname == 'logstore_legacy') {
                     $uselegacyreader = true;
                     $logtable = 'log';
+                    break;
                 }
 
                 // If sql_internal_table_reader is preferred reader.
                 if ($reader instanceof \core\log\sql_internal_table_reader or $reader instanceof \core\log\sql_internal_reader) {
                     $useinternalreader = true;
                     $logtable = $reader->get_internal_log_table_name();
+                    break;
                 }
             }
         }
