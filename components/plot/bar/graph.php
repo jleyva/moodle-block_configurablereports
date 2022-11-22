@@ -159,10 +159,9 @@ if (!$reportclass->check_permissions($USER->id, $context)) {
             $mypicture->drawBarChart($chartsettings);
             $mypicture->setShadow(false);
             $mypicture->drawLegend($legendx, $legendy);
-            $mypicture->stroke();
-
             // Hack to clear output and send only IMAGE data to browser.
             ob_clean();
+            $mypicture->stroke();
         }
     }
 }
