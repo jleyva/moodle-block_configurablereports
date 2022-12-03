@@ -102,7 +102,7 @@ class customsql_form extends moodleform {
 
         } else if (strpos($sql, ';') !== false) {
             // Do not allow any semicolons.
-            $errors['querysql'] = get_string('nosemicolon', 'report_customsql');
+            $errors['querysql'] = get_string('nosemicolon', 'block_configurable_reports');
 
         } else if ($CFG->prefix != '' && preg_match('/\b' . $CFG->prefix . '\w+/i', $sql)) {
             // Make sure prefix is prefix_, not explicit.
