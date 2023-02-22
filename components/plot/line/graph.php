@@ -32,12 +32,15 @@ ini_set('display_erros', false);
 
 $id = required_param('id', PARAM_ALPHANUM);
 $reportid = required_param('reportid', PARAM_INT);
+$courseid = optional_param('courseid', null, PARAM_INT);
 
 if (!$report = $DB->get_record('block_configurable_reports', array('id' => $reportid))) {
     print_error('reportdoesnotexists');
 }
 
-$courseid = $report->courseid;
+if (!$courseid || !$report->global) {
+    $courseid = $report->courseid;
+}
 
 if (!$course = $DB->get_record('course', array('id' => $courseid))) {
     print_error('No such course id');

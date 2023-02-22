@@ -74,7 +74,7 @@ class plugin_bar extends plugin_base {
 
         $graphdata = urlencode(json_encode($series));
 
-        return $CFG->wwwroot.'/blocks/configurable_reports/components/plot/bar/graph.php?reportid='.$this->report->id.'&id='.$id.'&graphdata='.$graphdata;
+        return $CFG->wwwroot.'/blocks/configurable_reports/components/plot/bar/graph.php?reportid='.$this->report->id.'&courseid='.$this->report->courseid.'&id='.$id.'&graphdata='.$graphdata;
     }
 
     public function get_series($data) {
