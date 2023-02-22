@@ -118,7 +118,7 @@ class plugin_pie extends plugin_base{
         $serie1 = base64_encode(implode(',', $serie1sorted));
         $colorpalette = base64_encode(implode(',', $colors));
 
-        return $CFG->wwwroot.'/blocks/configurable_reports/components/plot/pie/graph.php?reportid='.$this->report->id.'&id='.$id.'&serie0='.$serie0.'&serie1='.$serie1.'&colorpalette='.$colorpalette;
+        return $CFG->wwwroot.'/blocks/configurable_reports/components/plot/pie/graph.php?reportid='.$this->report->id.'&courseid='.$this->report->courseid.'&id='.$id.'&serie0='.$serie0.'&serie1='.$serie1.'&colorpalette='.$colorpalette;
     }
 
     public function get_series($data) {

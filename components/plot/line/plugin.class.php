@@ -67,7 +67,7 @@ class plugin_line extends plugin_base {
             $i++;
         }
 
-        return $CFG->wwwroot.'/blocks/configurable_reports/components/plot/line/graph.php?reportid='.$this->report->id.'&id='.$id.$params.'&amp;min='.$minvalue.'&amp;max='.$maxvalue;
+        return $CFG->wwwroot.'/blocks/configurable_reports/components/plot/line/graph.php?reportid='.$this->report->id.'&courseid='.$this->report->courseid.'&id='.$id.$params.'&amp;min='.$minvalue.'&amp;max='.$maxvalue;
     }
 
     public function get_series($data) {
