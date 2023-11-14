@@ -36,6 +36,8 @@ class report_base {
     public $endtime = 0;
     public $sql = '';
     public $filterform = null;
+    public $config;
+    public $currentcourseid;
 
     public function reports_base($report) {
         global $DB, $CFG, $USER, $remotedb;
@@ -793,5 +795,3 @@ class report_base {
         return join('', array_reverse($ar[0]));
     }
 }
-
-
