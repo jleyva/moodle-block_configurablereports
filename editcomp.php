@@ -132,9 +132,9 @@ if ($compclass->plugins) {
 $managereporturl = new \moodle_url('/blocks/configurable_reports/managereport.php', ['courseid' => $courseid]);
 $PAGE->navbar->add(get_string('managereports', 'block_configurable_reports'), $managereporturl);
 
-$PAGE->navbar->add($report->name);
-
 $title = format_string($report->name);
+$PAGE->navbar->add($title);
+
 $PAGE->set_title($title);
 $PAGE->set_heading($title);
 $PAGE->set_cacheable(true);

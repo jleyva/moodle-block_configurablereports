@@ -28,7 +28,7 @@ function export_report($report) {
 
     $table = $report->table;
     $matrix = array();
-    $filename = 'report';
+    $filename = format_string($report->name) ?? 'report';
 
     if (!empty($table->head)) {
         $countcols = count($table->head);
