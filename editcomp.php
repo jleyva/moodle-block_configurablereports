@@ -34,7 +34,7 @@ $comp = required_param('comp', PARAM_ALPHA);
 $courseid = optional_param('courseid', null, PARAM_INT);
 
 if (!$report = $DB->get_record('block_configurable_reports', ['id' => $id])) {
-    print_error('reportdoesnotexists');
+    throw new \moodle_exception('reportdoesnotexists');
 }
 
 // Ignore report's courseid, If we are running this report on a specific courseid
@@ -44,7 +44,7 @@ if (empty($courseid)) {
 }
 
 if (!$course = $DB->get_record("course", ['id' => $courseid])) {
-    print_error("No such course id");
+    throw new \moodle_exception("No such course id");
 }
 
 // Force user login in course (SITE or Course).
@@ -64,15 +64,15 @@ $PAGE->requires->js('/blocks/configurable_reports/js/configurable_reports.js');
 
 $hasreportscap = has_capability('block/configurable_reports:managereports', $context);
 if (!$hasreportscap && !has_capability('block/configurable_reports:manageownreports', $context)) {
-    print_error('badpermissions');
+    throw new \moodle_exception('badpermissions');
 }
 
 if (!$hasreportscap && $report->ownerid != $USER->id) {
-    print_error('badpermissions');
+    throw new \moodle_exception('badpermissions');
 }
 
 if ($report->type == 'sql' && !block_configurable_reports_can_managesqlreports($context)) {
-    print_error('nosqlpermissions');
+    throw new \moodle_exception('nosqlpermissions');
 }
 
 require_once($CFG->dirroot.'/blocks/configurable_reports/reports/'.$report->type.'/report.class.php');
@@ -81,7 +81,7 @@ $reportclassname = 'report_'.$report->type;
 $reportclass = new $reportclassname($report->id);
 
 if (!in_array($comp, $reportclass->components)) {
-    print_error('badcomponent');
+    throw new \moodle_exception('badcomponent');
 }
 
 $elements = cr_unserialize($report->components);

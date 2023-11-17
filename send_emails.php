@@ -24,7 +24,7 @@ $context = context_course::instance($COURSE->id);
 $PAGE->set_context($context);
 
 if (!has_capability('block/configurable_reports:managereports', $context) && !has_capability('block/configurable_reports:manageownreports', $context)) {
-    print_error('badpermissions');
+    throw new \moodle_exception('badpermissions');
 }
 
 class sendemail_form extends moodleform {

@@ -84,7 +84,7 @@ class plugin_searchtext extends plugin_base{
         if (preg_match("/%%$filterstrmatch:([^%]+)%%/i", $finalelements, $output)) {
             list($field, $operator) = preg_split('/:/', $output[1]);
             if (!in_array($operator, $operators)) {
-                print_error('nosuchoperator');
+                throw new \moodle_exception('nosuchoperator');
             }
             if ($operator == '~') {
                 $replace = " AND " . $field . " LIKE '%" . $filtersearchtext . "%'";

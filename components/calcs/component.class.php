@@ -39,7 +39,7 @@ class component_calcs extends component_base {
 
         if ($this->config->type != 'sql') {
             if (!is_array($components) || empty($components['columns']['elements'])) {
-                print_error('nocolumns');
+                throw new \moodle_exception('nocolumns');
             }
 
             $columns = $components['columns']['elements'];

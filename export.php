@@ -29,12 +29,12 @@ require_once($CFG->dirroot."/blocks/configurable_reports/locallib.php");
 $id = required_param('id', PARAM_INT);
 
 if (!$report = $DB->get_record('block_configurable_reports', array('id' => $id))) {
-    print_error('reportdoesnotexists', 'block_configurable_reports');
+    throw new \moodle_exception('reportdoesnotexists', 'block_configurable_reports');
 }
 
 
 if (!$course = $DB->get_record('course', array('id' => $report->courseid))) {
-    print_error('nosuchcourseid', 'block_configurable_reports');
+    throw new \moodle_exception('nosuchcourseid', 'block_configurable_reports');
 }
 
 
@@ -50,11 +50,11 @@ if ($course->id == SITEID) {
 $PAGE->set_context($context);
 
 if (!has_capability('block/configurable_reports:managereports', $context) && !(has_capability('block/configurable_reports:manageownreports', $context) && $report->ownerid == $USER->id)) {
-    print_error('badpermissions', 'block_configurable_reports');
+    throw new \moodle_exception('badpermissions', 'block_configurable_reports');
 }
 
 if (!confirm_sesskey()) {
-    print_error('badpermissions', 'block_configurable_reports');
+    throw new \moodle_exception('badpermissions', 'block_configurable_reports');
 }
 
 $downloadfilename = clean_filename(format_string($report->name)).'.xml';
@@ -62,7 +62,7 @@ $downloadfilename = clean_filename(format_string($report->name)).'.xml';
 $version = $DB->get_field('config_plugins', 'value', array('plugin' => 'block_configurable_reports', 'name' => 'version'));
 if (!$version) {
     if (!$version = $DB->get_field('block', 'version', array('name' => 'configurable_reports'))) {
-        print_error('Plugin not found');
+        throw new \moodle_exception('Plugin not found');
     }
 }
 

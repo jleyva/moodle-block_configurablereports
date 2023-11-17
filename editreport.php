@@ -41,7 +41,7 @@ if ($id) {
 }
 
 if (!$course = $DB->get_record('course', ['id' => $courseid]) ) {
-    print_error('nosuchcourseid', 'block_configurable_reports');
+    throw new \moodle_exception('nosuchcourseid', 'block_configurable_reports');
 }
 
 // Force user login in course (SITE or Course).
@@ -55,7 +55,7 @@ if ($course->id == SITEID) {
 
 $hasmanagereportcap = has_capability('block/configurable_reports:managereports', $context);
 if (!$hasmanagereportcap && !has_capability('block/configurable_reports:manageownreports', $context)) {
-    print_error('badpermissions', 'block_configurable_reports');
+    throw new \moodle_exception('badpermissions', 'block_configurable_reports');
 }
 
 $PAGE->set_context($context);
@@ -64,22 +64,22 @@ $PAGE->set_pagelayout('incourse');
 
 if ($id) {
     if (!$report = $DB->get_record('block_configurable_reports', ['id' => $id])) {
-        print_error('reportdoesnotexists', 'block_configurable_reports');
+        throw new \moodle_exception('reportdoesnotexists', 'block_configurable_reports');
     }
 
     if (!$hasmanagereportcap && $report->ownerid != $USER->id) {
-        print_error('badpermissions', 'block_configurable_reports');
+        throw new \moodle_exception('badpermissions', 'block_configurable_reports');
     }
     // Extra check.
     if ($report->type == 'sql' && !block_configurable_reports_can_managesqlreports($context)) {
-        print_error('nosqlpermissions');
+        throw new \moodle_exception('nosqlpermissions');
     }
 
     $title = format_string($report->name);
 
     $courseid = $report->courseid;
     if (!$course = $DB->get_record('course', ['id' => $courseid])) {
-        print_error('nosuchcourseid', 'block_configurable_reports');
+        throw new \moodle_exception('nosuchcourseid', 'block_configurable_reports');
     }
 
     require_once($CFG->dirroot.'/blocks/configurable_reports/report.class.php');
@@ -116,7 +116,7 @@ $PAGE->navbar->add($title);
 if (($show || $hide) && confirm_sesskey()) {
     $visible = ($show) ? 1 : 0;
     if (!$DB->set_field('block_configurable_reports', 'visible', $visible, ['id' => $report->id])) {
-        print_error('cannotupdatereport', 'block_configurable_reports');
+        throw new \moodle_exception('cannotupdatereport', 'block_configurable_reports');
     }
     $action = ($visible) ? 'showed' : 'hidden';
     cr_add_to_log($report->courseid, 'configurable_reports', 'report '.$action, '/block/configurable_reports/editreport.php?id='.$report->id, $report->id);
@@ -131,7 +131,7 @@ if ($duplicate && confirm_sesskey()) {
     $newreport->name = get_string('copyasnoun').' '.$newreport->name;
     $newreport->summary = $newreport->summary;
     if (!$newreportid = $DB->insert_record('block_configurable_reports', $newreport)) {
-        print_error('cannotduplicate', 'block_configurable_reports');
+        throw new \moodle_exception('cannotduplicate', 'block_configurable_reports');
     }
     cr_add_to_log($newreport->courseid, 'configurable_reports', 'report duplicated', '/block/configurable_reports/editreport.php?id='.$newreportid, $id);
     header("Location: $CFG->wwwroot/blocks/configurable_reports/managereport.php?courseid=$courseid");
@@ -226,11 +226,11 @@ if ($editform->is_cancelled()) {
 
         // Extra check.
         if ($data->type == 'sql' && !block_configurable_reports_can_managesqlreports($context)) {
-            print_error('nosqlpermissions');
+            throw new \moodle_exception('nosqlpermissions');
         }
 
         if (!$lastid = $DB->insert_record('block_configurable_reports', $data)) {
-            print_error('errorsavingreport', 'block_configurable_reports');
+            throw new \moodle_exception('errorsavingreport', 'block_configurable_reports');
         } else {
             cr_add_to_log($courseid, 'configurable_reports', 'report created', '/block/configurable_reports/editreport.php?id='.$lastid, $data->name);
             $reportclass = new $reportclassname($lastid);
@@ -242,7 +242,7 @@ if ($editform->is_cancelled()) {
         $data->type = $report->type;
 
         if (!$DB->update_record('block_configurable_reports', $data)) {
-            print_error('errorsavingreport', 'block_configurable_reports');
+            throw new \moodle_exception('errorsavingreport', 'block_configurable_reports');
         } else {
             redirect($CFG->wwwroot.'/blocks/configurable_reports/editcomp.php?id='.$data->id.'&comp='.$reportclass->components[0]);
         }

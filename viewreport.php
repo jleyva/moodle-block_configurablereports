@@ -31,7 +31,7 @@ $format = optional_param('format', '', PARAM_ALPHA);
 $courseid = optional_param('courseid', null, PARAM_INT);
 
 if (!$report = $DB->get_record('block_configurable_reports', ['id' => $id])) {
-    print_error('reportdoesnotexists', 'block_configurable_reports');
+    throw new \moodle_exception('reportdoesnotexists', 'block_configurable_reports');
 }
 
 if ($courseid && $report->global) {
@@ -41,7 +41,7 @@ if ($courseid && $report->global) {
 }
 
 if (!$course = $DB->get_record('course', ['id' => $courseid])) {
-    print_error('No such course id');
+    throw new \moodle_exception('No such course id');
 }
 
 // Force user login in course (SITE or Course).
@@ -60,7 +60,7 @@ $reportclassname = 'report_'.$report->type;
 $reportclass = new $reportclassname($report);
 
 if (!$reportclass->check_permissions($USER->id, $context)) {
-    print_error('badpermissions', 'block_configurable_reports');
+    throw new \moodle_exception('badpermissions', 'block_configurable_reports');
 }
 
 $PAGE->set_context($context);
