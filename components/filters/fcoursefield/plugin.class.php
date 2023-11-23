@@ -66,7 +66,7 @@ class plugin_fcoursefield extends plugin_base {
         }
 
         if (!isset($coursecolumns[$data->field])) {
-            print_error('nosuchcolumn');
+            throw new \moodle_exception('nosuchcolumn');
         }
 
         $reportclassname = 'report_'.$this->report->type;

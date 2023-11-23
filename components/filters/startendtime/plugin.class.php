@@ -66,7 +66,7 @@ class plugin_startendtime extends plugin_base {
         if (preg_match("/%%FILTER_STARTTIME:([^%]+)%%/i", $finalelements, $output)) {
             list($field, $operator) = preg_split('/:/', $output[1]);
             if (!in_array($operator, $operators)) {
-                print_error('nosuchoperator');
+                throw new \moodle_exception('nosuchoperator');
             }
             $replace = ' AND '.$field.' '.$operator.' '.$filterstarttime;
             $finalelements = str_replace('%%FILTER_STARTTIME:'.$output[1].'%%', $replace, $finalelements);
@@ -75,7 +75,7 @@ class plugin_startendtime extends plugin_base {
         if (preg_match("/%%FILTER_ENDTIME:([^%]+)%%/i", $finalelements, $output)) {
             list($field, $operator) = preg_split('/:/', $output[1]);
             if (!in_array($operator, $operators)) {
-                print_error('nosuchoperator');
+                throw new \moodle_exception('nosuchoperator');
             }
             $replace = ' AND '.$field.' '.$operator.' '.$filterendtime;
             $finalelements = str_replace('%%FILTER_ENDTIME:'.$output[1].'%%', $replace, $finalelements);

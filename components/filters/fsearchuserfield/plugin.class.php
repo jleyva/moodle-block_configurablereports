@@ -110,7 +110,7 @@ class plugin_fsearchuserfield extends plugin_base{
         }
 
         if (!isset($usercolumns[$data->field])) {
-            print_error('nosuchcolumn');
+            throw new \moodle_exception('nosuchcolumn');
         }
 
         $reportclassname = 'report_'.$this->report->type;
