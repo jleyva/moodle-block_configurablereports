@@ -18,22 +18,40 @@
  * Configurable Reports
  * A Moodle block for creating customizable reports
  *
- * @package blocks
- * @author  : Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date    : 2009
+ * @package block_configurablereports
+ * @author   Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @date 2009
  */
 class report_timeline extends report_base {
 
-    public function init() {
-        $this->components = ['timeline', 'columns', 'filters', 'template', 'permissions', 'calcs', 'plot'];
+    /**
+     * Init
+     *
+     * @return void
+     */
+    public function init(): void {
+        $this->components = [
+            'timeline',
+            'columns',
+            'filters',
+            'template',
+            'permissions',
+            'calcs',
+            'plot',
+        ];
     }
 
-    public function get_all_elements() {
+    /**
+     * Get all elements
+     *
+     * @return array
+     */
+    public function get_all_elements(): array {
         $elements = [];
 
         $components = cr_unserialize($this->config->components);
 
-        $config = (isset($components['timeline']['config'])) ? $components['timeline']['config'] : new stdclass();
+        $config = $components['timeline']['config'] ?? new stdclass();
 
         if (isset($config->timemode)) {
 
@@ -79,7 +97,14 @@ class report_timeline extends report_base {
         return $elements;
     }
 
-    public function get_rows($elements, $sqlorder = '') {
+    /**
+     * get_rows
+     *
+     * @param array $elements
+     * @param string $sqlorder
+     * @return array
+     */
+    public function get_rows(array $elements, string $sqlorder = '') {
 
         if (!empty($elements)) {
             $finaltimeline = [];

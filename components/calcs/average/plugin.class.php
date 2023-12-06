@@ -18,16 +18,24 @@
  * Configurable Reports
  * A Moodle block for creating customizable reports
  *
- * @package blocks
- * @author  : Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date    : 2009
+ * @package  block_configurablereports
+ * @author   Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @date     2009
  */
 
-  throw new \moodle_exception
-
+/**
+ * Class plugin_average
+ *
+ * @package  block_configurablereports
+ * @author   Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @date     2009
+ */
 class plugin_average extends plugin_base {
 
-    public function init() {
+    /**
+     * @return void
+     */
+    public function init(): void {
         $this->form = true;
         $this->unique = false;
         $this->fullname = get_string('average', 'block_configurable_reports');
@@ -35,12 +43,12 @@ class plugin_average extends plugin_base {
     }
 
     public function summary($data) {
-        global $DB, $CFG;
+        global $CFG;
 
-        if ($this->report->type != 'sql') {
+        if ($this->report->type !== 'sql') {
             $components = cr_unserialize($this->report->components);
             if (!is_array($components) || empty($components['columns']['elements'])) {
-                  throw new \moodle_exception('nocolumns');
+                throw new \moodle_exception('nocolumns');
             }
 
             $columns = $components['columns']['elements'];
@@ -85,7 +93,11 @@ class plugin_average extends plugin_base {
         return '';
     }
 
-    public function execute($rows) {
+    /**
+     * @param $rows
+     * @return float
+     */
+    public function execute($rows): float {
         $result = 0;
         $els = 0;
         foreach ($rows as $r) {

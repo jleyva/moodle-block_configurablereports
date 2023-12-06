@@ -18,30 +18,41 @@
  * Configurable Reports
  * A Moodle block for creating customizable reports
  *
- * @package blocks
- * @author  : Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date    : 2009
+ * @package block_configurablereports
+ * @author   Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @date 2009
  */
 defined('MOODLE_INTERNAL') || die;
 require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
 
 class plugin_coursefield extends plugin_base {
 
-    public function init() {
+    /**
+     * @return void
+     */
+    public function init() : void {
         $this->fullname = get_string('coursefield', 'block_configurable_reports');
         $this->type = 'undefined';
         $this->form = true;
         $this->reporttypes = ['courses'];
     }
 
+    /**
+     * @param $data
+     * @return string
+     */
     public function summary($data) {
         return format_string($data->columname);
     }
 
+    /**
+     * @param $data
+     * @return array
+     */
     public function colformat($data) {
-        $align = (isset($data->align)) ? $data->align : '';
-        $size = (isset($data->size)) ? $data->size : '';
-        $wrap = (isset($data->wrap)) ? $data->wrap : '';
+        $align = $data->align ?? '';
+        $size = $data->size ?? '';
+        $wrap = $data->wrap ?? '';
 
         return [$align, $size, $wrap];
     }
@@ -49,7 +60,6 @@ class plugin_coursefield extends plugin_base {
     // Data -> Plugin configuration data.
     // Row -> Complet course row c->id, c->fullname, etc...
     public function execute($data, $row, $user, $courseid, $starttime = 0, $endtime = 0) {
-        global $DB;
 
         if (isset($row->{$data->column})) {
             switch ($data->column) {
@@ -65,7 +75,7 @@ class plugin_coursefield extends plugin_base {
             }
         }
 
-        return (isset($row->{$data->column})) ? $row->{$data->column} : '';
+        return $row->{$data->column} ?? '';
     }
 
 }

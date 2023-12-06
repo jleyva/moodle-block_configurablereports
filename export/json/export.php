@@ -19,9 +19,9 @@
  * A Moodle block for creating customizable reports
  *
  * @param $report
- * @author  : Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date    : 2009
- * @package blocks
+ * @author   Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @date 2009
+ * @package block_configurablereports
  */
 function export_report($report) {
     $table = $report->table;

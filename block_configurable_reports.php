@@ -18,9 +18,9 @@
  * Configurable Reports
  * A Moodle block for creating customizable reports
  *
- * @package blocks
- * @author  : Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date    : 2009
+ * @package block_configurablereports
+ * @author   Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @date 2009
  */
 class block_configurable_reports extends block_list {
 
@@ -29,7 +29,7 @@ class block_configurable_reports extends block_list {
      *
      * @return void
      **/
-    public function init() {
+    public function init(): void {
         $this->title = get_string('pluginname', 'block_configurable_reports');
     }
 
@@ -47,17 +47,26 @@ class block_configurable_reports extends block_list {
         }
     }
 
-    public function instance_allow_config() {
+    /**
+     * instance_allow_config
+     *
+     * @return bool
+     */
+    public function instance_allow_config(): bool {
         return true;
     }
 
     /**
      * Where to add the block
      *
-     * @return boolean
+     * @return array
      **/
-    public function applicable_formats() {
-        return ['site' => true, 'course' => true, 'my' => true];
+    public function applicable_formats() : array {
+        return [
+            'site' => true,
+            'course' => true,
+            'my' => true,
+        ];
     }
 
     /**
@@ -65,7 +74,7 @@ class block_configurable_reports extends block_list {
      *
      * @return boolean
      **/
-    public function has_config() {
+    public function has_config(): bool {
         return true;
     }
 
@@ -74,7 +83,7 @@ class block_configurable_reports extends block_list {
      *
      * @return boolean
      **/
-    public function instance_allow_multiple() {
+    public function instance_allow_multiple(): bool {
         return false;
     }
 
@@ -99,11 +108,10 @@ class block_configurable_reports extends block_list {
         }
 
         require_once($CFG->dirroot . "/blocks/configurable_reports/locallib.php");
-
         $course = $DB->get_record('course', ['id' => $COURSE->id]);
 
         if (!$course) {
-              throw new \moodle_exception('coursedoesnotexists');
+            throw new \moodle_exception('coursedoesnotexists');
         }
 
         if ($course->id == SITEID) {
@@ -164,7 +172,10 @@ class block_configurable_reports extends block_list {
         return $this->content;
     }
 
-    public function cron() {
+    /**
+     * @return bool
+     */
+    public function cron(): bool {
         global $CFG, $DB;
 
         $hour = get_config('block_configurable_reports', 'cron_hour');
@@ -195,7 +206,7 @@ class block_configurable_reports extends block_list {
         if ($reports) {
             foreach ($reports as $report) {
                 // Running only SQL reports. $report->type == 'sql'.
-                if ($report->type == 'sql' and (!empty($report->cron) and $report->cron == '1')) {
+                if ($report->type === 'sql' and (!empty($report->cron) and $report->cron == '1')) {
                     $reportclass = new report_sql($report);
 
                     // Execute it using $remotedb.
@@ -203,7 +214,7 @@ class block_configurable_reports extends block_list {
                     mtrace("\nExecuting query '$report->name'");
 
                     $components = cr_unserialize($reportclass->config->components);
-                    $config = (isset($components['customsql']['config'])) ? $components['customsql']['config'] : new \stdclass;
+                    $config = $components['customsql']['config'] ?? (object) [];
                     $sql = $reportclass->prepare_sql($config->querysql);
 
                     $sqlqueries = explode(';', $sql);

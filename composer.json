@@ -5,7 +5,8 @@
   "homepage": "https://moodle.org/plugins/view.php?plugin=block_configurable_reports",
   "license": "GPL-3.0+",
   "require": {
-    "composer/installers": "*"
+    "composer/installers": "*",
+    "ext-json": "*"
   },
   "extra": {
     "installer-name": "configurable_reports"

@@ -18,34 +18,68 @@
  * Configurable Reports
  * A Moodle block for creating customizable reports
  *
- * @package blocks
- * @author  : Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date    : 2009
+ * @package  block_configurablereports
+ * @author   Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @date     2009
  */
 
 defined('BLOCK_CONFIGURABLE_REPORTS_MAX_RECORDS') || define('BLOCK_CONFIGURABLE_REPORTS_MAX_RECORDS', 5000);
 
+/**
+ * Class report_sql
+ *
+ * @package  block_configurablereports
+ * @author   Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @date     2009
+ */
 class report_sql extends report_base {
 
-    private $forExport = false;
+    private $forexport = false;
 
-    public function setForExport(bool $isForExport) {
-        $this->forExport = $isForExport;
+    /**
+     * set_forexport
+     *
+     * @param bool $isforexport
+     * @return void
+     */
+    public function set_forexport(bool $isforexport) {
+        $this->forexport = $isforexport;
     }
 
-    public function isForExport() {
-        return $this->forExport;
+    /**
+     * is_forexport
+     *
+     * @return bool
+     */
+    public function is_forexport() {
+        return $this->forexport;
     }
 
-    public function init() {
-        $this->components = ['customsql', 'filters', 'template', 'permissions', 'calcs', 'plot'];
+    /**
+     * Init
+     *
+     * @return void
+     */
+    public function init(): void {
+        $this->components = [
+            'customsql',
+            'filters',
+            'template',
+            'permissions',
+            'calcs',
+            'plot',
+        ];
     }
 
-    public function prepare_sql($sql) {
-        global $DB, $USER, $CFG, $COURSE;
+    /**
+     * @param string $sql
+     * @return array|string|string[]
+     */
+    public function prepare_sql(string $sql) {
+        global $USER, $CFG, $COURSE;
 
         // Enable debug mode from SQL query.
-        $this->config->debug = (strpos($sql, '%%DEBUG%%') !== false) ? true : false;
+        $this->config->debug = strpos($sql, '%%DEBUG%%') !== false;
 
         // Pass special custom undefined variable as filter.
         // Security warning !!! can be used for sql injection.
@@ -55,20 +89,27 @@ class report_sql extends report_base {
             $sql = str_replace('%%FILTER_VAR%%', $filtervar, $sql);
         }
 
-        $sql = str_replace('%%USERID%%', $USER->id, $sql);
-        $sql = str_replace('%%COURSEID%%', $COURSE->id, $sql);
-        $sql = str_replace('%%CATEGORYID%%', $COURSE->category, $sql);
-
         // See http://en.wikipedia.org/wiki/Year_2038_problem.
-        $sql = str_replace(['%%STARTTIME%%', '%%ENDTIME%%'], ['0', '2145938400'], $sql);
-        $sql = str_replace('%%WWWROOT%%', $CFG->wwwroot, $sql);
+        $sql = str_replace([
+            '%%USERID%%',
+            '%%COURSEID%%',
+            '%%CATEGORYID%%',
+            '%%STARTTIME%%',
+            '%%ENDTIME%%',
+            '%%WWWROOT%%',
+        ],
+            [$USER->id, $COURSE->id, $COURSE->category, '0', '2145938400', $CFG->wwwroot],
+            $sql);
         $sql = preg_replace('/%{2}[^%]+%{2}/i', '', $sql);
 
-        $sql = str_replace('?', '[[QUESTIONMARK]]', $sql);
-
-        return $sql;
+        return str_replace('?', '[[QUESTIONMARK]]', $sql);
     }
 
+    /**
+     * @param $sql
+     * @param $limitnum
+     * @return mixed
+     */
     public function execute_query($sql, $limitnum = BLOCK_CONFIGURABLE_REPORTS_MAX_RECORDS) {
         global $remotedb, $DB, $CFG;
 
@@ -140,7 +181,7 @@ class report_sql extends report_base {
                     }
                     $arrayrow = array_values((array) $row);
                     foreach ($arrayrow as $ii => $cell) {
-                        if (!$this->isForExport()) {
+                        if (!$this->is_forexport()) {
                             $cell = format_text($cell, FORMAT_HTML, ['trusted' => true, 'noclean' => true, 'para' => false]);
                         }
                         $arrayrow[$ii] = str_replace('[[QUESTIONMARK]]', '?', $cell);

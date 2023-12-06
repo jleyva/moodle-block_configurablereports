@@ -23,7 +23,10 @@ require_once($CFG->libdir . '/formslib.php');
 
 class line_form extends moodleform {
 
-    public function definition() {
+    /**
+* Form definition
+*/
+public function definition():void {
         global $DB, $USER, $CFG;
 
         $mform =& $this->_form;
@@ -87,7 +90,7 @@ class line_form extends moodleform {
         $this->add_action_buttons(true, get_string('add'));
     }
 
-    public function validation($data, $files) {
+    public function validation($data, $files) : array{
         $errors = parent::validation($data, $files);
 
         if ($data['xaxis'] == $data['yaxis']) {

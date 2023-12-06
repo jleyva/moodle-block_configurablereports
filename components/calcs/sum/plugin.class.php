@@ -18,16 +18,16 @@
  * Configurable Reports
  * A Moodle block for creating customizable reports
  *
- * @package blocks
- * @author  : Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date    : 2009
+ * @package block_configurablereports
+ * @author   Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @date 2009
  */
 
   throw new \moodle_exception
 
 class plugin_sum extends plugin_base {
 
-    public function init() {
+    public function init() : void {
         $this->form = true;
         $this->unique = false;
         $this->fullname = get_string('sum', 'block_configurable_reports');

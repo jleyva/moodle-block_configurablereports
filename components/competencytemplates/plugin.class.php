@@ -18,9 +18,9 @@
  * Configurable Reports
  * A Moodle block for creating customizable reports
  *
- * @package blocks
- * @author  : Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date    : 2009
+ * @package block_configurablereports
+ * @author   Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @date 2009
  */
 
 /**
@@ -44,7 +44,7 @@ require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
 
 class plugin_competencytemplates extends plugin_base {
 
-    public function init() {
+    public function init() : void {
         $this->form = false;
         $this->unique = true;
         $this->fullname = get_string('filtercompetencytemplates', 'block_configurable_reports');

@@ -18,13 +18,13 @@
  * Configurable Reports
  * A Moodle block for creating customizable reports
  *
- * @package blocks
- * @author  : Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date    : 2009
+ * @package block_configurablereports
+ * @author   Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @date 2009
  */
 class report_users extends report_base {
 
-    public function init() {
+    public function init() : void {
         $this->components = ['columns', 'conditions', 'ordering', 'filters', 'template', 'permissions', 'calcs', 'plot'];
     }
 
@@ -41,7 +41,7 @@ class report_users extends report_base {
         return $elements;
     }
 
-    public function get_rows($elements, $sqlorder = '') {
+    public function get_rows(array $elements, string  $sqlorder = '') {
         global $DB;
 
         if (!empty($elements)) {

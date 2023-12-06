@@ -31,7 +31,10 @@ require_once($CFG->libdir . '/formslib.php');
 
 class searchtext_form extends moodleform {
 
-    public function definition() {
+    /**
+* Form definition
+*/
+public function definition():void {
         $mform =& $this->_form;
 
         $mform->addElement('header', 'crformheader', get_string('filter_searchtext', 'block_configurable_reports'), '');

@@ -27,7 +27,7 @@ require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
 
 class plugin_percent extends plugin_base {
 
-    public function init() {
+    public function init() : void {
         $this->form = true;
         $this->unique = false;
         $this->fullname = get_string('percent', 'block_configurable_reports');

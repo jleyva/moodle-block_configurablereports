@@ -18,9 +18,9 @@
  * Configurable Reports
  * A Moodle block for creating Configurable Reports
  *
- * @package blocks
- * @author  : Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date    : 2009
+ * @package block_configurablereports
+ * @author   Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @date 2009
  */
 
 defined('MOODLE_INTERNAL') || die;
@@ -30,22 +30,36 @@ require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
 class report_base {
 
     public $id = 0;
+
     public $components = [];
+
     public $finalreport;
-    public $totalrecords = 0;
-    public $currentuser = 0;
-    public $currentcourse = 0;
-    public $starttime = 0;
-    public $endtime = 0;
-    public $sql = '';
+
+    public int $totalrecords = 0;
+
+    public int $currentuser = 0;
+
+    public int $currentcourse = 0;
+
+    public int $starttime = 0;
+
+    public int $endtime = 0;
+
+    public string $sql = '';
+
     public $filterform = null;
-    private $currentcourseid = 0;
+
+    private int $currentcourseid = 0;
 
     /**
      * @var false|mixed|stdClass
      */
-    private $config;
+    public ?object $config;
 
+    /**
+     * @param $report
+     * @return void
+     */
     public function reports_base($report) {
         global $DB, $CFG, $USER, $remotedb;
 

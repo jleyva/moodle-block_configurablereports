@@ -18,9 +18,9 @@
  * Configurable Reports
  * A Moodle block for creating customizable reports
  *
- * @package blocks
- * @author  : Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date    : 2009
+ * @package block_configurablereports
+ * @author   Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @date 2009
  */
 
 if (!defined('MOODLE_INTERNAL')) {
@@ -32,7 +32,10 @@ require_once($CFG->libdir . '/formslib.php');
 
 class permissions_form extends moodleform {
 
-    public function definition() {
+    /**
+* Form definition
+*/
+public function definition():void {
         global $DB, $USER, $CFG;
 
         $mform =& $this->_form;
@@ -46,7 +49,7 @@ class permissions_form extends moodleform {
         $this->add_action_buttons(true, get_string('update'));
     }
 
-    public function validation($data, $files) {
+    public function validation($data, $files) : array{
         $errors = parent::validation($data, $files);
         // TODO - this reg expr can be improved.
         $regex = "/(\(*\s*\bc\d{1,2}\b\s*\(*\)*\s*(\(|and|or)\s*)+\(*\s*\bc\d{1,2}\b\s*\(*\)*\s*$/i";

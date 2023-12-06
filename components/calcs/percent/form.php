@@ -32,7 +32,10 @@ require_once($CFG->libdir . '/formslib.php');
 
 class percent_form extends moodleform {
 
-    public function definition() {
+    /**
+* Form definition
+*/
+public function definition():void {
         global $DB, $USER, $CFG;
 
         $mform =& $this->_form;

@@ -18,13 +18,13 @@
  * Configurable Reports
  * A Moodle block for creating Configurable Reports
  *
- * @package blocks
- * @author  : Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date    : 2009
+ * @package block_configurablereports
+ * @author   Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @date 2009
  */
 class component_template extends component_base {
 
-    public function init() {
+    public function init() : void {
         $this->plugins = false;
         $this->ordering = false;
         $this->form = true;

@@ -32,7 +32,10 @@ if (!has_capability('block/configurable_reports:managereports', $context) &&
 
 class sendemail_form extends moodleform {
 
-    public function definition() {
+    /**
+* Form definition
+*/
+public function definition():void {
         global $COURSE;
 
         $mform =& $this->_form;

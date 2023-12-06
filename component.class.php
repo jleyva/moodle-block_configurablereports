@@ -18,9 +18,17 @@
  * Configurable Reports
  * A Moodle block for creating customizable reports
  *
- * @package blocks
- * @author  : Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date    : 2009
+ * @package block_configurablereports
+ * @author  Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @date    2009
+ */
+
+/**
+ * Class component_base
+ *
+ * @package block_configurablereports
+ * @author  Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @date    2009
  */
 class component_base {
 
@@ -29,18 +37,31 @@ class component_base {
     public $form = false;
     public $help = '';
 
+    /**
+     * @var object
+     */
+    protected object $config;
+
+    /**
+     * @param $report
+     */
     public function __construct($report) {
-        global $DB, $CFG;
+        global $DB;
 
         if (is_numeric($report)) {
-            $this->config = $DB->get_record('block_configurable_reports', ['id' => $report]);
+            $this->config = $DB->get_record('block_configurable_reports', ['id' => $report], '*', MUST_EXIST);
         } else {
             $this->config = $report;
         }
         $this->init();
     }
 
-    public function add_form_elements(&$mform, $fullform) {
+    /**
+     * @param $mform
+     * @param $fullform
+     * @return bool
+     */
+    public function add_form_elements(&$mform, $fullform): bool {
         return false;
     }
 

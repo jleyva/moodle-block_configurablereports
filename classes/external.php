@@ -34,10 +34,8 @@ use context_course;
 use context_system;
 use external_api;
 use external_function_parameters;
-use external_multiple_structure;
 use external_single_structure;
 use external_value;
-use external_warnings;
 
 /**
  * This is the external API for this component.
@@ -52,7 +50,7 @@ class external extends external_api {
      *
      * @return external_function_parameters
      */
-    public static function get_report_data_parameters() {
+    public static function get_report_data_parameters(): external_function_parameters {
         return new external_function_parameters(
             [
                 'reportid' => new external_value(PARAM_INT, 'The report id', VALUE_REQUIRED),
@@ -68,7 +66,7 @@ class external extends external_api {
      * @param int $courseid course id (default to site)
      * @return array An array with a 'data' JSON string and a 'warnings' string
      */
-    public static function get_report_data($reportid, $courseid = 1) {
+    public static function get_report_data($reportid, int $courseid = 1): array {
         global $CFG, $DB;
 
         $params = self::validate_parameters(
@@ -76,7 +74,7 @@ class external extends external_api {
             ['reportid' => $reportid, 'courseid' => $courseid]
         );
 
-        if ($courseid == SITEID) {
+        if ($courseid === SITEID) {
             $context = context_system::instance();
         } else {
             $context = context_course::instance($courseid);
@@ -112,15 +110,18 @@ class external extends external_api {
             }
         }
 
-        return ['data' => json_encode($json, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT), 'warnings' => $warnings];
+        return [
+            'data' => json_encode($json, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT),
+            'warnings' => $warnings,
+        ];
     }
 
     /**
      * get_report_data return
      *
-     * @return external_description
+     * @return external_single_structure
      */
-    public static function get_report_data_returns() {
+    public static function get_report_data_returns(): external_single_structure {
         return new external_single_structure(
             [
                 'data' => new external_value(PARAM_RAW, 'JSON-formatted report data'),
