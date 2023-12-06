@@ -18,25 +18,29 @@
  * Configurable Reports
  * A Moodle block for creating customizable reports
  *
- * @package block_configurablereports
+ * @package  block_configurablereports
  * @author   Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date 2009
+ * @date     2009
  */
 
-if (!defined('MOODLE_INTERNAL')) {
-    //  It must be included from a Moodle page.
-    die('Direct access to this script is forbidden.');
-}
+defined('MOODLE_INTERNAL') || die;
 
 require_once($CFG->libdir . '/formslib.php');
 
+/**
+ * Class fsearchuserfield_form
+ *
+ * @package  block_configurablereports
+ * @author   Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @date     2009
+ */
 class fsearchuserfield_form extends moodleform {
 
     /**
-* Form definition
-*/
-public function definition():void {
-        global $remotedb, $USER, $CFG;
+     * Form definition
+     */
+    public function definition(): void {
+        global $remotedb;
 
         $mform =& $this->_form;
 
@@ -57,8 +61,7 @@ public function definition():void {
             }
         }
 
-        unset($usercolumns['password']);
-        unset($usercolumns['sesskey']);
+        unset($usercolumns['password'], $usercolumns['sesskey']);
 
         $mform->addElement('select', 'field', get_string('field', 'block_configurable_reports'), $usercolumns);
 

@@ -27,20 +27,26 @@ require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
 
 class plugin_percent extends plugin_base {
 
-    public function init() : void {
+    public function init(): void {
         $this->form = true;
         $this->unique = false;
         $this->fullname = get_string('percent', 'block_configurable_reports');
         $this->reporttypes = ['courses', 'users', 'sql', 'timeline', 'categories'];
     }
 
-    public function summary($data) {
+    /**
+     * Summary
+     *
+     * @param object $data
+     * @return string
+     */
+    public function summary(object $data): string {
         global $CFG;
 
-        if ($this->report->type != 'sql') {
+        if ($this->report->type !== 'sql') {
             $components = cr_unserialize($this->report->components);
             if (!is_array($components) || empty($components['columns']['elements'])) {
-                  throw new \moodle_exception('nocolumns');
+                throw new moodle_exception('nocolumns');
             }
 
             $columns = $components['columns']['elements'];
@@ -83,7 +89,7 @@ class plugin_percent extends plugin_base {
         return '';
     }
 
-    public function execute($rows) {
+    public function execute($rows): string {
         $result = 0;
         $totalrows = 0;
         $resultrows = 0;

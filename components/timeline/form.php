@@ -18,27 +18,24 @@
  * Configurable Reports
  * A Moodle block for creating customizable reports
  *
- * @package block_configurablereports
+ * @package  block_configurablereports
  * @author   Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date 2009
+ * @date     2009
  */
 
 // Based on Custom SQL Reports Plugin
 // See http://moodle.org/mod/data/view.php?d=13&rid=2884.
 
-if (!defined('MOODLE_INTERNAL')) {
-    //  It must be included from a Moodle page.
-    die('Direct access to this script is forbidden.');
-}
+defined('MOODLE_INTERNAL') || die;
 
 require_once($CFG->libdir . '/formslib.php');
 
 class timeline_form extends moodleform {
 
     /**
-* Form definition
-*/
-public function definition():void {
+     * Form definition
+     */
+    public function definition(): void {
         global $DB, $CFG;
 
         $mform =& $this->_form;
@@ -85,7 +82,7 @@ public function definition():void {
         $this->add_action_buttons();
     }
 
-    public function validation($data, $files) : array{
+    public function validation($data, $files): array {
         global $DB, $CFG, $db, $USER;
 
         $errors = parent::validation($data, $files);

@@ -18,9 +18,9 @@
  * Configurable Reports
  * A Moodle block for creating customizable reports
  *
- * @package block_configurablereports
+ * @package  block_configurablereports
  * @author   Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date 2009
+ * @date     2009
  */
 
 require_once("../../../../../config.php");
@@ -35,13 +35,13 @@ $id = required_param('id', PARAM_ALPHANUM);
 $reportid = required_param('reportid', PARAM_INT);
 
 if (!$report = $DB->get_record('block_configurable_reports', ['id' => $reportid])) {
-      throw new \moodle_exception('reportdoesnotexists');
+    throw new moodle_exception('reportdoesnotexists');
 }
 
 $courseid = $report->courseid;
 
 if (!$course = $DB->get_record('course', ['id' => $courseid])) {
-      throw new \moodle_exception('No such course id');
+    throw new moodle_exception('No such course id');
 }
 
 // Force user login in course (SITE or Course).
@@ -60,7 +60,7 @@ $reportclassname = 'report_' . $report->type;
 $reportclass = new $reportclassname($report);
 
 if (!$reportclass->check_permissions($USER->id, $context)) {
-      throw new \moodle_exception("No permissions");
+    throw new moodle_exception("No permissions");
 } else {
 
     $components = cr_unserialize($report->components);

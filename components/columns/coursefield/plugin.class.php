@@ -18,9 +18,9 @@
  * Configurable Reports
  * A Moodle block for creating customizable reports
  *
- * @package block_configurablereports
+ * @package  block_configurablereports
  * @author   Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date 2009
+ * @date     2009
  */
 defined('MOODLE_INTERNAL') || die;
 require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
@@ -30,7 +30,7 @@ class plugin_coursefield extends plugin_base {
     /**
      * @return void
      */
-    public function init() : void {
+    public function init(): void {
         $this->fullname = get_string('coursefield', 'block_configurable_reports');
         $this->type = 'undefined';
         $this->form = true;
@@ -38,10 +38,12 @@ class plugin_coursefield extends plugin_base {
     }
 
     /**
-     * @param $data
+     * Summary
+     *
+     * @param object $data
      * @return string
      */
-    public function summary($data) {
+    public function summary(object $data): string {
         return format_string($data->columname);
     }
 

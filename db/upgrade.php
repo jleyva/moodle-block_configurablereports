@@ -28,6 +28,12 @@
 
 defined('MOODLE_INTERNAL') || die();
 
+/**
+ * Upgrade block configurable_reports
+ *
+ * @param int $oldversion
+ * @return bool
+ */
 function xmldb_block_configurable_reports_upgrade($oldversion) {
     global $DB, $CFG;
 

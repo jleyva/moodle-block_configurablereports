@@ -77,13 +77,6 @@ if ($download && $report->type == "sql") {
 $reportclass->create_report();
 
 $action = (!empty($download)) ? 'download' : 'view';
-cr_add_to_log(
-    $report->courseid,
-    'configurable_reports',
-    $action,
-    '/block/configurable_reports/viewreport.php?id=' . $id,
-    $report->name
-);
 
 // No download, build navigation header etc..
 if (!$download) {

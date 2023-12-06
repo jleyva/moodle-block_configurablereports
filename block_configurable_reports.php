@@ -36,7 +36,7 @@ class block_configurable_reports extends block_list {
     /**
      * Act on instance data.
      */
-    public function specialization() {
+    public function specialization() : void{
 
         if ($this->config) {
             $this->title = $this->config->title ? $this->config->title : get_string('pluginname', 'block_configurable_reports');
@@ -76,15 +76,6 @@ class block_configurable_reports extends block_list {
      **/
     public function has_config(): bool {
         return true;
-    }
-
-    /**
-     * More than one instance per page?
-     *
-     * @return boolean
-     **/
-    public function instance_allow_multiple(): bool {
-        return false;
     }
 
     /**

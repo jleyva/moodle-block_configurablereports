@@ -18,9 +18,9 @@
  * Configurable Reports
  * A Moodle block for creating customizable reports
  *
- * @package block_configurablereports
+ * @package  block_configurablereports
  * @author   Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date 2009
+ * @date     2009
  */
 class report_categories extends report_base {
 
@@ -43,6 +43,8 @@ class report_categories extends report_base {
     }
 
     /**
+     * get_all_elements
+     *
      * @return array
      */
     public function get_all_elements(): array {
@@ -59,11 +61,13 @@ class report_categories extends report_base {
     }
 
     /**
-     * @param $elements
-     * @param $sqlorder
+     * Get rows
+     *
+     * @param array $elements
+     * @param string $sqlorder
      * @return array
      */
-    public function get_rows(array $elements, string  $sqlorder = '') {
+    public function get_rows(array $elements, string $sqlorder = '') {
         global $DB;
 
         $finalelements = [];

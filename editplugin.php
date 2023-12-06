@@ -84,7 +84,7 @@ $PAGE->set_url('/blocks/configurable_reports/editplugin.php', ['id' => $id, 'com
 $cdata = null;
 $plugin = '';
 if (!$cid) {
-    if (filetype($CFG->dirroot . '/blocks/configurable_reports/components/' . $comp . '/' . $pname) == 'dir') {
+    if (filetype($CFG->dirroot . '/blocks/configurable_reports/components/' . $comp . '/' . $pname) === 'dir') {
         $plugin = $pname;
     }
 } else {
@@ -123,7 +123,7 @@ if (!$cid) {
     }
 }
 
-if (!$plugin || $plugin != $pname) {
+if (!$plugin || $plugin !== $pname) {
       throw new \moodle_exception('nosuchplugin');
 }
 defined('MOODLE_INTERNAL') || die;
@@ -159,7 +159,6 @@ if (isset($pluginclass->form) && $pluginclass->form) {
             redirect($CFG->wwwroot . '/blocks/configurable_reports/editreport.php');
         }
     } else if ($data = $editform->get_data()) {
-        cr_add_to_log($report->courseid, 'configurable_reports', 'edit', '', $report->name);
         if (!empty($cdata)) {
             $cdata['formdata'] = $data;
             $cdata['summary'] = $pluginclass->summary($data);

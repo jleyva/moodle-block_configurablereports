@@ -33,10 +33,9 @@ require_once($CFG->libdir . '/formslib.php');
 class percent_form extends moodleform {
 
     /**
-* Form definition
-*/
-public function definition():void {
-        global $DB, $USER, $CFG;
+     * Form definition
+     */
+    public function definition(): void {
 
         $mform =& $this->_form;
         $this->_customdata['compclass']->add_form_elements($mform, $this->_customdata['report']->components);

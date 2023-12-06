@@ -141,7 +141,7 @@ if ($reports) {
         } else {
             $owner = get_string('deleted');
         }
-        if ($r->type == 'sql' && !block_configurable_reports_can_managesqlreports($context)) {
+        if ($r->type === 'sql' && !block_configurable_reports_can_managesqlreports($context)) {
             $editcell = '';
         } else {
             $editcell = '<a title="' . $stredit . '"  href="editreport.php?id=' . $r->id . '">' .

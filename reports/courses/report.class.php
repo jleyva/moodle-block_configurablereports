@@ -55,7 +55,7 @@ class report_courses extends report_base {
      *
      * @return array
      */
-    public function get_all_elements() {
+    public function get_all_elements(): array {
         global $DB;
 
         $elements = [];

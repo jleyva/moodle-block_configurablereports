@@ -36,8 +36,17 @@ Release date: 06.12.2023
 - Add PHP 8.1 support
 - Move repository to https://github.com/Lesterhuis-Training-en-Consultancy/moodle-block_configurablereports
 - Original repository (https://github.com/jleyva/moodle-block_configurablereports) can be used for older release or use the old branches within this repository
+- removed cr_add_to_log not used anymore
 
 Thanks to Lesterhuis Training & Consultancy for the contribution / Updated by Ldesign Media
+
+TODOS:
+- Namespaces for classes & autoloading
+- Move all to `classe`s to `classes/` directory
+- Clean up code
+- Add tests
+- AJAX_SCRIPT move to webservice
+- unserialize() to json_decode()
 
 3.9.0 (2019122000) for Moodle 3.4, 3.5, 3.6, 3.7, 3.8, 3.9
 Release date: Tuesday, 3 November 2020

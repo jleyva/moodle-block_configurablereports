@@ -22,18 +22,58 @@
  * @author   Juan leyva <http://www.twitter.com/jleyvadelgado>
  * @date 2009
  */
-class plugin_base {
 
+// TODO namespace
+
+/**
+ * Class plugin_base
+ *
+ * @package block_configurablereports
+ * @author   Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @date 2009
+ */
+abstract class plugin_base {
+
+    /**
+     * @var string
+     */
     public $fullname = '';
+
+    /**
+     * @var string
+     */
     public $type = '';
+
+    /**
+     * @var false|mixed|stdClass|null
+     */
     public $report = null;
+
+    /**
+     * @var bool
+     */
     public $form = false;
+
+    /**
+     * @var array
+     */
     public $cache = [];
+
+    /**
+     * @var bool
+     */
     public $unique = false;
+
+    /**
+     * @var array
+     */
     public $reporttypes = [];
 
+    /**
+     * @param $report
+     */
     public function __construct($report) {
-        global $DB, $CFG, $remotedb;
+        global $DB;
 
         if (is_numeric($report)) {
             $this->report = $DB->get_record('block_configurable_reports', ['id' => $report]);
@@ -43,13 +83,19 @@ class plugin_base {
         $this->init();
     }
 
-    public function summary($data) {
+    /**
+     * Summary
+     *
+     * @param object $data
+     * @return string
+     */
+    public function summary(object $data): string {
         return '';
     }
 
     // Should be override.
     public function init() : void {
-        return '';
+        throw new coding_exception('init method not implemented');
     }
 
 }

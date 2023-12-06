@@ -24,7 +24,7 @@
  */
 
 define('AJAX_SCRIPT', true);
-require(dirname(dirname(dirname(__FILE__))) . '/config.php');
+require(dirname(__FILE__, 3) . '/config.php');
 require_once($CFG->libdir . '/filelib.php');
 
 $reportname = required_param('reportname', PARAM_RAW);

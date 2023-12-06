@@ -18,23 +18,29 @@
  * Configurable Reports
  * A Moodle block for creating customizable reports
  *
- * @package block_configurablereports
+ * @package  block_configurablereports
  * @author   Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date 2009
+ * @date     2009
  */
 defined('MOODLE_INTERNAL') || die;
 require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
 
 class plugin_yearnumeric extends plugin_base {
 
-    public function init() : void {
+    public function init(): void {
         $this->form = false;
         $this->unique = true;
         $this->fullname = get_string('filteryearnumeric', 'block_configurable_reports');
         $this->reporttypes = ['categories', 'sql'];
     }
 
-    public function summary($data) {
+    /**
+     * Summary
+     *
+     * @param object $data
+     * @return string
+     */
+    public function summary(object $data): string {
         return get_string('filteryearnumeric_summary', 'block_configurable_reports');
     }
 
@@ -45,7 +51,7 @@ class plugin_yearnumeric extends plugin_base {
             return $finalelements;
         }
 
-        if ($this->report->type != 'sql') {
+        if ($this->report->type !== 'sql') {
             return [$filteryearnumeric];
         } else {
             if (preg_match("/%%FILTER_YEARNUMERIC:([^%]+)%%/i", $finalelements, $output)) {
@@ -71,7 +77,7 @@ class plugin_yearnumeric extends plugin_base {
             $yearnumeric[$year] = $year;
         }
 
-        if ($this->report->type != 'sql') {
+        if ($this->report->type !== 'sql') {
             $components = cr_unserialize($this->report->components);
             $conditions = $components['conditions'];
 

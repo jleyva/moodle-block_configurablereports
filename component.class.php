@@ -23,6 +23,8 @@
  * @date    2009
  */
 
+// TODO namespace
+
 /**
  * Class component_base
  *
@@ -30,7 +32,7 @@
  * @author  Juan leyva <http://www.twitter.com/jleyvadelgado>
  * @date    2009
  */
-class component_base {
+abstract class component_base {
 
     public $plugins = false;
     public $ordering = false;
@@ -57,12 +59,14 @@ class component_base {
     }
 
     /**
-     * @param $mform
-     * @param $fullform
-     * @return bool
+     * add_form_elements
+     *
+     * @param MoodleQuickForm $mform
+     * @param string $components
+     * @return void
      */
-    public function add_form_elements(&$mform, $fullform): bool {
-        return false;
+    public function add_form_elements(MoodleQuickForm $mform, string $components): void {
+
     }
 
 }

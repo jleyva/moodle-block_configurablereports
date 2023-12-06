@@ -72,7 +72,7 @@ if (!$hasreportscap && $report->ownerid != $USER->id) {
       throw new \moodle_exception('badpermissions');
 }
 
-if ($report->type == 'sql' && !block_configurable_reports_can_managesqlreports($context)) {
+if ($report->type === 'sql' && !block_configurable_reports_can_managesqlreports($context)) {
       throw new \moodle_exception('nosqlpermissions');
 }
 
@@ -86,7 +86,7 @@ if (!in_array($comp, $reportclass->components)) {
 }
 
 $elements = cr_unserialize($report->components);
-$elements = isset($elements[$comp]['elements']) ? $elements[$comp]['elements'] : [];
+$elements = $elements[$comp]['elements'] ?? [];
 
 require_once($CFG->dirroot . '/blocks/configurable_reports/components/' . $comp . '/component.class.php');
 $componentclassname = 'component_' . $comp;
@@ -104,7 +104,6 @@ if ($compclass->form) {
         redirect($CFG->wwwroot . '/blocks/configurable_reports/editcomp.php?id=' . $id . '&amp;comp=' . $comp);
     } else if ($data = $editform->get_data()) {
         $compclass->form_process_data($editform);
-        cr_add_to_log($courseid, 'configurable_reports', 'edit', '', $report->name);
     }
 
     $compclass->form_set_data($editform);
@@ -197,10 +196,8 @@ if ($elements) {
         $i++;
     }
     cr_print_table($table);
-} else {
-    if ($compclass->plugins) {
-        echo $OUTPUT->heading(get_string('no' . $comp . 'yet', 'block_configurable_reports'));
-    }
+} else if ($compclass->plugins) {
+    echo $OUTPUT->heading(get_string('no' . $comp . 'yet', 'block_configurable_reports'));
 }
 
 if ($compclass->plugins) {

@@ -17,23 +17,29 @@
 /** Configurable Reports
  * A Moodle block for creating customizable reports
  *
- * @package block_configurablereports
+ * @package  block_configurablereports
  * @author   Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date 2009
+ * @date     2009
  */
 defined('MOODLE_INTERNAL') || die;
 require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
 
 class plugin_searchtext extends plugin_base {
 
-    public function init() : void {
+    public function init(): void {
         $this->form = true;
         $this->unique = false;
         $this->fullname = get_string('filter_searchtext', 'block_configurable_reports');
         $this->reporttypes = ['searchtext', 'sql'];
     }
 
-    public function summary($data) {
+    /**
+     * Summary
+     *
+     * @param object $data
+     * @return string
+     */
+    public function summary(object $data): string {
         return empty($data->idnumber) ? get_string('filter_searchtext_summary', 'block_configurable_reports') : $data->idnumber;
     }
 
@@ -45,7 +51,7 @@ class plugin_searchtext extends plugin_base {
             $filtersearchtext = optional_param('filter_searchtext', '', PARAM_RAW);
         }
 
-        if ($this->report->type != 'sql') {
+        if ($this->report->type !== 'sql') {
             return [$filtersearchtext];
         } else {
             if ($filtersearchtext) {
@@ -85,12 +91,14 @@ class plugin_searchtext extends plugin_base {
 
         if (preg_match("/%%$filterstrmatch:([^%]+)%%/i", $finalelements, $output)) {
             [$field, $operator] = preg_split('/:/', $output[1]);
-            if (!in_array($operator, $operators)) {
-                  throw new \moodle_exception('nosuchoperator');
+
+            if (!in_array($operator, $operators, true)) {
+                throw new moodle_exception('nosuchoperator');
             }
-            if ($operator == '~') {
+
+            if ($operator === '~') {
                 $replace = " AND " . $field . " LIKE '%" . $filtersearchtext . "%'";
-            } else if ($operator == 'in') {
+            } else if ($operator === 'in') {
                 $processeditems = [];
                 // Accept comma-separated values, allowing for '\,' as a literal comma.
                 foreach (preg_split("/(?<!\\\\),/", $filtersearchtext) as $searchitem) {

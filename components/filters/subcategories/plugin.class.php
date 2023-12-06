@@ -18,23 +18,29 @@
  * Configurable Reports
  * A Moodle block for creating customizable reports
  *
- * @package block_configurablereports
+ * @package  block_configurablereports
  * @author   Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date 2009
+ * @date     2009
  */
 defined('MOODLE_INTERNAL') || die;
 require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
 
 class plugin_subcategories extends plugin_base {
 
-    public function init() : void {
+    public function init(): void {
         $this->form = false;
         $this->unique = true;
         $this->fullname = get_string('filtersubcategories', 'block_configurable_reports');
         $this->reporttypes = ['categories', 'sql'];
     }
 
-    public function summary($data) {
+    /**
+     * Summary
+     *
+     * @param object $data
+     * @return string
+     */
+    public function summary(object $data): string {
         return get_string('filtersubcategories_summary', 'block_configurable_reports');
     }
 
@@ -44,7 +50,7 @@ class plugin_subcategories extends plugin_base {
             return $finalelements;
         }
 
-        if ($this->report->type != 'sql') {
+        if ($this->report->type !== 'sql') {
             return [$filtersubcategories];
         } else {
             if (preg_match("/%%FILTER_SUBCATEGORIES:([^%]+)%%/i", $finalelements, $output)) {
@@ -68,7 +74,7 @@ class plugin_subcategories extends plugin_base {
         $courseoptions = [];
         $courseoptions[0] = get_string('filter_all', 'block_configurable_reports');
 
-        if ($this->report->type != 'sql') {
+        if ($this->report->type !== 'sql') {
             $components = cr_unserialize($this->report->components);
             $conditions = $components['conditions'];
 

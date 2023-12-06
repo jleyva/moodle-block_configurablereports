@@ -18,13 +18,13 @@
  * Configurable Reports
  * A Moodle block for creating customizable reports
  *
- * @package block_configurablereports
+ * @package  block_configurablereports
  * @author   Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date 2009
+ * @date     2009
  */
 class component_customsql extends component_base {
 
-    public function init() : void {
+    public function init(): void {
         global $PAGE;
 
         $this->plugins = false;

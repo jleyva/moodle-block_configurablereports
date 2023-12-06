@@ -18,29 +18,35 @@
  * Configurable Reports
  * A Moodle block for creating customizable reports
  *
- * @package block_configurablereports
+ * @package  block_configurablereports
  * @author   Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date 2009
+ * @date     2009
  */
 defined('MOODLE_INTERNAL') || die;
 require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
 
 class plugin_min extends plugin_base {
 
-    public function init() : void {
+    public function init(): void {
         $this->form = true;
         $this->unique = false;
         $this->fullname = get_string('min', 'block_configurable_reports');
         $this->reporttypes = ['courses', 'users', 'sql', 'timeline', 'categories'];
     }
 
-    public function summary($data) {
+    /**
+     * Summary
+     *
+     * @param object $data
+     * @return string
+     */
+    public function summary(object $data): string {
         global $DB, $CFG;
 
-        if ($this->report->type != 'sql') {
+        if ($this->report->type !== 'sql') {
             $components = cr_unserialize($this->report->components);
             if (!is_array($components) || empty($components['columns']['elements'])) {
-                  throw new \moodle_exception('nocolumns');
+                throw new moodle_exception('nocolumns');
             }
 
             $columns = $components['columns']['elements'];

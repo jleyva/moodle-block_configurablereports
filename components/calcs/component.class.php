@@ -18,33 +18,53 @@
  * Configurable Reports
  * A Moodle block for creating customizable reports
  *
- * @package block_configurablereports
+ * @package  block_configurablereports
  * @author   Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date 2009
+ * @date     2009
+ */
+
+/**
+ * Class component_calcs
+ *
+ * @package  block_configurablereports
+ * @author   Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @date     2009
  */
 class component_calcs extends component_base {
 
-    public function init() : void {
+    /**
+     * Init
+     *
+     * @return void
+     */
+    public function init(): void {
         $this->plugins = true;
         $this->ordering = false;
         $this->form = false;
         $this->help = true;
     }
 
-    public function add_form_elements(&$mform, $components) {
-        global $DB, $CFG;
+    /**
+     * add_form_elements
+     *
+     * @param MoodleQuickForm $mform
+     * @param string $components
+     * @return void
+     */
+    public function add_form_elements(MoodleQuickForm $mform, string $components): void {
+        global $CFG;
 
         $components = cr_unserialize($components);
         $options = [];
 
-        if ($this->config->type != 'sql') {
+        if ($this->config->type !== 'sql') {
             if (!is_array($components) || empty($components['columns']['elements'])) {
-                  throw new \moodle_exception('nocolumns');
+                throw new moodle_exception('nocolumns');
             }
 
             $columns = $components['columns']['elements'];
 
-            $calcs = isset($components['calcs']['elements']) ? $components['calcs']['elements'] : [];
+            $calcs = $components['calcs']['elements'] ?? [];
             $columnsused = [];
             if ($calcs) {
                 foreach ($calcs as $c) {
@@ -67,7 +87,7 @@ class component_calcs extends component_base {
             $reportclass = new $reportclassname($this->config);
 
             $components = cr_unserialize($this->config->components);
-            $config = (isset($components['customsql']['config'])) ? $components['customsql']['config'] : new stdclass;
+            $config = $components['customsql']['config'] ?? (object) [];
 
             if (isset($config->querysql)) {
 

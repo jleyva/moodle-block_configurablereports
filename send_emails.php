@@ -33,9 +33,9 @@ if (!has_capability('block/configurable_reports:managereports', $context) &&
 class sendemail_form extends moodleform {
 
     /**
-* Form definition
-*/
-public function definition():void {
+     * Form definition
+     */
+    public function definition(): void {
         global $COURSE;
 
         $mform =& $this->_form;
@@ -65,7 +65,11 @@ public function definition():void {
 
 }
 
-$form = new sendemail_form(null, ['usersids' => implode(',', $_POST['userids']), 'courseid' => $_POST['courseid']]);
+// TODO _POST?? not Moodle way.
+$form = new sendemail_form(null, [
+    'usersids' => implode(',', $_POST['userids']),
+    'courseid' => $_POST['courseid'],
+]);
 
 if ($form->is_cancelled()) {
     redirect(new moodle_url('/course/view.php?id=' . $data->courseid));

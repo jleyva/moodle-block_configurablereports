@@ -18,23 +18,29 @@
  * Configurable Reports
  * A Moodle block for creating customizable reports
  *
- * @package block_configurablereports
+ * @package  block_configurablereports
  * @author   Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date 2009
+ * @date     2009
  */
 defined('MOODLE_INTERNAL') || die;
 require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
 
 class plugin_courses extends plugin_base {
 
-    public function init() : void {
+    public function init(): void {
         $this->form = false;
         $this->unique = true;
         $this->fullname = get_string('filtercourses', 'block_configurable_reports');
         $this->reporttypes = ['courses', 'sql'];
     }
 
-    public function summary($data) {
+    /**
+     * Summary
+     *
+     * @param object $data
+     * @return string
+     */
+    public function summary(object $data): string {
         return get_string('filtercourses_summary', 'block_configurable_reports');
     }
 
@@ -45,7 +51,7 @@ class plugin_courses extends plugin_base {
             return $finalelements;
         }
 
-        if ($this->report->type != 'sql') {
+        if ($this->report->type !== 'sql') {
             return [$filtercourses];
         } else {
             if (preg_match("/%%FILTER_COURSES:([^%]+)%%/i", $finalelements, $output)) {
@@ -66,7 +72,7 @@ class plugin_courses extends plugin_base {
         $reportclassname = 'report_' . $this->report->type;
         $reportclass = new $reportclassname($this->report);
 
-        if ($this->report->type != 'sql') {
+        if ($this->report->type !== 'sql') {
             $components = cr_unserialize($this->report->components);
             $conditions = $components['conditions'];
 

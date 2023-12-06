@@ -18,9 +18,9 @@
  * Configurable Reports
  * A Moodle block for creating Configurable Reports
  *
- * @package block_configurablereports
+ * @package  block_configurablereports
  * @author   Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date 2009
+ * @date     2009
  */
 
 require_once("../../config.php");
@@ -38,7 +38,7 @@ if (!$course = $DB->get_record('course', ['id' => $report->courseid])) {
 }
 
 // Force user login in course (SITE or Course).
-if ($course->id == SITEID) {
+if ((int) $course->id === SITEID) {
     require_login();
     $context = context_system::instance();
 } else {

@@ -18,11 +18,16 @@
  * Configurable Reports
  * A Moodle block for creating customizable reports
  *
- * @package block_configurablereports
+ * @package  block_configurablereports
  * @author   Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date 2009
+ * @date     2009
  */
 class report_timeline extends report_base {
+
+    /**
+     * @var mixed
+     */
+    private $timeline;
 
     /**
      * Init
@@ -58,8 +63,8 @@ class report_timeline extends report_base {
             $daysecs = 60 * 60 * 24;
 
             if ($config->timemode === 'previous') {
-                $config->starttime = gmmktime() - $config->previousstart * $daysecs;
-                $config->endtime = gmmktime() - $config->previousend * $daysecs;
+                $config->starttime = time() - $config->previousstart * $daysecs;
+                $config->endtime = time() - $config->previousend * $daysecs;
                 if (isset($config->forcemidnight)) {
                     $config->starttime = usergetmidnight($config->starttime);
                     $config->endtime = usergetmidnight($config->endtime) + ($daysecs - 1);

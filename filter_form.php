@@ -14,20 +14,34 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-if (!defined('MOODLE_INTERNAL')) {
-    // It must be included from a Moodle page.
-    die('Direct access to this script is forbidden.');
-}
+/**
+ * Configurable Reports
+ * A Moodle block for creating Configurable Reports
+ *
+ * @package  block_configurablereports
+ * @author   Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @date     2009
+ */
 
+defined('MOODLE_INTERNAL') || die;
+
+global $CFG;
 require_once($CFG->libdir . '/formslib.php');
 
+/**
+ * Class report_edit_form
+ *
+ * @package  block_configurablereports
+ * @author   Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @date     2009
+ */
 class report_edit_form extends moodleform {
 
     /**
-* Form definition
-*/
-public function definition():void {
-        global $DB, $USER, $CFG, $COURSE;
+     * Form definition
+     */
+    public function definition(): void {
+        global $COURSE;
 
         $mform =& $this->_form;
 

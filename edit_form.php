@@ -24,12 +24,18 @@
  */
 class block_configurable_reports_edit_form extends block_edit_form {
 
+    /**
+     * specific_definition
+     *
+     * @param $mform
+     * @return void
+     */
     protected function specific_definition($mform) {
 
         $mform->addElement('header', 'configheader', get_string('blocksettings', 'block'));
 
         $mform->addElement('text', 'config_title', get_string('name'));
-        $mform->setType('config_title', PARAM_MULTILANG);
+        $mform->setType('config_title', PARAM_TEXT);
         $mform->setDefault('config_title', get_string('pluginname', 'block_configurable_reports'));
 
         $mform->addElement(

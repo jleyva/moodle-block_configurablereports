@@ -18,16 +18,19 @@
  * Configurable Reports
  * A Moodle block for creating Configurable Reports
  *
- * @package block_configurablereports
+ * @package  block_configurablereports
  * @author   Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date 2009
+ * @date     2009
  */
 
+/**
+ * @return void
+ */
 function cr_print_js_function() {
     ?>
-    <script type="text/javascript">
+    <script>
         function printDiv(id) {
-            var cdiv, tmpw;
+            let cdiv, tmpw;
 
             cdiv = document.getElementById(id);
             tmpw = window.open(" ", "Print");
@@ -37,6 +40,7 @@ function cr_print_js_function() {
             tmpw.document.write(cdiv.innerHTML);
             tmpw.document.write('</' + 'body></html>');
             tmpw.document.close();
+
             setTimeout(function() {
                 tmpw.print();
                 tmpw.close();
@@ -46,8 +50,14 @@ function cr_print_js_function() {
     <?php
 }
 
-function cr_add_jsdatatables($cssid, moodle_page $page) {
-    global $OUTPUT;
+/**
+ * cr_add_jsdatatables
+ *
+ * @param string $cssid
+ * @param moodle_page $page
+ * @return void
+ */
+function cr_add_jsdatatables(string $cssid, moodle_page $page) {
     $data = [];
     $data['selector'] = $cssid;
 
@@ -77,10 +87,12 @@ function cr_add_jsdatatables($cssid, moodle_page $page) {
 }
 
 /**
- * @param $cssid
- * @param moodle_page $page
+ * cr_add_jsordering
+ *
+ * @param string $cssid
+ * @param moodle_page|null $page
  */
-function cr_add_jsordering($cssid, moodle_page $page = null) {
+function cr_add_jsordering(string $cssid, moodle_page $page = null) {
     global $OUTPUT;
 
     if (!empty($page)) {
@@ -95,6 +107,12 @@ function cr_add_jsordering($cssid, moodle_page $page = null) {
     }
 }
 
+/**
+ * urlencode_recursive
+ *
+ * @param mixed $var
+ * @return array|mixed|stdClass|string
+ */
 function urlencode_recursive($var) {
     if (is_object($var)) {
         $newvar = new stdClass();
@@ -117,6 +135,12 @@ function urlencode_recursive($var) {
     return $newvar;
 }
 
+/**
+ * urldecode_recursive
+ *
+ * @param mixed $var
+ * @return mixed
+ */
 function urldecode_recursive($var) {
     if (is_object($var)) {
         $newvar = new stdClass();
@@ -138,10 +162,17 @@ function urldecode_recursive($var) {
     return $newvar;
 }
 
-function cr_get_my_reports($courseid, $userid, $allcourses = true) {
+/**
+ * cr_get_my_reports
+ *
+ * @param int $courseid
+ * @param int $userid
+ * @param bool $allcourses
+ * @return array
+ */
+function cr_get_my_reports(int $courseid, int $userid, bool $allcourses = true): array {
     global $DB;
 
-    $reports = [];
     if ($courseid == SITEID) {
         $context = context_system::instance();
     } else {
@@ -149,7 +180,7 @@ function cr_get_my_reports($courseid, $userid, $allcourses = true) {
     }
 
     if (has_capability('block/configurable_reports:managereports', $context, $userid)) {
-        if ($courseid == SITEID && $allcourses) {
+        if ($courseid === SITEID && $allcourses) {
             $reports = $DB->get_records('block_configurable_reports', null, 'name ASC');
         } else {
             $reports = $DB->get_records('block_configurable_reports', ['courseid' => $courseid], 'name ASC');
@@ -165,22 +196,44 @@ function cr_get_my_reports($courseid, $userid, $allcourses = true) {
     return $reports;
 }
 
-function cr_serialize($var) {
-    return serialize(urlencode_recursive($var));
+/**
+ * cr_serialize
+ *
+ * @param mixed $data
+ * @return string
+ */
+function cr_serialize($data): string {
+    return serialize(urlencode_recursive($data));
 }
 
-function cr_unserialize($var) {
+/**
+ * Update serialized data
+ *
+ * @param string $data
+ * @return array
+ */
+function cr_unserialize(string $data): array {
     // It's needed to convert the object to stdClass to avoid __PHP_Incomplete_Class error.
-    $var = preg_replace('/O:6:"object"/', 'O:8:"stdClass"', $var);
+    $data = preg_replace('/O:6:"object"/', 'O:8:"stdClass"', $data);
     // To make SQL queries compatible with PostgreSQL it's needed to replace " to '.
-    $var = preg_replace('/THEN\+%22(.+?)%22/', 'THEN+%27${1}%27', $var);
-    $var = preg_replace('/%60/', '+++', $var);
+    $data = preg_replace('/THEN\+%22(.+?)%22/', 'THEN+%27${1}%27', $data);
+    $data = preg_replace('/%60/', '+++', $data);
 
-    return urldecode_recursive(unserialize($var));
+    // TODO remove unserialize
+    $data = unserialize($data);
+    return (array) urldecode_recursive($data);
 }
 
-function cr_check_report_permissions($report, $userid, $context) {
-    global $DB, $CFG;
+/**
+ * cr_check_report_permissions
+ *
+ * @param object $report
+ * @param int $userid
+ * @param context $context
+ * @return mixed
+ */
+function cr_check_report_permissions($report, int $userid, context $context) {
+    global $CFG;
 
     require_once($CFG->dirroot . '/blocks/configurable_reports/report.class.php');
     require_once($CFG->dirroot . '/blocks/configurable_reports/reports/' . $report->type . '/report.class.php');
@@ -191,14 +244,20 @@ function cr_check_report_permissions($report, $userid, $context) {
     return $classi->check_permissions($userid, $context);
 }
 
-function cr_get_report_plugins($courseid) {
+/**
+ * cr_get_report_plugins
+ *
+ * @param int $courseid
+ * @return array
+ */
+function cr_get_report_plugins(int $courseid) {
     $pluginoptions = [];
-    $context = ($courseid == SITEID) ? context_system::instance() : context_course::instance($courseid);
+    $context = ($courseid === SITEID) ? context_system::instance() : context_course::instance($courseid);
     $plugins = get_list_of_plugins('blocks/configurable_reports/reports');
 
     if ($plugins) {
         foreach ($plugins as $p) {
-            if ($p == 'sql' && !block_configurable_reports_can_managesqlreports($context)) {
+            if ($p === 'sql' && !block_configurable_reports_can_managesqlreports($context)) {
                 continue;
             }
             $pluginoptions[$p] = get_string('report_' . $p, 'block_configurable_reports');
@@ -208,11 +267,15 @@ function cr_get_report_plugins($courseid) {
     return $pluginoptions;
 }
 
-function cr_get_export_plugins() {
+/**
+ * cr_get_export_plugins
+ *
+ * @return array
+ */
+function cr_get_export_plugins(): array {
 
-    $exportoptions = [];
     $plugins = get_list_of_plugins('blocks/configurable_reports/export');
-
+    $pluginoptions = [];
     if ($plugins) {
         foreach ($plugins as $p) {
             $pluginoptions[$p] = get_string('export_' . $p, 'block_configurable_reports');
@@ -222,7 +285,14 @@ function cr_get_export_plugins() {
     return $pluginoptions;
 }
 
-function cr_print_table($table, $return = false) {
+/**
+ * cr_print_table
+ *
+ * @param object $table
+ * @param bool $return
+ * @return string|true
+ */
+function cr_print_table(object $table, bool $return = false) {
     global $COURSE;
 
     $output = '';
@@ -375,15 +445,19 @@ function cr_print_table($table, $return = false) {
     return true;
 }
 
-function table_to_excel($filename, $table) {
-    global $DB, $CFG;
+/**
+ * table_to_excel
+ *
+ * @param string $filename
+ * @param $table
+ * @return void
+ */
+function table_to_excel(string $filename, $table) {
+    global $CFG;
 
     require_once($CFG->dirroot . '/lib/excellib.class.php');
 
     if (!empty($table->head)) {
-        $countcols = count($table->head);
-        $keys = array_keys($table->head);
-        $lastkey = end($keys);
         foreach ($table->head as $key => $heading) {
             $matrix[0][$key] = str_replace("\n", ' ', htmlspecialchars_decode(strip_tags(nl2br($heading))));
         }
@@ -466,6 +540,17 @@ function cr_get_context($context, $id = null, $flags = null) {
     return get_context_instance($context, $id, $flags);
 }
 
+/**
+ * cr_make_categories_list
+ *
+ * @param $list
+ * @param $parents
+ * @param $requiredcapability
+ * @param $excludeid
+ * @param $category
+ * @param $path
+ * @return void
+ */
 function cr_make_categories_list(&$list, &$parents, $requiredcapability = '', $excludeid = 0, $category = null, $path = '') {
     global $CFG, $DB;
 
@@ -534,24 +619,22 @@ function cr_import_xml($xml, $course) {
     return false;
 }
 
-// For avoid warnings in versions minor than 2.7.
-function cr_add_to_log($courseid, $module, $action, $url = '', $info = '', $cm = 0, $user = 0) {
+/**
+ * @return array
+ */
+function cr_logging_info(): array {
     global $CFG;
-
-    if ($CFG->version < 2014051200) {
-        add_to_log($courseid, $module, $action, $url, $info, $cm, $user);
-    }
-}
-
-function cr_logging_info() {
-    global $DB, $CFG;
 
     static $uselegacyreader;
     static $useinternalreader;
     static $logtable;
 
     if (isset($uselegacyreader) && isset($useinternalreader) && isset($logtable)) {
-        return [$uselegacyreader, $useinternalreader, $logtable];
+        return [
+            $uselegacyreader,
+            $useinternalreader,
+            $logtable,
+        ];
     }
 
     $uselegacyreader = false; // Flag to determine if we should use the legacy reader.
@@ -586,7 +669,11 @@ function cr_logging_info() {
         }
     }
 
-    return [$uselegacyreader, $useinternalreader, $logtable];
+    return [
+        $uselegacyreader,
+        $useinternalreader,
+        $logtable,
+    ];
 }
 
 /**
@@ -594,10 +681,8 @@ function cr_logging_info() {
  *
  * @param $context
  * @return bool
- * @throws coding_exception
- * @throws dml_exception
  */
-function block_configurable_reports_can_managesqlreports($context) {
+function block_configurable_reports_can_managesqlreports($context): bool {
     global $USER;
     if (has_capability('block/configurable_reports:managesqlreports', $context)) {
         $allowedusers = get_config('block_configurable_reports', 'allowedsqlusers');

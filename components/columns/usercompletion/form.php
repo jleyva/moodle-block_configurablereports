@@ -18,25 +18,28 @@
  * Configurable Reports
  * A Moodle block for creating customizable reports
  *
- * @package block_configurablereports
+ * @package  block_configurablereports
  * @author   Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date 2009
+ * @date     2009
  */
 
-if (!defined('MOODLE_INTERNAL')) {
-    //  It must be included from a Moodle page.
-    die('Direct access to this script is forbidden.');
-}
+defined('MOODLE_INTERNAL') || die;
 
 require_once($CFG->libdir . '/formslib.php');
 
+/**
+ * Class userstats_form
+ *
+ * @package  block_configurablereports
+ * @author   Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @date     2009
+ */
 class userstats_form extends moodleform {
 
     /**
-* Form definition
-*/
-public function definition():void {
-        global $DB, $USER, $CFG;
+     * Form definition
+     */
+    public function definition(): void {
 
         $mform =& $this->_form;
 
@@ -57,11 +60,11 @@ public function definition():void {
         $this->add_action_buttons(true, get_string('add'));
     }
 
-    public function validation($data, $files) : array{
-        global $DB, $CFG;
+    public function validation($data, $files): array {
+        global $CFG;
         $errors = parent::validation($data, $files);
         $errors = $this->_customdata['compclass']->validate_form_elements($data, $errors);
-        if ($data['stat'] != 'coursededicationtime' && (!isset($CFG->enablestats) || !$CFG->enablestats)) {
+        if ($data['stat'] !== 'coursededicationtime' && (!isset($CFG->enablestats) || !$CFG->enablestats)) {
             $errors['stat'] = get_string('globalstatsshouldbeenabled', 'block_configurable_reports');
         }
 

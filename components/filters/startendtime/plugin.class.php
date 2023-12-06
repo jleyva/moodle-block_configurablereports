@@ -18,30 +18,36 @@
  * Configurable Reports
  * A Moodle block for creating customizable reports
  *
- * @package block_configurablereports
+ * @package  block_configurablereports
  * @author   Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date 2009
+ * @date     2009
  */
 defined('MOODLE_INTERNAL') || die;
 require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
 
 class plugin_startendtime extends plugin_base {
 
-    public function init() : void {
+    public function init(): void {
         $this->form = false;
         $this->unique = true;
         $this->fullname = get_string('startendtime', 'block_configurable_reports');
         $this->reporttypes = ['sql', 'timeline', 'users', 'courses'];
     }
 
-    public function summary($data) {
+    /**
+     * Summary
+     *
+     * @param object $data
+     * @return string
+     */
+    public function summary(object $data): string {
         return get_string('filterstartendtime_summary', 'block_configurable_reports');
     }
 
     public function execute($finalelements, $data) {
         global $CFG;
 
-        if ($this->report->type != 'sql') {
+        if ($this->report->type !== 'sql') {
             return $finalelements;
         }
 
@@ -77,7 +83,7 @@ class plugin_startendtime extends plugin_base {
         if (preg_match("/%%FILTER_STARTTIME:([^%]+)%%/i", $finalelements, $output)) {
             [$field, $operator] = preg_split('/:/', $output[1]);
             if (!in_array($operator, $operators)) {
-                  throw new \moodle_exception('nosuchoperator');
+                throw new moodle_exception('nosuchoperator');
             }
             $replace = ' AND ' . $field . ' ' . $operator . ' ' . $filterstarttime;
             $finalelements = str_replace('%%FILTER_STARTTIME:' . $output[1] . '%%', $replace, $finalelements);
@@ -86,7 +92,7 @@ class plugin_startendtime extends plugin_base {
         if (preg_match("/%%FILTER_ENDTIME:([^%]+)%%/i", $finalelements, $output)) {
             [$field, $operator] = preg_split('/:/', $output[1]);
             if (!in_array($operator, $operators)) {
-                  throw new \moodle_exception('nosuchoperator');
+                throw new moodle_exception('nosuchoperator');
             }
             $replace = ' AND ' . $field . ' ' . $operator . ' ' . $filterendtime;
             $finalelements = str_replace('%%FILTER_ENDTIME:' . $output[1] . '%%', $replace, $finalelements);

@@ -18,9 +18,9 @@
  * Configurable Reports
  * A Moodle block for creating customizable reports
  *
- * @package block_configurablereports
+ * @package  block_configurablereports
  * @author   Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date 2009
+ * @date     2009
  */
 /*
     evaluate postfix notation
@@ -30,19 +30,46 @@
     - => ^ => array_diff
  */
 
+// TODO namespace
+
+/**
+ * Class EvalWise
+ *
+ * @package  block_configurablereports
+ * @author   Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @date     2009
+ */
 class EvalWise extends EvalMath {
 
-    public $data = [];
-    public $index = 0;
+    /**
+     * @var array
+     */
+    public array $data = [];
 
-    public function set_data($data) {
+    /**
+     * @var int
+     */
+    public int $index = 0;
+
+    /**
+     * @param $data
+     * @return void
+     */
+    public function set_data($data): void {
         $this->data = $data;
         $this->index = count($this->data);
     }
 
+    /**
+     * pfx
+     *
+     * @param $tokens
+     * @param $vars
+     * @return array|false|mixed|null
+     */
     public function pfx($tokens, $vars = []) {
 
-        if ($tokens == false) {
+        if ($tokens === false) {
             return false;
         }
 
@@ -51,9 +78,12 @@ class EvalWise extends EvalMath {
         foreach ($tokens as $token) {
 
             // If the token is a function, pop arguments off the stack, hand them to the function, and push the result back on.
-            if (is_array($token)) { // It's a function!
+            if (is_array($token)) {
+
+                // It's a function!
                 $fnn = $token['fnn'];
                 $count = $token['argcount'];
+
                 if (in_array($fnn, $this->fb)) { // Built-in function.
                     if (is_null($op1 = $stack->pop())) {
                         return $this->trigger("internal error");
@@ -62,7 +92,10 @@ class EvalWise extends EvalMath {
                     if ($fnn == 'ln') {
                         $fnn = 'log';
                     }
+
+                    // TODO Use the PHP internal function if possible.
                     eval('$stack->push(' . $fnn . '($op1));'); // Perfectly safe eval().
+
                 } else if (array_key_exists($fnn, $this->fc)) { // Calc emulation function.
                     // Get args.
                     $args = [];
@@ -113,7 +146,7 @@ class EvalWise extends EvalMath {
                         break;
                 }
 
-            } else if ($token == "_") {
+            } else if ($token === "_") {
                 // If the token is a unary operator, pop one value off the stack, do the operation, and push it back on.
                 $stack->push(-1 * $stack->pop());
             } else {
@@ -133,12 +166,13 @@ class EvalWise extends EvalMath {
         if ($stack->count != 1) {
             return $this->trigger("internal error");
         }
+
         $last = $stack->pop();
         if (isset($this->data[$last])) {
             return $this->data[$last];
-        } else {
-            return false;
         }
+
+        return false;
     }
 
 }

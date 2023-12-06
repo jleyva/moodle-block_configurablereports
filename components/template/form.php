@@ -18,24 +18,21 @@
  * Configurable Reports
  * A Moodle block for creating Configurable Reports
  *
- * @package block_configurablereports
+ * @package  block_configurablereports
  * @author   Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date 2009
+ * @date     2009
  */
 
-if (!defined('MOODLE_INTERNAL')) {
-    //  It must be included from a Moodle page.
-    die('Direct access to this script is forbidden.');
-}
+defined('MOODLE_INTERNAL') || die;
 
 require_once($CFG->libdir . '/formslib.php');
 
 class template_form extends moodleform {
 
     /**
-* Form definition
-*/
-public function definition():void {
+     * Form definition
+     */
+    public function definition(): void {
         global $DB, $CFG;
 
         $mform =& $this->_form;
@@ -115,7 +112,7 @@ public function definition():void {
         $this->add_action_buttons();
     }
 
-    public function validation($data, $files) : array{
+    public function validation($data, $files): array {
         global $DB, $CFG, $db, $USER;
         $errors = parent::validation($data, $files);
         if ($data['enabled']) {

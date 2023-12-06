@@ -18,13 +18,21 @@
  * Configurable Reports
  * A Moodle block for creating customizable reports
  *
- * @package block_configurablereports
+ * @package  block_configurablereports
  * @author   Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date 2009
+ * @date     2009
+ */
+
+/**
+ * Class component_permissions
+ *
+ * @package  block_configurablereports
+ * @author   Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @date     2009
  */
 class component_permissions extends component_base {
 
-    public function init() : void {
+    public function init(): void {
         $this->plugins = true;
         $this->ordering = false;
         $this->form = true;
@@ -79,14 +87,17 @@ class component_permissions extends component_base {
 
     }
 
+    /**
+     * @param $cform
+     * @return void
+     */
     public function form_set_data(&$cform) {
         global $DB;
 
         if ($this->form) {
             $fdata = new stdclass;
             $components = cr_unserialize($this->config->components);
-            $conditionsconfig =
-                (isset($components['permissions']['config'])) ? $components['permissions']['config'] : new stdclass;
+            $conditionsconfig = (object) ($components['permissions']['config'] ?? []);
 
             if (!isset($conditionsconfig->conditionexpr)) {
                 $fdata->conditionexpr = '';
@@ -102,8 +113,8 @@ class component_permissions extends component_base {
             if (!array_key_exists('config', $components['permissions'])) {
                 $components['permissions']['config'] = new StdClass;
             }
-
             $components['permissions']['config']->conditionexpr = $fdata->conditionexpr;
+
             $this->config->components = cr_serialize($components);
             $DB->update_record('block_configurable_reports', $this->config);
 

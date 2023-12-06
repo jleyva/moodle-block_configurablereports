@@ -18,21 +18,28 @@
  * Configurable Reports
  * A Moodle block for creating customizable reports
  *
- * @package block_configurablereports
+ * @package  block_configurablereports
  * @author   Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date 2009
+ * @date     2009
  */
 
 defined('MOODLE_INTERNAL') || die;
 require_once($CFG->libdir . '/formslib.php');
 
+/**
+ * Class coursechild_form
+ *
+ * @package  block_configurablereports
+ * @author   Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @date     2009
+ */
 class coursechild_form extends moodleform {
 
     /**
-* Form definition
-*/
-public function definition():void {
-        global $DB, $USER, $CFG;
+     * Form definition
+     */
+    public function definition(): void {
+        global $DB;
 
         $mform =& $this->_form;
 

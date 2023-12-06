@@ -14,19 +14,16 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-if (!defined('MOODLE_INTERNAL')) {
-    //  It must be included from a Moodle page.
-    die('Direct access to this script is forbidden.');
-}
+defined('MOODLE_INTERNAL') || die;
 
 require_once($CFG->libdir . '/formslib.php');
 
 class line_form extends moodleform {
 
     /**
-* Form definition
-*/
-public function definition():void {
+     * Form definition
+     */
+    public function definition(): void {
         global $DB, $USER, $CFG;
 
         $mform =& $this->_form;
@@ -38,7 +35,7 @@ public function definition():void {
             $components = cr_unserialize($this->_customdata['report']->components);
 
             if (!is_array($components) || empty($components['columns']['elements'])) {
-                  throw new \moodle_exception('nocolumns');
+                throw new moodle_exception('nocolumns');
             }
 
             $columns = $components['columns']['elements'];
@@ -90,7 +87,7 @@ public function definition():void {
         $this->add_action_buttons(true, get_string('add'));
     }
 
-    public function validation($data, $files) : array{
+    public function validation($data, $files): array {
         $errors = parent::validation($data, $files);
 
         if ($data['xaxis'] == $data['yaxis']) {

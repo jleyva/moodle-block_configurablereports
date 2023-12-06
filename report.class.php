@@ -18,37 +18,70 @@
  * Configurable Reports
  * A Moodle block for creating Configurable Reports
  *
- * @package block_configurablereports
+ * @package  block_configurablereports
  * @author   Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date 2009
+ * @date     2009
  */
 
 defined('MOODLE_INTERNAL') || die;
 require_once($CFG->dirroot . '/lib/evalmath/evalmath.class.php');
 require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
 
-class report_base {
+abstract class report_base {
 
+    /**
+     * @var int
+     */
     public $id = 0;
 
+    /**
+     * @var array
+     */
     public $components = [];
 
+    /**
+     * @var object
+     */
     public $finalreport;
 
+    /**
+     * @var int
+     */
     public int $totalrecords = 0;
 
-    public int $currentuser = 0;
+    /**
+     * @var object|null
+     */
+    public ?object $currentuser;
 
+    /**
+     * @var int
+     */
     public int $currentcourse = 0;
 
+    /**
+     * @var int
+     */
     public int $starttime = 0;
 
+    /**
+     * @var int
+     */
     public int $endtime = 0;
 
+    /**
+     * @var string
+     */
     public string $sql = '';
 
+    /**
+     * @var null
+     */
     public $filterform = null;
 
+    /**
+     * @var int
+     */
     private int $currentcourseid = 0;
 
     /**
@@ -91,10 +124,18 @@ class report_base {
 
     }
 
+    /**
+     * @param $report
+     */
     public function __construct($report) {
         $this->reports_base($report);
     }
 
+    /**
+     * @param $userid
+     * @param $context
+     * @return bool|mixed|null
+     */
     public function check_permissions($userid, $context) {
         global $CFG;
 
@@ -115,52 +156,57 @@ class report_base {
 
         if (empty($permissions['elements'])) {
             return has_capability('block/configurable_reports:viewreports', $context);
-        } else {
-            $i = 1;
-            $cond = [];
-            foreach ($permissions['elements'] as $p) {
-
-                require_once($CFG->dirroot . '/blocks/configurable_reports/components/permissions/' . $p['pluginname'] .
-                    '/plugin.class.php');
-                $classname = 'plugin_' . $p['pluginname'];
-                $class = new $classname($this->config);
-                $cond[$i] = $class->execute($userid, $context, $p['formdata']);
-                $i++;
-            }
-            if (count($cond) == 1) {
-                return $cond[1];
-            } else {
-                $m = new EvalMath;
-                $orig = $dest = [];
-
-                if (isset($permissions['config']->conditionexpr)) {
-                    $logic = trim($permissions['config']->conditionexpr);
-                    // Security
-                    // No more than: conditions * 10 chars.
-                    $logic = substr($logic, 0, count($permissions['elements']) * 10);
-                    $logic = str_replace(['and', 'or'], ['&&', '||'], strtolower($logic));
-                    // More Security Only allowed chars.
-                    $logic = preg_replace('/[^&c\d\s|()]/i', '', $logic);
-                    $logic = str_replace(['&&', '||'], ['*', '+'], $logic);
-
-                    for ($j = $i - 1; $j > 0; $j--) {
-                        $orig[] = 'c' . $j;
-                        $dest[] = ($cond[$j]) ? 1 : 0;
-                    }
-
-                    return $m->evaluate(str_replace($orig, $dest, $logic));
-                } else {
-                    return false;
-                }
-            }
         }
+
+        $i = 1;
+        $cond = [];
+        foreach ($permissions['elements'] as $p) {
+
+            require_once($CFG->dirroot . '/blocks/configurable_reports/components/permissions/' . $p['pluginname'] .
+                '/plugin.class.php');
+            $classname = 'plugin_' . $p['pluginname'];
+            $class = new $classname($this->config);
+            $cond[$i] = $class->execute($userid, $context, $p['formdata']);
+            $i++;
+        }
+
+        if (count($cond) === 1) {
+            return $cond[1];
+        }
+
+        $m = new EvalMath;
+        $orig = $dest = [];
+
+        if (isset($permissions['config']->conditionexpr)) {
+            $logic = trim($permissions['config']->conditionexpr);
+            // Security
+            // No more than: conditions * 10 chars.
+            $logic = substr($logic, 0, count($permissions['elements']) * 10);
+            $logic = str_replace(['and', 'or'], ['&&', '||'], strtolower($logic));
+            // More Security Only allowed chars.
+            $logic = preg_replace('/[^&c\d\s|()]/i', '', $logic);
+            $logic = str_replace(['&&', '||'], ['*', '+'], $logic);
+
+            for ($j = $i - 1; $j > 0; $j--) {
+                $orig[] = 'c' . $j;
+                $dest[] = ($cond[$j]) ? 1 : 0;
+            }
+
+            return $m->evaluate(str_replace($orig, $dest, $logic));
+        }
+
+        return false;
     }
 
+    /**
+     * @param $mform
+     * @return void
+     */
     public function add_filter_elements(&$mform) {
         global $CFG;
 
         $components = cr_unserialize($this->config->components);
-        $filters = (isset($components['filters']['elements'])) ? $components['filters']['elements'] : [];
+        $filters = $components['filters']['elements'] ?? [];
 
         require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
         foreach ($filters as $f) {
@@ -174,7 +220,10 @@ class report_base {
         }
     }
 
-    public function check_filters_request() {
+    /**
+     * @return void
+     */
+    public function check_filters_request(): void {
 
         $components = cr_unserialize($this->config->components);
         $filters = $components['filters']['elements'] ?? [];
@@ -211,7 +260,10 @@ class report_base {
         }
     }
 
-    public function print_filters() {
+    /**
+     * @return void
+     */
+    public function print_filters(): void {
         if ($this->filterform !== null) {
             $this->filterform->display();
         }

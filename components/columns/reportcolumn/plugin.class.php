@@ -18,9 +18,9 @@
  * Configurable Reports
  * A Moodle block for creating Configurable Reports
  *
- * @package block_configurablereports
+ * @package  block_configurablereports
  * @author   Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date 2009
+ * @date     2009
  */
 defined('MOODLE_INTERNAL') || die;
 require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
@@ -29,14 +29,20 @@ class plugin_reportcolumn extends plugin_base {
 
     public $reportcache = [];
 
-    public function init() : void {
+    public function init(): void {
         $this->fullname = get_string('reportcolumn', 'block_configurable_reports');
         $this->type = 'undefined';
         $this->form = true;
         $this->reporttypes = ['courses', 'users', 'timeline', 'categories'];
     }
 
-    public function summary($data) {
+    /**
+     * Summary
+     *
+     * @param object $data
+     * @return string
+     */
+    public function summary(object $data): string {
         return format_string($data->columname);
     }
 
@@ -128,7 +134,7 @@ class plugin_reportcolumn extends plugin_base {
         global $DB, $CFG;
 
         if (!$report = $DB->get_record('block_configurable_reports', ['id' => $data->reportid])) {
-              throw new \moodle_exception('reportdoesnotexists', 'block_configurable_reports');
+            throw new moodle_exception('reportdoesnotexists', 'block_configurable_reports');
         }
 
         require_once($CFG->dirroot . '/blocks/configurable_reports/report.class.php');

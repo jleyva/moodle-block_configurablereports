@@ -38,7 +38,7 @@ class categoryfield_form extends moodleform {
     /**
      * Form definition
      */
-    public function definition():void {
+    public function definition(): void {
         global $DB;
 
         $mform =& $this->_form;

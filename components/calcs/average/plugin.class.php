@@ -42,13 +42,19 @@ class plugin_average extends plugin_base {
         $this->reporttypes = ['courses', 'users', 'sql', 'timeline', 'categories'];
     }
 
-    public function summary($data) {
+    /**
+     * Summary
+     *
+     * @param object $data
+     * @return string
+     */
+    public function summary(object $data): string {
         global $CFG;
 
         if ($this->report->type !== 'sql') {
             $components = cr_unserialize($this->report->components);
             if (!is_array($components) || empty($components['columns']['elements'])) {
-                throw new \moodle_exception('nocolumns');
+                throw new moodle_exception('nocolumns');
             }
 
             $columns = $components['columns']['elements'];

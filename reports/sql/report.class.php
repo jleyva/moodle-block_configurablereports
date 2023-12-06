@@ -34,6 +34,9 @@ defined('BLOCK_CONFIGURABLE_REPORTS_MAX_RECORDS') || define('BLOCK_CONFIGURABLE_
  */
 class report_sql extends report_base {
 
+    /**
+     * @var bool
+     */
     private $forexport = false;
 
     /**
@@ -42,7 +45,7 @@ class report_sql extends report_base {
      * @param bool $isforexport
      * @return void
      */
-    public function set_forexport(bool $isforexport) {
+    public function set_forexport(bool $isforexport): void {
         $this->forexport = $isforexport;
     }
 
@@ -51,7 +54,7 @@ class report_sql extends report_base {
      *
      * @return bool
      */
-    public function is_forexport() {
+    public function is_forexport(): bool {
         return $this->forexport;
     }
 
@@ -150,7 +153,6 @@ class report_sql extends report_base {
         $tablehead = [];
         $finalcalcs = [];
         $finaltable = [];
-        $tablehead = [];
 
         $components = cr_unserialize($this->config->components);
         $config = $components['customsql']['config'] ?? new stdClass;
