@@ -29,7 +29,7 @@ VERSIONS HISTORY
 
 4.1.0 (2023120600) for Moodle 4.1
 Release date: 06.12.2023
-
+----------------------------------------------------------------------
 - Reformat code
 - Add CI testing based on Github Actions created by Catalyst IT
 - Add PHP 8.0 support
@@ -39,14 +39,18 @@ Release date: 06.12.2023
 - removed cr_add_to_log not used anymore
 
 Thanks to Lesterhuis Training & Consultancy for the contribution / Updated by Ldesign Media
-
+----------------------------------------------------------------------
 TODOS:
 - Namespaces for classes & autoloading
-- Move all to `classe`s to `classes/` directory
+- Move all to `classes` to `classes/` directory
 - Clean up code
 - Add tests
 - AJAX_SCRIPT move to webservice
 - unserialize() to json_decode()
+- Readme to Markdown format
+- Changelog to separate file
+
+
 
 3.9.0 (2019122000) for Moodle 3.4, 3.5, 3.6, 3.7, 3.8, 3.9
 Release date: Tuesday, 3 November 2020
