@@ -17,9 +17,10 @@
 /**
  * Configurable Reports
  * A Moodle block for creating Configurable Reports
+ *
  * @package blocks
- * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date: 2009
+ * @author  : Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @date    : 2009
  */
 
 if (!defined('MOODLE_INTERNAL')) {
@@ -27,9 +28,10 @@ if (!defined('MOODLE_INTERNAL')) {
     die('Direct access to this script is forbidden.');
 }
 
-require_once($CFG->libdir.'/formslib.php');
+require_once($CFG->libdir . '/formslib.php');
 
 class template_form extends moodleform {
+
     public function definition() {
         global $DB, $CFG;
 
@@ -37,7 +39,7 @@ class template_form extends moodleform {
 
         $report = $this->_customdata['report'];
 
-        $options = array();
+        $options = [];
 
         if ($report->type != 'sql') {
             $components = cr_unserialize($this->_customdata['report']->components);
@@ -50,14 +52,14 @@ class template_form extends moodleform {
             }
         } else {
 
-            require_once($CFG->dirroot.'/blocks/configurable_reports/report.class.php');
-            require_once($CFG->dirroot.'/blocks/configurable_reports/reports/'.$report->type.'/report.class.php');
+            require_once($CFG->dirroot . '/blocks/configurable_reports/report.class.php');
+            require_once($CFG->dirroot . '/blocks/configurable_reports/reports/' . $report->type . '/report.class.php');
 
-            $reportclassname = 'report_'.$report->type;
+            $reportclassname = 'report_' . $report->type;
             $reportclass = new $reportclassname($report);
 
             $components = cr_unserialize($report->components);
-            $config = (isset($components['customsql']['config'])) ? $components['customsql']['config'] : new \stdclass;
+            $config = (isset($components['customsql']['config'])) ? $components['customsql']['config'] : new stdclass;
 
             if (isset($config->querysql)) {
 
@@ -76,10 +78,10 @@ class template_form extends moodleform {
             }
         }
 
-        $optionsenabled = array(
+        $optionsenabled = [
             0 => get_string('disabled', 'block_configurable_reports'),
-            1 => get_string('enabled', 'block_configurable_reports')
-        );
+            1 => get_string('enabled', 'block_configurable_reports'),
+        ];
 
         $mform->addElement('select', 'enabled', get_string('template', 'block_configurable_reports'), $optionsenabled);
         $mform->setDefault('enabled', 0);
@@ -118,6 +120,8 @@ class template_form extends moodleform {
                 $errors['record'] = get_string('required');
             }
         }
+
         return $errors;
     }
+
 }

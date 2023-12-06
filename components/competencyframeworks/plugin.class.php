@@ -17,23 +17,24 @@
 /**
  * Configurable Reports
  * A Moodle block for creating customizable reports
+ *
  * @package blocks
- * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date: 2009
+ * @author  : Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @date    : 2009
  */
- 
- /**
+
+/**
  * COMPETENCY FRAMEWORK FILTER
  * A filter for configurable reports
+ *
  * @author: François Parlant <https://www.linkedin.com/in/francois-parlant/>
- * @date: 2020
- */ 
+ * @date  : 2020
+ */
 
-
- /* example of report query
- ***********
- * Display the courses in which the competencies of a framework are used
- ***********
+/* example of report query
+***********
+* Display the courses in which the competencies of a framework are used
+***********
 SELECT  ccc.id, ccc.courseid, ccc.competencyid, cf.shortname as 'referentiel', cf.idnumber as 'framework Id', c.fullname as 'cours', comp.shortname
 FROM  prefix_competency_coursecomp ccc
 INNER JOIN prefix_course AS c ON c.id = ccc.courseid
@@ -44,19 +45,18 @@ WHERE 1=1
 %%FILTER_COMPETENCYFRAMEWORKS:cf.id%%
 %%FILTER_SUBCATEGORIES:cc.path%%
 %%FILTER_STARTTIME:c.startdate:>=%% %%FILTER_ENDTIME:c.startdate:<=%%
- 
- */
 
+*/
+defined('MOODLE_INTERNAL') || die;
+require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
 
-require_once($CFG->dirroot.'/blocks/configurable_reports/plugin.class.php');
-
-class plugin_competencyframeworks extends plugin_base{
+class plugin_competencyframeworks extends plugin_base {
 
     public function init() {
         $this->form = false;
         $this->unique = true;
         $this->fullname = get_string('filtercompetencyframeworks', 'block_configurable_reports');
-        $this->reporttypes = array('courses', 'sql');
+        $this->reporttypes = ['courses', 'sql'];
     }
 
     public function summary($data) {
@@ -64,27 +64,29 @@ class plugin_competencyframeworks extends plugin_base{
     }
 
     public function execute($finalelements, $data) {
-		
+
         $filtercompetencyframeworks = optional_param('filter_competencyframeworks', 0, PARAM_INT);
         if (!$filtercompetencyframeworks) {
             return $finalelements;
         }
 
         if ($this->report->type != 'sql') {
-            return array($filtercompetencyframeworks);
+            return [$filtercompetencyframeworks];
         } else {
             if (preg_match("/%%FILTER_COMPETENCYFRAMEWORKS:([^%]+)%%/i", $finalelements, $output)) {
-                $replace = ' AND '.$output[1].' = '.$filtercompetencyframeworks;
-                return str_replace('%%FILTER_COMPETENCYFRAMEWORKS:'.$output[1].'%%', $replace, $finalelements);
+                $replace = ' AND ' . $output[1] . ' = ' . $filtercompetencyframeworks;
+
+                return str_replace('%%FILTER_COMPETENCYFRAMEWORKS:' . $output[1] . '%%', $replace, $finalelements);
             }
         }
+
         return $finalelements;
     }
 
     public function print_filter(&$mform) {
         global $remotedb, $COURSE, $PAGE, $CFG;
 
-        $reportclassname = 'report_'.$this->report->type;
+        $reportclassname = 'report_' . $this->report->type;
         $reportclass = new $reportclassname($this->report);
 
         if ($this->report->type != 'sql') {
@@ -100,10 +102,10 @@ class plugin_competencyframeworks extends plugin_base{
             foreach ($studentlist as $student) {
                 $competencyframeworkslist[] = $student->userid;
             }
-			
+
         }
 
-        $competencyframeworksoptions = array();
+        $competencyframeworksoptions = [];
         $competencyframeworksoptions[0] = get_string('filter_all', 'block_configurable_reports');
 
         if (!empty($competencyframeworkslist)) {
@@ -119,4 +121,5 @@ class plugin_competencyframeworks extends plugin_base{
         $mform->addElement('select', 'filter_competencyframeworks', $elestr, $competencyframeworksoptions);
         $mform->setType('filter_competencyframeworks', PARAM_INT);
     }
+
 }

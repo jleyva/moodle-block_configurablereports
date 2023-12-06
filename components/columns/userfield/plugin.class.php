@@ -17,20 +17,21 @@
 /**
  * Configurable Reports
  * A Moodle block for creating customizable reports
+ *
  * @package blocks
- * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date: 2009
+ * @author  : Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @date    : 2009
  */
+defined('MOODLE_INTERNAL') || die;
+require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
 
-require_once($CFG->dirroot.'/blocks/configurable_reports/plugin.class.php');
-
-class plugin_userfield extends plugin_base{
+class plugin_userfield extends plugin_base {
 
     public function init() {
         $this->fullname = get_string('userfield', 'block_configurable_reports');
         $this->type = 'undefined';
         $this->form = true;
-        $this->reporttypes = array('users');
+        $this->reporttypes = ['users'];
     }
 
     public function summary($data) {
@@ -41,7 +42,8 @@ class plugin_userfield extends plugin_base{
         $align = (isset($data->align)) ? $data->align : '';
         $size = (isset($data->size)) ? $data->size : '';
         $wrap = (isset($data->wrap)) ? $data->wrap : '';
-        return array($align, $size, $wrap);
+
+        return [$align, $size, $wrap];
     }
 
     // Data -> Plugin configuration data.
@@ -53,7 +55,7 @@ class plugin_userfield extends plugin_base{
             $sql = "SELECT d.*, f.shortname, f.datatype
                       FROM {user_info_data} d ,{user_info_field} f
                      WHERE f.id = d.fieldid AND d.userid = ?";
-            if ($profiledata = $DB->get_records_sql($sql, array($row->id))) {
+            if ($profiledata = $DB->get_records_sql($sql, [$row->id])) {
                 foreach ($profiledata as $p) {
                     if ($p->datatype == 'checkbox') {
                         $p->data = ($p->data) ? get_string('yes') : get_string('no');
@@ -61,7 +63,7 @@ class plugin_userfield extends plugin_base{
                     if ($p->datatype == 'datetime') {
                         $p->data = userdate($p->data);
                     }
-                    $row->{'profile_'.$p->shortname} = $p->data;
+                    $row->{'profile_' . $p->shortname} = $p->data;
                 }
             }
         }
@@ -69,7 +71,7 @@ class plugin_userfield extends plugin_base{
         $row->fullname = fullname($row);
 
         if (isset($row->{$data->column})) {
-            switch($data->column){
+            switch ($data->column) {
                 case 'firstaccess':
                 case 'lastaccess':
                 case 'currentlogin':
@@ -89,6 +91,8 @@ class plugin_userfield extends plugin_base{
                     break;
             }
         }
+
         return (isset($row->{$data->column})) ? $row->{$data->column} : '';
     }
+
 }

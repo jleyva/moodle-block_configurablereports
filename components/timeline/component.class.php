@@ -17,11 +17,11 @@
 /**
  * Configurable Reports
  * A Moodle block for creating customizable reports
+ *
  * @package blocks
- * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date: 2009
+ * @author  : Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @date    : 2009
  */
-
 class component_timeline extends component_base {
 
     public function init() {
@@ -46,9 +46,10 @@ class component_timeline extends component_base {
         if ($this->form) {
             $fdata = new stdclass;
             $components = cr_unserialize($this->config->components);
-            $compconfig = (isset($components['timeline']['config'])) ? $components['timeline']['config'] : new \stdclass;
+            $compconfig = (isset($components['timeline']['config'])) ? $components['timeline']['config'] : new stdclass;
             $cform->set_data($compconfig);
         }
     }
+
 }
 

@@ -17,13 +17,14 @@
 /**
  * Configurable Reports
  * A Moodle block for creating customizable reports
+ *
  * @package blocks
- * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date: 2009
+ * @author  : Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @date    : 2009
  */
 
 require_once("../../../../../config.php");
-require_once($CFG->dirroot."/blocks/configurable_reports/locallib.php");
+require_once($CFG->dirroot . "/blocks/configurable_reports/locallib.php");
 
 require_login();
 
@@ -33,14 +34,14 @@ ini_set('display_erros', false);
 $id = required_param('id', PARAM_ALPHANUM);
 $reportid = required_param('reportid', PARAM_INT);
 
-if (!$report = $DB->get_record('block_configurable_reports', array('id' => $reportid))) {
-    print_error('reportdoesnotexists');
+if (!$report = $DB->get_record('block_configurable_reports', ['id' => $reportid])) {
+      throw new \moodle_exception('reportdoesnotexists');
 }
 
 $courseid = $report->courseid;
 
-if (!$course = $DB->get_record('course', array('id' => $courseid))) {
-    print_error("No such course id");
+if (!$course = $DB->get_record('course', ['id' => $courseid])) {
+      throw new \moodle_exception("No such course id");
 }
 
 // Force user login in course (SITE or Course).
@@ -52,25 +53,25 @@ if ($course->id == SITEID) {
     $context = context_course::instance($course->id);
 }
 
-require_once($CFG->dirroot.'/blocks/configurable_reports/report.class.php');
-require_once($CFG->dirroot.'/blocks/configurable_reports/reports/'.$report->type.'/report.class.php');
+require_once($CFG->dirroot . '/blocks/configurable_reports/report.class.php');
+require_once($CFG->dirroot . '/blocks/configurable_reports/reports/' . $report->type . '/report.class.php');
 
-$reportclassname = 'report_'.$report->type;
+$reportclassname = 'report_' . $report->type;
 $reportclass = new $reportclassname($report);
 
 if (!$reportclass->check_permissions($USER->id, $context)) {
-    print_error("No permissions");
+      throw new \moodle_exception("No permissions");
 } else {
 
     $components = cr_unserialize($report->components);
     $graphs = $components['plot']['elements'];
 
     if (!empty($graphs)) {
-        $series = array();
+        $series = [];
         foreach ($graphs as $g) {
-            require_once($CFG->dirroot.'/blocks/configurable_reports/components/plot/'.$g['pluginname'].'/plugin.class.php');
+            require_once($CFG->dirroot . '/blocks/configurable_reports/components/plot/' . $g['pluginname'] . '/plugin.class.php');
             if ($g['id'] == $id) {
-                $classname = 'plugin_'.$g['pluginname'];
+                $classname = 'plugin_' . $g['pluginname'];
                 $class = new $classname($report);
                 $series = $class->get_series($g['formdata']);
                 $colors = $class->get_color_palette($g['formdata']);
@@ -81,8 +82,8 @@ if (!$reportclass->check_permissions($USER->id, $context)) {
         if ($g['id'] == $id) {
 
             // Standard inclusions.
-            include($CFG->dirroot."/blocks/configurable_reports/lib/pChart/pData.class");
-            include($CFG->dirroot."/blocks/configurable_reports/lib/pChart/pChart.class");
+            include($CFG->dirroot . "/blocks/configurable_reports/lib/pChart/pData.class");
+            include($CFG->dirroot . "/blocks/configurable_reports/lib/pChart/pChart.class");
 
             // Dataset definition.
             $dataset = new pData;
@@ -90,7 +91,9 @@ if (!$reportclass->check_permissions($USER->id, $context)) {
             $dataset->AddPoint($series[1], "Serie1");
             // Invert/Reverse Hebrew labels so it can be rendered using PHP imagettftext().
             foreach ($series[0] as $key => $value) {
-                $invertedlabels[$key] = strip_tags((preg_match("/[\xE0-\xFA]/", iconv("UTF-8", "ISO-8859-8", $value))) ? $reportclass->utf8_strrev($value) : $value);
+                $invertedlabels[$key] = strip_tags(
+                    (preg_match("/[\xE0-\xFA]/", iconv("UTF-8", "ISO-8859-8", $value))) ? $reportclass->utf8_strrev($value) : $value
+                );
             }
             $dataset->AddPoint($invertedlabels /* $series[0] */, "Serie2");
             $dataset->AddAllSeries();
@@ -106,13 +109,13 @@ if (!$reportclass->check_permissions($USER->id, $context)) {
             if ($colors) {
                 foreach ($colors as $index => $color) {
                     if (!empty($color)) {
-                        $test->Palette[$index] = array("R" => $color[0], "G" => $color[1], "B" => $color[2]);
+                        $test->Palette[$index] = ["R" => $color[0], "G" => $color[1], "B" => $color[2]];
                     }
                 }
             }
 
             // Draw the pie chart.
-            $test->setFontProperties($CFG->dirroot."/blocks/configurable_reports/lib/Fonts/tahoma.ttf", 8);
+            $test->setFontProperties($CFG->dirroot . "/blocks/configurable_reports/lib/Fonts/tahoma.ttf", 8);
             $test->AntialiasQuality = 0;
             $test->drawPieGraph($dataset->GetData(), $dataset->GetDataDescription(), 150, 90, 110, PIE_PERCENTAGE, true, 50, 20, 5);
             $test->drawPieLegend(300, 15, $dataset->GetData(), $dataset->GetDataDescription(), 250, 250, 250);

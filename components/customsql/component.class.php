@@ -17,12 +17,13 @@
 /**
  * Configurable Reports
  * A Moodle block for creating customizable reports
+ *
  * @package blocks
- * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date: 2009
+ * @author  : Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @date    : 2009
  */
-
 class component_customsql extends component_base {
+
     public function init() {
         global $PAGE;
 
@@ -56,4 +57,5 @@ class component_customsql extends component_base {
             $cform->set_data($sqlconfig);
         }
     }
+
 }

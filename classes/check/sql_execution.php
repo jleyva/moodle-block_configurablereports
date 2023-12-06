@@ -38,6 +38,7 @@ class sql_execution extends \core\check\check {
 
     /**
      * Return result
+     *
      * @return result
      */
     public function get_result(): result {
@@ -54,5 +55,6 @@ class sql_execution extends \core\check\check {
 
         return new result($status, $summary, $details);
     }
+
 }
 

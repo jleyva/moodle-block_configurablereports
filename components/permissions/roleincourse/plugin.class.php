@@ -17,12 +17,13 @@
 /**
  * Configurable Reports
  * A Moodle block for creating customizable reports
+ *
  * @package blocks
- * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date: 2009
+ * @author  : Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @date    : 2009
  */
-
-require_once($CFG->dirroot.'/blocks/configurable_reports/plugin.class.php');
+defined('MOODLE_INTERNAL') || die;
+require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
 
 class plugin_roleincourse extends plugin_base {
 
@@ -30,15 +31,16 @@ class plugin_roleincourse extends plugin_base {
         $this->form = true;
         $this->unique = false;
         $this->fullname = get_string('roleincourse', 'block_configurable_reports');
-        $this->reporttypes = array('courses', 'sql', 'users', 'timeline', 'categories');
+        $this->reporttypes = ['courses', 'sql', 'users', 'timeline', 'categories'];
     }
 
     public function summary($data) {
         global $DB;
 
-        $rolename = $DB->get_field('role', 'shortname', array('id' => $data->roleid));
-        $coursename = $DB->get_field('course', 'fullname', array('id' => $this->report->courseid));
-        return $rolename.' '.$coursename;
+        $rolename = $DB->get_field('role', 'shortname', ['id' => $data->roleid]);
+        $coursename = $DB->get_field('course', 'fullname', ['id' => $this->report->courseid]);
+
+        return $rolename . ' ' . $coursename;
     }
 
     public function execute($userid, $context, $data) {
@@ -50,6 +52,8 @@ class plugin_roleincourse extends plugin_base {
                 }
             }
         }
+
         return false;
     }
+
 }

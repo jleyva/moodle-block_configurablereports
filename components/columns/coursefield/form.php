@@ -17,9 +17,10 @@
 /**
  * Configurable Reports
  * A Moodle block for creating customizable reports
+ *
  * @package blocks
- * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date: 2009
+ * @author  : Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @date    : 2009
  */
 
 if (!defined('MOODLE_INTERNAL')) {
@@ -27,19 +28,20 @@ if (!defined('MOODLE_INTERNAL')) {
     die('Direct access to this script is forbidden.');
 }
 
-require_once($CFG->libdir.'/formslib.php');
+require_once($CFG->libdir . '/formslib.php');
 
 class coursefield_form extends moodleform {
+
     public function definition() {
         global $DB, $USER, $CFG;
 
         $mform =& $this->_form;
 
-        $mform->addElement('header',  'crformheader', get_string('coursefield', 'block_configurable_reports'), '');
+        $mform->addElement('header', 'crformheader', get_string('coursefield', 'block_configurable_reports'), '');
 
         $columns = $DB->get_columns('course');
 
-        $coursecolumns = array();
+        $coursecolumns = [];
         foreach ($columns as $c) {
             $coursecolumns[$c->name] = $c->name;
         }
@@ -56,6 +58,8 @@ class coursefield_form extends moodleform {
     public function validation($data, $files) {
         $errors = parent::validation($data, $files);
         $errors = $this->_customdata['compclass']->validate_form_elements($data, $errors);
+
         return $errors;
     }
+
 }

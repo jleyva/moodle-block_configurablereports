@@ -16,20 +16,21 @@
 
 /** Configurable Reports
  * A Moodle block for creating customizable reports
+ *
  * @package blocks
- * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date: 2009
+ * @author  : Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @date    : 2009
  */
+defined('MOODLE_INTERNAL') || die;
+require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
 
-require_once($CFG->dirroot.'/blocks/configurable_reports/plugin.class.php');
-
-class plugin_searchtext extends plugin_base{
+class plugin_searchtext extends plugin_base {
 
     public function init() {
         $this->form = true;
         $this->unique = false;
         $this->fullname = get_string('filter_searchtext', 'block_configurable_reports');
-        $this->reporttypes = array('searchtext', 'sql');
+        $this->reporttypes = ['searchtext', 'sql'];
     }
 
     public function summary($data) {
@@ -39,13 +40,13 @@ class plugin_searchtext extends plugin_base{
     public function execute($finalelements, $data) {
         // For backwards compatibility and filters without idnumber, includes old method of matching without idnumber
         if (!empty($data->idnumber)) {
-            $filtersearchtext = optional_param('filter_searchtext_'.$data->idnumber, '', PARAM_RAW);
+            $filtersearchtext = optional_param('filter_searchtext_' . $data->idnumber, '', PARAM_RAW);
         } else {
             $filtersearchtext = optional_param('filter_searchtext', '', PARAM_RAW);
         }
 
         if ($this->report->type != 'sql') {
-            return array($filtersearchtext);
+            return [$filtersearchtext];
         } else {
             if ($filtersearchtext) {
                 if (!empty($data->idnumber)) {
@@ -57,13 +58,14 @@ class plugin_searchtext extends plugin_base{
                 $finalelements = $this->sql_replace($filtersearchtext, $filtermatch, $finalelements);
             }
         }
+
         return $finalelements;
     }
 
     public function print_filter(&$mform, $data) {
         // For backwards compatibility and filters without idnumber, includes old method of matching without idnumber
         if (!empty($data->idnumber)) {
-            $filtername = 'filter_searchtext_'.$data->idnumber;
+            $filtername = 'filter_searchtext_' . $data->idnumber;
         } else {
             $filtername = 'filter_searchtext';
         }
@@ -79,17 +81,17 @@ class plugin_searchtext extends plugin_base{
     }
 
     private function sql_replace($filtersearchtext, $filterstrmatch, $finalelements) {
-        $operators = array('=', '<', '>', '<=', '>=', '~', 'in');
+        $operators = ['=', '<', '>', '<=', '>=', '~', 'in'];
 
         if (preg_match("/%%$filterstrmatch:([^%]+)%%/i", $finalelements, $output)) {
-            list($field, $operator) = preg_split('/:/', $output[1]);
+            [$field, $operator] = preg_split('/:/', $output[1]);
             if (!in_array($operator, $operators)) {
-                print_error('nosuchoperator');
+                  throw new \moodle_exception('nosuchoperator');
             }
             if ($operator == '~') {
                 $replace = " AND " . $field . " LIKE '%" . $filtersearchtext . "%'";
             } else if ($operator == 'in') {
-                $processeditems = array();
+                $processeditems = [];
                 // Accept comma-separated values, allowing for '\,' as a literal comma.
                 foreach (preg_split("/(?<!\\\\),/", $filtersearchtext) as $searchitem) {
                     // Strip leading/trailing whitespace and quotes (we'll add our own quotes later).
@@ -115,4 +117,5 @@ class plugin_searchtext extends plugin_base{
 
         return $finalelements;
     }
+
 }

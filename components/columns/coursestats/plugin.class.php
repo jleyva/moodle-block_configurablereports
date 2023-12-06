@@ -17,20 +17,21 @@
 /**
  * Configurable Reports
  * A Moodle block for creating customizable reports
+ *
  * @package blocks
- * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date: 2009
+ * @author  : Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @date    : 2009
  */
+defined('MOODLE_INTERNAL') || die;
+require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
 
-require_once($CFG->dirroot.'/blocks/configurable_reports/plugin.class.php');
-
-class plugin_coursestats extends plugin_base{
+class plugin_coursestats extends plugin_base {
 
     public function init() {
         $this->fullname = get_string('coursestats', 'block_configurable_reports');
         $this->type = 'undefined';
         $this->form = true;
-        $this->reporttypes = array('courses');
+        $this->reporttypes = ['courses'];
     }
 
     public function summary($data) {
@@ -41,7 +42,8 @@ class plugin_coursestats extends plugin_base{
         $align = (isset($data->align)) ? $data->align : '';
         $size = (isset($data->size)) ? $data->size : '';
         $wrap = (isset($data->wrap)) ? $data->wrap : '';
-        return array($align, $size, $wrap);
+
+        return [$align, $size, $wrap];
     }
 
     // Data -> Plugin configuration data.
@@ -71,16 +73,16 @@ class plugin_coursestats extends plugin_base{
         $extrasql = "";
         $limit = 0;
 
-        switch($data->stat){
+        switch ($data->stat) {
             case 'activityview':
                 $total = 'SUM(stat1)';
                 $stattype = 'activity';
-                $extrasql = " AND roleid IN (".implode(',', $data->roles).")";
+                $extrasql = " AND roleid IN (" . implode(',', $data->roles) . ")";
                 break;
             case 'activitypost':
                 $total = 'SUM(stat2)';
                 $stattype = 'activity';
-                $extrasql = " AND roleid IN (".implode(',', $data->roles).")";
+                $extrasql = " AND roleid IN (" . implode(',', $data->roles) . ")";
                 break;
             case 'activeenrolments':
                 $total = 'stat2';
@@ -96,13 +98,13 @@ class plugin_coursestats extends plugin_base{
                 $limit = 1;
         }
         $sql = "SELECT $total as total FROM {stats_daily} WHERE stattype = ? AND courseid = ?";
-        $params = array($stattype, $row->id);
+        $params = [$stattype, $row->id];
 
         if ($starttime && $endtime) {
             $starttime = usergetmidnight($starttime) + 24 * 60 * 60;
             $endtime = usergetmidnight($endtime) + 24 * 60 * 60;
             $sql .= " AND timeend >= ? AND timeend <= ?";
-            $params = array_merge($params, array($starttime, $endtime));
+            $params = array_merge($params, [$starttime, $endtime]);
         }
 
         $sql .= $extrasql;
@@ -118,5 +120,6 @@ class plugin_coursestats extends plugin_base{
 
         return $stat;
     }
+
 }
 

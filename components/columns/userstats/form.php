@@ -17,9 +17,10 @@
 /**
  * Configurable Reports
  * A Moodle block for creating customizable reports
+ *
  * @package blocks
- * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date: 2009
+ * @author  : Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @date    : 2009
  */
 
 if (!defined('MOODLE_INTERNAL')) {
@@ -27,9 +28,10 @@ if (!defined('MOODLE_INTERNAL')) {
     die('Direct access to this script is forbidden.');
 }
 
-require_once($CFG->libdir.'/formslib.php');
+require_once($CFG->libdir . '/formslib.php');
 
 class userstats_form extends moodleform {
+
     public function definition() {
         global $DB, $USER, $CFG;
 
@@ -37,21 +39,25 @@ class userstats_form extends moodleform {
 
         $mform->addElement('header', 'crformheader', get_string('userstats', 'block_configurable_reports'), '');
 
-        $userstats = array(
+        $userstats = [
             'logins' => get_string('statslogins', 'block_configurable_reports'),
             'activityview' => get_string('activityview', 'block_configurable_reports'),
-            'activitypost' => get_string('activitypost', 'block_configurable_reports')
-        );
+            'activitypost' => get_string('activitypost', 'block_configurable_reports'),
+        ];
         $userstats['coursededicationtime'] = get_string('coursededicationtime', 'block_configurable_reports');
 
         $mform->addElement('select', 'stat', get_string('stat', 'block_configurable_reports'), $userstats);
 
-        $limitoptions = array();
+        $limitoptions = [];
         for ($i = 5; $i <= 150; $i += 5) {
             $limitoptions[$i * 60] = $i;
         }
-        $mform->addElement('select', 'sessionlimittime', get_string('sessionlimittime', 'block_configurable_reports'),
-                            $limitoptions);
+        $mform->addElement(
+            'select',
+            'sessionlimittime',
+            get_string('sessionlimittime', 'block_configurable_reports'),
+            $limitoptions
+        );
         $mform->addHelpButton('sessionlimittime', 'sessionlimittime', 'block_configurable_reports');
         $mform->setDefault('sessionlimittime', 30 * 60);
         $mform->disabledIf('sessionlimittime', 'stat', 'neq', 'coursededicationtime');
@@ -75,4 +81,5 @@ class userstats_form extends moodleform {
 
         return $errors;
     }
+
 }

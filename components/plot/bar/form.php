@@ -19,21 +19,22 @@ if (!defined('MOODLE_INTERNAL')) {
     die('Direct access to this script is forbidden.');
 }
 
-require_once($CFG->libdir.'/formslib.php');
+require_once($CFG->libdir . '/formslib.php');
 
 class bar_form extends moodleform {
+
     public function definition() {
         global $DB, $USER, $CFG;
 
         $mform =& $this->_form;
-        $options = array();
+        $options = [];
         $report = $this->_customdata['report'];
 
         if ($report->type != 'sql') {
             $components = cr_unserialize($this->_customdata['report']->components);
 
             if (!is_array($components) || empty($components['columns']['elements'])) {
-                print_error('nocolumns');
+                  throw new \moodle_exception('nocolumns');
             }
 
             $columns = $components['columns']['elements'];
@@ -46,14 +47,14 @@ class bar_form extends moodleform {
                 }
             }
         } else {
-            require_once($CFG->dirroot.'/blocks/configurable_reports/report.class.php');
-            require_once($CFG->dirroot.'/blocks/configurable_reports/reports/'.$report->type.'/report.class.php');
+            require_once($CFG->dirroot . '/blocks/configurable_reports/report.class.php');
+            require_once($CFG->dirroot . '/blocks/configurable_reports/reports/' . $report->type . '/report.class.php');
 
-            $reportclassname = 'report_'.$report->type;
+            $reportclassname = 'report_' . $report->type;
             $reportclass = new $reportclassname($report);
 
             $components = cr_unserialize($report->components);
-            $config = (isset($components['customsql']['config'])) ? $components['customsql']['config'] : new \stdclass;
+            $config = (isset($components['customsql']['config'])) ? $components['customsql']['config'] : new stdclass;
 
             if (isset($config->querysql)) {
                 $sql = $config->querysql;
@@ -130,4 +131,5 @@ class bar_form extends moodleform {
         // Buttons.
         $this->add_action_buttons(true, get_string('add'));
     }
+
 }

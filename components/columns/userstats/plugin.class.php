@@ -17,20 +17,21 @@
 /**
  * Configurable Reports
  * A Moodle block for creating customizable reports
+ *
  * @package blocks
- * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date: 2009
+ * @author  : Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @date    : 2009
  */
+defined('MOODLE_INTERNAL') || die;
+require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
 
-require_once($CFG->dirroot.'/blocks/configurable_reports/plugin.class.php');
-
-class plugin_userstats extends plugin_base{
+class plugin_userstats extends plugin_base {
 
     public function init() {
         $this->fullname = get_string('userstats', 'block_configurable_reports');
         $this->type = 'undefined';
         $this->form = true;
-        $this->reporttypes = array('users');
+        $this->reporttypes = ['users'];
     }
 
     public function summary($data) {
@@ -41,7 +42,8 @@ class plugin_userstats extends plugin_base{
         $align = (isset($data->align)) ? $data->align : '';
         $size = (isset($data->size)) ? $data->size : '';
         $wrap = (isset($data->wrap)) ? $data->wrap : '';
-        return array($align, $size, $wrap);
+
+        return [$align, $size, $wrap];
     }
 
     // Data -> Plugin configuration data.
@@ -70,25 +72,25 @@ class plugin_userstats extends plugin_base{
 
         if ($data->stat == 'coursededicationtime') {
             $sql = "userid = ?";
-            $params = array($row->id);
+            $params = [$row->id];
 
             require_once($CFG->dirroot . "/blocks/configurable_reports/locallib.php");
 
-            list($uselegacyreader, $useinternalreader, $logtable) = cr_logging_info();
+            [$uselegacyreader, $useinternalreader, $logtable] = cr_logging_info();
 
-            $logs = array();
+            $logs = [];
             if ($uselegacyreader) {
 
                 if ($courseid != 1) {
                     $sql .= " AND course = ?";
-                    $params = array_merge($params, array($courseid));
+                    $params = array_merge($params, [$courseid]);
                 }
 
                 if ($starttime and $endtime) {
                     $starttime = usergetmidnight($starttime) + 24 * 60 * 60;
                     $endtime = usergetmidnight($endtime) + 24 * 60 * 60;
                     $sql .= " AND time >= ? AND time <= ?";
-                    $params = array_merge($params, array($starttime, $endtime));
+                    $params = array_merge($params, [$starttime, $endtime]);
                 }
 
                 $logs = $DB->get_records_select("log", $sql, $params, "time ASC", "id,time");
@@ -97,14 +99,14 @@ class plugin_userstats extends plugin_base{
 
                 if ($courseid != 1) {
                     $sql .= " AND courseid = ?";
-                    $params = array_merge($params, array($courseid));
+                    $params = array_merge($params, [$courseid]);
                 }
 
                 if ($starttime and $endtime) {
                     $starttime = usergetmidnight($starttime) + 24 * 60 * 60;
                     $endtime = usergetmidnight($endtime) + 24 * 60 * 60;
                     $sql .= " AND timecreated >= ? AND timecreated <= ?";
-                    $params = array_merge($params, array($starttime, $endtime));
+                    $params = array_merge($params, [$starttime, $endtime]);
                 }
 
                 $logs = $DB->get_records_select($logtable, $sql, $params, "timecreated ASC", "id,timecreated as time");
@@ -138,26 +140,27 @@ class plugin_userstats extends plugin_base{
                     return 0;
                 }
             }
+
             // Code from Course Dedication Block.
             return 0;
         }
 
-        switch($data->stat){
+        switch ($data->stat) {
             case 'activityview':
-                                $total = 'statsreads';
-                                $stattype = 'activity';
-                                break;
+                $total = 'statsreads';
+                $stattype = 'activity';
+                break;
             case 'activitypost':
-                                $total = 'statswrites';
-                                $stattype = 'activity';
-                                break;
+                $total = 'statswrites';
+                $stattype = 'activity';
+                break;
             case 'logins':
             default:
-                                $total = 'statsreads';
-                                $stattype = 'logins';
+                $total = 'statsreads';
+                $stattype = 'logins';
         }
         $sql = "SELECT SUM($total) as total FROM {stats_user_daily} WHERE stattype = ? AND userid = ?";
-        $params = array($stattype, $row->id);
+        $params = [$stattype, $row->id];
 
         if ($courseid != SITEID and $data->stat != 'logins') {
             $sql .= " AND courseid = ?";
@@ -168,7 +171,7 @@ class plugin_userstats extends plugin_base{
             $starttime = usergetmidnight($starttime) + 24 * 60 * 60;
             $endtime = usergetmidnight($endtime) + 24 * 60 * 60;
             $sql .= " AND timeend >= $starttime AND timeend <= $endtime";
-            $params = array_merge($params, array($starttime, $endtime));
+            $params = array_merge($params, [$starttime, $endtime]);
         }
 
         if ($res = $DB->get_records_sql($sql, $params)) {
@@ -182,4 +185,5 @@ class plugin_userstats extends plugin_base{
 
         return $stat;
     }
+
 }

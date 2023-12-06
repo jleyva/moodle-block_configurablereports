@@ -19,14 +19,15 @@ if (!defined('MOODLE_INTERNAL')) {
     die('Direct access to this script is forbidden.');
 }
 
-require_once($CFG->libdir.'/formslib.php');
+require_once($CFG->libdir . '/formslib.php');
 
 class line_form extends moodleform {
+
     public function definition() {
         global $DB, $USER, $CFG;
 
         $mform =& $this->_form;
-        $options = array(0 => get_string('choose'));
+        $options = [0 => get_string('choose')];
 
         $report = $this->_customdata['report'];
 
@@ -34,7 +35,7 @@ class line_form extends moodleform {
             $components = cr_unserialize($this->_customdata['report']->components);
 
             if (!is_array($components) || empty($components['columns']['elements'])) {
-                print_error('nocolumns');
+                  throw new \moodle_exception('nocolumns');
             }
 
             $columns = $components['columns']['elements'];
@@ -43,10 +44,10 @@ class line_form extends moodleform {
             }
         } else {
 
-            require_once($CFG->dirroot.'/blocks/configurable_reports/report.class.php');
-            require_once($CFG->dirroot.'/blocks/configurable_reports/reports/'.$report->type.'/report.class.php');
+            require_once($CFG->dirroot . '/blocks/configurable_reports/report.class.php');
+            require_once($CFG->dirroot . '/blocks/configurable_reports/reports/' . $report->type . '/report.class.php');
 
-            $reportclassname = 'report_'.$report->type;
+            $reportclassname = 'report_' . $report->type;
             $reportclass = new $reportclassname($report);
 
             $components = cr_unserialize($report->components);
@@ -69,7 +70,7 @@ class line_form extends moodleform {
             }
         }
 
-        $mform->addElement('header',  'crformheader', get_string('line', 'block_configurable_reports'), '');
+        $mform->addElement('header', 'crformheader', get_string('line', 'block_configurable_reports'), '');
 
         $mform->addElement('select', 'xaxis', get_string('xaxis', 'block_configurable_reports'), $options);
         $mform->addRule('xaxis', null, 'required', null, 'client');
@@ -95,4 +96,5 @@ class line_form extends moodleform {
 
         return $errors;
     }
+
 }

@@ -17,9 +17,10 @@
 /**
  * Configurable Reports
  * A Moodle block for creating Configurable Reports
+ *
  * @package blocks
- * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date: 2009
+ * @author  : Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @date    : 2009
  */
 
 if (!defined('MOODLE_INTERNAL')) {
@@ -27,9 +28,10 @@ if (!defined('MOODLE_INTERNAL')) {
     die('Direct access to this script is forbidden.');
 }
 
-require_once($CFG->libdir.'/formslib.php');
+require_once($CFG->libdir . '/formslib.php');
 
 class report_edit_form extends moodleform {
+
     public function definition() {
         global $DB, $USER, $CFG;
 
@@ -39,7 +41,7 @@ class report_edit_form extends moodleform {
 
         $mform->addElement('header', 'general', get_string('general', 'form'));
 
-        $mform->addElement('text', 'name', get_string('name'), array('maxlength' => 128, 'size' => 58));
+        $mform->addElement('text', 'name', get_string('name'), ['maxlength' => 128, 'size' => 58]);
         if (!empty($CFG->formatstringstriptags)) {
             $mform->setType('name', PARAM_TEXT);
         } else {
@@ -51,11 +53,17 @@ class report_edit_form extends moodleform {
         $mform->setType('summary_editor', PARAM_RAW);
         $typeoptions = cr_get_report_plugins($this->_customdata['courseid']);
 
-        $eloptions = array();
+        $eloptions = [];
         if (isset($this->_customdata['report']->id) && $this->_customdata['report']->id) {
-            $eloptions = array('disabled' => 'disabled');
+            $eloptions = ['disabled' => 'disabled'];
         }
-        $select = $mform->addElement('select', 'type', get_string('typeofreport', 'block_configurable_reports'), $typeoptions, $eloptions);
+        $select = $mform->addElement(
+            'select',
+            'type',
+            get_string('typeofreport', 'block_configurable_reports'),
+            $typeoptions,
+            $eloptions
+        );
         $mform->addHelpButton('type', 'typeofreport', 'block_configurable_reports');
         $select->setSelected('sql');
 
@@ -66,20 +74,40 @@ class report_edit_form extends moodleform {
         $mform->setDefault('pagination', 0);
         $mform->addHelpButton('pagination', 'pagination', 'block_configurable_reports');
 
-        $mform->addElement('checkbox', 'global', get_string('global', 'block_configurable_reports'), get_string('enableglobal', 'block_configurable_reports'));
+        $mform->addElement(
+            'checkbox',
+            'global',
+            get_string('global', 'block_configurable_reports'),
+            get_string('enableglobal', 'block_configurable_reports')
+        );
         $mform->addHelpButton('global', 'global', 'block_configurable_reports');
         $mform->setDefault('global', 0);
 
-        $mform->addElement('checkbox', 'jsordering', get_string('ordering', 'block_configurable_reports'), get_string('enablejsordering', 'block_configurable_reports'));
+        $mform->addElement(
+            'checkbox',
+            'jsordering',
+            get_string('ordering', 'block_configurable_reports'),
+            get_string('enablejsordering', 'block_configurable_reports')
+        );
         $mform->addHelpButton('jsordering', 'jsordering', 'block_configurable_reports');
         $mform->setDefault('jsordering', 1);
 
-        $mform->addElement('checkbox', 'cron', get_string('cron', 'block_configurable_reports'), get_string('crondescription', 'block_configurable_reports'));
+        $mform->addElement(
+            'checkbox',
+            'cron',
+            get_string('cron', 'block_configurable_reports'),
+            get_string('crondescription', 'block_configurable_reports')
+        );
         $mform->addHelpButton('cron', 'cron', 'block_configurable_reports');
         $mform->setDefault('cron', 0);
         $mform->disabledIf('cron', 'type', 'neq', 'sql');
 
-        $mform->addElement('checkbox', 'remote', get_string('remote', 'block_configurable_reports'), get_string('remotedescription', 'block_configurable_reports'));
+        $mform->addElement(
+            'checkbox',
+            'remote',
+            get_string('remote', 'block_configurable_reports'),
+            get_string('remotedescription', 'block_configurable_reports')
+        );
         $mform->addHelpButton('remote', 'remote', 'block_configurable_reports');
         $mform->setDefault('remote', 0);
 
@@ -87,7 +115,7 @@ class report_edit_form extends moodleform {
         $options = cr_get_export_plugins();
 
         foreach ($options as $key => $val) {
-            $mform->addElement('checkbox', 'export_'.$key, null, $val);
+            $mform->addElement('checkbox', 'export_' . $key, null, $val);
         }
 
         if (isset($this->_customdata['report']->id) && $this->_customdata['report']->id) {
@@ -95,7 +123,12 @@ class report_edit_form extends moodleform {
             $mform->setType('id', PARAM_INT);
         }
         if (!empty($adminmode)) {
-            $mform->addElement('text', 'courseid', get_string('setcourseid', 'block_configurable_reports'), $this->_customdata['courseid']);
+            $mform->addElement(
+                'text',
+                'courseid',
+                get_string('setcourseid', 'block_configurable_reports'),
+                $this->_customdata['courseid']
+            );
             $mform->setType('courseid', PARAM_INT);
         } else {
             $mform->addElement('hidden', 'courseid', $this->_customdata['courseid']);
@@ -108,6 +141,7 @@ class report_edit_form extends moodleform {
 
     public function validation($data, $files) {
         $errors = parent::validation($data, $files);
+
         return $errors;
     }
 
@@ -135,13 +169,12 @@ class report_edit_form extends moodleform {
     function set_data($default_values) {
         if (!is_object($default_values)) {
             // We need object for file_prepare_standard_editor.
-            $default_values = (object)$default_values;
+            $default_values = (object) $default_values;
         }
         $default_values = file_prepare_standard_editor($default_values, 'summary', $this->get_editor_options());
 
         parent::set_data($default_values);
     }
-
 
     /**
      * Get editor options for this form.
@@ -154,8 +187,10 @@ class report_edit_form extends moodleform {
             'maxbytes' => 0,
             'maxfiles' => 0,
             'noclean' => false,
-            'trusttext' => false
+            'trusttext' => false,
         ];
+
         return $editoroptions;
     }
+
 }

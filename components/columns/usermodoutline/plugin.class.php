@@ -17,29 +17,30 @@
 /**
  * Configurable Reports
  * A Moodle block for creating customizable reports
+ *
  * @package blocks
- * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date: 2009
+ * @author  : Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @date    : 2009
  */
+defined('MOODLE_INTERNAL') || die;
+require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
 
-require_once($CFG->dirroot.'/blocks/configurable_reports/plugin.class.php');
-
-class plugin_usermodoutline extends plugin_base{
+class plugin_usermodoutline extends plugin_base {
 
     public function init() {
         $this->fullname = get_string('usermodoutline', 'block_configurable_reports');
         $this->type = 'undefined';
         $this->form = true;
-        $this->reporttypes = array('users');
+        $this->reporttypes = ['users'];
     }
 
     public function summary($data) {
         global $DB;
         // Should be a better way to do this.
-        if ($cm = $DB->get_record('course_modules', array('id' => $data->cmid))) {
-            $modname = $DB->get_field('modules', 'name', array('id' => $cm->module));
-            if ($name = $DB->get_field("$modname", 'name', array('id' => $cm->instance))) {
-                return $data->columname.' ('.$name.')';
+        if ($cm = $DB->get_record('course_modules', ['id' => $data->cmid])) {
+            $modname = $DB->get_field('modules', 'name', ['id' => $cm->module]);
+            if ($name = $DB->get_field("$modname", 'name', ['id' => $cm->instance])) {
+                return $data->columname . ' (' . $name . ')';
             }
         }
 
@@ -50,32 +51,34 @@ class plugin_usermodoutline extends plugin_base{
         $align = (isset($data->align)) ? $data->align : '';
         $size = (isset($data->size)) ? $data->size : '';
         $wrap = (isset($data->wrap)) ? $data->wrap : '';
-        return array($align, $size, $wrap);
+
+        return [$align, $size, $wrap];
     }
 
     // Data -> Plugin configuration data.
     // Row -> Complet user row c->id, c->fullname, etc...
     public function execute($data, $row, $user, $courseid, $starttime = 0, $endtime = 0) {
         global $DB, $CFG;
-        if ($cm = $DB->get_record('course_modules', array('id' => $data->cmid))) {
-            $mod = $DB->get_record('modules', array('id' => $cm->module));
-            if ($instance = $DB->get_record("$mod->name", array('id' => $cm->instance))) {
+        if ($cm = $DB->get_record('course_modules', ['id' => $data->cmid])) {
+            $mod = $DB->get_record('modules', ['id' => $cm->module]);
+            if ($instance = $DB->get_record("$mod->name", ['id' => $cm->instance])) {
                 $libfile = "$CFG->dirroot/mod/$mod->name/lib.php";
                 if (file_exists($libfile)) {
                     require_once($libfile);
-                    $useroutline = $mod->name."_user_outline";
+                    $useroutline = $mod->name . "_user_outline";
                     if (function_exists($useroutline)) {
-                        if ($course = $DB->get_record('course', array('id' => $this->report->courseid))) {
+                        if ($course = $DB->get_record('course', ['id' => $this->report->courseid])) {
                             $result = $useroutline($course, $row, $mod, $instance);
                             if ($result) {
                                 $returndata = '';
                                 if (isset($result->info)) {
-                                    $returndata .= $result->info.' ';
+                                    $returndata .= $result->info . ' ';
                                 }
 
                                 if ((!isset($data->donotshowtime) || !$data->donotshowtime) && !empty($result->time)) {
                                     $returndata .= userdate($result->time);
                                 }
+
                                 return $returndata;
                             }
                         }
@@ -83,6 +86,8 @@ class plugin_usermodoutline extends plugin_base{
                 }
             }
         }
+
         return '';
     }
+
 }

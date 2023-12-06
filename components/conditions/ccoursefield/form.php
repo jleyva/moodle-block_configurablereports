@@ -17,19 +17,17 @@
 /**
  * Configurable Reports
  * A Moodle block for creating customizable reports
+ *
  * @package blocks
- * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date: 2009
+ * @author  : Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @date    : 2009
  */
 
-if (!defined('MOODLE_INTERNAL')) {
-    //  It must be included from a Moodle page.
-    die('Direct access to this script is forbidden.');
-}
-
-require_once($CFG->libdir.'/formslib.php');
+defined('MOODLE_INTERNAL') || die;
+require_once($CFG->libdir . '/formslib.php');
 
 class ccoursefield_form extends moodleform {
+
     public $allowedops = [
         '=' => '=',
         '>' => '>',
@@ -39,7 +37,7 @@ class ccoursefield_form extends moodleform {
         '<>' => '<>',
         'LIKE' => 'LIKE',
         'NOT LIKE' => 'NOT LIKE',
-        'LIKE % %' => 'LIKE % %'
+        'LIKE % %' => 'LIKE % %',
     ];
 
     public function definition() {
@@ -47,7 +45,7 @@ class ccoursefield_form extends moodleform {
 
         $mform =& $this->_form;
 
-        $mform->addElement('header',  'crformheader', get_string('coursefield', 'block_configurable_reports'), '');
+        $mform->addElement('header', 'crformheader', get_string('coursefield', 'block_configurable_reports'), '');
 
         $columns = $DB->get_columns('course');
 
@@ -76,7 +74,7 @@ class ccoursefield_form extends moodleform {
         }
 
         $columns = $DB->get_columns('course');
-        $coursecolumns = array();
+        $coursecolumns = [];
         foreach ($columns as $c) {
             $coursecolumns[$c->name] = $c->name;
         }
@@ -91,4 +89,5 @@ class ccoursefield_form extends moodleform {
 
         return $errors;
     }
+
 }

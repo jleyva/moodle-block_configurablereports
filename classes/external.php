@@ -30,14 +30,14 @@ defined('MOODLE_INTERNAL') || die();
 
 require_once("$CFG->libdir/externallib.php");
 
-use external_api;
-use external_function_parameters;
-use external_value;
-use external_single_structure;
-use external_multiple_structure;
-use external_warnings;
 use context_course;
 use context_system;
+use external_api;
+use external_function_parameters;
+use external_multiple_structure;
+use external_single_structure;
+use external_value;
+use external_warnings;
 
 /**
  * This is the external API for this component.
@@ -54,10 +54,10 @@ class external extends external_api {
      */
     public static function get_report_data_parameters() {
         return new external_function_parameters(
-            array(
+            [
                 'reportid' => new external_value(PARAM_INT, 'The report id', VALUE_REQUIRED),
-                'courseid' => new external_value(PARAM_INT, 'The course id', VALUE_DEFAULT, 1)
-            )
+                'courseid' => new external_value(PARAM_INT, 'The course id', VALUE_DEFAULT, 1),
+            ]
         );
     }
 
@@ -73,7 +73,7 @@ class external extends external_api {
 
         $params = self::validate_parameters(
             self::get_report_data_parameters(),
-            array('reportid' => $reportid, 'courseid' => $courseid)
+            ['reportid' => $reportid, 'courseid' => $courseid]
         );
 
         if ($courseid == SITEID) {
@@ -90,11 +90,11 @@ class external extends external_api {
             $warnings = get_string('reportdoesnotexists', 'block_configurable_reports');
         } else {
 
-            require_once($CFG->dirroot.'/blocks/configurable_reports/locallib.php');
-            require_once($CFG->dirroot.'/blocks/configurable_reports/report.class.php');
-            require_once($CFG->dirroot.'/blocks/configurable_reports/reports/'.$report->type.'/report.class.php');
+            require_once($CFG->dirroot . '/blocks/configurable_reports/locallib.php');
+            require_once($CFG->dirroot . '/blocks/configurable_reports/report.class.php');
+            require_once($CFG->dirroot . '/blocks/configurable_reports/reports/' . $report->type . '/report.class.php');
 
-            $reportclassname = 'report_'.$report->type;
+            $reportclassname = 'report_' . $report->type;
             $reportclass = new $reportclassname($report);
             if (!$reportclass->check_permissions($USER->id, $context)) {
                 $warnings = get_string('badpermissions', 'block_configurable_reports');
@@ -112,7 +112,7 @@ class external extends external_api {
             }
         }
 
-        return array('data' => json_encode($json, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT), 'warnings' => $warnings);
+        return ['data' => json_encode($json, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT), 'warnings' => $warnings];
     }
 
     /**
@@ -122,10 +122,11 @@ class external extends external_api {
      */
     public static function get_report_data_returns() {
         return new external_single_structure(
-            array(
+            [
                 'data' => new external_value(PARAM_RAW, 'JSON-formatted report data'),
                 'warnings' => new external_value(PARAM_TEXT, 'Warning message'),
-            )
+            ]
         );
     }
+
 }

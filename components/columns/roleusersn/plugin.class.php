@@ -17,17 +17,18 @@
 /**
  * Configurable Reports
  * A Moodle block for creating customizable reports
+ *
  * @package blocks
- * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date: 2009
+ * @author  : Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @date    : 2009
  */
-
 class plugin_roleusersn extends plugin_base {
+
     public function init() {
         $this->fullname = get_string('roleusersn', 'block_configurable_reports');
         $this->type = 'numeric';
         $this->form = true;
-        $this->reporttypes = array('courses');
+        $this->reporttypes = ['courses'];
     }
 
     public function summary($data) {
@@ -38,7 +39,8 @@ class plugin_roleusersn extends plugin_base {
         $align = (isset($data->align)) ? $data->align : '';
         $size = (isset($data->size)) ? $data->size : '';
         $wrap = (isset($data->wrap)) ? $data->wrap : '';
-        return array($align, $size, $wrap);
+
+        return [$align, $size, $wrap];
     }
 
     // Data -> Plugin configuration data.
@@ -46,6 +48,8 @@ class plugin_roleusersn extends plugin_base {
     public function execute($data, $row, $user, $courseid, $starttime = 0, $endtime = 0) {
         $courseid = $row->id;
         $context = cr_get_context(CONTEXT_COURSE, $courseid);
+
         return count_role_users($data->roles, $context);
     }
+
 }

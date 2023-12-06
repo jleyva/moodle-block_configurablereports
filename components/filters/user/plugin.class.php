@@ -17,19 +17,21 @@
 /**
  * Configurable Reports
  * A Moodle block for creating customizable reports
+ *
  * @package blocks
- * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date: 2009
+ * @author  : Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @date    : 2009
  */
-
-require_once($CFG->dirroot.'/blocks/configurable_reports/plugin.class.php');
+defined('MOODLE_INTERNAL') || die;
+require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
 
 class plugin_user extends plugin_base {
+
     public function init() {
         $this->form = false;
         $this->unique = true;
         $this->fullname = get_string('filteruser', 'block_configurable_reports');
-        $this->reporttypes = array('courses', 'sql');
+        $this->reporttypes = ['courses', 'sql'];
     }
 
     public function summary($data) {
@@ -43,20 +45,22 @@ class plugin_user extends plugin_base {
         }
 
         if ($this->report->type != 'sql') {
-                return array($filteruser);
+            return [$filteruser];
         } else {
             if (preg_match("/%%FILTER_COURSEUSER:([^%]+)%%/i", $finalelements, $output)) {
-                $replace = ' AND '.$output[1].' = '.$filteruser;
-                return str_replace('%%FILTER_COURSEUSER:'.$output[1].'%%', $replace, $finalelements);
+                $replace = ' AND ' . $output[1] . ' = ' . $filteruser;
+
+                return str_replace('%%FILTER_COURSEUSER:' . $output[1] . '%%', $replace, $finalelements);
             }
         }
+
         return $finalelements;
     }
 
     public function print_filter(&$mform) {
         global $remotedb, $COURSE, $PAGE, $CFG;
 
-        $reportclassname = 'report_'.$this->report->type;
+        $reportclassname = 'report_' . $this->report->type;
         $reportclass = new $reportclassname($this->report);
 
         if ($this->report->type != 'sql') {
@@ -68,14 +72,14 @@ class plugin_user extends plugin_base {
             $userlist = array_keys(get_users_by_capability($coursecontext, 'moodle/user:viewdetails'));
         }
 
-        $useroptions = array();
+        $useroptions = [];
         $useroptions[0] = get_string('filter_all', 'block_configurable_reports');
 
         if (!empty($userlist)) {
             if (has_capability('moodle/site:viewfullnames', $PAGE->context)) {
-               $nameformat = $CFG->alternativefullnameformat;
+                $nameformat = $CFG->alternativefullnameformat;
             } else {
-               $nameformat = $CFG->fullnamedisplay;
+                $nameformat = $CFG->fullnamedisplay;
             }
 
             if ($nameformat == 'language') {
@@ -84,8 +88,8 @@ class plugin_user extends plugin_base {
 
             $sort = implode(',', order_in_string(get_all_user_name_fields(), $nameformat));
 
-            list($usql, $params) = $remotedb->get_in_or_equal($userlist);
-            $users = $remotedb->get_records_select('user', "id " . $usql, $params, $sort, 'id,' .get_all_user_name_fields(true));
+            [$usql, $params] = $remotedb->get_in_or_equal($userlist);
+            $users = $remotedb->get_records_select('user', "id " . $usql, $params, $sort, 'id,' . get_all_user_name_fields(true));
 
             foreach ($users as $c) {
                 $useroptions[$c->id] = fullname($c);
@@ -95,4 +99,5 @@ class plugin_user extends plugin_base {
         $mform->addElement('select', 'filter_user', get_string('user'), $useroptions);
         $mform->setType('filter_user', PARAM_INT);
     }
+
 }

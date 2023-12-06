@@ -27,6 +27,18 @@ By Tim Hunt
 
 VERSIONS HISTORY
 
+4.1.0 (2023120600) for Moodle 4.1
+Release date: 06.12.2023
+
+- Reformat code
+- Add CI testing based on Github Actions created by Catalyst IT
+- Add PHP 8.0 support
+- Add PHP 8.1 support
+- Move repository to https://github.com/Lesterhuis-Training-en-Consultancy/moodle-block_configurablereports
+- Original repository (https://github.com/jleyva/moodle-block_configurablereports) can be used for older release or use the old branches within this repository
+
+Thanks to Lesterhuis Training & Consultancy for the contribution / Updated by Ldesign Media
+
 3.9.0 (2019122000) for Moodle 3.4, 3.5, 3.6, 3.7, 3.8, 3.9
 Release date: Tuesday, 3 November 2020
 ----------------------------------------------------------------------

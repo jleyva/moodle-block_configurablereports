@@ -17,37 +17,38 @@
 /**
  * Configurable Reports
  * A Moodle block for creating customizable reports
+ *
  * @package blocks
- * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date: 2009
+ * @author  : Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @date    : 2009
  */
- 
- /**
+
+/**
  * COMPETENCY TEMPLATE FILTER
  * A filter for configurable reports
+ *
  * @author: François Parlant <https://www.linkedin.com/in/francois-parlant/>
- * @date: 2020
- */ 
-
-
- /* example of report query
- ***********
- * Display the courses in which the competencies of a template are used
- ***********
-
- 
+ * @date  : 2020
  */
 
+/* example of report query
+***********
+* Display the courses in which the competencies of a template are used
+***********
 
-require_once($CFG->dirroot.'/blocks/configurable_reports/plugin.class.php');
 
-class plugin_competencytemplates extends plugin_base{
+*/
+
+defined('MOODLE_INTERNAL') || die;
+require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
+
+class plugin_competencytemplates extends plugin_base {
 
     public function init() {
         $this->form = false;
         $this->unique = true;
         $this->fullname = get_string('filtercompetencytemplates', 'block_configurable_reports');
-        $this->reporttypes = array('courses', 'sql');
+        $this->reporttypes = ['courses', 'sql'];
     }
 
     public function summary($data) {
@@ -55,27 +56,29 @@ class plugin_competencytemplates extends plugin_base{
     }
 
     public function execute($finalelements, $data) {
-		
+
         $filtercompetencytemplates = optional_param('filter_competencytemplates', 0, PARAM_INT);
         if (!$filtercompetencytemplates) {
             return $finalelements;
         }
 
         if ($this->report->type != 'sql') {
-            return array($filtercompetencytemplates);
+            return [$filtercompetencytemplates];
         } else {
             if (preg_match("/%%FILTER_COMPETENCYTEMPLATES:([^%]+)%%/i", $finalelements, $output)) {
-                $replace = ' AND '.$output[1].' = '.$filtercompetencytemplates;
-                return str_replace('%%FILTER_COMPETENCYTEMPLATES:'.$output[1].'%%', $replace, $finalelements);
+                $replace = ' AND ' . $output[1] . ' = ' . $filtercompetencytemplates;
+
+                return str_replace('%%FILTER_COMPETENCYTEMPLATES:' . $output[1] . '%%', $replace, $finalelements);
             }
         }
+
         return $finalelements;
     }
 
     public function print_filter(&$mform) {
         global $remotedb, $COURSE, $PAGE, $CFG;
 
-        $reportclassname = 'report_'.$this->report->type;
+        $reportclassname = 'report_' . $this->report->type;
         $reportclass = new $reportclassname($this->report);
 
         if ($this->report->type != 'sql') {
@@ -91,10 +94,10 @@ class plugin_competencytemplates extends plugin_base{
             foreach ($studentlist as $student) {
                 $competencytemplateslist[] = $student->userid;
             }
-			
+
         }
 
-        $competencytemplatesoptions = array();
+        $competencytemplatesoptions = [];
         $competencytemplatesoptions[0] = get_string('filter_all', 'block_configurable_reports');
 
         if (!empty($competencytemplateslist)) {
@@ -110,4 +113,5 @@ class plugin_competencytemplates extends plugin_base{
         $mform->addElement('select', 'filter_competencytemplates', $elestr, $competencytemplatesoptions);
         $mform->setType('filter_competencytemplates', PARAM_INT);
     }
+
 }

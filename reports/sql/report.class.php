@@ -17,9 +17,10 @@
 /**
  * Configurable Reports
  * A Moodle block for creating customizable reports
+ *
  * @package blocks
- * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date: 2009
+ * @author  : Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @date    : 2009
  */
 
 defined('BLOCK_CONFIGURABLE_REPORTS_MAX_RECORDS') || define('BLOCK_CONFIGURABLE_REPORTS_MAX_RECORDS', 5000);
@@ -37,7 +38,7 @@ class report_sql extends report_base {
     }
 
     public function init() {
-        $this->components = array('customsql', 'filters', 'template', 'permissions', 'calcs', 'plot');
+        $this->components = ['customsql', 'filters', 'template', 'permissions', 'calcs', 'plot'];
     }
 
     public function prepare_sql($sql) {
@@ -59,7 +60,7 @@ class report_sql extends report_base {
         $sql = str_replace('%%CATEGORYID%%', $COURSE->category, $sql);
 
         // See http://en.wikipedia.org/wiki/Year_2038_problem.
-        $sql = str_replace(array('%%STARTTIME%%', '%%ENDTIME%%'), array('0', '2145938400'), $sql);
+        $sql = str_replace(['%%STARTTIME%%', '%%ENDTIME%%'], ['0', '2145938400'], $sql);
         $sql = str_replace('%%WWWROOT%%', $CFG->wwwroot, $sql);
         $sql = preg_replace('/%{2}[^%]+%{2}/i', '', $sql);
 
@@ -75,7 +76,7 @@ class report_sql extends report_base {
 
         $reportlimit = get_config('block_configurable_reports', 'reportlimit');
         if (empty($reportlimit) or $reportlimit == '0') {
-                $reportlimit = BLOCK_CONFIGURABLE_REPORTS_MAX_RECORDS;
+            $reportlimit = BLOCK_CONFIGURABLE_REPORTS_MAX_RECORDS;
         }
 
         $starttime = microtime(true);
@@ -88,7 +89,7 @@ class report_sql extends report_base {
         }
 
         // Update the execution time in the DB.
-        $updaterecord = $DB->get_record('block_configurable_reports', array('id' => $this->config->id));
+        $updaterecord = $DB->get_record('block_configurable_reports', ['id' => $this->config->id]);
         $updaterecord->lastexecutiontime = round((microtime(true) - $starttime) * 1000);
         $this->config->lastexecutiontime = $updaterecord->lastexecutiontime;
 
@@ -98,20 +99,20 @@ class report_sql extends report_base {
     }
 
     public function create_report() {
-        global $DB, $CFG;
+        global $CFG;
 
         $components = cr_unserialize($this->config->components);
 
-        $filters = (isset($components['filters']['elements'])) ? $components['filters']['elements'] : array();
-        $calcs = (isset($components['calcs']['elements'])) ? $components['calcs']['elements'] : array();
+        $filters = $components['filters']['elements'] ?? [];
+        $calcs = $components['calcs']['elements'] ?? [];
 
-        $tablehead = array();
-        $finalcalcs = array();
-        $finaltable = array();
-        $tablehead = array();
+        $tablehead = [];
+        $finalcalcs = [];
+        $finaltable = [];
+        $tablehead = [];
 
         $components = cr_unserialize($this->config->components);
-        $config = (isset($components['customsql']['config'])) ? $components['customsql']['config'] : new \stdclass;
+        $config = $components['customsql']['config'] ?? new stdClass;
         $totalrecords = 0;
 
         $sql = '';
@@ -120,8 +121,9 @@ class report_sql extends report_base {
             $sql = $config->querysql;
             if (!empty($filters)) {
                 foreach ($filters as $f) {
-                    require_once($CFG->dirroot.'/blocks/configurable_reports/components/filters/'.$f['pluginname'].'/plugin.class.php');
-                    $classname = 'plugin_'.$f['pluginname'];
+                    require_once($CFG->dirroot . '/blocks/configurable_reports/components/filters/' . $f['pluginname'] .
+                        '/plugin.class.php');
+                    $classname = 'plugin_' . $f['pluginname'];
                     $class = new $classname($this->config);
                     $sql = $class->execute($sql, $f['formdata']);
                 }
@@ -139,7 +141,7 @@ class report_sql extends report_base {
                     $arrayrow = array_values((array) $row);
                     foreach ($arrayrow as $ii => $cell) {
                         if (!$this->isForExport()) {
-                            $cell = format_text($cell, FORMAT_HTML, array('trusted' => true, 'noclean' => true, 'para' => false));
+                            $cell = format_text($cell, FORMAT_HTML, ['trusted' => true, 'noclean' => true, 'para' => false]);
                         }
                         $arrayrow[$ii] = str_replace('[[QUESTIONMARK]]', '?', $cell);
                     }
@@ -155,18 +157,18 @@ class report_sql extends report_base {
 
         $finalcalcs = $this->get_calcs($finaltable, $tablehead);
 
-        $table = new \stdclass;
+        $table = new stdClass;
         $table->id = 'reporttable';
         $table->data = $finaltable;
         $table->head = $tablehead;
 
-        $calcs = new \html_table();
+        $calcs = new html_table();
         $calcs->id = 'calcstable';
-        $calcs->data = array($finalcalcs);
+        $calcs->data = [$finalcalcs];
         $calcs->head = $tablehead;
 
         if (!$this->finalreport) {
-            $this->finalreport = new \stdClass;
+            $this->finalreport = new stdClass;
         }
         $this->finalreport->table = $table;
         $this->finalreport->calcs = $calcs;

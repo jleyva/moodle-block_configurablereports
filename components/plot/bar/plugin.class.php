@@ -17,12 +17,13 @@
 /**
  * Configurable Reports
  * A Moodle block for creating customizable reports
+ *
  * @package blocks
- * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date: 2009
+ * @author  : Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @date    : 2009
  */
-
-require_once($CFG->dirroot.'/blocks/configurable_reports/plugin.class.php');
+defined('MOODLE_INTERNAL') || die;
+require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
 
 class plugin_bar extends plugin_base {
 
@@ -30,7 +31,7 @@ class plugin_bar extends plugin_base {
         $this->fullname = "Bar chart";
         $this->form = true;
         $this->ordering = true;
-        $this->reporttypes = array('courses', 'sql', 'users', 'timeline', 'categories');
+        $this->reporttypes = ['courses', 'sql', 'users', 'timeline', 'categories'];
     }
 
     public function summary($data) {
@@ -40,17 +41,17 @@ class plugin_bar extends plugin_base {
     // Data -> Plugin configuration data.
     public function execute($id, $data, $finalreport) {
         global $DB, $CFG;
-        $series = array();
+        $series = [];
         if ($finalreport) {
-            list($labelidx, $labelname) = explode(",", $data->label_field);
-            $series[$labelname] = array();
+            [$labelidx, $labelname] = explode(",", $data->label_field);
+            $series[$labelname] = [];
             if (!is_array($data->value_fields)) {
-                $data->value_fields = array($data->value_fields);
+                $data->value_fields = [$data->value_fields];
             }
             foreach ($finalreport as $r) {
                 $series[$labelname][] = $r[$labelidx];
                 foreach ($data->value_fields as $valuefields) {
-                    list($idx, $name) = explode(",", $valuefields);
+                    [$idx, $name] = explode(",", $valuefields);
                     $value = $r[$idx];
 
                     if ($idx == $labelidx) {
@@ -65,7 +66,7 @@ class plugin_bar extends plugin_base {
                     }
 
                     if (!array_key_exists($name, $series)) {
-                        $series[$name] = array();
+                        $series[$name] = [];
                     }
                     $series[$name][] = $value;
                 }
@@ -74,12 +75,15 @@ class plugin_bar extends plugin_base {
 
         $graphdata = urlencode(json_encode($series));
 
-        return $CFG->wwwroot.'/blocks/configurable_reports/components/plot/bar/graph.php?reportid='.$this->report->id.'&id='.$id.'&graphdata='.$graphdata;
+        return $CFG->wwwroot . '/blocks/configurable_reports/components/plot/bar/graph.php?reportid=' . $this->report->id . '&id=' .
+            $id . '&graphdata=' . $graphdata;
     }
 
     public function get_series($data) {
         $graphdataraw = required_param('graphdata', PARAM_RAW);
         $graphdata = json_decode(urldecode($graphdataraw));
-        return (array)$graphdata;
+
+        return (array) $graphdata;
     }
+
 }

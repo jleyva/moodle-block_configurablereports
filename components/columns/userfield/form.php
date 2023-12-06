@@ -17,9 +17,10 @@
 /**
  * Configurable Reports
  * A Moodle block for creating customizable reports
+ *
  * @package blocks
- * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date: 2009
+ * @author  : Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @date    : 2009
  */
 
 if (!defined('MOODLE_INTERNAL')) {
@@ -27,15 +28,16 @@ if (!defined('MOODLE_INTERNAL')) {
     die('Direct access to this script is forbidden.');
 }
 
-require_once($CFG->libdir.'/formslib.php');
+require_once($CFG->libdir . '/formslib.php');
 
 class userfield_form extends moodleform {
+
     public function definition() {
         global $DB, $USER, $CFG;
         $mform =& $this->_form;
-        $mform->addElement('header',  'crformheader', get_string('userfield', 'block_configurable_reports'), '');
+        $mform->addElement('header', 'crformheader', get_string('userfield', 'block_configurable_reports'), '');
         $columns = $DB->get_columns('user');
-        $usercolumns = array();
+        $usercolumns = [];
         $usercolumns['fullname'] = get_string('fullname');
         foreach ($columns as $c) {
             $usercolumns[$c->name] = $c->name;
@@ -43,7 +45,7 @@ class userfield_form extends moodleform {
 
         if ($profile = $DB->get_records('user_info_field')) {
             foreach ($profile as $p) {
-                $usercolumns['profile_'.$p->shortname] = $p->name;
+                $usercolumns['profile_' . $p->shortname] = $p->name;
             }
         }
 
@@ -60,6 +62,8 @@ class userfield_form extends moodleform {
     public function validation($data, $files) {
         $errors = parent::validation($data, $files);
         $errors = $this->_customdata['compclass']->validate_form_elements($data, $errors);
+
         return $errors;
     }
+
 }

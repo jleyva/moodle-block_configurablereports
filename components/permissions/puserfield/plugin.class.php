@@ -17,12 +17,13 @@
 /**
  * Configurable Reports
  * A Moodle block for creating customizable reports
+ *
  * @package blocks
- * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date: 2009
+ * @author  : Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @date    : 2009
  */
-
-require_once($CFG->dirroot.'/blocks/configurable_reports/plugin.class.php');
+defined('MOODLE_INTERNAL') || die;
+require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
 
 class plugin_puserfield extends plugin_base {
 
@@ -30,23 +31,25 @@ class plugin_puserfield extends plugin_base {
         $this->form = true;
         $this->unique = false;
         $this->fullname = get_string('puserfield', 'block_configurable_reports');
-        $this->reporttypes = array('courses', 'sql', 'users', 'timeline', 'categories');
+        $this->reporttypes = ['courses', 'sql', 'users', 'timeline', 'categories'];
     }
 
     public function summary($data) {
         global $DB;
 
         if (strpos($data->field, 'profile_') === 0) {
-            $name = $DB->get_field('user_info_field', 'name', array('shortname' => str_replace('profile_', '', $data->field)));
-            return $name .' = '.$data->value;
+            $name = $DB->get_field('user_info_field', 'name', ['shortname' => str_replace('profile_', '', $data->field)]);
+
+            return $name . ' = ' . $data->value;
         }
-        return $data->field.' = '.$data->value;
+
+        return $data->field . ' = ' . $data->value;
     }
 
     public function execute($userid, $context, $data) {
         global $DB, $CFG;
 
-        if (!$user = $DB->get_record('user', array('id' => $userid))) {
+        if (!$user = $DB->get_record('user', ['id' => $userid])) {
             return false;
         }
 
@@ -54,9 +57,9 @@ class plugin_puserfield extends plugin_base {
             $sql = 'SELECT d.*, f.shortname, f.datatype
                       FROM {user_info_data} d ,{user_info_field} f
                      WHERE f.id = d.fieldid AND d.userid = ?';
-            if ($profiledata = $DB->get_records_sql($sql, array($userid))) {
+            if ($profiledata = $DB->get_records_sql($sql, [$userid])) {
                 foreach ($profiledata as $p) {
-                    $user->{'profile_'.$p->shortname} = $p->data;
+                    $user->{'profile_' . $p->shortname} = $p->data;
                 }
             }
         }
@@ -67,4 +70,5 @@ class plugin_puserfield extends plugin_base {
 
         return false;
     }
+
 }

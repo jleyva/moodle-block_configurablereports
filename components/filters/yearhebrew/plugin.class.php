@@ -17,20 +17,21 @@
 /**
  * Configurable Reports
  * A Moodle block for creating customizable reports
+ *
  * @package blocks
- * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date: 2009
+ * @author  : Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @date    : 2009
  */
+defined('MOODLE_INTERNAL') || die;
+require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
 
-require_once($CFG->dirroot.'/blocks/configurable_reports/plugin.class.php');
-
-class plugin_yearhebrew extends plugin_base{
+class plugin_yearhebrew extends plugin_base {
 
     public function init() {
         $this->form = false;
         $this->unique = true;
         $this->fullname = get_string('filteryearhebrew', 'block_configurable_reports');
-        $this->reporttypes = array('categories', 'sql');
+        $this->reporttypes = ['categories', 'sql'];
     }
 
     public function summary($data) {
@@ -45,13 +46,15 @@ class plugin_yearhebrew extends plugin_base{
         }
 
         if ($this->report->type != 'sql') {
-            return array($filteryearhebrew);
+            return [$filteryearhebrew];
         } else {
             if (preg_match("/%%FILTER_YEARHEBREW:([^%]+)%%/i", $finalelements, $output)) {
-                $replace = ' AND '.$output[1].' LIKE \'%'.$filteryearhebrew.'%\'';
-                return str_replace('%%FILTER_YEARHEBREW:'.$output[1].'%%', $replace, $finalelements);
+                $replace = ' AND ' . $output[1] . ' LIKE \'%' . $filteryearhebrew . '%\'';
+
+                return str_replace('%%FILTER_YEARHEBREW:' . $output[1] . '%%', $replace, $finalelements);
             }
         }
+
         return $finalelements;
     }
 
@@ -60,7 +63,7 @@ class plugin_yearhebrew extends plugin_base{
 
         $filteryearhebrew = optional_param('filter_yearhebrew', 0, PARAM_RAW);
 
-        $reportclassname = 'report_'.$this->report->type;
+        $reportclassname = 'report_' . $this->report->type;
         $reportclass = new $reportclassname($this->report);
         foreach (explode(',', get_string('filteryearhebrew_list', 'block_configurable_reports')) as $value) {
             $yearhebrew[$value] = $value;
@@ -75,7 +78,7 @@ class plugin_yearhebrew extends plugin_base{
             $yearhebrewlist = array_keys($yearhebrew);
         }
 
-        $yearhebrewoptions = array();
+        $yearhebrewoptions = [];
         $yearhebrewoptions[0] = get_string('filter_all', 'block_configurable_reports');
 
         if (!empty($yearhebrewlist)) {
@@ -89,4 +92,5 @@ class plugin_yearhebrew extends plugin_base{
         $mform->addElement('select', 'filter_yearhebrew', $elestr, $yearhebrewoptions);
         $mform->setType('filter_yearhebrew', PARAM_RAW);
     }
+
 }

@@ -17,12 +17,13 @@
 /**
  * Configurable Reports
  * A Moodle block for creating customizable reports
+ *
  * @package blocks
- * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date: 2009
+ * @author  : Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @date    : 2009
  */
-
-require_once($CFG->dirroot.'/blocks/configurable_reports/plugin.class.php');
+defined('MOODLE_INTERNAL') || die;
+require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
 
 class plugin_parentcategory extends plugin_base {
 
@@ -30,17 +31,17 @@ class plugin_parentcategory extends plugin_base {
         $this->fullname = get_string('parentcategory', 'block_configurable_reports');
         $this->type = 'text';
         $this->form = true;
-        $this->reporttypes = array('categories');
+        $this->reporttypes = ['categories'];
     }
 
     public function summary($data) {
         global $DB;
 
-        $cat = $DB->get_record('course_categories', array('id' => $data->categoryid));
+        $cat = $DB->get_record('course_categories', ['id' => $data->categoryid]);
         if ($cat) {
-            return format_string(get_string('category').' '.$cat->name);
+            return format_string(get_string('category') . ' ' . $cat->name);
         } else {
-            return get_string('category').' '.get_string('top');
+            return get_string('category') . ' ' . get_string('top');
         }
     }
 
@@ -48,23 +49,25 @@ class plugin_parentcategory extends plugin_base {
     public function execute($data, $user, $courseid) {
         global $DB, $CFG;
 
-        require_once($CFG->dirroot.'/course/lib.php');
+        require_once($CFG->dirroot . '/course/lib.php');
 
         if (isset($data->includesubcats)) {
-            if ($category = $DB->get_record('course_categories', array('id' => $data->categoryid))) {
+            if ($category = $DB->get_record('course_categories', ['id' => $data->categoryid])) {
                 cr_make_categories_list($options, $parents, '', 0, $category);
             } else {
                 cr_make_categories_list($options, $parents);
             }
             unset($options[$data->categoryid]);
+
             return array_keys($options);
         } else {
-            $categories = $DB->get_records('course_categories', array('parent' => $data->categoryid));
+            $categories = $DB->get_records('course_categories', ['parent' => $data->categoryid]);
             if ($categories) {
                 return array_keys($categories);
             }
         }
 
-        return array();
+        return [];
     }
+
 }

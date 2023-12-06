@@ -17,21 +17,22 @@
 /**
  * Configurable Reports
  * A Moodle block for creating customizable reports
+ *
  * @package blocks
- * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date: 2009
+ * @author  : Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @date    : 2009
  */
+defined('MOODLE_INTERNAL') || die;
+require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
 
-require_once($CFG->dirroot.'/blocks/configurable_reports/plugin.class.php');
+class plugin_usersincoursereport extends plugin_base {
 
-class plugin_usersincoursereport extends plugin_base{
-
-	function init(){
-		$this->form = false;
-		$this->unique = true;
-		$this->fullname = get_string('usersincoursereport','block_configurable_reports');
-		$this->reporttypes = array('courses','sql','users','timeline','categories');
-	}
+    function init() {
+        $this->form = false;
+        $this->unique = true;
+        $this->fullname = get_string('usersincoursereport', 'block_configurable_reports');
+        $this->reporttypes = ['courses', 'sql', 'users', 'timeline', 'categories'];
+    }
 
     public function summary($data) {
         return get_string('usersincoursereport_summary', 'block_configurable_reports');
@@ -40,10 +41,11 @@ class plugin_usersincoursereport extends plugin_base{
     public function execute($userid, $context, $data) {
 
         // Everyone should be enrolled at the system level.
-        if($context == context_system::instance()) {
+        if ($context == context_system::instance()) {
             return true;
         }
 
         return is_enrolled($context, $userid);
     }
+
 }

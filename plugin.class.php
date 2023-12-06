@@ -17,26 +17,26 @@
 /**
  * Configurable Reports
  * A Moodle block for creating customizable reports
+ *
  * @package blocks
- * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date: 2009
+ * @author  : Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @date    : 2009
  */
-
 class plugin_base {
 
     public $fullname = '';
     public $type = '';
     public $report = null;
     public $form = false;
-    public $cache = array();
+    public $cache = [];
     public $unique = false;
-    public $reporttypes = array();
+    public $reporttypes = [];
 
     public function __construct($report) {
         global $DB, $CFG, $remotedb;
 
         if (is_numeric($report)) {
-            $this->report = $DB->get_record('block_configurable_reports', array('id' => $report));
+            $this->report = $DB->get_record('block_configurable_reports', ['id' => $report]);
         } else {
             $this->report = $report;
         }

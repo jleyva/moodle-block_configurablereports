@@ -17,11 +17,11 @@
 /**
  * Configurable Reports
  * A Moodle block for creating customizable reports
+ *
  * @package blocks
- * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date: 2009
+ * @author  : Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @date    : 2009
  */
-
 /*
     evaluate postfix notation
     modified to perform bitwise-like operations in arrays
@@ -32,7 +32,7 @@
 
 class EvalWise extends EvalMath {
 
-    public $data = array();
+    public $data = [];
     public $index = 0;
 
     public function set_data($data) {
@@ -40,13 +40,13 @@ class EvalWise extends EvalMath {
         $this->index = count($this->data);
     }
 
-    public function pfx($tokens, $vars = array()) {
+    public function pfx($tokens, $vars = []) {
 
         if ($tokens == false) {
             return false;
         }
 
-        $stack = new \EvalMathStack;
+        $stack = new EvalMathStack;
 
         foreach ($tokens as $token) {
 
@@ -65,20 +65,20 @@ class EvalWise extends EvalMath {
                     eval('$stack->push(' . $fnn . '($op1));'); // Perfectly safe eval().
                 } else if (array_key_exists($fnn, $this->fc)) { // Calc emulation function.
                     // Get args.
-                    $args = array();
+                    $args = [];
                     for ($i = $count - 1; $i >= 0; $i--) {
                         if (is_null($args[] = $stack->pop())) {
                             return $this->trigger('internal error');
                         }
                     }
-                    $res = call_user_func(array('EvalMathCalcEmul', $fnn), $args);
+                    $res = call_user_func(['EvalMathCalcEmul', $fnn], $args);
                     if ($res === false) {
                         return $this->trigger("internal error");
                     }
                     $stack->push($res);
                 } else if (array_key_exists($fnn, $this->f)) { // User function.
                     // Get args.
-                    $args = array();
+                    $args = [];
                     for ($i = count($this->f[$fnn]['args']) - 1; $i >= 0; $i--) {
                         if (is_null($args[$this->f[$fnn]['args'][$i]] = $stack->pop())) {
                             return $this->trigger('internal error');
@@ -86,7 +86,7 @@ class EvalWise extends EvalMath {
                     }
                     $stack->push($this->pfx($this->f[$fnn]['func'], $args)); // Yay... recursion!!!!
                 }
-            } else if (in_array($token, array('+', '-', '*', '/', '^'), true)) {
+            } else if (in_array($token, ['+', '-', '*', '/', '^'], true)) {
                 // If the token is a binary operator, pop two values off the stack, do the operation, and push the result back on.
                 if (is_null($op2 = $stack->pop())) {
                     return $this->trigger('internal error');
@@ -140,4 +140,5 @@ class EvalWise extends EvalMath {
             return false;
         }
     }
+
 }

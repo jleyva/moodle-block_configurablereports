@@ -17,20 +17,21 @@
 /**
  * Configurable Reports
  * A Moodle block for creating customizable reports
+ *
  * @package blocks
- * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date: 2009
+ * @author  : Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @date    : 2009
  */
+defined('MOODLE_INTERNAL') || die;
+require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
 
-require_once($CFG->dirroot.'/blocks/configurable_reports/plugin.class.php');
-
-class plugin_pie extends plugin_base{
+class plugin_pie extends plugin_base {
 
     public function init() {
         $this->fullname = get_string('pie', 'block_configurable_reports');
         $this->form = true;
         $this->ordering = true;
-        $this->reporttypes = array('courses', 'sql', 'users', 'timeline', 'categories');
+        $this->reporttypes = ['courses', 'sql', 'users', 'timeline', 'categories'];
     }
 
     public function summary($data) {
@@ -41,7 +42,7 @@ class plugin_pie extends plugin_base{
     public function execute($id, $data, $finalreport) {
         global $DB, $CFG;
 
-        $series = array();
+        $series = [];
         if ($finalreport) {
             foreach ($finalreport as $r) {
                 if ($data->areaname == $data->areavalue) {
@@ -53,16 +54,18 @@ class plugin_pie extends plugin_base{
                         $series[1][$hash] = 1;
                     }
 
-                } else if (!isset($data->group) || ! $data->group) {
+                } else if (!isset($data->group) || !$data->group) {
                     $series[0][] = str_replace(',', '', $r[$data->areaname]);
                     $series[1][] = (isset($r[$data->areavalue]) && is_numeric($r[$data->areavalue])) ? $r[$data->areavalue] : 0;
                 } else {
                     $hash = md5(strtolower($r[$data->areaname]));
                     if (isset($series[0][$hash])) {
-                        $series[1][$hash] += (isset($r[$data->areavalue]) && is_numeric($r[$data->areavalue])) ? $r[$data->areavalue] : 0;
+                        $series[1][$hash] += (isset($r[$data->areavalue]) && is_numeric($r[$data->areavalue])) ?
+                            $r[$data->areavalue] : 0;
                     } else {
                         $series[0][$hash] = str_replace(',', '', $r[$data->areaname]);
-                        $series[1][$hash] = (isset($r[$data->areavalue]) && is_numeric($r[$data->areavalue])) ? $r[$data->areavalue] : 0;
+                        $series[1][$hash] =
+                            (isset($r[$data->areavalue]) && is_numeric($r[$data->areavalue])) ? $r[$data->areavalue] : 0;
                     }
                 }
             }
@@ -118,16 +121,17 @@ class plugin_pie extends plugin_base{
         $serie1 = base64_encode(implode(',', $serie1sorted));
         $colorpalette = base64_encode(implode(',', $colors));
 
-        return $CFG->wwwroot.'/blocks/configurable_reports/components/plot/pie/graph.php?reportid='.$this->report->id.'&id='.$id.'&serie0='.$serie0.'&serie1='.$serie1.'&colorpalette='.$colorpalette;
+        return $CFG->wwwroot . '/blocks/configurable_reports/components/plot/pie/graph.php?reportid=' . $this->report->id . '&id=' .
+            $id . '&serie0=' . $serie0 . '&serie1=' . $serie1 . '&colorpalette=' . $colorpalette;
     }
 
     public function get_series($data) {
         $serie0 = required_param('serie0', PARAM_RAW);
         $serie1 = required_param('serie1', PARAM_RAW);
 
-        return array(explode(',', base64_decode($serie0)), explode(',', base64_decode($serie1)));
+        return [explode(',', base64_decode($serie0)), explode(',', base64_decode($serie1))];
     }
-    
+
     public function get_color_palette($data) {
         if ($colorpalette = optional_param('colorpalette', '', PARAM_RAW)) {
             $colorpalette = explode(',', base64_decode($colorpalette));
@@ -138,15 +142,23 @@ class plugin_pie extends plugin_base{
                     unset($colorpalette[$index]);
                 }
             }
+
             return $colorpalette;
         }
+
         return null;
     }
 
     public function parse_color($colorcode) {
-        return implode('|', array_map(
+        return implode(
+            '|',
+            array_map(
                 function ($c) {
                     return hexdec(str_pad($c, 2, $c));
-                }, str_split($colorcode, strlen($colorcode) > 4 ? 2 : 1)));
+                },
+                str_split($colorcode, strlen($colorcode) > 4 ? 2 : 1)
+            )
+        );
     }
+
 }

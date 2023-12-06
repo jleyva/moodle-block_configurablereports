@@ -17,9 +17,10 @@
 /**
  * Configurable Reports
  * A Moodle block for creating customizable reports
+ *
  * @package blocks
- * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date: 2009
+ * @author  : Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @date    : 2009
  */
 
 if (!defined('MOODLE_INTERNAL')) {
@@ -27,9 +28,10 @@ if (!defined('MOODLE_INTERNAL')) {
     die('Direct access to this script is forbidden.');
 }
 
-require_once($CFG->libdir.'/formslib.php');
+require_once($CFG->libdir . '/formslib.php');
 
 class conditions_form extends moodleform {
+
     public function definition() {
         global $DB, $USER, $CFG;
 
@@ -48,7 +50,10 @@ class conditions_form extends moodleform {
     public function validation($data, $files) {
         $errors = parent::validation($data, $files);
         // TODO - this reg expr can be improved.
-        if (!preg_match("/(\(*\s*\bc\d{1,2}\b\s*\(*\)*\s*(\(|and|or|not)\s*)+\(*\s*\bc\d{1,2}\b\s*\(*\)*\s*$/i", $data['conditionexpr'])) {
+        if (!preg_match(
+            "/(\(*\s*\bc\d{1,2}\b\s*\(*\)*\s*(\(|and|or|not)\s*)+\(*\s*\bc\d{1,2}\b\s*\(*\)*\s*$/i",
+            $data['conditionexpr']
+        )) {
             $errors['conditionexpr'] = get_string('badconditionexpr', 'block_configurable_reports');
         }
 
@@ -72,4 +77,5 @@ class conditions_form extends moodleform {
 
         return $errors;
     }
+
 }

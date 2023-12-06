@@ -17,25 +17,24 @@
 /**
  * Configurable Reports
  * A Moodle block for creating customizable reports
+ *
  * @package blocks
- * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date: 2009
+ * @author  : Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @date    : 2009
  */
 
 function export_report($report) {
     global $DB, $CFG;
-    require_once($CFG->dirroot.'/lib/odslib.class.php');
+    require_once($CFG->dirroot . '/lib/odslib.class.php');
 
     $table = $report->table;
-    $matrix = array();
-    $filename = 'report_'.(time()).'.ods';
+    $matrix = [];
+    $filename = 'report_' . (time()) . '.ods';
 
     if (!empty($table->head)) {
-        $countcols = count($table->head);
         $keys = array_keys($table->head);
-        $lastkey = end($keys);
         foreach ($table->head as $key => $heading) {
-                $matrix[0][$key] = str_replace("\n", ' ', htmlspecialchars_decode(strip_tags(nl2br($heading))));
+            $matrix[0][$key] = str_replace("\n", ' ', htmlspecialchars_decode(strip_tags(nl2br($heading))));
         }
     }
 

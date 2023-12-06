@@ -19,9 +19,10 @@ if (!defined('MOODLE_INTERNAL')) {
     die('Direct access to this script is forbidden.');
 }
 
-require_once($CFG->libdir.'/formslib.php');
+require_once($CFG->libdir . '/formslib.php');
 
 class report_edit_form extends moodleform {
+
     public function definition() {
         global $DB, $USER, $CFG, $COURSE;
 
@@ -39,4 +40,5 @@ class report_edit_form extends moodleform {
         // Buttons.
         $this->add_action_buttons(true, get_string('filter_apply', 'block_configurable_reports'));
     }
+
 }

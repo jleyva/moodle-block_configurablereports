@@ -17,9 +17,10 @@
 /**
  * Configurable Reports
  * A Moodle block for creating customizable reports
+ *
  * @package blocks
- * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date: 2009
+ * @author  : Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @date    : 2009
  */
 
 if (!defined('MOODLE_INTERNAL')) {
@@ -27,26 +28,27 @@ if (!defined('MOODLE_INTERNAL')) {
     die('Direct access to this script is forbidden.');
 }
 
-require_once($CFG->libdir.'/formslib.php');
+require_once($CFG->libdir . '/formslib.php');
 
 class date_form extends moodleform {
+
     public function definition() {
         global $DB, $USER, $CFG;
 
         $mform =& $this->_form;
 
-        $mform->addElement('header',  'crformheader', get_string('date', 'block_configurable_reports'), '');
+        $mform->addElement('header', 'crformheader', get_string('date', 'block_configurable_reports'), '');
 
         $this->_customdata['compclass']->add_form_elements($mform, $this);
 
-        $params = array(
+        $params = [
             'starttime' => get_string('starttime', 'block_configurable_reports'),
-            'endtime' => get_string('endtime', 'block_configurable_reports')
-        );
+            'endtime' => get_string('endtime', 'block_configurable_reports'),
+        ];
         $mform->addElement('select', 'date', get_string('date', 'block_configurable_reports'), $params);
 
-        $formats = array( '' => get_string('default'), 'custom' => get_string('custom', 'block_configurable_reports'));
-        foreach (array('%A, %d %B %Y', '%d %B %Y', '%d/%B/%Y', '%B %d %Y') as $f) {
+        $formats = ['' => get_string('default'), 'custom' => get_string('custom', 'block_configurable_reports')];
+        foreach (['%A, %d %B %Y', '%d %B %Y', '%d/%B/%Y', '%B %d %Y'] as $f) {
             $formats[$f] = $f;
         }
 
@@ -58,4 +60,5 @@ class date_form extends moodleform {
         // Buttons.
         $this->add_action_buttons(true, get_string('add'));
     }
+
 }

@@ -17,12 +17,13 @@
 /**
  * Configurable Reports
  * A Moodle block for creating customizable reports
+ *
  * @package blocks
- * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date: 2009
+ * @author  : Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @date    : 2009
  */
-
-require_once($CFG->dirroot.'/blocks/configurable_reports/plugin.class.php');
+defined('MOODLE_INTERNAL') || die;
+require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
 
 class plugin_usermodactions extends plugin_base {
 
@@ -30,16 +31,16 @@ class plugin_usermodactions extends plugin_base {
         $this->fullname = get_string('usermodactions', 'block_configurable_reports');
         $this->type = 'undefined';
         $this->form = true;
-        $this->reporttypes = array('users');
+        $this->reporttypes = ['users'];
     }
 
     public function summary($data) {
         global $DB;
         // Should be a better way to do this.
-        if ($cm = $DB->get_record('course_modules', array('id' => $data->cmid))) {
-            $modname = $DB->get_field('modules', 'name', array('id' => $cm->module));
-            if ($name = $DB->get_field("$modname", 'name', array('id' => $cm->instance))) {
-                return $data->columname.' ('.$name.')';
+        if ($cm = $DB->get_record('course_modules', ['id' => $data->cmid])) {
+            $modname = $DB->get_field('modules', 'name', ['id' => $cm->module]);
+            if ($name = $DB->get_field("$modname", 'name', ['id' => $cm->instance])) {
+                return $data->columname . ' (' . $name . ')';
             }
         }
 
@@ -50,7 +51,8 @@ class plugin_usermodactions extends plugin_base {
         $align = (isset($data->align)) ? $data->align : '';
         $size = (isset($data->size)) ? $data->size : '';
         $wrap = (isset($data->wrap)) ? $data->wrap : '';
-        return array($align, $size, $wrap);
+
+        return [$align, $size, $wrap];
     }
 
     // Data -> Plugin configuration data.
@@ -59,7 +61,7 @@ class plugin_usermodactions extends plugin_base {
         global $DB, $CFG;
         require_once($CFG->dirroot . "/blocks/configurable_reports/locallib.php");
 
-        list($uselegacyreader, $useinternalreader, $logtable) = cr_logging_info();
+        [$uselegacyreader, $useinternalreader, $logtable] = cr_logging_info();
 
         $sql = '';
         if ($uselegacyreader) {
@@ -72,9 +74,9 @@ class plugin_usermodactions extends plugin_base {
                   GROUP BY cm.id";
         } else if ($useinternalreader) {
             $sql = "SELECT COUNT('x') AS numviews
-                      FROM {".$logtable."}
+                      FROM {" . $logtable . "}
                      WHERE contextinstanceid = $data->cmid
-                           AND contextlevel = ". CONTEXT_MODULE ."
+                           AND contextlevel = " . CONTEXT_MODULE . "
                            AND userid = $row->id
                            AND crud = 'r'
                   GROUP BY contextinstanceid";
@@ -83,6 +85,8 @@ class plugin_usermodactions extends plugin_base {
         if (!empty($sql) && $views = $DB->get_record_sql($sql)) {
             return $views->numviews;
         }
+
         return 0;
     }
+
 }

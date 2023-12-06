@@ -17,40 +17,44 @@
 /**
  * Configurable Reports
  * A Moodle block for creating customizable reports
+ *
  * @package blocks
- * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date: 2009
+ * @author  : Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @date    : 2009
  */
 
-require_once($CFG->dirroot.'/blocks/configurable_reports/plugin.class.php');
+defined('MOODLE_INTERNAL') || die;
+require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
 
-class plugin_coursecategory extends plugin_base{
+class plugin_coursecategory extends plugin_base {
 
     public function init() {
         $this->fullname = get_string('coursecategory', 'block_configurable_reports');
         $this->type = 'text';
         $this->form = true;
-        $this->reporttypes = array('courses');
+        $this->reporttypes = ['courses'];
     }
 
     public function summary($data) {
         global $DB;
 
-        $cat = $DB->get_record('course_categories', array('id' => $data->categoryid));
+        $cat = $DB->get_record('course_categories', ['id' => $data->categoryid]);
         if ($cat) {
-            return get_string('category').' '.$cat->name;
+            return get_string('category') . ' ' . $cat->name;
         } else {
-            return get_string('category').' '.get_string('top');
+            return get_string('category') . ' ' . get_string('top');
         }
     }
 
     // Data -> Plugin configuration data.
     public function execute($data, $user, $courseid) {
         global $DB;
-        $courses = $DB->get_records('course', array('category' => $data->categoryid));
+        $courses = $DB->get_records('course', ['category' => $data->categoryid]);
         if ($courses) {
             return array_keys($courses);
         }
-        return array();
+
+        return [];
     }
+
 }

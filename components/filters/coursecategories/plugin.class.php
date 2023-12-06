@@ -17,12 +17,13 @@
 /**
  * Configurable Reports
  * A Moodle block for creating customizable reports
+ *
  * @package blocks
- * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date: 2009
+ * @author  : Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @date    : 2009
  */
-
-require_once($CFG->dirroot.'/blocks/configurable_reports/plugin.class.php');
+defined('MOODLE_INTERNAL') || die;
+require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
 
 class plugin_coursecategories extends plugin_base {
 
@@ -30,7 +31,7 @@ class plugin_coursecategories extends plugin_base {
         $this->form = false;
         $this->unique = true;
         $this->fullname = get_string('filtercoursecategories', 'block_configurable_reports');
-        $this->reporttypes = array('courses');
+        $this->reporttypes = ['courses'];
     }
 
     public function summary($data) {
@@ -46,14 +47,14 @@ class plugin_coursecategories extends plugin_base {
             return $finalelements;
         }
 
-        $displaylist = array();
-        $parents = array();
+        $displaylist = [];
+        $parents = [];
         cr_make_categories_list($displaylist, $parents);
 
-        $coursecache = array();
+        $coursecache = [];
         foreach ($finalelements as $key => $course) {
             if (empty($coursecache[$course])) {
-                $coursecache[$course] = $remotedb->get_record('course', array('id' => $course));
+                $coursecache[$course] = $remotedb->get_record('course', ['id' => $course]);
             }
             $course = $coursecache[$course];
             if ($category != $course->category and (empty($parents[$course->id]) || !in_array($category, $parents[$course->id]))) {
@@ -70,8 +71,8 @@ class plugin_coursecategories extends plugin_base {
 
         $filtercategories = optional_param('filter_coursecategories', 0, PARAM_INT);
 
-        $displaylist = array();
-        $notused = array();
+        $displaylist = [];
+        $notused = [];
         cr_make_categories_list($displaylist, $notused);
 
         $displaylist[0] = get_string("all");
@@ -79,4 +80,5 @@ class plugin_coursecategories extends plugin_base {
         $mform->setDefault('filter_coursecategories', 0);
         $mform->setType('filter_coursecategories', PARAM_INT);
     }
+
 }

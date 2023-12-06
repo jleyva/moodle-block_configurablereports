@@ -17,18 +17,19 @@
 /**
  * Configurable Reports
  * A Moodle block for creating customizable reports
+ *
  * @package blocks
- * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date: 2009
+ * @author  : Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @date    : 2009
  */
+defined('MOODLE_INTERNAL') || die;
+require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
 
-require_once($CFG->dirroot.'/blocks/configurable_reports/plugin.class.php');
-
-class plugin_usersincurrentcourse extends plugin_base{
+class plugin_usersincurrentcourse extends plugin_base {
 
     public function init() {
         $this->fullname = get_string('usersincurrentcourse', 'block_configurable_reports');
-        $this->reporttypes = array('users');
+        $this->reporttypes = ['users'];
         $this->form = true;
     }
 
@@ -46,6 +47,7 @@ class plugin_usersincurrentcourse extends plugin_base{
             return array_keys($users);
         }
 
-        return array();
+        return [];
     }
+
 }

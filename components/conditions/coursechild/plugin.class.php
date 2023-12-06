@@ -17,27 +17,30 @@
 /**
  * Configurable Reports
  * A Moodle block for creating customizable reports
+ *
  * @package blocks
- * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date: 2009
+ * @author  : Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @date    : 2009
  */
 
-require_once($CFG->dirroot.'/blocks/configurable_reports/plugin.class.php');
+defined('MOODLE_INTERNAL') || die;
+require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
 
-class plugin_coursechild extends plugin_base{
+class plugin_coursechild extends plugin_base {
 
     public function init() {
         $this->fullname = get_string('coursechild', 'block_configurable_reports');
         $this->form = true;
-        $this->reporttypes = array('courses');
+        $this->reporttypes = ['courses'];
     }
 
     public function summary($data) {
         global $DB;
-        $course = $DB->get_record('course', array('id' => $data->courseid));
+        $course = $DB->get_record('course', ['id' => $data->courseid]);
         if ($course) {
-            return get_string('coursechild', 'block_configurable_reports').' '.(format_string($course->fullname));
+            return get_string('coursechild', 'block_configurable_reports') . ' ' . (format_string($course->fullname));
         }
+
         return '';
     }
 
@@ -45,12 +48,13 @@ class plugin_coursechild extends plugin_base{
     public function execute($data, $user, $courseid) {
         global $DB;
 
-        $finalcourses = array();
-        if ($courses = $DB->get_records('course_meta', array('child_course' => $data->courseid))) {
+        $finalcourses = [];
+        if ($courses = $DB->get_records('course_meta', ['child_course' => $data->courseid])) {
             foreach ($courses as $c) {
                 $finalcourses[] = $c->parent_course;
             }
         }
+
         return $finalcourses;
     }
 

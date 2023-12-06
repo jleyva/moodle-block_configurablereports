@@ -17,17 +17,19 @@
 /**
  * Configurable Reports
  * A Moodle block for creating customizable reports
+ *
  * @package blocks
- * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date: 2009
+ * @author  : Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @date    : 2009
  */
+defined('MOODLE_INTERNAL') || die;
+require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
 
-require_once($CFG->dirroot.'/blocks/configurable_reports/plugin.class.php');
+class plugin_usersincohorts extends plugin_base {
 
-class plugin_usersincohorts extends plugin_base{
     public function init() {
         $this->fullname = get_string('usersincohorts', 'block_configurable_reports');
-        $this->reporttypes = array('users');
+        $this->reporttypes = ['users'];
         $this->form = true;
     }
 
@@ -41,7 +43,7 @@ class plugin_usersincohorts extends plugin_base{
         global $DB;
 
         if ($data->cohorts) {
-            list($insql, $params) = $DB->get_in_or_equal($data->cohorts);
+            [$insql, $params] = $DB->get_in_or_equal($data->cohorts);
 
             $sql = "SELECT u.id
             FROM {user} u JOIN {cohort_members} c ON c.userid = u.id
@@ -50,6 +52,7 @@ class plugin_usersincohorts extends plugin_base{
             return array_keys($DB->get_records_sql($sql, $params));
         }
 
-        return array();
+        return [];
     }
+
 }

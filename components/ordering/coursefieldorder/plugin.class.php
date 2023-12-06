@@ -17,14 +17,15 @@
 /**
  * Configurable Reports
  * A Moodle block for creating customizable reports
+ *
  * @package blocks
- * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date: 2009
+ * @author  : Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @date    : 2009
  */
+defined('MOODLE_INTERNAL') || die;
+require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
 
-require_once($CFG->dirroot.'/blocks/configurable_reports/plugin.class.php');
-
-class plugin_coursefieldorder extends plugin_base{
+class plugin_coursefieldorder extends plugin_base {
 
     public $sql = true;
 
@@ -32,12 +33,12 @@ class plugin_coursefieldorder extends plugin_base{
         $this->fullname = get_string('coursefield', 'block_configurable_reports');
         $this->form = true;
         $this->unique = true;
-        $this->reporttypes = array('courses');
+        $this->reporttypes = ['courses'];
         $this->sql = true;
     }
 
     public function summary($data) {
-        return get_string($data->column).' '.(strtoupper($data->direction));
+        return get_string($data->column) . ' ' . (strtoupper($data->direction));
     }
 
     // Data -> Plugin configuration data.
@@ -48,16 +49,17 @@ class plugin_coursefieldorder extends plugin_base{
             $direction = strtoupper($data->direction);
             $columns = $DB->get_columns('course');
 
-            $coursecolumns = array();
+            $coursecolumns = [];
             foreach ($columns as $c) {
                 $coursecolumns[$c->name] = $c->name;
             }
 
             if (isset($coursecolumns[$data->column])) {
-                return $data->column.' '.$direction;
+                return $data->column . ' ' . $direction;
             }
         }
 
         return '';
     }
+
 }

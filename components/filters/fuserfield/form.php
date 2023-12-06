@@ -17,9 +17,10 @@
 /**
  * Configurable Reports
  * A Moodle block for creating customizable reports
+ *
  * @package blocks
- * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date: 2009
+ * @author  : Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @date    : 2009
  */
 
 if (!defined('MOODLE_INTERNAL')) {
@@ -27,7 +28,7 @@ if (!defined('MOODLE_INTERNAL')) {
     die('Direct access to this script is forbidden.');
 }
 
-require_once($CFG->libdir.'/formslib.php');
+require_once($CFG->libdir . '/formslib.php');
 
 class fuserfield_form extends moodleform {
 
@@ -37,20 +38,20 @@ class fuserfield_form extends moodleform {
 
         $mform =& $this->_form;
 
-        $mform->addElement('header',  'crformheader', get_string('fuserfield', 'block_configurable_reports'), '');
+        $mform->addElement('header', 'crformheader', get_string('fuserfield', 'block_configurable_reports'), '');
 
         $this->_customdata['compclass']->add_form_elements($mform, $this);
 
         $columns = $remotedb->get_columns('user');
 
-        $usercolumns = array();
+        $usercolumns = [];
         foreach ($columns as $c) {
             $usercolumns[$c->name] = $c->name;
         }
 
         if ($profile = $remotedb->get_records('user_info_field')) {
             foreach ($profile as $p) {
-                $usercolumns['profile_'.$p->shortname] = $p->name;
+                $usercolumns['profile_' . $p->shortname] = $p->name;
             }
         }
 
@@ -64,4 +65,5 @@ class fuserfield_form extends moodleform {
         // Buttons.
         $this->add_action_buttons(true, get_string('add'));
     }
+
 }

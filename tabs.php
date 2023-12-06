@@ -17,9 +17,10 @@
 /**
  * Configurable Reports
  * A Moodle block for creating customizable reports
+ *
  * @package blocks
- * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date: 2009
+ * @author  : Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @date    : 2009
  */
 
 if (!defined('MOODLE_INTERNAL')) {
@@ -27,14 +28,14 @@ if (!defined('MOODLE_INTERNAL')) {
     die('Direct access to this script is forbidden.');
 }
 
-$top = array();
+$top = [];
 
-$url = new \moodle_url('/blocks/configurable_reports/viewreport.php', ['id' => $report->id, 'courseid' => $COURSE->id]);
-$top[] = new \tabobject('viewreport', $url, get_string('viewreport', 'block_configurable_reports'));
+$url = new moodle_url('/blocks/configurable_reports/viewreport.php', ['id' => $report->id, 'courseid' => $COURSE->id]);
+$top[] = new tabobject('viewreport', $url, get_string('viewreport', 'block_configurable_reports'));
 
 foreach ($reportclass->components as $comptab) {
     $urlattrs = ['id' => $report->id, 'comp' => $comptab, 'courseid' => $COURSE->id];
-    $url = new \moodle_url('/blocks/configurable_reports/editcomp.php', $urlattrs);
+    $url = new moodle_url('/blocks/configurable_reports/editcomp.php', $urlattrs);
     $top[] = new tabobject($comptab, $url, get_string($comptab, 'block_configurable_reports'));
 }
 

@@ -17,9 +17,10 @@
 /**
  * Configurable Reports
  * A Moodle block for creating customizable reports
+ *
  * @package block_configurable_reports
- * @author David Pesce <davidpesce@gmail.com>
- * @date 2019
+ * @author  David Pesce <davidpesce@gmail.com>
+ * @date    2019
  */
 
 if (!defined('MOODLE_INTERNAL')) {
@@ -27,7 +28,7 @@ if (!defined('MOODLE_INTERNAL')) {
     die('Direct access to this script is forbidden.');
 }
 
-require_once($CFG->libdir.'/formslib.php');
+require_once($CFG->libdir . '/formslib.php');
 
 class percent_form extends moodleform {
 
@@ -35,9 +36,10 @@ class percent_form extends moodleform {
         global $DB, $USER, $CFG;
 
         $mform =& $this->_form;
-		    $this->_customdata['compclass']->add_form_elements($mform, $this->_customdata['report']->components);
+        $this->_customdata['compclass']->add_form_elements($mform, $this->_customdata['report']->components);
 
         // Buttons.
         $this->add_action_buttons(true, get_string('add'));
     }
+
 }

@@ -27,14 +27,14 @@ if (!defined('MOODLE_INTERNAL')) {
     die('Direct access to this script is forbidden.');
 }
 
-require_once($CFG->libdir.'/formslib.php');
+require_once($CFG->libdir . '/formslib.php');
 
 class searchtext_form extends moodleform {
 
     public function definition() {
         $mform =& $this->_form;
 
-        $mform->addElement('header',  'crformheader', get_string('filter_searchtext', 'block_configurable_reports'), '');
+        $mform->addElement('header', 'crformheader', get_string('filter_searchtext', 'block_configurable_reports'), '');
 
         $mform->addElement('text', 'idnumber', get_string('idnumber', 'block_configurable_reports'));
         $mform->setType('idnumber', PARAM_TEXT);
@@ -47,4 +47,5 @@ class searchtext_form extends moodleform {
         // Buttons.
         $this->add_action_buttons(true, get_string('add', 'block_configurable_reports'));
     }
+
 }

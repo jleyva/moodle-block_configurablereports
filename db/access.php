@@ -21,73 +21,73 @@
  * Configurable Reports - A Moodle block for creating customizable reports
  *
  * @package     block_configurable_reports
- * @author:     Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date:       2013-09-07
+ * @author        Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @date        :       2013-09-07
  *
- * @copyright  Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @copyright   Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-$capabilities = array(
+$capabilities = [
 
-    'block/configurable_reports:addinstance' => array(
+    'block/configurable_reports:addinstance' => [
         'riskbitmask' => RISK_SPAM | RISK_XSS,
 
         'captype' => 'write',
         'contextlevel' => CONTEXT_BLOCK,
-        'archetypes' => array(
+        'archetypes' => [
             'editingteacher' => CAP_ALLOW,
-            'manager' => CAP_ALLOW
-        ),
+            'manager' => CAP_ALLOW,
+        ],
 
-        'clonepermissionsfrom' => 'moodle/site:manageblocks'
-    ),
+        'clonepermissionsfrom' => 'moodle/site:manageblocks',
+    ],
 
-    'block/configurable_reports:myaddinstance' => array(
+    'block/configurable_reports:myaddinstance' => [
         'riskbitmask' => RISK_SPAM | RISK_XSS,
 
         'captype' => 'write',
         'contextlevel' => CONTEXT_BLOCK,
-        'archetypes' => array(
+        'archetypes' => [
             'editingteacher' => CAP_ALLOW,
-            'manager' => CAP_ALLOW
-        ),
-    ),
+            'manager' => CAP_ALLOW,
+        ],
+    ],
 
-    'block/configurable_reports:managereports' => array(
-
-        'captype' => 'write',
-        'contextlevel' => CONTEXT_BLOCK,
-        'archetypes' => array(
-            'manager' => CAP_ALLOW
-        )
-    ),
-
-    'block/configurable_reports:managesqlreports' => array(
+    'block/configurable_reports:managereports' => [
 
         'captype' => 'write',
         'contextlevel' => CONTEXT_BLOCK,
-        'archetypes' => array(
-            'manager' => CAP_ALLOW
-        )
-    ),
+        'archetypes' => [
+            'manager' => CAP_ALLOW,
+        ],
+    ],
 
-    'block/configurable_reports:manageownreports' => array(
+    'block/configurable_reports:managesqlreports' => [
 
         'captype' => 'write',
         'contextlevel' => CONTEXT_BLOCK,
-        'archetypes' => array(
-            'manager' => CAP_ALLOW
-        )
-    ),
+        'archetypes' => [
+            'manager' => CAP_ALLOW,
+        ],
+    ],
 
-    'block/configurable_reports:viewreports' => array(
+    'block/configurable_reports:manageownreports' => [
+
+        'captype' => 'write',
+        'contextlevel' => CONTEXT_BLOCK,
+        'archetypes' => [
+            'manager' => CAP_ALLOW,
+        ],
+    ],
+
+    'block/configurable_reports:viewreports' => [
 
         'captype' => 'read',
         'contextlevel' => CONTEXT_BLOCK,
-        'archetypes' => array(
-            'manager' => CAP_ALLOW
-        )
-    )
+        'archetypes' => [
+            'manager' => CAP_ALLOW,
+        ],
+    ],
 
-);
+];

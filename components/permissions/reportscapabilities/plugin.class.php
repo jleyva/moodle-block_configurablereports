@@ -17,12 +17,13 @@
 /**
  * Configurable Reports
  * A Moodle block for creating customizable reports
+ *
  * @package blocks
- * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date: 2009
+ * @author  : Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @date    : 2009
  */
-
-require_once($CFG->dirroot.'/blocks/configurable_reports/plugin.class.php');
+defined('MOODLE_INTERNAL') || die;
+require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
 
 class plugin_reportscapabilities extends plugin_base {
 
@@ -30,7 +31,7 @@ class plugin_reportscapabilities extends plugin_base {
         $this->form = false;
         $this->unique = true;
         $this->fullname = get_string('reportscapabilities', 'block_configurable_reports');
-        $this->reporttypes = array('courses', 'sql', 'users', 'timeline', 'categories');
+        $this->reporttypes = ['courses', 'sql', 'users', 'timeline', 'categories'];
     }
 
     public function summary($data) {
@@ -39,6 +40,8 @@ class plugin_reportscapabilities extends plugin_base {
 
     public function execute($userid, $context, $data) {
         global $DB, $CFG;
-        return has_capability('moodle/site:viewreports', \context_system::instance(), $userid);
+
+        return has_capability('moodle/site:viewreports', context_system::instance(), $userid);
     }
+
 }

@@ -17,19 +17,21 @@
 /**
  * Configurable Reports
  * A Moodle block for creating customizable reports
+ *
  * @package blocks
- * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date: 2009
+ * @author  : Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @date    : 2009
  */
 
-require_once($CFG->dirroot.'/blocks/configurable_reports/plugin.class.php');
+defined('MOODLE_INTERNAL') || die;
+require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
 
 class plugin_currentusercourses extends plugin_base {
 
     public function init() {
         $this->fullname = get_string('currentusercourses', 'block_configurable_reports');
         $this->form = false;
-        $this->reporttypes = array('courses');
+        $this->reporttypes = ['courses'];
     }
 
     public function summary($data) {
@@ -39,9 +41,9 @@ class plugin_currentusercourses extends plugin_base {
     // Data -> Plugin configuration data.
     public function execute($data, $user, $courseid) {
         global $DB, $CFG;
-        require_once($CFG->libdir.'/enrollib.php');
+        require_once($CFG->libdir . '/enrollib.php');
 
-        $finalcourses = array();
+        $finalcourses = [];
         $mycourses = enrol_get_users_courses($user->id);
         if (!empty($mycourses)) {
             $finalcourses = array_keys($mycourses);
@@ -49,4 +51,5 @@ class plugin_currentusercourses extends plugin_base {
 
         return $finalcourses;
     }
+
 }

@@ -17,12 +17,13 @@
 /**
  * Configurable Reports
  * A Moodle block for creating Configurable Reports
+ *
  * @package blocks
- * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date: 2009
+ * @author  : Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @date    : 2009
  */
-
 class block_configurable_reports_edit_form extends block_edit_form {
+
     protected function specific_definition($mform) {
 
         $mform->addElement('header', 'configheader', get_string('blocksettings', 'block'));
@@ -31,10 +32,19 @@ class block_configurable_reports_edit_form extends block_edit_form {
         $mform->setType('config_title', PARAM_MULTILANG);
         $mform->setDefault('config_title', get_string('pluginname', 'block_configurable_reports'));
 
-        $mform->addElement('selectyesno', 'config_displayreportslist', get_string('displayreportslist', 'block_configurable_reports'));
+        $mform->addElement(
+            'selectyesno',
+            'config_displayreportslist',
+            get_string('displayreportslist', 'block_configurable_reports')
+        );
         $mform->setDefault('config_displayreportslist', 1);
 
-        $mform->addElement('selectyesno', 'config_displayglobalreports', get_string('displayglobalreports', 'block_configurable_reports'));
+        $mform->addElement(
+            'selectyesno',
+            'config_displayglobalreports',
+            get_string('displayglobalreports', 'block_configurable_reports')
+        );
         $mform->setDefault('config_displayglobalreports', 1);
     }
+
 }

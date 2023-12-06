@@ -17,9 +17,10 @@
 /**
  * Configurable Reports
  * A Moodle block for creating customizable reports
+ *
  * @package blocks
- * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date: 2009
+ * @author  : Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @date    : 2009
  */
 
 // Based on Custom SQL Reports Plugin
@@ -30,7 +31,7 @@ if (!defined('MOODLE_INTERNAL')) {
     die('Direct access to this script is forbidden.');
 }
 
-require_once($CFG->libdir.'/formslib.php');
+require_once($CFG->libdir . '/formslib.php');
 
 class customsql_form extends moodleform {
 
@@ -58,7 +59,7 @@ class customsql_form extends moodleform {
             $res = json_decode($res);
 
             if (is_array($res)) {
-                $reportcategories = array(get_string('choose'));
+                $reportcategories = [get_string('choose')];
                 foreach ($res as $item) {
                     if ($item->type == 'dir') {
                         $reportcategories[$item->path] = $item->path;
@@ -66,15 +67,21 @@ class customsql_form extends moodleform {
                 }
 
                 $reportcatstr = get_string('reportcategories', 'block_configurable_reports');
-                $reportcatattrs = ['onchange' => 'M.block_configurable_reports.onchange_reportcategories(this,"'.sesskey().'")'];
+                $reportcatattrs =
+                    ['onchange' => 'M.block_configurable_reports.onchange_reportcategories(this,"' . sesskey() . '")'];
                 $mform->addElement('select', 'reportcategories', $reportcatstr, $reportcategories, $reportcatattrs);
 
                 $reportsincatstr = get_string('reportsincategory', 'block_configurable_reports');
-                $reportsincatattrs = ['onchange' => 'M.block_configurable_reports.onchange_reportsincategory(this,"'.sesskey().'")'];
+                $reportsincatattrs =
+                    ['onchange' => 'M.block_configurable_reports.onchange_reportsincategory(this,"' . sesskey() . '")'];
                 $mform->addElement('select', 'reportsincategory', $reportsincatstr, $reportcategories, $reportsincatattrs);
 
-                $mform->addElement('textarea', 'remotequerysql', get_string('remotequerysql', 'block_configurable_reports'),
-                    'rows="15" cols="90"');
+                $mform->addElement(
+                    'textarea',
+                    'remotequerysql',
+                    get_string('remotequerysql', 'block_configurable_reports'),
+                    'rows="15" cols="90"'
+                );
             }
         }
     }
@@ -116,7 +123,7 @@ class customsql_form extends moodleform {
             try {
                 $rs = $this->_customdata['reportclass']->execute_query($sql, 2);
             } catch (dml_read_exception $e) {
-                $errors['querysql'] = get_string('queryfailed', 'block_configurable_reports', $e->error );
+                $errors['querysql'] = get_string('queryfailed', 'block_configurable_reports', $e->error);
             }
             if ($rs && !empty($data['singlerow'])) {
                 if (rs_EOF($rs)) {
@@ -144,7 +151,8 @@ class customsql_form extends moodleform {
             // Only allow INSERT|INTO|CREATE in low security.
             $errors['querysql'] = get_string('notallowedwords', 'block_configurable_reports');
 
-        } else if (preg_match('/\b(INSERT|INTO|CREATE)\b/i', $sql) && empty($CFG->block_configurable_reports_enable_sql_execution)) {
+        } else if (preg_match('/\b(INSERT|INTO|CREATE)\b/i', $sql) &&
+            empty($CFG->block_configurable_reports_enable_sql_execution)) {
             // Only allow INSERT|INTO|CREATE in low security when SQL execution is enabled in the server.
             $errors['querysql'] = get_string('notallowedwords', 'block_configurable_reports');
         } else {
@@ -166,4 +174,5 @@ class customsql_form extends moodleform {
 
         return $errors;
     }
+
 }

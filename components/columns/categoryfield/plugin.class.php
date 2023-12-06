@@ -17,20 +17,21 @@
 /**
  * Configurable Reports
  * A Moodle block for creating customizable reports
+ *
  * @package blocks
- * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date: 2009
+ * @author  : Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @date    : 2009
  */
+defined('MOODLE_INTERNAL') || die;
+require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
 
-require_once($CFG->dirroot.'/blocks/configurable_reports/plugin.class.php');
-
-class plugin_categoryfield extends plugin_base{
+class plugin_categoryfield extends plugin_base {
 
     public function init() {
         $this->fullname = get_string('categoryfield', 'block_configurable_reports');
         $this->type = 'undefined';
         $this->form = true;
-        $this->reporttypes = array('categories');
+        $this->reporttypes = ['categories'];
     }
 
     public function summary($data) {
@@ -41,7 +42,8 @@ class plugin_categoryfield extends plugin_base{
         $align = (isset($data->align)) ? $data->align : '';
         $size = (isset($data->size)) ? $data->size : '';
         $wrap = (isset($data->wrap)) ? $data->wrap : '';
-        return array($align, $size, $wrap);
+
+        return [$align, $size, $wrap];
     }
 
     // Data -> Plugin configuration data.
@@ -50,7 +52,7 @@ class plugin_categoryfield extends plugin_base{
         global $DB;
 
         if (isset($row->{$data->column})) {
-            switch($data->column){
+            switch ($data->column) {
                 case 'timemodified':
                     $row->{$data->column} = ($row->{$data->column}) ? userdate($row->{$data->column}) : '--';
                     break;
@@ -59,10 +61,12 @@ class plugin_categoryfield extends plugin_base{
                     break;
 
                 case 'parent':
-                    $row->{$data->column} = $DB->get_field('course_categories', 'name', array('id' => $row->{$data->column}));
+                    $row->{$data->column} = $DB->get_field('course_categories', 'name', ['id' => $row->{$data->column}]);
                     break;
             }
         }
+
         return (isset($row->{$data->column})) ? $row->{$data->column} : '';
     }
+
 }

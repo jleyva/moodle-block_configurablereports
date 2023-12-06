@@ -17,9 +17,10 @@
 /**
  * Configurable Reports
  * A Moodle block for creating customizable reports
+ *
  * @package blocks
- * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date: 2009
+ * @author  : Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @date    : 2009
  */
 
 if (!defined('MOODLE_INTERNAL')) {
@@ -27,9 +28,10 @@ if (!defined('MOODLE_INTERNAL')) {
     die('Direct access to this script is forbidden.');
 }
 
-require_once($CFG->libdir.'/formslib.php');
+require_once($CFG->libdir . '/formslib.php');
 
 class coursestats_form extends moodleform {
+
     public function definition() {
         global $DB, $USER, $CFG;
 
@@ -37,21 +39,21 @@ class coursestats_form extends moodleform {
 
         $mform->addElement('header', 'crformheader', get_string('coursestats', 'block_configurable_reports'), '');
 
-        $coursestats = array(
+        $coursestats = [
             'totalenrolments' => get_string('statstotalenrolments', 'block_configurable_reports'),
             'activeenrolments' => get_string('statsactiveenrolments', 'block_configurable_reports'),
             'activityview' => get_string('activityview', 'block_configurable_reports'),
-            'activitypost' => get_string('activitypost', 'block_configurable_reports')
-        );
+            'activitypost' => get_string('activitypost', 'block_configurable_reports'),
+        ];
         $mform->addElement('select', 'stat', get_string('stat', 'block_configurable_reports'), $coursestats);
 
         $roles = $DB->get_records('role');
-        $userroles = array();
+        $userroles = [];
         foreach ($roles as $r) {
             $userroles[$r->id] = $r->shortname;
         }
 
-        $mform->addElement('select', 'roles', get_string('roles'), $userroles, array('multiple' => 'multiple'));
+        $mform->addElement('select', 'roles', get_string('roles'), $userroles, ['multiple' => 'multiple']);
         $mform->disabledIf('roles', 'stat', 'eq', 'totalenrolments');
         $mform->disabledIf('roles', 'stat', 'eq', 'activeenrolments');
 
@@ -78,4 +80,5 @@ class coursestats_form extends moodleform {
 
         return $errors;
     }
+
 }

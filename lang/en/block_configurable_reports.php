@@ -41,7 +41,8 @@ $string['confirmdeletereport'] = "Are you sure you want to delete this report?";
 $string['noreportsavailable'] = "No reports available";
 $string['downloadreport'] = "Download report";
 $string['reportlimit'] = "Report row limit";
-$string['reportlimitinfo'] = "Limit the number of rows that are displayed in the report table (Default is 5000 rows. Better to have some limit, so users will not over load the DB engine)";
+$string['reportlimitinfo'] = "Limit the number of rows that are displayed in the report table
+    (Default is 5000 rows. Better to have some limit, so users will not over load the DB engine)";
 
 $string['configurable_reports:addinstance'] = 'Add a new configurable reports block';
 $string['configurable_reports:myaddinstance'] = 'Add a new configurable reports block to MY HOME page';
@@ -83,7 +84,6 @@ $string['tablewidth'] = "Table width";
 $string['cellalign'] = "Cell align";
 $string['cellwrap'] = "Cell wrap";
 $string['cellsize'] = "Cell size";
-
 
 // Conditions
 $string['conditionexpr'] = "Condition";
@@ -187,7 +187,8 @@ $string['barsummary'] = "A bar graph";
 $string['label_field'] = "Label field";
 $string['label_field_help'] = "The field that provides names for the things represented in the graph";
 $string['value_fields'] = "Value fields";
-$string['value_fields_help'] = "Fields that should be represented in the graph. Ctrl+click (Cmd+click on Mac) to select multiple. If you select the Label field or a field with non-numeric values it will be ignored";
+$string['value_fields_help'] =  "Fields that should be represented in the graph. Ctrl+click (Cmd+click on Mac) to select multiple.
+If you select the Label field or a field with non-numeric values it will be ignored";
 $string['width'] = "Width";
 $string['height'] = "Height";
 $string['head_data'] = "Graph data";
@@ -274,7 +275,8 @@ $string['noexplicitprefix'] = "No explicit prefix";
 $string['queryfailed'] = 'Query failed <code><pre>{$a}</pre></code>';
 $string['norowsreturned'] = "No rows returned";
 
-$string['listofsqlreports'] = 'Press F11 when cursor is in the editor to toggle full screen editing. Esc can also be used to exit full screen editing.<br/><br/><a href="http://docs.moodle.org/en/ad-hoc_contributed_reports" target="_blank">List of SQL Contributed reports</a>';
+$string['listofsqlreports'] = 'Press F11 when cursor is in the editor to toggle full screen editing. Esc can also be used to exit
+full screen editing.<br/><br/><a href="http://docs.moodle.org/en/ad-hoc_contributed_reports" target="_blank">List of SQL Contributed reports</a>';
 
 $string['usersincoursereport_summary'] = "Any user in the current report course";
 
@@ -349,8 +351,6 @@ $string['template_marks_help'] = '<p>You can use any of this replacement marks:<
 
 </ul>';
 
-
-
 $string['conditionexpr_conditions'] = 'Condition';
 $string['conditionexpr_conditions_help'] = '<p>You can combine conditions using a logic expression</p>
 
@@ -371,7 +371,8 @@ $string['comp_calcs_help'] = '<p>Here you can add calculations for columns, i.e:
 <p>More help: <a href="http://docs.moodle.org/en/blocks/configurable_reports/" target="_blank">Plugin documentation</a></p>';
 
 $string['comp_calculations'] = 'Calcs';
-$string['comp_calculations_help'] = '<p>Here you can add calculations for columns, i.e: average of number of users enrolled in courses</p>';
+$string['comp_calculations_help'] =
+    '<p>Here you can add calculations for columns, i.e: average of number of users enrolled in courses</p>';
 $string['comp_conditions'] = 'Conditions';
 $string['comp_conditions_help'] = '<p>Here you can define the conditions (i.e, only courses from this category, only users from Spain, etc.. </p>
 
@@ -453,7 +454,8 @@ $string['sqlsyntaxhighlightinfo'] = 'Highlight SQL syntax in code editor (CodeMi
 $string['datatables'] = 'Enable DataTables JS library';
 $string['datatablesinfo'] = 'DataTables JS library (Column sort, fixed header, search, paging...)';
 $string['reporttableui'] = 'Report table UI';
-$string['reporttableuiinfo'] = 'Display the report table as: Simple scrollable HTML table, jQuery with column sorting Or DataTables JS library (Column sort, fixed header, search, paging...)';
+$string['reporttableuiinfo'] =
+    'Display the report table as: Simple scrollable HTML table, jQuery with column sorting Or DataTables JS library (Column sort, fixed header, search, paging...)';
 
 $string['email_subject'] = 'Subject';
 $string['email_message'] = 'Message';
@@ -462,13 +464,16 @@ $string['email_send'] = 'Send';
 $string['sqlsecurity'] = 'SQL Security';
 $string['sqlsecurityinfo'] = 'Disable for executing SQL queries with statements for inserting data';
 $string['allowedsqlusers'] = 'SQL report users';
-$string['allowedsqlusersinfo'] = 'If you wish to only allow certain admin users to manage sql reports, add a list of usernames separated by commas. They must also have the block/configurable_reports:managesqlreports capability.';
+$string['allowedsqlusersinfo'] =
+    'If you wish to only allow certain admin users to manage sql reports, add a list of usernames separated by commas. They must also have the block/configurable_reports:managesqlreports capability.';
 $string['global'] = 'Global report';
 $string['enableglobal'] = 'This is a global report (accesible from any course)';
-$string['global_help'] = 'Global report can be accessed from any course in the platform just appending &courseid=MY_COURSE_ID in the report URL';
+$string['global_help'] =
+    'Global report can be accessed from any course in the platform just appending &courseid=MY_COURSE_ID in the report URL';
 
 $string['crrepository'] = 'Reports repository';
-$string['crrepositoryinfo'] = 'Remote shared repository with sample reports fully functional (Name of GitHub account owner + slash + repository name)';
+$string['crrepositoryinfo'] =
+    'Remote shared repository with sample reports fully functional (Name of GitHub account owner + slash + repository name)';
 $string['importfromrepository'] = 'Import report from repository';
 $string['repository'] = 'Reports repository';
 $string['repository_help'] = 'You can import sample reports from a public shared repository.
@@ -535,7 +540,8 @@ $string['description_help'] = 'Text used to describe the filter that will be dis
 $string['label'] = 'Label';
 $string['label_help'] = 'Text describing the filter to be displayed on the report page.';
 $string['idnumber'] = 'ID Number';
-$string['idnumber_help'] = 'Used to differentiate between filters of the same type. Case-sensitive. Example usage: %%FILTER_SEARCHTEXT_username:u.username:~%%';
+$string['idnumber_help'] =
+    'Used to differentiate between filters of the same type. Case-sensitive. Example usage: %%FILTER_SEARCHTEXT_username:u.username:~%%';
 // Pie Chart Strings
 $string['description'] = 'Description';
 $string['legendheader'] = 'Mapped Palette';
@@ -546,8 +552,11 @@ $string['piechart_add_colors'] = 'Add color';
 $string['invalidcolorcode'] = 'Invalid color code';
 $string['generalcolorpaletteheader'] = 'General color palette';
 $string['generalcolorpalette'] = 'Unmapped Palette';
-$string['generalcolorpalette_help'] = 'Hexadecimal color codes for general use in the pie chart. Codes should be separated by new lines in the order you wish them to be used in the pie chart.';
+$string['generalcolorpalette_help'] =
+    'Hexadecimal color codes for general use in the pie chart. Codes should be separated by new lines in the order you wish them to be used in the pie chart.';
 $string['checksql_execution'] = 'Block Configurable Reports SQL execution';
 $string['checksql_execution_ok'] = 'SQL execution is disabled.';
-$string['checksql_execution_warning'] = 'It is recommended to disable SQL execution to avoid execution of arbitrary SQL code in your server.';
-$string['checksql_execution_details'] = 'By allowing SQL code execution there is a potential security issue with users adding arbitrary code. SQL code execution should be disable to only allow SQL queries for reading/retreaving data. SQL execution can be disabled in your config.php file by setting $CFG->block_configurable_reports_enable_sql_execution to 0';
+$string['checksql_execution_warning'] =
+    'It is recommended to disable SQL execution to avoid execution of arbitrary SQL code in your server.';
+$string['checksql_execution_details'] =
+    'By allowing SQL code execution there is a potential security issue with users adding arbitrary code. SQL code execution should be disable to only allow SQL queries for reading/retreaving data. SQL execution can be disabled in your config.php file by setting $CFG->block_configurable_reports_enable_sql_execution to 0';

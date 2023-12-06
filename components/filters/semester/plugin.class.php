@@ -17,12 +17,13 @@
 /**
  * Configurable Reports
  * A Moodle block for creating customizable reports
+ *
  * @package blocks
- * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date: 2009
+ * @author  : Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @date    : 2009
  */
-
-require_once($CFG->dirroot.'/blocks/configurable_reports/plugin.class.php');
+defined('MOODLE_INTERNAL') || die;
+require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
 
 class plugin_semester extends plugin_base {
 
@@ -30,7 +31,7 @@ class plugin_semester extends plugin_base {
         $this->form = false;
         $this->unique = true;
         $this->fullname = get_string('filtersemester', 'block_configurable_reports');
-        $this->reporttypes = array('categories', 'sql');
+        $this->reporttypes = ['categories', 'sql'];
     }
 
     public function summary($data) {
@@ -45,13 +46,15 @@ class plugin_semester extends plugin_base {
         }
 
         if ($this->report->type != 'sql') {
-            return array($filtersemester);
+            return [$filtersemester];
         } else {
             if (preg_match("/%%FILTER_SEMESTER:([^%]+)%%/i", $finalelements, $output)) {
-                $replace = ' AND '.$output[1].' LIKE \'%'.$filtersemester.'%\'';
-                return str_replace('%%FILTER_SEMESTER:'.$output[1].'%%', $replace, $finalelements);
+                $replace = ' AND ' . $output[1] . ' LIKE \'%' . $filtersemester . '%\'';
+
+                return str_replace('%%FILTER_SEMESTER:' . $output[1] . '%%', $replace, $finalelements);
             }
         }
+
         return $finalelements;
     }
 
@@ -60,7 +63,7 @@ class plugin_semester extends plugin_base {
 
         $filtersemester = optional_param('filter_semester', '', PARAM_RAW);
 
-        $reportclassname = 'report_'.$this->report->type;
+        $reportclassname = 'report_' . $this->report->type;
         $reportclass = new $reportclassname($this->report);
         foreach (explode(',', get_string('filtersemester_list', 'block_configurable_reports')) as $value) {
             $semester[$value] = $value;
@@ -75,7 +78,7 @@ class plugin_semester extends plugin_base {
             $semesterlist = array_keys($semester);
         }
 
-        $semesteroptions = array();
+        $semesteroptions = [];
         $semesteroptions[0] = get_string('filter_all', 'block_configurable_reports');
 
         if (!empty($semesterlist)) {
@@ -89,4 +92,5 @@ class plugin_semester extends plugin_base {
         $mform->addElement('select', 'filter_semester', $elestr, $semesteroptions);
         $mform->setType('filter_semester', PARAM_RAW);
     }
+
 }

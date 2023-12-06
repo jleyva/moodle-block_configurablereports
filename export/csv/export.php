@@ -17,9 +17,10 @@
 /**
  * Configurable Reports
  * A Moodle block for creating customizable reports
+ *
  * @package blocks
- * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date: 2009
+ * @author  : Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @date    : 2009
  */
 
 function export_report($report) {
@@ -27,7 +28,7 @@ function export_report($report) {
     require_once($CFG->libdir . '/csvlib.class.php');
 
     $table = $report->table;
-    $matrix = array();
+    $matrix = [];
     $filename = 'report';
 
     if (!empty($table->head)) {

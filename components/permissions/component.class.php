@@ -17,11 +17,11 @@
 /**
  * Configurable Reports
  * A Moodle block for creating customizable reports
+ *
  * @package blocks
- * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date: 2009
+ * @author  : Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @date    : 2009
  */
-
 class component_permissions extends component_base {
 
     public function init() {
@@ -41,7 +41,8 @@ class component_permissions extends component_base {
             $components = cr_unserialize($this->config->components);
             $components['permissions']['config'] = $data;
             if (isset($components['permissions']['config']->conditionexpr)) {
-                $components['permissions']['config']->conditionexpr = $this->add_missing_conditions($components['permissions']['config']->conditionexpr);
+                $components['permissions']['config']->conditionexpr =
+                    $this->add_missing_conditions($components['permissions']['config']->conditionexpr);
             }
             $this->config->components = cr_serialize($components);
             $DB->update_record('block_configurable_reports', $this->config);
@@ -57,7 +58,7 @@ class component_permissions extends component_base {
                 return '';
             }
             for ($i = $count; $i > 0; $i--) {
-                if (strpos($cond, 'c'.$i) === false) {
+                if (strpos($cond, 'c' . $i) === false) {
                     if ($count > 1 && $cond) {
                         $cond .= " and c$i";
                     } else {
@@ -69,10 +70,11 @@ class component_permissions extends component_base {
 
             // Deleting extra conditions.
             for ($i = $count + 1; $i <= $count + 5; $i++) {
-                $cond = preg_replace('/(\bc'.$i.'\b\s+\b(and|or|not)\b\s*)/i', '', $cond);
-                $cond = preg_replace('/(\s+\b(and|or|not)\b\s+\bc'.$i.'\b)/i', '', $cond);
+                $cond = preg_replace('/(\bc' . $i . '\b\s+\b(and|or|not)\b\s*)/i', '', $cond);
+                $cond = preg_replace('/(\s+\b(and|or|not)\b\s+\bc' . $i . '\b)/i', '', $cond);
             }
         }
+
         return $cond;
 
     }
@@ -83,7 +85,8 @@ class component_permissions extends component_base {
         if ($this->form) {
             $fdata = new stdclass;
             $components = cr_unserialize($this->config->components);
-            $conditionsconfig = (isset($components['permissions']['config'])) ? $components['permissions']['config'] : new \stdclass;
+            $conditionsconfig =
+                (isset($components['permissions']['config'])) ? $components['permissions']['config'] : new stdclass;
 
             if (!isset($conditionsconfig->conditionexpr)) {
                 $fdata->conditionexpr = '';
@@ -93,7 +96,7 @@ class component_permissions extends component_base {
             $fdata->conditionexpr = $conditionsconfig->conditionexpr;
 
             if (empty($components['permissions'])) {
-                $components['permissions'] = array();
+                $components['permissions'] = [];
             }
 
             if (!array_key_exists('config', $components['permissions'])) {
@@ -107,4 +110,5 @@ class component_permissions extends component_base {
             $cform->set_data($fdata);
         }
     }
+
 }

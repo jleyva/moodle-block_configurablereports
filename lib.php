@@ -30,7 +30,7 @@ defined('MOODLE_INTERNAL') || die();
  *
  * @return array check
  */
-function block_configurable_reports_security_checks() {
+function block_configurable_reports_security_checks(): array {
     return [new block_configurable_reports\check\sql_execution()];
 }
 

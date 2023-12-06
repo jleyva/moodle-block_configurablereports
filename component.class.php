@@ -17,12 +17,13 @@
 /**
  * Configurable Reports
  * A Moodle block for creating customizable reports
+ *
  * @package blocks
- * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date: 2009
+ * @author  : Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @date    : 2009
  */
-
 class component_base {
+
     public $plugins = false;
     public $ordering = false;
     public $form = false;
@@ -42,4 +43,5 @@ class component_base {
     public function add_form_elements(&$mform, $fullform) {
         return false;
     }
+
 }

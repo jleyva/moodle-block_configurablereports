@@ -17,11 +17,11 @@
 /**
  * Configurable Reports
  * A Moodle block for creating Configurable Reports
+ *
  * @package blocks
- * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date: 2009
+ * @author  : Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @date    : 2009
  */
-
 class component_template extends component_base {
 
     public function init() {
@@ -49,10 +49,11 @@ class component_template extends component_base {
 
     public function form_set_data(&$cform) {
         if ($this->form) {
-            $fdata = new \stdclass;
+            $fdata = new stdclass;
             $components = cr_unserialize($this->config->components);
-            $config = (isset($components['template']['config'])) ? $components['template']['config'] : new \stdclass;
+            $config = (isset($components['template']['config'])) ? $components['template']['config'] : new stdclass;
             $cform->set_data($config);
         }
     }
+
 }

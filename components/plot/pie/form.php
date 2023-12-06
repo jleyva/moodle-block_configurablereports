@@ -19,14 +19,15 @@ if (!defined('MOODLE_INTERNAL')) {
     die('Direct access to this script is forbidden.');
 }
 
-require_once($CFG->libdir.'/formslib.php');
+require_once($CFG->libdir . '/formslib.php');
 
 class pie_form extends moodleform {
+
     public function definition() {
         global $DB, $USER, $CFG;
 
         $mform =& $this->_form;
-        $options = array();
+        $options = [];
 
         $report = $this->_customdata['report'];
 
@@ -34,7 +35,7 @@ class pie_form extends moodleform {
             $components = cr_unserialize($this->_customdata['report']->components);
 
             if (!is_array($components) || empty($components['columns']['elements'])) {
-                print_error('nocolumns');
+                  throw new \moodle_exception('nocolumns');
             }
 
             $columns = $components['columns']['elements'];
@@ -45,14 +46,14 @@ class pie_form extends moodleform {
             }
         } else {
 
-            require_once($CFG->dirroot.'/blocks/configurable_reports/report.class.php');
-            require_once($CFG->dirroot.'/blocks/configurable_reports/reports/'.$report->type.'/report.class.php');
+            require_once($CFG->dirroot . '/blocks/configurable_reports/report.class.php');
+            require_once($CFG->dirroot . '/blocks/configurable_reports/reports/' . $report->type . '/report.class.php');
 
-            $reportclassname = 'report_'.$report->type;
+            $reportclassname = 'report_' . $report->type;
             $reportclass = new $reportclassname($report);
 
             $components = cr_unserialize($report->components);
-            $config = (isset($components['customsql']['config'])) ? $components['customsql']['config'] : new \stdclass;
+            $config = (isset($components['customsql']['config'])) ? $components['customsql']['config'] : new stdclass;
 
             if (isset($config->querysql)) {
 
@@ -72,31 +73,57 @@ class pie_form extends moodleform {
             }
         }
 
-        $mform->addElement('header',  'crformheader', get_string('coursefield', 'block_configurable_reports'), '');
+        $mform->addElement('header', 'crformheader', get_string('coursefield', 'block_configurable_reports'), '');
 
         $mform->addElement('select', 'areaname', get_string('pieareaname', 'block_configurable_reports'), $options);
         $mform->addElement('select', 'areavalue', get_string('pieareavalue', 'block_configurable_reports'), $options);
         $mform->addElement('checkbox', 'group', get_string('groupvalues', 'block_configurable_reports'));
 
-        $mform->addElement('header',  'legendheader', get_string('legendheader', 'block_configurable_reports'), '');
-        $mform->addElement('static', 'legendheaderdesc', get_string('description', 'block_configurable_reports'),
-                get_string('legendheaderdesc', 'block_configurable_reports'));
+        $mform->addElement('header', 'legendheader', get_string('legendheader', 'block_configurable_reports'), '');
+        $mform->addElement(
+            'static',
+            'legendheaderdesc',
+            get_string('description', 'block_configurable_reports'),
+            get_string('legendheaderdesc', 'block_configurable_reports')
+        );
 
         $repeatarray = [];
-        $repeatarray[] = $mform->createElement('text', 'piechart_label', get_string('piechart_label', 'block_configurable_reports', '{no}'));
-        $repeatarray[] = $mform->createElement('text', 'piechart_label_color', get_string('piechart_label_color', 'block_configurable_reports', '{no}'));
+        $repeatarray[] =
+            $mform->createElement('text', 'piechart_label', get_string('piechart_label', 'block_configurable_reports', '{no}'));
+        $repeatarray[] = $mform->createElement(
+            'text',
+            'piechart_label_color',
+            get_string('piechart_label_color', 'block_configurable_reports', '{no}')
+        );
         $mform->setType('piechart_label', PARAM_TEXT);
         $mform->setType('piechart_label_color', PARAM_TEXT);
 
         $repeatno = 3;
         $repeateloptions = [];
 
-        $this->repeat_elements($repeatarray, $repeatno,
-                $repeateloptions, 'piechart_label_repeats', 'piechart_add_colors', 1,
-                get_string('piechart_add_colors', 'block_configurable_reports'), true);
+        $this->repeat_elements(
+            $repeatarray,
+            $repeatno,
+            $repeateloptions,
+            'piechart_label_repeats',
+            'piechart_add_colors',
+            1,
+            get_string('piechart_add_colors', 'block_configurable_reports'),
+            true
+        );
 
-        $mform->addElement('header',  'generalcolorpaletteheader', get_string('generalcolorpalette', 'block_configurable_reports'), '');
-        $mform->addElement('textarea', 'generalcolorpalette', get_string('generalcolorpalette', 'block_configurable_reports'), 'rows="10" cols="7"');
+        $mform->addElement(
+            'header',
+            'generalcolorpaletteheader',
+            get_string('generalcolorpalette', 'block_configurable_reports'),
+            ''
+        );
+        $mform->addElement(
+            'textarea',
+            'generalcolorpalette',
+            get_string('generalcolorpalette', 'block_configurable_reports'),
+            'rows="10" cols="7"'
+        );
         $mform->addHelpButton('generalcolorpalette', 'generalcolorpalette', 'block_configurable_reports');
 
         // Buttons.
@@ -104,14 +131,14 @@ class pie_form extends moodleform {
     }
 
     function validation($data, $files) {
-        $errors = array();
+        $errors = [];
 
         $length = count($data['piechart_label']);
         for ($i = 0; $i < $length; $i++) {
             if (!empty($data['piechart_label'][$i])) {
                 if (empty($data['piechart_label_color'][$i]) ||
-                        !preg_match('/^#+([a-fA-F0-9]{6}|[a-fA-F0-9]{3})$/', $data['piechart_label_color'][$i])) {
-                        $errors["piechart_label_color[$i]"] = get_string('invalidcolorcode', 'block_configurable_reports');
+                    !preg_match('/^#+([a-fA-F0-9]{6}|[a-fA-F0-9]{3})$/', $data['piechart_label_color'][$i])) {
+                    $errors["piechart_label_color[$i]"] = get_string('invalidcolorcode', 'block_configurable_reports');
                 }
             }
         }
@@ -124,6 +151,8 @@ class pie_form extends moodleform {
                 }
             }
         }
+
         return $errors;
     }
+
 }

@@ -17,13 +17,14 @@
 /**
  * Configurable Reports
  * A Moodle block for creating Configurable Reports
+ *
  * @package blocks
- * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date: 2009
+ * @author  : Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @date    : 2009
  */
 
 define('AJAX_SCRIPT', true);
-require(dirname(dirname(dirname(__FILE__))).'/config.php');
+require(dirname(dirname(dirname(__FILE__))) . '/config.php');
 require_once($CFG->libdir . '/filelib.php');
 
 $reportname = required_param('reportname', PARAM_RAW);
@@ -33,10 +34,9 @@ if (!$userandrepo = get_config('block_configurable_reports', 'sharedsqlrepositor
     die;
 }
 
-
 $github = new \block_configurable_reports\github;
 $github->set_repo($userandrepo);
-$content = $github->get('/master/'.$reportname);
-list($subject, $description, $sql) = explode('###', $content);
+$content = $github->get('/master/' . $reportname);
+[$subject, $description, $sql] = explode('###', $content);
 
 echo json_encode($sql);

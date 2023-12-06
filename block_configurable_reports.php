@@ -17,11 +17,11 @@
 /**
  * Configurable Reports
  * A Moodle block for creating customizable reports
+ *
  * @package blocks
- * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date: 2009
+ * @author  : Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @date    : 2009
  */
-
 class block_configurable_reports extends block_list {
 
     /**
@@ -57,7 +57,7 @@ class block_configurable_reports extends block_list {
      * @return boolean
      **/
     public function applicable_formats() {
-        return array('site' => true, 'course' => true, 'my' => true);
+        return ['site' => true, 'course' => true, 'my' => true];
     }
 
     /**
@@ -92,18 +92,18 @@ class block_configurable_reports extends block_list {
 
         $this->content = new stdClass;
         $this->content->footer = '';
-        $this->content->icons = array();
+        $this->content->icons = [];
 
         if (!isloggedin()) {
             return $this->content;
         }
 
-        require_once($CFG->dirroot."/blocks/configurable_reports/locallib.php");
+        require_once($CFG->dirroot . "/blocks/configurable_reports/locallib.php");
 
-        $course = $DB->get_record('course', array('id' => $COURSE->id));
+        $course = $DB->get_record('course', ['id' => $COURSE->id]);
 
         if (!$course) {
-            print_error('coursedoesnotexists');
+              throw new \moodle_exception('coursedoesnotexists');
         }
 
         if ($course->id == SITEID) {
@@ -114,7 +114,7 @@ class block_configurable_reports extends block_list {
 
         // Site (Shared) reports.
         if (!empty($this->config->displayglobalreports)) {
-            $reports = $DB->get_records('block_configurable_reports', array('global' => 1), 'name ASC');
+            $reports = $DB->get_records('block_configurable_reports', ['global' => 1], 'name ASC');
 
             if ($reports) {
                 foreach ($reports as $report) {
@@ -136,7 +136,7 @@ class block_configurable_reports extends block_list {
         if (!property_exists($this, 'config')
             or !isset($this->config->displayreportslist)
             or $this->config->displayreportslist) {
-            $reports = $DB->get_records('block_configurable_reports', array('courseid' => $course->id), 'name ASC');
+            $reports = $DB->get_records('block_configurable_reports', ['courseid' => $course->id], 'name ASC');
 
             if ($reports) {
                 foreach ($reports as $report) {
@@ -175,19 +175,19 @@ class block_configurable_reports extends block_list {
 
         $crontime = mktime($hour, $min, $date['seconds'], $date['mon'], $date['mday'], $date['year']);
 
-        if ( ($crontime - $usertime) < 0 ) {
+        if (($crontime - $usertime) < 0) {
             return false;
         }
 
-        $lastcron = $DB->get_field('block', 'lastcron', array('name' => 'configurable_reports'));
-        if (!$lastcron and ($lastcron + $this->cron < time()) ) {
+        $lastcron = $DB->get_field('block', 'lastcron', ['name' => 'configurable_reports']);
+        if (!$lastcron and ($lastcron + $this->cron < time())) {
             return false;
         }
 
         // Starting to run...
-        require_once($CFG->dirroot."/blocks/configurable_reports/locallib.php");
-        require_once($CFG->dirroot.'/blocks/configurable_reports/report.class.php');
-        require_once($CFG->dirroot.'/blocks/configurable_reports/reports/sql/report.class.php');
+        require_once($CFG->dirroot . "/blocks/configurable_reports/locallib.php");
+        require_once($CFG->dirroot . '/blocks/configurable_reports/report.class.php');
+        require_once($CFG->dirroot . '/blocks/configurable_reports/reports/sql/report.class.php');
 
         mtrace("\nConfigurable report (block)");
 
@@ -195,7 +195,7 @@ class block_configurable_reports extends block_list {
         if ($reports) {
             foreach ($reports as $report) {
                 // Running only SQL reports. $report->type == 'sql'.
-                if ($report->type == 'sql' AND (!empty($report->cron) AND $report->cron == '1')) {
+                if ($report->type == 'sql' and (!empty($report->cron) and $report->cron == '1')) {
                     $reportclass = new report_sql($report);
 
                     // Execute it using $remotedb.
@@ -212,15 +212,16 @@ class block_configurable_reports extends block_list {
                         mtrace(substr($sql, 0, 60)); // Show some SQL.
                         $results = $reportclass->execute_query($sql);
                         if ($results == 1) {
-                            mtrace('...OK time='.round((microtime(true) - $starttime) * 1000).'mSec');
+                            mtrace('...OK time=' . round((microtime(true) - $starttime) * 1000) . 'mSec');
                         } else {
-                            mtrace('Some SQL Error'.'\n');
+                            mtrace('Some SQL Error' . '\n');
                         }
                     }
                     unset($reportclass);
                 }
             }
         }
+
         return true; // Finished OK.
     }
 

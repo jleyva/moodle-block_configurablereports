@@ -17,9 +17,10 @@
 /**
  * Configurable Reports
  * A Moodle block for creating customizable reports
+ *
  * @package blocks
- * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date: 2009
+ * @author  : Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @date    : 2009
  */
 
 // Based on Custom SQL Reports Plugin
@@ -30,18 +31,19 @@ if (!defined('MOODLE_INTERNAL')) {
     die('Direct access to this script is forbidden.');
 }
 
-require_once($CFG->libdir.'/formslib.php');
+require_once($CFG->libdir . '/formslib.php');
 
 class timeline_form extends moodleform {
+
     public function definition() {
         global $DB, $CFG;
 
         $mform =& $this->_form;
 
-        $options = array(
+        $options = [
             'previous' => get_string('previousdays', 'block_configurable_reports'),
-            'fixeddate' => get_string('fixeddate', 'block_configurable_reports')
-        );
+            'fixeddate' => get_string('fixeddate', 'block_configurable_reports'),
+        ];
         $mform->addElement('select', 'timemode', get_string('timemode', 'block_configurable_reports'), $options);
         $mform->setDefault('timemode', 'previous');
 
@@ -75,7 +77,7 @@ class timeline_form extends moodleform {
         $mform->addRule('interval', null, 'nonzero', null, 'client');
 
         $orderingstr = get_string('ordering', 'block_configurable_reports');
-        $mform->addElement('select', 'ordering', $orderingstr, array('asc' => 'ASC', 'desc' => 'DESC'));
+        $mform->addElement('select', 'ordering', $orderingstr, ['asc' => 'ASC', 'desc' => 'DESC']);
 
         $this->add_action_buttons();
     }
@@ -87,4 +89,5 @@ class timeline_form extends moodleform {
 
         return $errors;
     }
+
 }

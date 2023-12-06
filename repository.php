@@ -17,46 +17,47 @@
 /**
  * Configurable Reports
  * A Moodle block for creating Configurable Reports
+ *
  * @package blocks
- * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date: 2009
+ * @author  : Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @date    : 2009
  */
 
 define('AJAX_SCRIPT', true);
-require(dirname(dirname(dirname(__FILE__))).'/config.php');
+require(dirname(__FILE__, 3) . '/config.php');
 require_once($CFG->libdir . '/filelib.php');
 
 $action = required_param('action', PARAM_ALPHA);
 
 if (!$userandrepo = get_config('block_configurable_reports', 'crrepository')) {
-    echo json_encode(array());
+    echo json_encode([]);
     die;
 }
 
 $github = new \block_configurable_reports\github;
 $github->set_repo($userandrepo);
 
-if ($action == 'listreports') {
+if ($action === 'listreports') {
     if ($res = $github->get('/contents')) {
         $data = json_decode($res);
         if (!is_array($data)) {
-            echo json_encode(array());
+            echo json_encode([]);
             die;
         }
         foreach ($data as $key => $d) {
-            if ($d->type != 'dir') {
+            if ($d->type !== 'dir') {
                 unset($data[$key]);
             }
         }
         echo json_encode($data);
         die;
     }
-} else if ($action == 'listcategory') {
+} else if ($action === 'listcategory') {
     $category = required_param('category', PARAM_RAW);
-    if ($res = $github->get('/contents/'.$category)) {
+    if ($res = $github->get('/contents/' . $category)) {
         $data = json_decode($res);
         foreach ($data as $key => $d) {
-            if ($d->type != 'file') {
+            if ($d->type !== 'file') {
                 unset($data[$key]);
             }
         }
@@ -64,4 +65,4 @@ if ($action == 'listreports') {
         die;
     }
 }
-echo json_encode(array());
+echo json_encode([]);

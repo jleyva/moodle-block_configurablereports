@@ -17,12 +17,13 @@
 /**
  * Configurable Reports
  * A Moodle block for creating customizable reports
+ *
  * @package blocks
- * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date: 2009
+ * @author  : Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @date    : 2009
  */
-
-require_once($CFG->dirroot.'/blocks/configurable_reports/plugin.class.php');
+defined('MOODLE_INTERNAL') || die;
+require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
 
 class plugin_yearnumeric extends plugin_base {
 
@@ -30,7 +31,7 @@ class plugin_yearnumeric extends plugin_base {
         $this->form = false;
         $this->unique = true;
         $this->fullname = get_string('filteryearnumeric', 'block_configurable_reports');
-        $this->reporttypes = array('categories', 'sql');
+        $this->reporttypes = ['categories', 'sql'];
     }
 
     public function summary($data) {
@@ -45,13 +46,15 @@ class plugin_yearnumeric extends plugin_base {
         }
 
         if ($this->report->type != 'sql') {
-            return array($filteryearnumeric);
+            return [$filteryearnumeric];
         } else {
             if (preg_match("/%%FILTER_YEARNUMERIC:([^%]+)%%/i", $finalelements, $output)) {
-                $replace = ' AND '.$output[1].' LIKE \'%'.$filteryearnumeric.'%\'';
-                return str_replace('%%FILTER_YEARNUMERIC:'.$output[1].'%%', $replace, $finalelements);
+                $replace = ' AND ' . $output[1] . ' LIKE \'%' . $filteryearnumeric . '%\'';
+
+                return str_replace('%%FILTER_YEARNUMERIC:' . $output[1] . '%%', $replace, $finalelements);
             }
         }
+
         return $finalelements;
     }
 
@@ -60,11 +63,11 @@ class plugin_yearnumeric extends plugin_base {
 
         $filteryearnumeric = optional_param('filter_yearnumeric', 0, PARAM_INT);
 
-        $reportclassname = 'report_'.$this->report->type;
+        $reportclassname = 'report_' . $this->report->type;
         $reportclass = new $reportclassname($this->report);
 
         $calendartype = \core_calendar\type_factory::get_calendar_instance();
-        for($year = $calendartype->get_min_year(); $year < $calendartype->get_max_year(); $year++) {
+        for ($year = $calendartype->get_min_year(); $year < $calendartype->get_max_year(); $year++) {
             $yearnumeric[$year] = $year;
         }
 
@@ -77,7 +80,7 @@ class plugin_yearnumeric extends plugin_base {
             $yearnumericlist = array_keys($yearnumeric);
         }
 
-        $yearnumericoptions = array();
+        $yearnumericoptions = [];
         $yearnumericoptions[0] = get_string('filter_all', 'block_configurable_reports');
 
         if (!empty($yearnumericlist)) {
@@ -91,4 +94,5 @@ class plugin_yearnumeric extends plugin_base {
         $mform->addElement('select', 'filter_yearnumeric', $elestr, $yearnumericoptions);
         $mform->setType('filter_yearnumeric', PARAM_INT);
     }
+
 }

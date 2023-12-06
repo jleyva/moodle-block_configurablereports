@@ -17,11 +17,11 @@
 /**
  * Configurable Reports
  * A Moodle block for creating customizable reports
+ *
  * @package blocks
- * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date: 2009
+ * @author  : Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @date    : 2009
  */
-
 class component_calcs extends component_base {
 
     public function init() {
@@ -35,17 +35,17 @@ class component_calcs extends component_base {
         global $DB, $CFG;
 
         $components = cr_unserialize($components);
-        $options = array();
+        $options = [];
 
         if ($this->config->type != 'sql') {
             if (!is_array($components) || empty($components['columns']['elements'])) {
-                print_error('nocolumns');
+                  throw new \moodle_exception('nocolumns');
             }
 
             $columns = $components['columns']['elements'];
 
-            $calcs = isset($components['calcs']['elements']) ? $components['calcs']['elements'] : array();
-            $columnsused = array();
+            $calcs = isset($components['calcs']['elements']) ? $components['calcs']['elements'] : [];
+            $columnsused = [];
             if ($calcs) {
                 foreach ($calcs as $c) {
                     $columnsused[] = $c['formdata']->column;
@@ -60,14 +60,14 @@ class component_calcs extends component_base {
                 $i++;
             }
         } else {
-            require_once($CFG->dirroot.'/blocks/configurable_reports/report.class.php');
-            require_once($CFG->dirroot.'/blocks/configurable_reports/reports/'.$this->config->type.'/report.class.php');
+            require_once($CFG->dirroot . '/blocks/configurable_reports/report.class.php');
+            require_once($CFG->dirroot . '/blocks/configurable_reports/reports/' . $this->config->type . '/report.class.php');
 
-            $reportclassname = 'report_'.$this->config->type;
+            $reportclassname = 'report_' . $this->config->type;
             $reportclass = new $reportclassname($this->config);
 
             $components = cr_unserialize($this->config->components);
-            $config = (isset($components['customsql']['config'])) ? $components['customsql']['config'] : new \stdclass;
+            $config = (isset($components['customsql']['config'])) ? $components['customsql']['config'] : new stdclass;
 
             if (isset($config->querysql)) {
 
@@ -90,4 +90,5 @@ class component_calcs extends component_base {
         $mform->addElement('header', 'crformheader', get_string('coursefield', 'block_configurable_reports'), '');
         $mform->addElement('select', 'column', get_string('column', 'block_configurable_reports'), $options);
     }
+
 }

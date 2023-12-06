@@ -17,29 +17,31 @@
 /**
  * Configurable Reports
  * A Moodle block for creating customizable reports
+ *
  * @package blocks
- * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date: 2009
+ * @author  : Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @date    : 2009
  */
- 
- /**
+
+/**
  * COHORT FILTER
  * A filter for configurable reports
+ *
  * @author: François Parlant <https://www.linkedin.com/in/francois-parlant/>
- * @date: 2020
- */ 
- 
- /* example of report query
- ***********
- * Display the students from a cohort and all the courses they are enrolled in
- ***********
+ * @date  : 2020
+ */
+
+/* example of report query
+***********
+* Display the students from a cohort and all the courses they are enrolled in
+***********
 SELECT
 u.firstname AS Firstname,
 u.lastname AS Lastname,
 u.email AS Email,
 c.fullname AS Course
 
-FROM prefix_course AS c 
+FROM prefix_course AS c
 JOIN prefix_enrol AS en ON en.courseid = c.id
 JOIN prefix_user_enrolments AS ue ON ue.enrolid = en.id
 JOIN prefix_user AS u ON ue.userid = u.id
@@ -50,19 +52,18 @@ JOIN prefix_user AS u ON hm.userid = u.id
 WHERE 1=1
 %%FILTER_COHORTS:h.id%%
 ORDER BY u.firstname)
- 
- */
- 
 
-require_once($CFG->dirroot.'/blocks/configurable_reports/plugin.class.php');
+*/
+defined('MOODLE_INTERNAL') || die;
+require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
 
-class plugin_cohorts extends plugin_base{
+class plugin_cohorts extends plugin_base {
 
     public function init() {
         $this->form = false;
         $this->unique = true;
         $this->fullname = get_string('filtercohorts', 'block_configurable_reports');
-        $this->reporttypes = array('courses', 'sql');
+        $this->reporttypes = ['courses', 'sql'];
     }
 
     public function summary($data) {
@@ -70,27 +71,29 @@ class plugin_cohorts extends plugin_base{
     }
 
     public function execute($finalelements, $data) {
-		
+
         $filtercohorts = optional_param('filter_cohorts', 0, PARAM_INT);
         if (!$filtercohorts) {
             return $finalelements;
         }
 
         if ($this->report->type != 'sql') {
-            return array($filtercohorts);
+            return [$filtercohorts];
         } else {
             if (preg_match("/%%FILTER_COHORTS:([^%]+)%%/i", $finalelements, $output)) {
-                $replace = ' AND '.$output[1].' = '.$filtercohorts;
-                return str_replace('%%FILTER_COHORTS:'.$output[1].'%%', $replace, $finalelements);
+                $replace = ' AND ' . $output[1] . ' = ' . $filtercohorts;
+
+                return str_replace('%%FILTER_COHORTS:' . $output[1] . '%%', $replace, $finalelements);
             }
         }
+
         return $finalelements;
     }
 
     public function print_filter(&$mform) {
         global $remotedb, $COURSE, $PAGE, $CFG;
 
-        $reportclassname = 'report_'.$this->report->type;
+        $reportclassname = 'report_' . $this->report->type;
         $reportclass = new $reportclassname($this->report);
 
         if ($this->report->type != 'sql') {
@@ -106,14 +109,14 @@ class plugin_cohorts extends plugin_base{
             foreach ($studentlist as $student) {
                 $cohortslist[] = $student->userid;
             }
-			
+
         }
 
-        $cohortsoptions = array();
+        $cohortsoptions = [];
         $cohortsoptions[0] = get_string('filter_all', 'block_configurable_reports');
 
         if (!empty($cohortslist)) {
-            
+
             $cohorts = $remotedb->get_records_sql($sql);
 
             foreach ($cohorts as $c) {
@@ -125,4 +128,5 @@ class plugin_cohorts extends plugin_base{
         $mform->addElement('select', 'filter_cohorts', $elestr, $cohortsoptions);
         $mform->setType('filter_cohorts', PARAM_INT);
     }
+
 }

@@ -17,12 +17,12 @@
 /**
  * Configurable Reports
  * A Moodle block for creating customizable reports
+ *
  * @package blocks
- * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date: 2009
+ * @author  : Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @date    : 2009
  */
-
-class component_conditions extends component_base{
+class component_conditions extends component_base {
 
     public function init() {
         $this->plugins = true;
@@ -42,7 +42,8 @@ class component_conditions extends component_base{
             $components = cr_unserialize($this->config->components);
             $components['conditions']['config'] = $data;
             if (isset($components['conditions']['config']->conditionexpr)) {
-                $components['conditions']['config']->conditionexpr = $this->add_missing_conditions($components['conditions']['config']->conditionexpr);
+                $components['conditions']['config']->conditionexpr =
+                    $this->add_missing_conditions($components['conditions']['config']->conditionexpr);
             }
             $this->config->components = cr_serialize($components);
             $DB->update_record('block_configurable_reports', $this->config);
@@ -62,7 +63,7 @@ class component_conditions extends component_base{
                 return '';
             }
             for ($i = $count; $i > 0; $i--) {
-                if (strpos($cond, 'c'.$i) === false) {
+                if (strpos($cond, 'c' . $i) === false) {
                     if ($count > 1 && $cond) {
                         $cond .= " and c$i";
                     } else {
@@ -73,8 +74,8 @@ class component_conditions extends component_base{
 
             // Deleting extra conditions.
             for ($i = $count + 1; $i <= $count + 5; $i++) {
-                $cond = preg_replace('/(\bc'.$i.'\b\s+\b(and|or|not)\b\s*)/i', '', $cond);
-                $cond = preg_replace('/(\s+\b(and|or|not)\b\s+\bc'.$i.'\b)/i', '', $cond);
+                $cond = preg_replace('/(\bc' . $i . '\b\s+\b(and|or|not)\b\s*)/i', '', $cond);
+                $cond = preg_replace('/(\s+\b(and|or|not)\b\s+\bc' . $i . '\b)/i', '', $cond);
             }
         }
 
@@ -96,7 +97,7 @@ class component_conditions extends component_base{
             $fdata->conditionexpr = $conditionsconfig->conditionexpr;
 
             if (empty($components['conditions'])) {
-                $components['conditions'] = array();
+                $components['conditions'] = [];
             }
 
             if (!empty($components['conditions']['config']->conditionexpr)) {
@@ -108,4 +109,5 @@ class component_conditions extends component_base{
             $cform->set_data($fdata);
         }
     }
+
 }

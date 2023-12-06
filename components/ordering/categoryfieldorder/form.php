@@ -17,9 +17,10 @@
 /**
  * Configurable Reports
  * A Moodle block for creating customizable reports
+ *
  * @package blocks
- * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date: 2009
+ * @author  : Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @date    : 2009
  */
 
 if (!defined('MOODLE_INTERNAL')) {
@@ -27,9 +28,10 @@ if (!defined('MOODLE_INTERNAL')) {
     die('Direct access to this script is forbidden.');
 }
 
-require_once($CFG->libdir.'/formslib.php');
+require_once($CFG->libdir . '/formslib.php');
 
 class categoryfieldorder_form extends moodleform {
+
     public function definition() {
         global $DB, $USER, $CFG;
 
@@ -37,17 +39,18 @@ class categoryfieldorder_form extends moodleform {
 
         $columns = $DB->get_columns('course_categories');
 
-        $categorycolumns = array();
+        $categorycolumns = [];
         foreach ($columns as $c) {
             $categorycolumns[$c->name] = $c->name;
         }
 
         $mform->addElement('select', 'column', get_string('column', 'block_configurable_reports'), $categorycolumns);
 
-        $directions = array('asc' => 'ASC', 'desc' => 'DESC');
+        $directions = ['asc' => 'ASC', 'desc' => 'DESC'];
         $mform->addElement('select', 'direction', get_string('direction', 'block_configurable_reports'), $directions);
 
         // Buttons.
         $this->add_action_buttons(true, get_string('add'));
     }
+
 }

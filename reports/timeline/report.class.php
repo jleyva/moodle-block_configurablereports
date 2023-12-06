@@ -17,29 +17,29 @@
 /**
  * Configurable Reports
  * A Moodle block for creating customizable reports
+ *
  * @package blocks
- * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date: 2009
+ * @author  : Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @date    : 2009
  */
-
 class report_timeline extends report_base {
 
     public function init() {
-        $this->components = array('timeline', 'columns', 'filters', 'template', 'permissions', 'calcs', 'plot');
+        $this->components = ['timeline', 'columns', 'filters', 'template', 'permissions', 'calcs', 'plot'];
     }
 
     public function get_all_elements() {
-        $elements = array();
+        $elements = [];
 
         $components = cr_unserialize($this->config->components);
 
-        $config = (isset($components['timeline']['config'])) ? $components['timeline']['config'] : new \stdclass();
+        $config = (isset($components['timeline']['config'])) ? $components['timeline']['config'] : new stdclass();
 
         if (isset($config->timemode)) {
 
             $daysecs = 60 * 60 * 24;
 
-            if ($config->timemode == 'previous') {
+            if ($config->timemode === 'previous') {
                 $config->starttime = gmmktime() - $config->previousstart * $daysecs;
                 $config->endtime = gmmktime() - $config->previousend * $daysecs;
                 if (isset($config->forcemidnight)) {
@@ -71,7 +71,7 @@ class report_timeline extends report_base {
                 $elements[] = $row->starttime;
             }
 
-            if ($config->ordering == 'desc') {
+            if ($config->ordering === 'desc') {
                 rsort($elements);
             }
         }
@@ -80,17 +80,18 @@ class report_timeline extends report_base {
     }
 
     public function get_rows($elements, $sqlorder = '') {
-        global $DB, $CFG;
 
         if (!empty($elements)) {
-            $finaltimeline = array();
+            $finaltimeline = [];
             foreach ($elements as $e) {
                 $finaltimeline[] = $this->timeline[$e];
             }
+
             return $finaltimeline;
-        } else {
-            return array();
         }
+
+        return [];
+
     }
 
 }

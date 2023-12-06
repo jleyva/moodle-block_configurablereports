@@ -17,9 +17,10 @@
 /**
  * Configurable Reports
  * A Moodle block for creating Configurable Reports
+ *
  * @package blocks
- * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date: 2009
+ * @author  : Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @date    : 2009
  */
 
 if (!defined('MOODLE_INTERNAL')) {
@@ -27,9 +28,10 @@ if (!defined('MOODLE_INTERNAL')) {
     die('Direct access to this script is forbidden.');
 }
 
-require_once($CFG->libdir.'/formslib.php');
+require_once($CFG->libdir . '/formslib.php');
 
 class reportcolumn_form extends moodleform {
+
     public function definition() {
         global $DB, $USER, $CFG;
 
@@ -42,7 +44,7 @@ class reportcolumn_form extends moodleform {
         }
 
         $reports = $this->_customdata['pluginclass']->get_user_reports();
-        $reportoptions = array(0 => get_string('choose'));
+        $reportoptions = [0 => get_string('choose')];
 
         if ($reports) {
             foreach ($reports as $r) {
@@ -50,8 +52,9 @@ class reportcolumn_form extends moodleform {
             }
         }
 
-        $furl = "$CFG->wwwroot/blocks/configurable_reports/editplugin.php?id=".$this->_customdata['report']->id."&comp=columns&pname=reportcolumn";
-        $options = array('onchange' => 'location.href="'.$furl.'&reportid="+document.getElementById("id_reportid").value');
+        $furl = "$CFG->wwwroot/blocks/configurable_reports/editplugin.php?id=" . $this->_customdata['report']->id .
+            "&comp=columns&pname=reportcolumn";
+        $options = ['onchange' => 'location.href="' . $furl . '&reportid="+document.getElementById("id_reportid").value'];
         if ($actualrid) {
             $options['disabled'] = 'disabled';
         }
@@ -84,4 +87,5 @@ class reportcolumn_form extends moodleform {
 
         return $errors;
     }
+
 }

@@ -17,12 +17,13 @@
 /**
  * Configurable Reports
  * A Moodle block for creating customizable reports
+ *
  * @package blocks
- * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date: 2009
+ * @author  : Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @date    : 2009
  */
-
-require_once($CFG->dirroot.'/blocks/configurable_reports/plugin.class.php');
+defined('MOODLE_INTERNAL') || die;
+require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
 
 class plugin_categoryfieldorder extends plugin_base {
 
@@ -32,12 +33,12 @@ class plugin_categoryfieldorder extends plugin_base {
         $this->fullname = get_string('categoryfield', 'block_configurable_reports');
         $this->form = true;
         $this->unique = true;
-        $this->reporttypes = array('categories');
+        $this->reporttypes = ['categories'];
         $this->sql = true;
     }
 
     public function summary($data) {
-        return $data->column.' '.(strtoupper($data->direction));
+        return $data->column . ' ' . (strtoupper($data->direction));
     }
 
     // Data -> Plugin configuration data.
@@ -48,16 +49,17 @@ class plugin_categoryfieldorder extends plugin_base {
             $direction = strtoupper($data->direction);
             $columns = $DB->get_columns('course_categories');
 
-            $categorycolumns = array();
+            $categorycolumns = [];
             foreach ($columns as $c) {
                 $categorycolumns[$c->name] = $c->name;
             }
 
             if (isset($categorycolumns[$data->column])) {
-                return $data->column.' '.$direction;
+                return $data->column . ' ' . $direction;
             }
         }
 
         return '';
     }
+
 }

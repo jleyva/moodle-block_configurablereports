@@ -17,20 +17,21 @@
 /**
  * Configurable Reports
  * A Moodle block for creating customizable reports
+ *
  * @package blocks
- * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date: 2009
+ * @author  : Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @date    : 2009
  */
+defined('MOODLE_INTERNAL') || die;
+require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
 
-require_once($CFG->dirroot.'/blocks/configurable_reports/plugin.class.php');
-
-class plugin_enrolledstudents extends plugin_base{
+class plugin_enrolledstudents extends plugin_base {
 
     public function init() {
         $this->form = false;
         $this->unique = true;
         $this->fullname = get_string('filterenrolledstudents', 'block_configurable_reports');
-        $this->reporttypes = array('courses', 'sql');
+        $this->reporttypes = ['courses', 'sql'];
     }
 
     public function summary($data) {
@@ -44,20 +45,22 @@ class plugin_enrolledstudents extends plugin_base{
         }
 
         if ($this->report->type != 'sql') {
-            return array($filterenrolledstudents);
+            return [$filterenrolledstudents];
         } else {
             if (preg_match("/%%FILTER_COURSEENROLLEDSTUDENTS:([^%]+)%%/i", $finalelements, $output)) {
-                $replace = ' AND '.$output[1].' = '.$filterenrolledstudents;
-                return str_replace('%%FILTER_COURSEENROLLEDSTUDENTS:'.$output[1].'%%', $replace, $finalelements);
+                $replace = ' AND ' . $output[1] . ' = ' . $filterenrolledstudents;
+
+                return str_replace('%%FILTER_COURSEENROLLEDSTUDENTS:' . $output[1] . '%%', $replace, $finalelements);
             }
         }
+
         return $finalelements;
     }
 
     public function print_filter(&$mform) {
         global $remotedb, $COURSE, $PAGE, $CFG;
 
-        $reportclassname = 'report_'.$this->report->type;
+        $reportclassname = 'report_' . $this->report->type;
         $reportclass = new $reportclassname($this->report);
 
         if ($this->report->type != 'sql') {
@@ -77,14 +80,14 @@ class plugin_enrolledstudents extends plugin_base{
             }
         }
 
-        $enrolledstudentsoptions = array();
+        $enrolledstudentsoptions = [];
         $enrolledstudentsoptions[0] = get_string('filter_all', 'block_configurable_reports');
 
         if (!empty($enrolledstudentslist)) {
             if (has_capability('moodle/site:viewfullnames', $PAGE->context)) {
-               $nameformat = $CFG->alternativefullnameformat;
+                $nameformat = $CFG->alternativefullnameformat;
             } else {
-               $nameformat = $CFG->fullnamedisplay;
+                $nameformat = $CFG->fullnamedisplay;
             }
 
             if ($nameformat == 'language') {
@@ -93,8 +96,9 @@ class plugin_enrolledstudents extends plugin_base{
 
             $sort = implode(',', order_in_string(get_all_user_name_fields(), $nameformat));
 
-            list($usql, $params) = $remotedb->get_in_or_equal($enrolledstudentslist);
-            $enrolledstudents = $remotedb->get_records_select('user', "id " . $usql, $params, $sort, 'id,' .get_all_user_name_fields(true));
+            [$usql, $params] = $remotedb->get_in_or_equal($enrolledstudentslist);
+            $enrolledstudents =
+                $remotedb->get_records_select('user', "id " . $usql, $params, $sort, 'id,' . get_all_user_name_fields(true));
 
             foreach ($enrolledstudents as $c) {
                 $enrolledstudentsoptions[$c->id] = fullname($c);
@@ -105,4 +109,5 @@ class plugin_enrolledstudents extends plugin_base{
         $mform->addElement('select', 'filter_enrolledstudents', $elestr, $enrolledstudentsoptions);
         $mform->setType('filter_enrolledstudents', PARAM_INT);
     }
+
 }

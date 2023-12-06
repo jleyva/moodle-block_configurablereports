@@ -17,22 +17,25 @@
 /**
  * Configurable Reports
  * A Moodle block for creating customizable reports
+ *
  * @package blocks
- * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date: 2009
+ * @author  : Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @date    : 2009
  */
 
-require_once($CFG->dirroot.'/blocks/configurable_reports/plugin.class.php');
+defined('MOODLE_INTERNAL') || die;
+require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
 
-class plugin_ccoursefield extends plugin_base{
+class plugin_ccoursefield extends plugin_base {
+
     public function init() {
         $this->fullname = get_string('ccoursefield', 'block_configurable_reports');
-        $this->reporttypes = array('courses');
+        $this->reporttypes = ['courses'];
         $this->form = true;
     }
 
     public function summary($data) {
-        return get_string($data->field).' '.$data->operator.' '.$data->value;
+        return get_string($data->field) . ' ' . $data->operator . ' ' . $data->value;
 
     }
 
@@ -47,11 +50,11 @@ class plugin_ccoursefield extends plugin_base{
         switch ($data->operator) {
             case 'LIKE % %':
                 $sql = "$data->field $ilike ?";
-                $params = array("%$data->value%");
+                $params = ["%$data->value%"];
                 break;
             default:
                 $sql = "$data->field $data->operator ?";
-                $params = array($data->value);
+                $params = [$data->value];
         }
 
         $courses = $DB->get_records_select('course', $sql, $params);
@@ -60,6 +63,7 @@ class plugin_ccoursefield extends plugin_base{
             return array_keys($courses);
         }
 
-        return array();
+        return [];
     }
+
 }

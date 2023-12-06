@@ -17,27 +17,28 @@
 /**
  * Configurable Reports
  * A Moodle block for creating customizable reports
+ *
  * @package blocks
- * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date: 2009
+ * @author  : Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @date    : 2009
  */
 
 require_once("../../../../../config.php");
-require_once($CFG->dirroot."/blocks/configurable_reports/locallib.php");
+require_once($CFG->dirroot . "/blocks/configurable_reports/locallib.php");
 
 require_login();
 
 $id = required_param('id', PARAM_ALPHANUM);
 $reportid = required_param('reportid', PARAM_INT);
 
-if (!$report = $DB->get_record('block_configurable_reports', array('id' => $reportid))) {
-    print_error('reportdoesnotexists');
+if (!$report = $DB->get_record('block_configurable_reports', ['id' => $reportid])) {
+      throw new \moodle_exception('reportdoesnotexists');
 }
 
 $courseid = $report->courseid;
 
-if (!$course = $DB->get_record('course', array('id' => $courseid))) {
-    print_error('No such course id');
+if (!$course = $DB->get_record('course', ['id' => $courseid])) {
+      throw new \moodle_exception('No such course id');
 }
 
 // Force user login in course (SITE or Course).
@@ -48,24 +49,24 @@ if ($course->id == SITEID) {
     require_login($course->id);
     $context = context_course::instance($course->id);
 }
-require_once($CFG->dirroot.'/blocks/configurable_reports/report.class.php');
-require_once($CFG->dirroot.'/blocks/configurable_reports/reports/'.$report->type.'/report.class.php');
+require_once($CFG->dirroot . '/blocks/configurable_reports/report.class.php');
+require_once($CFG->dirroot . '/blocks/configurable_reports/reports/' . $report->type . '/report.class.php');
 
-$reportclassname = 'report_'.$report->type;
+$reportclassname = 'report_' . $report->type;
 $reportclass = new $reportclassname($report);
 
 if (!$reportclass->check_permissions($USER->id, $context)) {
-    print_error("No permissions");
+      throw new \moodle_exception("No permissions");
 } else {
     $components = cr_unserialize($report->components);
     $graphs = $components['plot']['elements'];
 
     if (!empty($graphs)) {
-        $series = array();
+        $series = [];
         foreach ($graphs as $g) {
-            require_once($CFG->dirroot.'/blocks/configurable_reports/components/plot/'.$g['pluginname'].'/plugin.class.php');
+            require_once($CFG->dirroot . '/blocks/configurable_reports/components/plot/' . $g['pluginname'] . '/plugin.class.php');
             if ($g['id'] == $id) {
-                $classname = 'plugin_'.$g['pluginname'];
+                $classname = 'plugin_' . $g['pluginname'];
                 $class = new $classname($report);
                 $series = $class->get_series($g['formdata']);
                 break;
@@ -73,9 +74,9 @@ if (!$reportclass->check_permissions($USER->id, $context)) {
         }
 
         if ($g['id'] == $id) {
-            include($CFG->dirroot."/blocks/configurable_reports/lib/pChart2/class/pDraw.class.php");
-            include($CFG->dirroot."/blocks/configurable_reports/lib/pChart2/class/pData.class.php");
-            include($CFG->dirroot."/blocks/configurable_reports/lib/pChart2/class/pImage.class.php");
+            include($CFG->dirroot . "/blocks/configurable_reports/lib/pChart2/class/pDraw.class.php");
+            include($CFG->dirroot . "/blocks/configurable_reports/lib/pChart2/class/pData.class.php");
+            include($CFG->dirroot . "/blocks/configurable_reports/lib/pChart2/class/pImage.class.php");
 
             // Dataset definition.
             $dataset = new pData();
@@ -87,7 +88,9 @@ if (!$reportclass->check_permissions($USER->id, $context)) {
             foreach ($labels as $key => $value) {
                 $labellen = strlen($value);
                 $labellen > $longestlabel && $longestlabel = $labellen;
-                $invertedlabels[$key] = strip_tags((preg_match("/[\xE0-\xFA]/", iconv("UTF-8", "ISO-8859-8", $value))) ? $reportclass->utf8_strrev($value) : $value);
+                $invertedlabels[$key] = strip_tags(
+                    (preg_match("/[\xE0-\xFA]/", iconv("UTF-8", "ISO-8859-8", $value))) ? $reportclass->utf8_strrev($value) : $value
+                );
             }
             $dataset->addPoints($invertedlabels, "Labels");
             $dataset->setAbscissa("Labels");
@@ -106,7 +109,7 @@ if (!$reportclass->check_permissions($USER->id, $context)) {
             $colorb = property_exists($g['formdata'], "color_b") ? $g['formdata']->color_b : 87;
             $padding = 30;
             $fontsize = 8;
-            $fontpath = $CFG->dirroot."/blocks/configurable_reports/lib/pChart2/fonts";
+            $fontpath = $CFG->dirroot . "/blocks/configurable_reports/lib/pChart2/fonts";
             $labeloffset = $longestlabel * ($fontsize / 2);
             $minlabeloffset = $padding + 100;
             $maxlabeloffset = $height / 2 + $padding;
@@ -122,8 +125,8 @@ if (!$reportclass->check_permissions($USER->id, $context)) {
             }
 
             $mypicture = new pImage($width, $height, $dataset);
-            $mypicture->setFontProperties(array("FontName" => "$fontpath/calibri.ttf", "FontSize" => $fontsize));
-            list($legendwidth, $legendheight) = array_values($mypicture->getLegendSize());
+            $mypicture->setFontProperties(["FontName" => "$fontpath/calibri.ttf", "FontSize" => $fontsize]);
+            [$legendwidth, $legendheight] = array_values($mypicture->getLegendSize());
             $legendx = $width - $legendwidth - $padding;
             $legendy = $padding;
             $colnames = array_keys($series);
@@ -133,29 +136,29 @@ if (!$reportclass->check_permissions($USER->id, $context)) {
             $graphwidth = $legendx - $padding;
             $graphheight = $height - $labeloffset;
 
-            $bgsettings = array('R' => 225, 'G' => 225, 'B' => 225);
+            $bgsettings = ['R' => 225, 'G' => 225, 'B' => 225];
             $mypicture->drawFilledRectangle(0, 0, $width + 2, $height + 2, $bgsettings);
             $mypicture->setGraphArea($graphx, $graphy, $graphwidth, $graphheight);
 
-            $scalesettings = array(
+            $scalesettings = [
                 "TickR" => 0,
                 "TickG" => 0,
                 "TickB" => 0,
                 "LabelRotation" => 45,
-                "DrawSubTicks" => true
-            );
+                "DrawSubTicks" => true,
+            ];
             $mypicture->drawScale($scalesettings);
-            $mypicture->setShadow(true, array("X" => 1, "Y" => 1, "R" => 0, "G" => 0, "B" => 0, "Alpha" => 10));
+            $mypicture->setShadow(true, ["X" => 1, "Y" => 1, "R" => 0, "G" => 0, "B" => 0, "Alpha" => 10]);
 
-            $chartsettings = array(
+            $chartsettings = [
                 "DisplayValues" => true,
                 "Rounded" => true,
                 "Surrounding" => 60,
                 "DisplayR" => 0,
                 "DisplayG" => 0,
                 "DisplayB" => 0,
-                "DisplayOffset" => 5
-            );
+                "DisplayOffset" => 5,
+            ];
             $mypicture->drawBarChart($chartsettings);
             $mypicture->setShadow(false);
             $mypicture->drawLegend($legendx, $legendy);

@@ -17,12 +17,13 @@
 /**
  * Configurable Reports
  * A Moodle block for creating customizable reports
+ *
  * @package blocks
- * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date: 2009
+ * @author  : Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @date    : 2009
  */
-
-require_once($CFG->dirroot.'/blocks/configurable_reports/plugin.class.php');
+defined('MOODLE_INTERNAL') || die;
+require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
 
 class plugin_line extends plugin_base {
 
@@ -30,7 +31,7 @@ class plugin_line extends plugin_base {
         $this->fullname = get_string('line', 'block_configurable_reports');
         $this->form = true;
         $this->ordering = true;
-        $this->reporttypes = array('timeline', 'sql', 'timeline');
+        $this->reporttypes = ['timeline', 'sql', 'timeline'];
     }
 
     public function summary($data) {
@@ -41,7 +42,7 @@ class plugin_line extends plugin_base {
     public function execute($id, $data, $finalreport) {
         global $DB, $CFG;
 
-        $series = array();
+        $series = [];
         $data->xaxis--;
         $data->yaxis--;
         $data->serieid--;
@@ -63,22 +64,25 @@ class plugin_line extends plugin_base {
 
         $i = 0;
         foreach ($series as $h => $s) {
-            $params .= "&amp;serie$i=".base64_encode($sname[$h].'||'.implode(',', $s));
+            $params .= "&amp;serie$i=" . base64_encode($sname[$h] . '||' . implode(',', $s));
             $i++;
         }
 
-        return $CFG->wwwroot.'/blocks/configurable_reports/components/plot/line/graph.php?reportid='.$this->report->id.'&id='.$id.$params.'&amp;min='.$minvalue.'&amp;max='.$maxvalue;
+        return $CFG->wwwroot . '/blocks/configurable_reports/components/plot/line/graph.php?reportid=' . $this->report->id .
+            '&id=' . $id . $params . '&amp;min=' . $minvalue . '&amp;max=' . $maxvalue;
     }
 
     public function get_series($data) {
-        $series = array();
+        $series = [];
         foreach ($_GET as $key => $val) {
             if (strpos($key, 'serie') !== false) {
                 $id = (int) str_replace('serie', '', $key);
-                list($name, $values) = explode('||', base64_decode($val));
-                $series[$id] = array('serie' => explode(',', $values), 'name' => $name);
+                [$name, $values] = explode('||', base64_decode($val));
+                $series[$id] = ['serie' => explode(',', $values), 'name' => $name];
             }
         }
+
         return $series;
     }
+
 }

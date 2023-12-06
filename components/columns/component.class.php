@@ -17,12 +17,12 @@
 /**
  * Configurable Reports
  * A Moodle block for creating customizable reports
+ *
  * @package blocks
- * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date: 2009
+ * @author  : Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @date    : 2009
  */
-
-class component_columns extends component_base{
+class component_columns extends component_base {
 
     public function init() {
         $this->plugins = true;
@@ -49,14 +49,24 @@ class component_columns extends component_base{
             $mform->setType('columname', PARAM_CLEAN);
         }
 
-        $mform->addElement('select', 'align', get_string('cellalign', 'block_configurable_reports'), array('center' => 'center', 'left' => 'left', 'right' => 'right'));
+        $mform->addElement(
+            'select',
+            'align',
+            get_string('cellalign', 'block_configurable_reports'),
+            ['center' => 'center', 'left' => 'left', 'right' => 'right']
+        );
         $mform->setAdvanced('align');
 
         $mform->addElement('text', 'size', get_string('cellsize', 'block_configurable_reports'));
         $mform->setType('size', PARAM_CLEAN);
         $mform->setAdvanced('size');
 
-        $mform->addElement('select', 'wrap', get_string('cellwrap', 'block_configurable_reports'), array('' => 'Wrap', 'nowrap' => 'No Wrap'));
+        $mform->addElement(
+            'select',
+            'wrap',
+            get_string('cellwrap', 'block_configurable_reports'),
+            ['' => 'Wrap', 'nowrap' => 'No Wrap']
+        );
         $mform->setAdvanced('wrap');
 
         $mform->addRule('columname', get_string('required'), 'required');
@@ -66,6 +76,7 @@ class component_columns extends component_base{
         if (!empty($data['size']) && !preg_match("/^\d+(%|px)$/i", trim($data['size']))) {
             $errors['size'] = get_string('badsize', 'block_configurable_reports');
         }
+
         return $errors;
     }
 
@@ -92,4 +103,5 @@ class component_columns extends component_base{
             $cform->set_data($fdata);
         }
     }
+
 }

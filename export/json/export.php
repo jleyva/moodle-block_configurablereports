@@ -17,12 +17,13 @@
 /**
  * Configurable Reports
  * A Moodle block for creating customizable reports
- * @package blocks
+ *
+ * @param $report
  * @author  : Juan leyva <http://www.twitter.com/jleyvadelgado>
  * @date    : 2009
- * @param $report
+ * @package blocks
  */
-function export_report($report){
+function export_report($report) {
     $table = $report->table;
     $filename = 'report_' . (time()) . '.json';
     $json = [];

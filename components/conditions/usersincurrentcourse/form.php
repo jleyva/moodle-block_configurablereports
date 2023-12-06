@@ -17,9 +17,10 @@
 /**
  * Configurable Reports
  * A Moodle block for creating customizable reports
+ *
  * @package blocks
- * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date: 2009
+ * @author  : Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @date    : 2009
  */
 
 if (!defined('MOODLE_INTERNAL')) {
@@ -27,7 +28,7 @@ if (!defined('MOODLE_INTERNAL')) {
     die('Direct access to this script is forbidden.');
 }
 
-require_once($CFG->libdir.'/formslib.php');
+require_once($CFG->libdir . '/formslib.php');
 
 class usersincurrentcourse_form extends moodleform {
 
@@ -36,17 +37,18 @@ class usersincurrentcourse_form extends moodleform {
 
         $mform =& $this->_form;
 
-        $mform->addElement('header',  'crformheader', get_string('coursefield', 'block_configurable_reports'), '');
+        $mform->addElement('header', 'crformheader', get_string('coursefield', 'block_configurable_reports'), '');
 
         $roles = $DB->get_records('role');
-        $userroles = array();
+        $userroles = [];
         foreach ($roles as $r) {
             $userroles[$r->id] = $r->shortname;
         }
 
-        $mform->addElement('select', 'roles', get_string('roles'), $userroles, array('multiple' => 'multiple'));
+        $mform->addElement('select', 'roles', get_string('roles'), $userroles, ['multiple' => 'multiple']);
 
         // Buttons.
         $this->add_action_buttons(true, get_string('add'));
     }
+
 }

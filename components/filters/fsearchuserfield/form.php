@@ -17,9 +17,10 @@
 /**
  * Configurable Reports
  * A Moodle block for creating customizable reports
+ *
  * @package blocks
- * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date: 2009
+ * @author  : Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @date    : 2009
  */
 
 if (!defined('MOODLE_INTERNAL')) {
@@ -27,9 +28,10 @@ if (!defined('MOODLE_INTERNAL')) {
     die('Direct access to this script is forbidden.');
 }
 
-require_once($CFG->libdir.'/formslib.php');
+require_once($CFG->libdir . '/formslib.php');
 
 class fsearchuserfield_form extends moodleform {
+
     public function definition() {
         global $remotedb, $USER, $CFG;
 
@@ -41,14 +43,14 @@ class fsearchuserfield_form extends moodleform {
 
         $columns = $remotedb->get_columns('user');
 
-        $usercolumns = array();
+        $usercolumns = [];
         foreach ($columns as $c) {
             $usercolumns[$c->name] = $c->name;
         }
 
         if ($profile = $remotedb->get_records('user_info_field')) {
             foreach ($profile as $p) {
-                $usercolumns['profile_'.$p->shortname] = $p->name;
+                $usercolumns['profile_' . $p->shortname] = $p->name;
             }
         }
 
@@ -57,8 +59,8 @@ class fsearchuserfield_form extends moodleform {
 
         $mform->addElement('select', 'field', get_string('field', 'block_configurable_reports'), $usercolumns);
 
-
         // Buttons.
         $this->add_action_buttons(true, get_string('add'));
     }
+
 }
