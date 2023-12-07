@@ -24,8 +24,18 @@
 defined('MOODLE_INTERNAL') || die;
 require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
 
+/**
+ * Class plugin_fsearchuserfield
+ *
+ * @package  block_configurablereports
+ * @author   Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @date     2009
+ */
 class plugin_fsearchuserfield extends plugin_base {
 
+    /**
+     * @return void
+     */
     public function init(): void {
         $this->form = true;
         $this->unique = true;
@@ -43,17 +53,29 @@ class plugin_fsearchuserfield extends plugin_base {
         return $data->field;
     }
 
+    /**
+     * execute
+     *
+     * @param $finalelements
+     * @param $data
+     * @return array|int[]|mixed|string|string[]
+     */
     public function execute($finalelements, $data) {
-        if ($this->report->type == 'sql') {
+        if ($this->report->type === 'sql') {
             return $this->execute_sql($finalelements, $data);
         }
 
         return $this->execute_users($finalelements, $data);
     }
 
-    private function execute_sql($finalelements, $data) {
+    /**
+     * @param $finalelements
+     * @param object $data
+     * @return array|string|string[]
+     */
+    private function execute_sql($finalelements, object $data) {
         $filterfuserfield = optional_param('filter_fuserfield_' . $data->field, 0, PARAM_RAW);
-        $filter = clean_param(base64_decode($filterfuserfield), PARAM_CLEAN);
+        $filter = clean_param(base64_decode($filterfuserfield), PARAM_TEXT);
 
         if ($filterfuserfield && preg_match("/%%FILTER_USERS:([^%]+)%%/i", $finalelements, $output)) {
             $replace = ' AND ' . $output[1] . ' LIKE ' . "'%$filter%'";
@@ -64,13 +86,21 @@ class plugin_fsearchuserfield extends plugin_base {
         return $finalelements;
     }
 
-    private function execute_users($finalelements, $data) {
-        global $remotedb, $CFG;
+    /**
+     * execute_users
+     *
+     * @param array $finalelements
+     * @param object $data
+     * @return array|int[]|mixed|string[]
+     */
+    private function execute_users(array $finalelements, object $data): array {
+        global $remotedb;
 
         $filterfuserfield = optional_param('filter_fuserfield_' . $data->field, 0, PARAM_RAW);
+
         if ($filterfuserfield) {
             // Function addslashes is done in clean param.
-            $filter = clean_param(base64_decode($filterfuserfield), PARAM_CLEAN);
+            $filter = clean_param(base64_decode($filterfuserfield), PARAM_TEXT);
 
             if (strpos($data->field, 'profile_') === 0) {
                 $conditions = ['shortname' => str_replace('profile_', '', $data->field)];
@@ -88,7 +118,9 @@ class plugin_fsearchuserfield extends plugin_base {
                         return $finalusersid;
                     }
                 }
+
             } else {
+
                 [$usql, $params] = $remotedb->get_in_or_equal($finalelements);
                 $sql = "$data->field LIKE ? AND id $usql";
                 $params = array_merge(["%$filter%"], $params);
@@ -101,8 +133,15 @@ class plugin_fsearchuserfield extends plugin_base {
         return $finalelements;
     }
 
+    /**
+     * print_filter
+     *
+     * @param $mform
+     * @param object $data
+     * @return void
+     */
     public function print_filter(&$mform, $data) {
-        global $remotedb, $CFG;
+        global $remotedb;
 
         $columns = $remotedb->get_columns('user');
         $filteroptions = [];
@@ -126,16 +165,16 @@ class plugin_fsearchuserfield extends plugin_base {
         $reportclassname = 'report_' . $this->report->type;
         $reportclass = new $reportclassname($this->report);
 
-        if ($this->report->type == 'sql') {
+        if ($this->report->type === 'sql') {
             $userlist = array_keys($remotedb->get_records('user'));
         } else {
             $components = cr_unserialize($this->report->components);
-            $conditions = array_key_exists('conditions', $components) ?
-                $components['conditions'] :
-                null;
+            $conditions = array_key_exists('conditions', $components) ? $components['conditions'] : null;
             $userlist = $reportclass->elements_by_conditions($conditions);
         }
+
         if (!empty($userlist)) {
+
             if (strpos($data->field, 'profile_') === 0) {
                 $conditions = ['shortname' => str_replace('profile_', '', $data->field)];
                 if ($field = $remotedb->get_record('user_info_field', $conditions)) {
@@ -152,6 +191,7 @@ class plugin_fsearchuserfield extends plugin_base {
                         }
                     }
                 }
+
             } else {
                 $selectname = get_string($data->field);
 

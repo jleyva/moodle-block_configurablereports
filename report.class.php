@@ -90,10 +90,12 @@ abstract class report_base {
     public ?object $config;
 
     /**
-     * @param $report
+     * reports_base
+     *
+     * @param object|int $report
      * @return void
      */
-    public function reports_base($report) {
+    public function reports_base($report): void {
         global $DB, $CFG, $USER, $remotedb;
 
         if (is_numeric($report)) {
@@ -210,9 +212,14 @@ abstract class report_base {
 
         require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
         foreach ($filters as $f) {
-            require_once($CFG->dirroot . '/blocks/configurable_reports/components/filters/' . $f['pluginname'] .
-                '/plugin.class.php');
-            $classname = 'plugin_' . $f['pluginname'];
+
+            if (is_array($f['pluginname'])) {
+                $f['pluginname'] = $f['pluginname'][0];
+            }
+
+            $filename = clean_filename($f['pluginname']);
+            require_once($CFG->dirroot . '/blocks/configurable_reports/components/filters/' . $filename . '/plugin.class.php');
+            $classname = 'plugin_' . $filename;
             $class = new $classname($this->config);
 
             $finalelements = $class->print_filter($mform, $f['formdata']);
@@ -269,7 +276,13 @@ abstract class report_base {
         }
     }
 
-    public function print_graphs($return = false) {
+    /**
+     * print_graphs
+     *
+     * @param bool $return
+     * @return string|true
+     */
+    public function print_graphs(bool $return = false) {
         $output = '';
         $graphs = $this->get_graphs($this->finalreport->table->data);
 
@@ -289,11 +302,20 @@ abstract class report_base {
         return true;
     }
 
-    public function print_export_options($return = false) {
+    /**
+     * print_export_options
+     *
+     * @param bool $return
+     * @return string|true
+     */
+    public function print_export_options(bool $return = false) {
         global $CFG;
 
         $wwwpath = $CFG->wwwroot;
+
+        // TODO move to more Moodle approach.
         $request = array_merge($_POST, $_GET);
+
         if ($request) {
             $id = clean_param($request['id'], PARAM_INT);
             $wwwpath = 'viewreport.php?id=' . $id;
@@ -315,16 +337,24 @@ abstract class report_base {
 
         $output = '';
         $export = explode(',', $this->config->export);
+
         if (!empty($this->config->export)) {
             $output .= '<br /><div class="centerpara">';
             $output .= get_string('downloadreport', 'block_configurable_reports') . ': ';
+
             foreach ($export as $e) {
-                if ($e) {
-                    // TODO escaping
-                    $output .= '<a href="' . $wwwpath . '&amp;download=1&amp;format=' . $e . '"><img src="' . $CFG->wwwroot .
-                        '/blocks/configurable_reports/export/' . $e . '/pix.gif" alt="' . $e . '">&nbsp;' . (strtoupper($e)) .
-                        '</a>&nbsp;';
+
+                if (empty($e)) {
+                    continue;
                 }
+
+                // TODO escaping
+                // TODO Use moodle_url.
+                $output .= '<a href="' . s($wwwpath) . '&amp;download=1&amp;format=' . s($e) . '">
+                                    <img src="' . $CFG->wwwroot . '/blocks/configurable_reports/export/' . $e . '/pix.gif"
+                                     alt="' . $e . '">
+                                    &nbsp;' . (strtoupper($e)) .
+                    '</a>&nbsp;';
             }
             $output .= '</div>';
         }
@@ -338,7 +368,14 @@ abstract class report_base {
         return true;
     }
 
-    public function evaluate_conditions($data, $logic) {
+    /**
+     * Update conditions
+     *
+     * @param array $data
+     * @param string $logic
+     * @return bool|mixed|null
+     */
+    public function evaluate_conditions(array $data, string $logic) {
         global $CFG;
 
         require_once($CFG->dirroot . '/blocks/configurable_reports/reports/evalwise.class.php');
@@ -356,13 +393,18 @@ abstract class report_base {
         $logic = str_replace($orig, $dest, $logic);
 
         $m = new EvalWise();
-
         $m->set_data($data);
 
         return $m->evaluate($logic);
     }
 
-    public function get_graphs($finalreport) {
+    /**
+     * get_graphs
+     *
+     * @param $finalreport
+     * @return array
+     */
+    public function get_graphs($finalreport): array {
         global $CFG;
 
         $components = cr_unserialize($this->config->components);
@@ -372,6 +414,7 @@ abstract class report_base {
 
         if (!empty($graphs)) {
             $series = [];
+
             foreach ($graphs as $g) {
                 require_once($CFG->dirroot . '/blocks/configurable_reports/components/plot/' . $g['pluginname'] .
                     '/plugin.class.php');
@@ -384,7 +427,14 @@ abstract class report_base {
         return $reportgraphs;
     }
 
-    public function get_calcs($finaltable, $tablehead) {
+    /**
+     * get_calcs
+     *
+     * @param $finaltable
+     * @param $tablehead
+     * @return array
+     */
+    public function get_calcs($finaltable, $tablehead): array {
         global $CFG;
 
         $components = cr_unserialize($this->config->components);
@@ -395,6 +445,11 @@ abstract class report_base {
         $finalcalcs = [];
         if (!empty($calcs)) {
             foreach ($calcs as $calc) {
+
+                if (!isset($calc['formdata']->column)) {
+                    continue;
+                }
+
                 $columnscalcs[$calc['formdata']->column] = [];
             }
 
@@ -409,9 +464,15 @@ abstract class report_base {
             }
 
             foreach ($calcs as $calc) {
-                require_once($CFG->dirroot . '/blocks/configurable_reports/components/calcs/' . $calc['pluginname'] .
-                    '/plugin.class.php');
-                $classname = 'plugin_' . $calc['pluginname'];
+
+                if (is_array($calc['pluginname'])) {
+                    $calc['pluginname'] = $calc['pluginname'][0];
+                }
+
+                $filename = clean_filename($calc['pluginname']);
+                require_once($CFG->dirroot . '/blocks/configurable_reports/components/calcs/' . $filename . '/plugin.class.php');
+                $classname = 'plugin_' . $filename;
+
                 $class = new $classname($this->config);
                 $result = $class->execute($columnscalcs[$calc['formdata']->column]);
                 $finalcalcs[$calc['formdata']->column] = $result;
@@ -430,13 +491,17 @@ abstract class report_base {
         return $finalcalcs;
     }
 
+    /**
+     * elements_by_conditions
+     *
+     * @param $conditions
+     * @return bool|mixed|null
+     */
     public function elements_by_conditions($conditions) {
         global $CFG;
 
         if (empty($conditions['elements'])) {
-            $finalelements = $this->get_all_elements();
-
-            return $finalelements;
+            return $this->get_all_elements();
         }
 
         $finalelements = [];
@@ -466,7 +531,7 @@ abstract class report_base {
     /**
      * Returns a report object
      */
-    public function create_report() {
+    public function create_report(): bool {
         global $CFG;
 
         // Conditions.
@@ -487,7 +552,6 @@ abstract class report_base {
         }
 
         // Filters.
-
         if (!empty($filters)) {
             foreach ($filters as $f) {
                 require_once($CFG->dirroot . '/blocks/configurable_reports/components/filters/' . $f['pluginname'] .
@@ -535,14 +599,17 @@ abstract class report_base {
 
         if ($rows) {
             foreach ($rows as $r) {
+
                 $tempcols = [];
                 foreach ($columns as $c) {
                     if (empty($c)) {
                         continue;
                     }
+
                     require_once($CFG->dirroot . '/blocks/configurable_reports/components/columns/' . $c['pluginname'] .
                         '/plugin.class.php');
                     $classname = 'plugin_' . $c['pluginname'];
+
                     if (!isset($pluginscache[$classname])) {
                         $class = new $classname($this->config, $c);
                         $pluginscache[$classname] = $class;
@@ -558,6 +625,7 @@ abstract class report_base {
                         $this->starttime,
                         $this->endtime
                     );
+
                     if ($firstrow) {
                         $tablehead[] = $class->summary($c['formdata']);
                         [$align, $size, $wrap] = $class->colformat($c['formdata']);
@@ -645,6 +713,12 @@ abstract class report_base {
 
     }
 
+    /**
+     * add_jsordering
+     *
+     * @param moodle_page $moodle_page
+     * @return void
+     */
     public function add_jsordering(moodle_page $moodle_page) {
         switch (get_config('block_configurable_reports', 'reporttableui')) {
             case 'datatables':
@@ -672,10 +746,16 @@ abstract class report_base {
             default:
                 break;
         }
-
     }
 
-    public function print_template($config, moodle_page $moodle_page) {
+    /**
+     * print_template
+     *
+     * @param $config
+     * @param moodle_page $moodle_page
+     * @return void
+     */
+    public function print_template($config, moodle_page $moodle_page): void {
         global $OUTPUT;
 
         $pagecontents = [];
@@ -801,6 +881,12 @@ abstract class report_base {
         echo "</div>\n";
     }
 
+    /**
+     * print_report_page
+     *
+     * @param moodle_page $moodlepage
+     * @return true|void
+     */
     public function print_report_page(moodle_page $moodlepage) {
         global $OUTPUT;
 

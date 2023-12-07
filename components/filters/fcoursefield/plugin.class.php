@@ -49,7 +49,7 @@ class plugin_fcoursefield extends plugin_base {
         $filterfcoursefield = optional_param('filter_fcoursefield_' . $data->field, 0, PARAM_RAW);
         if ($filterfcoursefield) {
             // Function addslashes is done in clean param.
-            $filter = clean_param(base64_decode($filterfcoursefield), PARAM_CLEAN);
+            $filter = clean_param(base64_decode($filterfcoursefield), PARAM_TEXT);
             [$usql, $params] = $remotedb->get_in_or_equal($finalelements);
             $sql = "$data->field = ? AND id $usql";
             $params = array_merge([$filter], $params);

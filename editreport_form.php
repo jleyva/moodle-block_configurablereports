@@ -141,11 +141,16 @@ public function definition():void {
         // Buttons.
         $this->add_action_buttons(true, get_string('add'));
     }
-
+    /**
+     * Server side rules do not work for uploaded files, implement serverside rules here if needed.
+     *
+     * @param array $data  array of ("fieldname"=>value) of submitted data
+     * @param array $files array of uploaded files "element_name"=>tmp_file_path
+     * @return array of "element_name"=>"error_description" if there are errors,
+     *                     or an empty array if everything is OK (true allowed for backwards compatibility too).
+     */
     public function validation($data, $files) : array{
-        $errors = parent::validation($data, $files);
-
-        return $errors;
+        return parent::validation($data, $files);
     }
 
     /**

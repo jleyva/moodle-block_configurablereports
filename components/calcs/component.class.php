@@ -48,10 +48,10 @@ class component_calcs extends component_base {
      * add_form_elements
      *
      * @param MoodleQuickForm $mform
-     * @param string $components
+     * @param string|object $components
      * @return void
      */
-    public function add_form_elements(MoodleQuickForm $mform, string $components): void {
+    public function add_form_elements(MoodleQuickForm $mform, $components): void {
         global $CFG;
 
         $components = cr_unserialize($components);

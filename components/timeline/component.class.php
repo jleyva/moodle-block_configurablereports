@@ -31,7 +31,7 @@ class component_timeline extends component_base {
         $this->help = true;
     }
 
-    public function form_process_data(&$cform) {
+    public function form_process_data(moodleform $cform) {
         global $DB;
         if ($this->form) {
             $data = $cform->get_data();
@@ -42,7 +42,7 @@ class component_timeline extends component_base {
         }
     }
 
-    public function form_set_data(&$cform) {
+    public function form_set_data(moodleform $cform) {
         if ($this->form) {
             $fdata = new stdclass;
             $components = cr_unserialize($this->config->components);

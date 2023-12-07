@@ -31,7 +31,7 @@ class component_conditions extends component_base {
         $this->help = true;
     }
 
-    public function form_process_data(&$cform) {
+    public function form_process_data(moodleform $cform) {
         global $DB;
 
         if ($this->form) {
@@ -82,7 +82,7 @@ class component_conditions extends component_base {
         return $cond;
     }
 
-    public function form_set_data(&$cform) {
+    public function form_set_data(moodleform $cform) {
         global $DB;
         if ($this->form) {
             $fdata = new stdclass;

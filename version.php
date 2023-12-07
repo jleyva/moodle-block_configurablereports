@@ -33,5 +33,6 @@ $plugin->version = 2023120600;
 $plugin->requires = 2017111300;
 $plugin->maturity = MATURITY_STABLE;
 $plugin->release = '4.1.0';
+$plugin->supported = [400, 401];
 $plugin->component = 'block_configurable_reports';
 $plugin->cron = 86400;

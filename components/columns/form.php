@@ -27,27 +27,33 @@ defined('MOODLE_INTERNAL') || die;
 
 require_once($CFG->libdir . '/formslib.php');
 
+/**
+ * Class columns_form
+ *
+ * @package  block_configurablereports
+ * @author   Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @date     2009
+ */
 class columns_form extends moodleform {
 
     /**
      * Form definition
      */
     public function definition(): void {
-        global $DB, $USER, $CFG;
 
         $mform =& $this->_form;
 
         $mform->addElement('header', get_string('reporttable', 'block_configurable_reports'), '');
 
         $mform->addElement('text', 'tablewidth', get_string('tablewidth', 'block_configurable_reports'));
-        $mform->setType('tablewidth', PARAM_CLEAN);
+        $mform->setType('tablewidth', PARAM_TEXT);
         $mform->setDefault('tablewidth', '100%');
         $mform->addHelpButton('tablewidth', 'reporttable', 'block_configurable_reports');
 
         $options = ['center' => 'center', 'left' => 'left', 'right' => 'right'];
 
         $mform->addElement('SELECT', 'tablealign', get_string('tablealign', 'block_configurable_reports'), $options);
-        $mform->setType('tablealign', PARAM_CLEAN);
+        $mform->setType('tablealign', PARAM_TEXT);
         $mform->setDefault('tablealign', 'center');
 
         $mform->addElement('text', 'cellspacing', get_string('tablecellspacing', 'block_configurable_reports'));
@@ -61,13 +67,21 @@ class columns_form extends moodleform {
         $mform->setAdvanced('cellpadding');
 
         $mform->addElement('text', 'class', get_string('tableclass', 'block_configurable_reports'));
-        $mform->setType('class', PARAM_CLEAN);
+        $mform->setType('class', PARAM_TEXT);
         $mform->setAdvanced('class');
 
         // Buttons.
         $this->add_action_buttons(true, get_string('update'));
     }
 
+    /**
+     * Server side rules do not work for uploaded files, implement serverside rules here if needed.
+     *
+     * @param array $data  array of ("fieldname"=>value) of submitted data
+     * @param array $files array of uploaded files "element_name"=>tmp_file_path
+     * @return array of "element_name"=>"error_description" if there are errors,
+     *                     or an empty array if everything is OK (true allowed for backwards compatibility too).
+     */
     public function validation($data, $files): array {
         $errors = parent::validation($data, $files);
 

@@ -34,10 +34,25 @@
  */
 abstract class component_base {
 
+    /**
+     * @var bool
+     */
     public $plugins = false;
+
+    /**
+     * @var bool
+     */
     public $ordering = false;
+
+    /**
+     * @var bool
+     */
     public $form = false;
-    public $help = '';
+
+    /**
+     * @var string
+     */
+    public string $help = '';
 
     /**
      * @var object
@@ -45,7 +60,9 @@ abstract class component_base {
     protected object $config;
 
     /**
-     * @param $report
+     * __construct
+     *
+     * @param int|object $report
      */
     public function __construct($report) {
         global $DB;
@@ -62,10 +79,10 @@ abstract class component_base {
      * add_form_elements
      *
      * @param MoodleQuickForm $mform
-     * @param string $components
+     * @param string|object $components
      * @return void
      */
-    public function add_form_elements(MoodleQuickForm $mform, string $components): void {
+    public function add_form_elements(MoodleQuickForm $mform, $components): void {
 
     }
 

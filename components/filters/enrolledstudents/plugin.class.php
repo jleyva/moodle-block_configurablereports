@@ -51,6 +51,11 @@ class plugin_enrolledstudents extends plugin_base {
         return get_string('filterenrolledstudents_summary', 'block_configurable_reports');
     }
 
+    /**
+     * @param string $finalelements
+     * @param $data
+     * @return array|string|string[]
+     */
     public function execute($finalelements, $data) {
         $filterenrolledstudents = optional_param('filter_enrolledstudents', 0, PARAM_INT);
         if (!$filterenrolledstudents) {

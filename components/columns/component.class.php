@@ -22,8 +22,19 @@
  * @author   Juan leyva <http://www.twitter.com/jleyvadelgado>
  * @date     2009
  */
+
+/**
+ * Class component_columns
+ *
+ * @package  block_configurablereports
+ * @author   Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @date     2009
+ */
 class component_columns extends component_base {
 
+    /**
+     * @return void
+     */
     public function init(): void {
         $this->plugins = true;
         $this->ordering = true;
@@ -31,23 +42,30 @@ class component_columns extends component_base {
         $this->help = true;
     }
 
+    /**
+     * process_form
+     *
+     * @return true|void
+     */
     public function process_form() {
         if ($this->form) {
             return true;
         }
     }
 
-    public function add_form_elements(&$mform, $fullform) {
-        global $DB, $CFG;
+    /**
+     * add_form_elements
+     *
+     * @param MoodleQuickForm $mform
+     * @param $components
+     */
+    public function add_form_elements(MoodleQuickForm $mform, $components): void {
+        global $CFG;
 
         $mform->addElement('header', 'crformheader', get_string('columnandcellproperties', 'block_configurable_reports'), '');
 
         $mform->addElement('text', 'columname', get_string('name'));
-        if (!empty($CFG->formatstringstriptags)) {
-            $mform->setType('columname', PARAM_TEXT);
-        } else {
-            $mform->setType('columname', PARAM_CLEAN);
-        }
+        $mform->setType('columname', PARAM_TEXT);
 
         $mform->addElement(
             'select',
@@ -58,7 +76,7 @@ class component_columns extends component_base {
         $mform->setAdvanced('align');
 
         $mform->addElement('text', 'size', get_string('cellsize', 'block_configurable_reports'));
-        $mform->setType('size', PARAM_CLEAN);
+        $mform->setType('size', PARAM_TEXT);
         $mform->setAdvanced('size');
 
         $mform->addElement(
@@ -72,7 +90,14 @@ class component_columns extends component_base {
         $mform->addRule('columname', get_string('required'), 'required');
     }
 
-    public function validate_form_elements($data, $errors) {
+    /**
+     * validate_form_elements
+     *
+     * @param array $data
+     * @param array $errors
+     * @return array
+     */
+    public function validate_form_elements(array $data, array $errors): array {
         if (!empty($data['size']) && !preg_match("/^\d+(%|px)$/i", trim($data['size']))) {
             $errors['size'] = get_string('badsize', 'block_configurable_reports');
         }
@@ -80,7 +105,13 @@ class component_columns extends component_base {
         return $errors;
     }
 
-    public function form_process_data(&$cform) {
+    /**
+     * form_process_data
+     *
+     * @param moodleform $cform
+     * @return void
+     */
+    public function form_process_data(moodleform $cform): void {
         global $DB;
         if ($this->form) {
             $data = $cform->get_data();
@@ -93,13 +124,18 @@ class component_columns extends component_base {
         }
     }
 
-    public function form_set_data(&$cform) {
+    /**
+     * form_set_data
+     *
+     * @param moodleform $cform
+     * @return void
+     */
+    public function form_set_data(moodleform $cform): void {
         if ($this->form) {
             $fdata = new stdclass;
             $components = cr_unserialize($this->config->components);
 
-            $fdata = (isset($components['columns']['config'])) ? $components['columns']['config'] : $fdata;
-
+            $fdata = $components['columns']['config'] ?? $fdata;
             $cform->set_data($fdata);
         }
     }

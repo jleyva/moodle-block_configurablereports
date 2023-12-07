@@ -142,7 +142,10 @@ class report_sql extends report_base {
         return $results;
     }
 
-    public function create_report() {
+    /**
+     * @return bool
+     */
+    public function create_report(): bool {
         global $CFG;
 
         $components = cr_unserialize($this->config->components);
