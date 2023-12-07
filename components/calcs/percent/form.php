@@ -23,13 +23,18 @@
  * @date    2019
  */
 
-if (!defined('MOODLE_INTERNAL')) {
-    // It must be included from a Moodle page.
-    die('Direct access to this script is forbidden.');
-}
+defined('MOODLE_INTERNAL') || die;
 
 require_once($CFG->libdir . '/formslib.php');
 
+/**
+ * Class percent_form
+ *
+ * @package block_configurable_reports
+ * @author  David Pesce <davidpesce@gmail.com>
+ * @date    2019
+ * /
+ */
 class percent_form extends moodleform {
 
     /**

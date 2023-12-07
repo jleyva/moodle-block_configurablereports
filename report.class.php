@@ -734,7 +734,7 @@ abstract class report_base {
      * @param moodle_page $moodle_page
      * @return void
      */
-    public function add_jsordering(moodle_page $moodle_page) {
+    public function add_jsordering(moodle_page $moodle_page): void {
         switch (get_config('block_configurable_reports', 'reporttableui')) {
             case 'datatables':
                 cr_add_jsdatatables('#reporttable', $moodle_page);

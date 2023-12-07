@@ -25,8 +25,20 @@
 defined('MOODLE_INTERNAL') || die;
 require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
 
+/**
+ * Class plugin_userfield
+ *
+ * @package  block_configurablereports
+ * @author   Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @date     2009
+ */
 class plugin_userfield extends plugin_base {
 
+    /**
+     * Init
+     *
+     * @return void
+     */
     public function init(): void {
         $this->fullname = get_string('userfield', 'block_configurable_reports');
         $this->type = 'undefined';
@@ -44,10 +56,14 @@ class plugin_userfield extends plugin_base {
         return format_string($data->columname);
     }
 
+    /**
+     * @param object|null $data
+     * @return array
+     */
     public function colformat($data) {
-        $align = (isset($data->align)) ? $data->align : '';
-        $size = (isset($data->size)) ? $data->size : '';
-        $wrap = (isset($data->wrap)) ? $data->wrap : '';
+        $align = $data->align ?? '';
+        $size = $data->size ?? '';
+        $wrap = $data->wrap ?? '';
 
         return [$align, $size, $wrap];
     }

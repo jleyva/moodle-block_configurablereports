@@ -65,7 +65,7 @@ class plugin_percent extends plugin_base {
             $reportclass = new $reportclassname($this->report);
 
             $components = cr_unserialize($this->report->components);
-            $config = (isset($components['customsql']['config'])) ? $components['customsql']['config'] : new stdclass;
+            $config = $components['customsql']['config'] ?? new stdclass;
 
             if (isset($config->querysql)) {
                 $sql = $config->querysql;
@@ -89,6 +89,12 @@ class plugin_percent extends plugin_base {
         return '';
     }
 
+    /**
+     * execute
+     *
+     * @param $rows
+     * @return string
+     */
     public function execute($rows): string {
         $result = 0;
         $totalrows = 0;

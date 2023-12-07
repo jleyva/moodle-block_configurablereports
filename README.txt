@@ -30,6 +30,7 @@ VERSIONS HISTORY
 4.1.0 (2023120600) for Moodle 4.1
 Release date: 06.12.2023
 ----------------------------------------------------------------------
+This release focuses on solving issues in Moodle 4.1 and PHP 7.4 and start with small improvements and bug fixes.
 - Reformat code
 - Add CI testing based on Github Actions created by Catalyst IT
 - Add PHP 7.4 support - minimum PHP version is now 7.4
@@ -39,18 +40,22 @@ Release date: 06.12.2023
 - Original repository (https://github.com/jleyva/moodle-block_configurablereports) can be used for older release or use the old branches within this repository
 - removed cr_add_to_log not used anymore
 
-Thanks to Lesterhuis Training & Consultancy for the contribution / Updated by Ldesign Media
+Thanks to Lesterhuis Training & Consultancy for the contribution / updated by Ldesign Media
+
+- TODOS for the future:
+  * Namespaces for classes & autoloading
+  * Move all to `classes` to `classes/` directory
+  * Clean up code
+  * Add tests
+  * AJAX_SCRIPT move to webservice
+  * unserialize() to json_decode()
+  * Readme to Markdown format
+  * validation if class exists and inherits correct parent class.
+  * Changelog to separate file
+  * Move cron to scheduled task
+
 ----------------------------------------------------------------------
-TODOS:
-- Namespaces for classes & autoloading
-- Move all to `classes` to `classes/` directory
-- Clean up code
-- Add tests
-- AJAX_SCRIPT move to webservice
-- unserialize() to json_decode()
-- Readme to Markdown format
-- validation if class exists and inherits correct parent class.
-- Changelog to separate file
+
 
 3.9.0 (2019122000) for Moodle 3.4, 3.5, 3.6, 3.7, 3.8, 3.9
 Release date: Tuesday, 3 November 2020
