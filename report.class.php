@@ -27,17 +27,24 @@ defined('MOODLE_INTERNAL') || die;
 require_once($CFG->dirroot . '/lib/evalmath/evalmath.class.php');
 require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
 
+/**
+ * Class report_base
+ *
+ * @package  block_configurablereports
+ * @author   Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @date     2009
+ */
 abstract class report_base {
 
     /**
      * @var int
      */
-    public $id = 0;
+    public int $id = 0;
 
     /**
      * @var array
      */
-    public $components = [];
+    public array $components = [];
 
     /**
      * @var object
@@ -127,18 +134,22 @@ abstract class report_base {
     }
 
     /**
-     * @param $report
+     * __construct
+     *
+     * @param object|int $report
      */
     public function __construct($report) {
         $this->reports_base($report);
     }
 
     /**
-     * @param $userid
-     * @param $context
+     * Check permissions
+     *
+     * @param int $userid
+     * @param context $context
      * @return bool|mixed|null
      */
-    public function check_permissions($userid, $context) {
+    public function check_permissions(int $userid, context $context) {
         global $CFG;
 
         if (has_capability('block/configurable_reports:manageownreports', $context, $userid) && $this->config->ownerid == $userid) {
@@ -201,10 +212,12 @@ abstract class report_base {
     }
 
     /**
-     * @param $mform
+     * add_filter_elements
+     *
+     * @param MoodleQuickForm $mform
      * @return void
      */
-    public function add_filter_elements(&$mform) {
+    public function add_filter_elements(MoodleQuickForm $mform): void {
         global $CFG;
 
         $components = cr_unserialize($this->config->components);
@@ -268,6 +281,8 @@ abstract class report_base {
     }
 
     /**
+     * print_filters
+     *
      * @return void
      */
     public function print_filters(): void {
@@ -430,11 +445,11 @@ abstract class report_base {
     /**
      * get_calcs
      *
-     * @param $finaltable
-     * @param $tablehead
+     * @param array $finaltable
+     * @param array $tablehead
      * @return array
      */
-    public function get_calcs($finaltable, $tablehead): array {
+    public function get_calcs(array $finaltable, array $tablehead): array {
         global $CFG;
 
         $components = cr_unserialize($this->config->components);

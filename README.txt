@@ -32,6 +32,7 @@ Release date: 06.12.2023
 ----------------------------------------------------------------------
 - Reformat code
 - Add CI testing based on Github Actions created by Catalyst IT
+- Add PHP 7.4 support - minimum PHP version is now 7.4
 - Add PHP 8.0 support
 - Add PHP 8.1 support
 - Move repository to https://github.com/Lesterhuis-Training-en-Consultancy/moodle-block_configurablereports
@@ -48,9 +49,8 @@ TODOS:
 - AJAX_SCRIPT move to webservice
 - unserialize() to json_decode()
 - Readme to Markdown format
+- validation if class exists and inherits correct parent class.
 - Changelog to separate file
-
-
 
 3.9.0 (2019122000) for Moodle 3.4, 3.5, 3.6, 3.7, 3.8, 3.9
 Release date: Tuesday, 3 November 2020

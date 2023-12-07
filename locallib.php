@@ -173,7 +173,7 @@ function urldecode_recursive($var) {
 function cr_get_my_reports(int $courseid, int $userid, bool $allcourses = true): array {
     global $DB;
 
-    if ($courseid == SITEID) {
+    if ($courseid === SITEID) {
         $context = context_system::instance();
     } else {
         $context = context_course::instance($courseid);
@@ -238,10 +238,9 @@ function cr_check_report_permissions($report, int $userid, context $context) {
     require_once($CFG->dirroot . '/blocks/configurable_reports/report.class.php');
     require_once($CFG->dirroot . '/blocks/configurable_reports/reports/' . $report->type . '/report.class.php');
 
-    $classn = 'report_' . $report->type;
-    $classi = new $classn($report->id);
 
-    return $classi->check_permissions($userid, $context);
+    $classn = 'report_' . $report->type;
+    return (new $classn($report->id))->check_permissions($userid, $context);
 }
 
 /**
