@@ -50,9 +50,9 @@ Thanks to Lesterhuis Training & Consultancy for the contribution / updated by Ld
   * AJAX_SCRIPT move to webservice
   * unserialize() to json_decode()
   * Readme to Markdown format
-  * validation if class exists and inherits correct parent class.
+  * validation if a class exists and inherits the correct parent class.
   * Changelog to separate file
-  * Move cron to scheduled task
+  * Move cron to a scheduled task
 
 ----------------------------------------------------------------------
 
