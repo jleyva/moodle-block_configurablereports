@@ -23,7 +23,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-// TODO namespace
+// TODO namespace.
 
 /**
  * Class plugin_base

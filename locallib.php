@@ -221,7 +221,7 @@ function cr_unserialize(string $data): array {
     $data = preg_replace('/THEN\+%22(.+?)%22/', 'THEN+%27${1}%27', $data);
     $data = preg_replace('/%60/', '+++', $data);
 
-    // TODO remove unserialize
+    // TODO remove unserialize.
     $data = unserialize($data);
 
     return (array) urldecode_recursive($data);
@@ -353,7 +353,8 @@ function cr_print_table(object $table, bool $return = false) {
     if (!empty($table->summary)) {
         $output .= " summary=\"$table->summary\"";
     }
-    $output .= " cellpadding=\"$table->cellpadding\" cellspacing=\"$table->cellspacing\" class=\"$table->class boxalign$table->tablealign\" $tableid>\n";
+    $output .= " cellpadding=\"$table->cellpadding\" cellspacing=\"$table->cellspacing\"
+                class=\"$table->class boxalign$table->tablealign\" $tableid>\n";
 
     $countcols = 0;
     $isuserid = -1;

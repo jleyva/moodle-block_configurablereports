@@ -54,6 +54,8 @@ Thanks to Lesterhuis Training & Consultancy for the contribution / updated by Ld
   * validation if a class exists and inherits the correct parent class.
   * Changelog to separate file
   * Move cron to a scheduled task
+  * phpcpd and phpdocs checks in CI
+  * Make CSS strict should only effect this plugin!
 
 ----------------------------------------------------------------------
 

@@ -24,8 +24,6 @@
 
 namespace block_configurable_reports\check;
 
-defined('MOODLE_INTERNAL') || die();
-
 use core\check\result;
 
 /**

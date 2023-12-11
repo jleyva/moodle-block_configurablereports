@@ -55,16 +55,4 @@ class import_form extends moodleform {
         $this->add_action_buttons(false, get_string('importreport', 'block_configurable_reports'));
     }
 
-    /**
-     * Server side rules do not work for uploaded files, implement serverside rules here if needed.
-     *
-     * @param array $data  array of ("fieldname"=>value) of submitted data
-     * @param array $files array of uploaded files "element_name"=>tmp_file_path
-     * @return array of "element_name"=>"error_description" if there are errors,
-     *                     or an empty array if everything is OK (true allowed for backwards compatibility too).
-     */
-    public function validation($data, $files): array {
-        return parent::validation($data, $files);
-    }
-
 }
