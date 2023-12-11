@@ -109,11 +109,12 @@ class report_sql extends report_base {
     }
 
     /**
+     * execute_query
+     *
      * @param $sql
-     * @param $limitnum
      * @return mixed
      */
-    public function execute_query($sql, $limitnum = BLOCK_CONFIGURABLE_REPORTS_MAX_RECORDS) {
+    public function execute_query($sql) {
         global $remotedb, $DB, $CFG;
 
         $sql = preg_replace('/\bprefix_(?=\w+)/i', $CFG->prefix, $sql);

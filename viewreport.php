@@ -72,7 +72,7 @@ $PAGE->requires->jquery();
 $download = ($download && $format && strpos($report->export, $format . ',') !== false) ? true : false;
 
 if ($download && $report->type === "sql") {
-    $reportclass->setForExport(true);
+    $reportclass->set_forexport(true);
 }
 $reportclass->create_report();
 
