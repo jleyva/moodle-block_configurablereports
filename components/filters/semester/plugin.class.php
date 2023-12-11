@@ -64,8 +64,14 @@ class plugin_semester extends plugin_base {
         return $finalelements;
     }
 
-    public function print_filter(&$mform) {
-        global $remotedb, $CFG;
+    /**
+     * Print filter
+     *
+     * @param MoodleQuickForm $mform
+     * @param bool|object $formdata
+     * @return void
+     */
+    public function print_filter(MoodleQuickForm $mform, $formdata = false): void {
 
         $filtersemester = optional_param('filter_semester', '', PARAM_RAW);
 

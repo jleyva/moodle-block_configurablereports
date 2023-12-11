@@ -26,8 +26,19 @@
 defined('MOODLE_INTERNAL') || die;
 require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
 
+/**
+ * Class plugin_coursecategory
+ *
+ * @package  block_configurablereports
+ * @author   Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @date     2009
+ */
 class plugin_coursecategory extends plugin_base {
 
+    /**
+     * Init
+     * @return void
+     */
     public function init(): void {
         $this->fullname = get_string('coursecategory', 'block_configurable_reports');
         $this->type = 'text';
@@ -47,14 +58,23 @@ class plugin_coursecategory extends plugin_base {
         $cat = $DB->get_record('course_categories', ['id' => $data->categoryid]);
         if ($cat) {
             return get_string('category') . ' ' . $cat->name;
-        } else {
-            return get_string('category') . ' ' . get_string('top');
         }
+
+        return get_string('category') . ' ' . get_string('top');
     }
 
-    // Data -> Plugin configuration data.
+    /**
+     * Execute
+     *
+     * @param $data
+     * @param $user
+     * @param $courseid
+     * @return array|int[]|string[]
+     */
     public function execute($data, $user, $courseid) {
         global $DB;
+        // Data -> Plugin configuration data.
+
         $courses = $DB->get_records('course', ['category' => $data->categoryid]);
         if ($courses) {
             return array_keys($courses);

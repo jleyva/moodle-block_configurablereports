@@ -33,6 +33,8 @@
 class component_columns extends component_base {
 
     /**
+     * Init
+     *
      * @return void
      */
     public function init(): void {
@@ -60,7 +62,6 @@ class component_columns extends component_base {
      * @param $components
      */
     public function add_form_elements(MoodleQuickForm $mform, $components): void {
-        global $CFG;
 
         $mform->addElement('header', 'crformheader', get_string('columnandcellproperties', 'block_configurable_reports'), '');
 

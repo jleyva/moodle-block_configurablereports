@@ -32,6 +32,11 @@
  */
 class plugin_sum extends plugin_base {
 
+    /**
+     * init
+     *
+     * @return void
+     */
     public function init(): void {
         $this->form = true;
         $this->unique = false;
@@ -95,6 +100,12 @@ class plugin_sum extends plugin_base {
         return '';
     }
 
+    /**
+     * Execute
+     *
+     * @param $rows
+     * @return float|int|string
+     */
     public function execute($rows) {
         $result = 0;
         foreach ($rows as $r) {

@@ -41,13 +41,7 @@ class plugin_roleusersn extends plugin_base {
         return format_string($data->columname);
     }
 
-    public function colformat($data) {
-        $align = (isset($data->align)) ? $data->align : '';
-        $size = (isset($data->size)) ? $data->size : '';
-        $wrap = (isset($data->wrap)) ? $data->wrap : '';
 
-        return [$align, $size, $wrap];
-    }
 
     // Data -> Plugin configuration data.
     // Row -> Full course row c->id, c->fullname, etc...

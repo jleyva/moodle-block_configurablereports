@@ -43,14 +43,6 @@ class plugin_finalgradeincurrentcourse extends plugin_base {
         return format_string($data->columname);
     }
 
-    public function colformat($data) {
-        $align = (isset($data->align)) ? $data->align : '';
-        $size = (isset($data->size)) ? $data->size : '';
-        $wrap = (isset($data->wrap)) ? $data->wrap : '';
-
-        return [$align, $size, $wrap];
-    }
-
     // Data -> Plugin configuration data
     // Row -> Complet course row c->id, c->fullname, etc...
     public function execute($data, $row, $user, $courseid, $starttime = 0, $endtime = 0) {

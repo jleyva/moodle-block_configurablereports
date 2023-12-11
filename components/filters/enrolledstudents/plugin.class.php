@@ -34,6 +34,11 @@ require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
  */
 class plugin_enrolledstudents extends plugin_base {
 
+    /**
+     * Init
+     *
+     * @return void
+     */
     public function init(): void {
         $this->form = false;
         $this->unique = true;
@@ -75,7 +80,14 @@ class plugin_enrolledstudents extends plugin_base {
         return $finalelements;
     }
 
-    public function print_filter(&$mform) {
+    /**
+     * Print filter
+     *
+     * @param MoodleQuickForm $mform
+     * @param bool|object $formdata
+     * @return void
+     */
+    public function print_filter(MoodleQuickForm $mform, $formdata = false): void {
         global $remotedb, $COURSE, $PAGE, $CFG;
 
         $reportclassname = 'report_' . $this->report->type;

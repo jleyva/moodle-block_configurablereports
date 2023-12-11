@@ -77,6 +77,8 @@ class plugin_competencyframeworks extends plugin_base {
     }
 
     /**
+     * execute
+     *
      * @param $finalelements
      * @param $data
      * @return array|string|string[]
@@ -102,12 +104,14 @@ class plugin_competencyframeworks extends plugin_base {
     }
 
     /**
-     * print_filter
+     * Print filter
      *
-     * @param $mform
+     * @param MoodleQuickForm $mform
+     * @param bool|object $formdata
      * @return void
      */
-    public function print_filter(&$mform) {
+    public function print_filter(MoodleQuickForm $mform, $formdata = false): void {
+
         global $remotedb;
 
         $reportclassname = 'report_' . $this->report->type;

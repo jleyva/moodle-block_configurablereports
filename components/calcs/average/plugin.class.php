@@ -110,7 +110,8 @@ class plugin_average extends plugin_base {
             $result += (is_numeric($r)) ? $r : 0;
             $els++;
         }
-        if ($els == 0) {
+
+        if (empty($els)) {
             $els = 1;
         }
 

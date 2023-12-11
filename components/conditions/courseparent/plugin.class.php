@@ -26,8 +26,20 @@
 defined('MOODLE_INTERNAL') || die;
 require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
 
+/**
+ * Class plugin_courseparent
+ *
+ * @package  block_configurablereports
+ * @author   Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @date     2009
+ */
 class plugin_courseparent extends plugin_base {
 
+    /**
+     * Init
+     *
+     * @return void
+     */
     public function init(): void {
         $this->fullname = get_string('courseparent', 'block_configurable_reports');
         $this->form = true;
@@ -51,10 +63,17 @@ class plugin_courseparent extends plugin_base {
         return '';
     }
 
-    // Data -> Plugin configuration data.
+    /**
+     * Execute
+     *
+     * @param $data
+     * @param $user
+     * @param $courseid
+     * @return array
+     */
     public function execute($data, $user, $courseid) {
         global $DB;
-
+        // Data -> Plugin configuration data.
         $finalcourses = [];
         if ($courses = $DB->get_records('course_meta', ['parent_course' => $data->courseid])) {
             foreach ($courses as $c) {

@@ -53,13 +53,6 @@ class plugin_usermodactions extends plugin_base {
         return $data->columname;
     }
 
-    public function colformat($data) {
-        $align = (isset($data->align)) ? $data->align : '';
-        $size = (isset($data->size)) ? $data->size : '';
-        $wrap = (isset($data->wrap)) ? $data->wrap : '';
-
-        return [$align, $size, $wrap];
-    }
 
     // Data -> Plugin configuration data.
     // Row -> Complet user row c->id, c->fullname, etc...

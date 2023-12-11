@@ -26,6 +26,13 @@ defined('MOODLE_INTERNAL') || die;
 
 require_once($CFG->libdir . '/formslib.php');
 
+/**
+ * Class searchtext_form
+ *
+ * @copyright  2020 David Saylor
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @author     David Saylor <david@mylearningconsultants.com>
+ */
 class searchtext_form extends moodleform {
 
     /**

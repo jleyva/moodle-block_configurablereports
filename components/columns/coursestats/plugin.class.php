@@ -44,18 +44,22 @@ class plugin_coursestats extends plugin_base {
         return format_string($data->columname);
     }
 
-    public function colformat($data) {
-        $align = (isset($data->align)) ? $data->align : '';
-        $size = (isset($data->size)) ? $data->size : '';
-        $wrap = (isset($data->wrap)) ? $data->wrap : '';
-
-        return [$align, $size, $wrap];
-    }
-
-    // Data -> Plugin configuration data.
-    // Row -> Complet user row c->id, c->fullname, etc...
+    /**
+     * execute
+     *
+     * @param $data
+     * @param $row
+     * @param $user
+     * @param $courseid
+     * @param $starttime
+     * @param $endtime
+     * @return int|string
+     */
     public function execute($data, $row, $user, $courseid, $starttime = 0, $endtime = 0) {
-        global $DB, $CFG;
+        global $DB;
+
+        // Data -> Plugin configuration data.
+        // Row -> Complet user row c->id, c->fullname, etc...
 
         $stat = '--';
 
@@ -76,7 +80,6 @@ class plugin_coursestats extends plugin_base {
         $starttime = ($filterstarttime) ? $filterstarttime : $starttime;
         $endtime = ($filterendtime) ? $filterendtime : $endtime;
 
-        $extrasql = "";
         $limit = 0;
 
         switch ($data->stat) {
@@ -119,9 +122,9 @@ class plugin_coursestats extends plugin_base {
             $res = array_shift($res);
             if ($res->total != null) {
                 return $res->total;
-            } else {
-                return 0;
             }
+
+            return 0;
         }
 
         return $stat;

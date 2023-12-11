@@ -18,9 +18,9 @@
  * Configurable Reports
  * A Moodle block for creating customizable reports
  *
- * @package block_configurablereports
+ * @package  block_configurablereports
  * @author   Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date 2009
+ * @date     2009
  */
 
 // TODO namespace
@@ -28,9 +28,9 @@
 /**
  * Class plugin_base
  *
- * @package block_configurablereports
+ * @package  block_configurablereports
  * @author   Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date 2009
+ * @date     2009
  */
 abstract class plugin_base {
 
@@ -93,9 +93,38 @@ abstract class plugin_base {
         return '';
     }
 
-    // Should be override.
-    public function init() : void {
+    /**
+     * Init
+     *
+     * @return void
+     */
+    public function init(): void {
         throw new coding_exception('init method not implemented');
+    }
+
+    /**
+     * colformat
+     *
+     * @param object| null $data
+     * @return string[]
+     */
+    public function colformat(?object $data): array {
+        $align = $data->align ?? '';
+        $size = $data->size ?? '';
+        $wrap = $data->wrap ?? '';
+
+        return [$align, $size, $wrap];
+    }
+
+    /**
+     * print_filter
+     *
+     * @param MoodleQuickForm $mform
+     * @param bool|object $formdata
+     * @return mixed
+     */
+    public function print_filter(MoodleQuickForm $mform, $formdata = false): void {
+        throw new coding_exception('print_filter method not implemented');
     }
 
 }

@@ -63,7 +63,15 @@ class plugin_subcategories extends plugin_base {
         return $finalelements;
     }
 
-    public function print_filter(&$mform) {
+    /**
+     * Print filter
+     *
+     * @param MoodleQuickForm $mform
+     * @param bool|object $formdata
+     * @return void
+     */
+    public function print_filter(MoodleQuickForm $mform, $formdata = false): void {
+
         global $remotedb, $CFG;
 
         $filtersubcategories = optional_param('filter_subcategories', 0, PARAM_INT);

@@ -25,8 +25,20 @@
 defined('MOODLE_INTERNAL') || die;
 require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
 
+/**
+ * Class plugin_usersincurrentcourse
+ *
+ * @package  block_configurablereports
+ * @author   Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @date     2009
+ */
 class plugin_usersincurrentcourse extends plugin_base {
 
+    /**
+     * Init
+     *
+     * @return void
+     */
     public function init(): void {
         $this->fullname = get_string('usersincurrentcourse', 'block_configurable_reports');
         $this->reporttypes = ['users'];
@@ -41,13 +53,18 @@ class plugin_usersincurrentcourse extends plugin_base {
      */
     public function summary(object $data): string {
         return get_string('usersincurrentcourse_summary', 'block_configurable_reports');
-
     }
 
-    // Data -> Plugin configuration data.
+    /**
+     * Execute
+     *
+     * @param $data
+     * @param $user
+     * @param $courseid
+     * @return array|int[]|string[]
+     */
     public function execute($data, $user, $courseid) {
-        global $DB;
-
+        // Data -> Plugin configuration data.
         $context = cr_get_context(CONTEXT_COURSE, $courseid);
         if ($users = get_role_users($data->roles, $context, false, 'ra.id, u.id', 'u.id')) {
             return array_keys($users);

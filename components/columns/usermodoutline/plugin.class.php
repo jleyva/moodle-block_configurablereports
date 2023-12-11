@@ -25,8 +25,20 @@
 defined('MOODLE_INTERNAL') || die;
 require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
 
+/**
+ * Class plugin_usermodoutline
+ *
+ * @package  block_configurablereports
+ * @author   Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @date     2009
+ */
 class plugin_usermodoutline extends plugin_base {
 
+    /**
+     * Init
+     *
+     * @return void
+     */
     public function init(): void {
         $this->fullname = get_string('usermodoutline', 'block_configurable_reports');
         $this->type = 'undefined';
@@ -53,17 +65,21 @@ class plugin_usermodoutline extends plugin_base {
         return $data->columname;
     }
 
-    public function colformat($data) {
-        $align = (isset($data->align)) ? $data->align : '';
-        $size = (isset($data->size)) ? $data->size : '';
-        $wrap = (isset($data->wrap)) ? $data->wrap : '';
-
-        return [$align, $size, $wrap];
-    }
-
-    // Data -> Plugin configuration data.
-    // Row -> Complet user row c->id, c->fullname, etc...
+    /**
+     * Execute
+     *
+     * @param $data
+     * @param $row
+     * @param $user
+     * @param $courseid
+     * @param $starttime
+     * @param $endtime
+     * @return string
+     */
     public function execute($data, $row, $user, $courseid, $starttime = 0, $endtime = 0) {
+        // Data -> Plugin configuration data.
+        // Row -> Complet user row c->id, c->fullname, etc...
+
         global $DB, $CFG;
         if ($cm = $DB->get_record('course_modules', ['id' => $data->cmid])) {
             $mod = $DB->get_record('modules', ['id' => $cm->module]);

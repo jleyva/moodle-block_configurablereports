@@ -25,8 +25,20 @@
 defined('MOODLE_INTERNAL') || die;
 require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
 
+/**
+ * Class plugin_usersincohorts
+ *
+ * @package          block_configurablereports
+ * @author           Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @date             2009
+ */
 class plugin_usersincohorts extends plugin_base {
 
+    /**
+     * Init
+     *
+     * @return void
+     */
     public function init(): void {
         $this->fullname = get_string('usersincohorts', 'block_configurable_reports');
         $this->reporttypes = ['users'];
@@ -41,13 +53,17 @@ class plugin_usersincohorts extends plugin_base {
      */
     public function summary(object $data): string {
         return get_string('usersincohorts_summary', 'block_configurable_reports');
-
     }
 
-    // Data -> Plugin configuration data.
-    public function execute($data, $user, $courseid) {
+    /**
+     * Execute
+     *
+     * @param $data
+     * @return array|int[]|string[]
+     */
+    public function execute($data) {
         global $DB;
-
+        // Data -> Plugin configuration data.
         if ($data->cohorts) {
             [$insql, $params] = $DB->get_in_or_equal($data->cohorts);
 

@@ -25,8 +25,20 @@
 defined('MOODLE_INTERNAL') || die;
 require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
 
+/**
+ * Class plugin_categories
+ *
+ * @package  block_configurablereports
+ * @author   Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @date     2009
+ */
 class plugin_courses extends plugin_base {
 
+    /**
+     * Init
+     *
+     * @return void
+     */
     public function init(): void {
         $this->form = false;
         $this->unique = true;
@@ -44,7 +56,13 @@ class plugin_courses extends plugin_base {
         return get_string('filtercourses_summary', 'block_configurable_reports');
     }
 
-    public function execute($finalelements, $data) {
+    /**
+     * Execute
+     *
+     * @param $finalelements
+     * @return array|string|string[]
+     */
+    public function execute($finalelements) {
 
         $filtercourses = optional_param('filter_courses', 0, PARAM_INT);
         if (!$filtercourses) {
@@ -53,21 +71,26 @@ class plugin_courses extends plugin_base {
 
         if ($this->report->type !== 'sql') {
             return [$filtercourses];
-        } else {
-            if (preg_match("/%%FILTER_COURSES:([^%]+)%%/i", $finalelements, $output)) {
-                $replace = ' AND ' . $output[1] . ' = ' . $filtercourses;
+        }
 
-                return str_replace('%%FILTER_COURSES:' . $output[1] . '%%', $replace, $finalelements);
-            }
+        if (preg_match("/%%FILTER_COURSES:([^%]+)%%/i", $finalelements, $output)) {
+            $replace = ' AND ' . $output[1] . ' = ' . $filtercourses;
+
+            return str_replace('%%FILTER_COURSES:' . $output[1] . '%%', $replace, $finalelements);
         }
 
         return $finalelements;
     }
 
-    public function print_filter(&$mform) {
-        global $remotedb, $CFG;
-
-        $filtercourses = optional_param('filter_courses', 0, PARAM_INT);
+    /**
+     * Print filter
+     *
+     * @param MoodleQuickForm $mform
+     * @param bool|object $formdata
+     * @return void
+     */
+    public function print_filter(MoodleQuickForm $mform, $formdata = false): void {
+        global $remotedb;
 
         $reportclassname = 'report_' . $this->report->type;
         $reportclass = new $reportclassname($this->report);

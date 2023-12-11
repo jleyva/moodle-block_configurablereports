@@ -56,17 +56,6 @@ class plugin_userfield extends plugin_base {
         return format_string($data->columname);
     }
 
-    /**
-     * @param object|null $data
-     * @return array
-     */
-    public function colformat($data) {
-        $align = $data->align ?? '';
-        $size = $data->size ?? '';
-        $wrap = $data->wrap ?? '';
-
-        return [$align, $size, $wrap];
-    }
 
     // Data -> Plugin configuration data.
     // Row -> Complet user row c->id, c->fullname, etc...

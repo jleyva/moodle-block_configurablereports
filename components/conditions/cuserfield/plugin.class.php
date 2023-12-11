@@ -25,8 +25,20 @@
 defined('MOODLE_INTERNAL') || die;
 require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
 
+/**
+ * Class plugin_cuserfield
+ *
+ * @package  block_configurablereports
+ * @author   Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @date     2009
+ */
 class plugin_cuserfield extends plugin_base {
 
+    /**
+     * Init
+     *
+     * @return void
+     */
     public function init(): void {
         $this->fullname = get_string('cuserfield', 'block_configurable_reports');
         $this->reporttypes = ['users'];
@@ -52,10 +64,17 @@ class plugin_cuserfield extends plugin_base {
 
     }
 
-    // Data -> Plugin configuration data.
+    /**
+     * Execute
+     *
+     * @param $data
+     * @param $user
+     * @param $courseid
+     * @return array|int[]|string[]
+     */
     public function execute($data, $user, $courseid) {
         global $DB;
-
+        // Data -> Plugin configuration data.
         // TODO - Use $DB->sql_like().
         $ilike = " LIKE ";
 
@@ -87,7 +106,7 @@ class plugin_cuserfield extends plugin_base {
                 }
             }
         } else {
-            if ($data->value == "%%CURRENTUSER%%") {
+            if ($data->value === "%%CURRENTUSER%%") {
                 $data->value = $user->{$data->field};
             }
 

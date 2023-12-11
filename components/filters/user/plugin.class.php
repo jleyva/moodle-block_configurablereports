@@ -63,7 +63,15 @@ class plugin_user extends plugin_base {
         return $finalelements;
     }
 
-    public function print_filter(&$mform) {
+    /**
+     * Print filter
+     *
+     * @param MoodleQuickForm $mform
+     * @param bool|object $formdata
+     * @return void
+     */
+    public function print_filter(MoodleQuickForm $mform, $formdata = false): void {
+
         global $remotedb, $COURSE, $PAGE, $CFG;
 
         $reportclassname = 'report_' . $this->report->type;
@@ -88,7 +96,7 @@ class plugin_user extends plugin_base {
                 $nameformat = $CFG->fullnamedisplay;
             }
 
-            if ($nameformat == 'language') {
+            if ($nameformat === 'language') {
                 $nameformat = get_string('fullnamedisplay');
             }
 

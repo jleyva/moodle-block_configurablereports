@@ -44,13 +44,7 @@ class plugin_usercompletion extends plugin_base {
         return get_string('usercompletionsummary', 'block_configurable_reports');
     }
 
-    public function colformat($data) {
-        $align = (isset($data->align)) ? $data->align : '';
-        $size = (isset($data->size)) ? $data->size : '';
-        $wrap = (isset($data->wrap)) ? $data->wrap : '';
 
-        return [$align, $size, $wrap];
-    }
 
     // Data -> Plugin configuration data.
     // Row -> Complet user row c->id, c->fullname, etc...

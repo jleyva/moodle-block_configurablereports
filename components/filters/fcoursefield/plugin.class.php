@@ -25,8 +25,19 @@
 defined('MOODLE_INTERNAL') || die;
 require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
 
+/**
+ * Class plugin_fcoursefield
+ *
+ * @package  block_configurablereports
+ * @author   Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @date     2009
+ */
 class plugin_fcoursefield extends plugin_base {
 
+    /**
+     * Init
+     * @return void
+     */
     public function init(): void {
         $this->form = true;
         $this->unique = true;
@@ -44,6 +55,13 @@ class plugin_fcoursefield extends plugin_base {
         return $data->field;
     }
 
+    /**
+     * Execute
+     *
+     * @param $finalelements
+     * @param $data
+     * @return int[]|mixed|string[]
+     */
     public function execute($finalelements, $data) {
         global $remotedb;
         $filterfcoursefield = optional_param('filter_fcoursefield_' . $data->field, 0, PARAM_RAW);
@@ -61,8 +79,16 @@ class plugin_fcoursefield extends plugin_base {
         return $finalelements;
     }
 
-    public function print_filter(&$mform, $data) {
-        global $remotedb, $CFG;
+    /**
+     * Print filter
+     *
+     * @param MoodleQuickForm $mform
+     * @param bool|object $formdata
+     * @return void
+     */
+    public function print_filter(MoodleQuickForm $mform, $formdata = false): void {
+
+        global $remotedb;
 
         $columns = $remotedb->get_columns('course');
         $filteroptions = [];
@@ -73,7 +99,7 @@ class plugin_fcoursefield extends plugin_base {
             $coursecolumns[$c->name] = $c->name;
         }
 
-        if (!isset($coursecolumns[$data->field])) {
+        if (!isset($coursecolumns[$formdata->field])) {
             throw new moodle_exception('nosuchcolumn');
         }
 
@@ -88,7 +114,7 @@ class plugin_fcoursefield extends plugin_base {
         $courselist = $reportclass->elements_by_conditions($conditions);
 
         if (!empty($courselist)) {
-            $sql = 'SELECT DISTINCT(' . $data->field . ') as ufield FROM {course} WHERE ' . $data->field .
+            $sql = 'SELECT DISTINCT(' . $formdata->field . ') as ufield FROM {course} WHERE ' . $formdata->field .
                 " <> '' ORDER BY ufield ASC";
             if ($rs = $remotedb->get_recordset_sql($sql, null)) {
                 foreach ($rs as $u) {
@@ -98,7 +124,7 @@ class plugin_fcoursefield extends plugin_base {
             }
         }
 
-        $mform->addElement('select', 'filter_fcoursefield_' . $data->field, get_string($data->field), $filteroptions);
+        $mform->addElement('select', 'filter_fcoursefield_' . $formdata->field, get_string($formdata->field), $filteroptions);
         $mform->setType('filter_courses', PARAM_BASE64);
     }
 

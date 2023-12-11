@@ -47,17 +47,6 @@ class plugin_coursefield extends plugin_base {
         return format_string($data->columname);
     }
 
-    /**
-     * @param $data
-     * @return array
-     */
-    public function colformat($data) {
-        $align = $data->align ?? '';
-        $size = $data->size ?? '';
-        $wrap = $data->wrap ?? '';
-
-        return [$align, $size, $wrap];
-    }
 
     // Data -> Plugin configuration data.
     // Row -> Complet course row c->id, c->fullname, etc...

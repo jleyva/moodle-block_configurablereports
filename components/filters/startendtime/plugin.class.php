@@ -104,8 +104,15 @@ class plugin_startendtime extends plugin_base {
         return $finalelements;
     }
 
-    public function print_filter(&$mform) {
-        global $DB, $CFG;
+    /**
+     * Print filter
+     *
+     * @param MoodleQuickForm $mform
+     * @param bool|object $formdata
+     * @return void
+     */
+    public function print_filter(MoodleQuickForm $mform, $formdata = false): void {
+
         $mform->addElement('date_time_selector', 'filter_starttime', get_string('starttime', 'block_configurable_reports'));
         $mform->setDefault('filter_starttime', time() - 3600 * 24);
         $mform->addElement('date_time_selector', 'filter_endtime', get_string('endtime', 'block_configurable_reports'));

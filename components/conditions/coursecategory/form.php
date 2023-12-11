@@ -26,13 +26,20 @@
 defined('MOODLE_INTERNAL') || die;
 require_once($CFG->libdir . '/formslib.php');
 
+/**
+ * Class coursecategory_form
+ *
+ * @package  block_configurablereports
+ * @author   Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @date     2009
+ */
 class coursecategory_form extends moodleform {
 
     /**
      * Form definition
      */
     public function definition(): void {
-        global $DB, $USER, $CFG;
+        global $CFG;
         require_once($CFG->dirroot . '/course/lib.php');
 
         $mform =& $this->_form;

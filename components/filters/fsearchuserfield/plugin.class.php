@@ -134,13 +134,13 @@ class plugin_fsearchuserfield extends plugin_base {
     }
 
     /**
-     * print_filter
+     * Print filter
      *
-     * @param $mform
-     * @param object $data
+     * @param MoodleQuickForm $mform
+     * @param bool|object $formdata
      * @return void
      */
-    public function print_filter(&$mform, $data) {
+    public function print_filter(MoodleQuickForm $mform, $formdata = false): void {
         global $remotedb;
 
         $columns = $remotedb->get_columns('user');
@@ -158,7 +158,7 @@ class plugin_fsearchuserfield extends plugin_base {
             }
         }
 
-        if (!isset($usercolumns[$data->field])) {
+        if (!isset($usercolumns[$formdata->field])) {
             throw new moodle_exception('nosuchcolumn');
         }
 
@@ -175,8 +175,8 @@ class plugin_fsearchuserfield extends plugin_base {
 
         if (!empty($userlist)) {
 
-            if (strpos($data->field, 'profile_') === 0) {
-                $conditions = ['shortname' => str_replace('profile_', '', $data->field)];
+            if (strpos($formdata->field, 'profile_') === 0) {
+                $conditions = ['shortname' => str_replace('profile_', '', $formdata->field)];
                 if ($field = $remotedb->get_record('user_info_field', $conditions)) {
                     $selectname = $field->name;
 
@@ -193,10 +193,10 @@ class plugin_fsearchuserfield extends plugin_base {
                 }
 
             } else {
-                $selectname = get_string($data->field);
+                $selectname = get_string($formdata->field);
 
                 [$usql, $params] = $remotedb->get_in_or_equal($userlist);
-                $sql = "SELECT DISTINCT(" . $data->field . ") as ufield FROM {user} WHERE id $usql ORDER BY ufield ASC";
+                $sql = "SELECT DISTINCT(" . $formdata->field . ") as ufield FROM {user} WHERE id $usql ORDER BY ufield ASC";
                 if ($rs = $remotedb->get_recordset_sql($sql, $params)) {
                     foreach ($rs as $u) {
                         $filteroptions[base64_encode($u->ufield)] = $u->ufield;
@@ -206,8 +206,8 @@ class plugin_fsearchuserfield extends plugin_base {
             }
         }
 
-        $mform->addElement('select', 'filter_fuserfield_' . $data->field, $selectname, $filteroptions);
-        $mform->setType('filter_fuserfield_' . $data->field, PARAM_INT);
+        $mform->addElement('select', 'filter_fuserfield_' . $formdata->field, $selectname, $filteroptions);
+        $mform->setType('filter_fuserfield_' . $formdata->field, PARAM_INT);
     }
 
 }

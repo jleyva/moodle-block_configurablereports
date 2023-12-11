@@ -24,6 +24,10 @@
  */
 class component_conditions extends component_base {
 
+    /**
+     * Init
+     * @return void
+     */
     public function init(): void {
         $this->plugins = true;
         $this->ordering = false;
@@ -31,7 +35,13 @@ class component_conditions extends component_base {
         $this->help = true;
     }
 
-    public function form_process_data(moodleform $cform) {
+    /**
+     * form_process_data
+     *
+     * @param moodleform $cform
+     * @return void
+     */
+    public function form_process_data(moodleform $cform): void {
         global $DB;
 
         if ($this->form) {
@@ -50,8 +60,13 @@ class component_conditions extends component_base {
         }
     }
 
+    /**
+     * add_missing_conditions
+     *
+     * @param $cond
+     * @return array|mixed|string|string[]|null
+     */
     public function add_missing_conditions($cond) {
-        global $DB;
 
         $components = cr_unserialize($this->config->components);
 
@@ -82,7 +97,13 @@ class component_conditions extends component_base {
         return $cond;
     }
 
-    public function form_set_data(moodleform $cform) {
+    /**
+     * Form set data
+     *
+     * @param moodleform $cform
+     * @return void
+     */
+    public function form_set_data(moodleform $cform): void {
         global $DB;
         if ($this->form) {
             $fdata = new stdclass;
@@ -91,8 +112,8 @@ class component_conditions extends component_base {
 
             if (!isset($conditionsconfig->conditionexpr)) {
                 $conditionsconfig->conditionexpr = '';
-                $conditionsconfig->conditionexpr = '';
             }
+
             $conditionsconfig->conditionexpr = $this->add_missing_conditions($conditionsconfig->conditionexpr);
             $fdata->conditionexpr = $conditionsconfig->conditionexpr;
 

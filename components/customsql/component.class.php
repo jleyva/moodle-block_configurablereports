@@ -22,8 +22,21 @@
  * @author   Juan leyva <http://www.twitter.com/jleyvadelgado>
  * @date     2009
  */
+
+/**
+ * Class component_customsql
+ *
+ * @package  block_configurablereports
+ * @author   Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @date     2009
+ */
 class component_customsql extends component_base {
 
+    /**
+     * Init
+     *
+     * @return void
+     */
     public function init(): void {
         global $PAGE;
 
@@ -37,7 +50,13 @@ class component_customsql extends component_base {
         }
     }
 
-    public function form_process_data(moodleform $cform) {
+    /**
+     * form_process_data
+     *
+     * @param moodleform $cform
+     * @return void
+     */
+    public function form_process_data(moodleform $cform): void {
         global $DB;
         if ($this->form) {
             $data = $cform->get_data();
@@ -49,11 +68,16 @@ class component_customsql extends component_base {
         }
     }
 
-    public function form_set_data(moodleform $cform) {
+    /**
+     * Form set data
+     *
+     * @param moodleform $cform
+     * @return void
+     */
+    public function form_set_data(moodleform $cform): void {
         if ($this->form) {
-            $fdata = new stdclass;
             $components = cr_unserialize($this->config->components);
-            $sqlconfig = (isset($components['customsql']['config'])) ? $components['customsql']['config'] : new stdclass;
+            $sqlconfig = $components['customsql']['config'] ?? new stdclass;
             $cform->set_data($sqlconfig);
         }
     }

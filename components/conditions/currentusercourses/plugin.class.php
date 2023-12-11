@@ -35,6 +35,10 @@ require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
  */
 class plugin_currentusercourses extends plugin_base {
 
+    /**
+     * Init
+     * @return void
+     */
     public function init(): void {
         $this->fullname = get_string('currentusercourses', 'block_configurable_reports');
         $this->form = false;
@@ -51,9 +55,18 @@ class plugin_currentusercourses extends plugin_base {
         return get_string('currentusercourses_summary', 'block_configurable_reports');
     }
 
-    // Data -> Plugin configuration data.
+    /**
+     * Execute
+     *
+     * @param $data
+     * @param $user
+     * @param $courseid
+     * @return array|int[]|string[]
+     */
     public function execute($data, $user, $courseid) {
-        global $DB, $CFG;
+        global $CFG;
+
+        // Data -> Plugin configuration data.
         require_once($CFG->libdir . '/enrollib.php');
 
         $finalcourses = [];

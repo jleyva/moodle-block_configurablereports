@@ -25,8 +25,20 @@
 defined('MOODLE_INTERNAL') || die;
 require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
 
+/**
+ * Class plugin_coursecategories
+ *
+ * @package  block_configurablereports
+ * @author   Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @date     2009
+ */
 class plugin_coursecategories extends plugin_base {
 
+    /**
+     * Init
+     *
+     * @return void
+     */
     public function init(): void {
         $this->form = false;
         $this->unique = true;
@@ -44,6 +56,13 @@ class plugin_coursecategories extends plugin_base {
         return get_string('filtercoursecategories_summary', 'block_configurable_reports');
     }
 
+    /**
+     * Execute
+     *
+     * @param $finalelements
+     * @param $data
+     * @return mixed
+     */
     public function execute($finalelements, $data) {
         global $remotedb, $CFG;
         require_once($CFG->dirroot . "/course/lib.php");
@@ -71,8 +90,16 @@ class plugin_coursecategories extends plugin_base {
         return $finalelements;
     }
 
-    public function print_filter(&$mform) {
-        global $remotedb, $CFG;
+    /**
+     * Print filter
+     *
+     * @param MoodleQuickForm $mform
+     * @param bool|object $formdata
+     * @return void
+     */
+    public function print_filter(MoodleQuickForm $mform, $formdata = false): void {
+
+        global $CFG;
         require_once($CFG->dirroot . "/course/lib.php");
 
         $filtercategories = optional_param('filter_coursecategories', 0, PARAM_INT);

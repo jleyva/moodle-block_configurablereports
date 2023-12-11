@@ -25,8 +25,20 @@
 defined('MOODLE_INTERNAL') || die;
 require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
 
+/**
+ * Class plugin_percent
+ *
+ * @package block_configurable_reports
+ * @author  David Pesce <davidpesce@gmail.com>
+ * @date    2019
+ */
 class plugin_percent extends plugin_base {
 
+    /**
+     * Init
+     *
+     * @return void
+     */
     public function init(): void {
         $this->form = true;
         $this->unique = false;

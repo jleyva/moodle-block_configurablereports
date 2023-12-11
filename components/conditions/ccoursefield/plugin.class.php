@@ -26,8 +26,21 @@
 defined('MOODLE_INTERNAL') || die;
 require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
 
+/**
+ * Class plugin_ccoursefield
+ *
+ * @package  block_configurablereports
+ *
+ * @author   Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @date     2009
+ */
 class plugin_ccoursefield extends plugin_base {
 
+    /**
+     * Init
+     *
+     * @return void
+     */
     public function init(): void {
         $this->fullname = get_string('ccoursefield', 'block_configurable_reports');
         $this->reporttypes = ['courses'];
@@ -49,7 +62,6 @@ class plugin_ccoursefield extends plugin_base {
     public function execute($data, $user, $courseid) {
         global $DB;
 
-        $data->value = $data->value;
         // TODO - Use $DB->sql_like().
         $ilike = " LIKE ";
 

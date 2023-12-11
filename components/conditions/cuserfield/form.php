@@ -27,9 +27,19 @@ defined('MOODLE_INTERNAL') || die;
 
 require_once($CFG->libdir . '/formslib.php');
 
+/**
+ * Class cuserfield_form
+ *
+ * @package  block_configurablereports
+ * @author   Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @date     2009
+ */
 class cuserfield_form extends moodleform {
 
-    public $allowedops = [
+    /**
+     * @var string[]
+     */
+    public array $allowedops = [
         '=' => '=',
         '>' => '>',
         '<' => '<',
@@ -45,7 +55,7 @@ class cuserfield_form extends moodleform {
      * Form definition
      */
     public function definition(): void {
-        global $DB, $USER, $CFG;
+        global $DB;
 
         $mform =& $this->_form;
 

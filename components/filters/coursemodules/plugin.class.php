@@ -25,8 +25,20 @@
 defined('MOODLE_INTERNAL') || die;
 require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
 
+/**
+ * Class plugin_coursemodules
+ *
+ * @package  block_configurablereports
+ * @author   Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @date     2009
+ */
 class plugin_coursemodules extends plugin_base {
 
+    /**
+     * Init
+     *
+     * @return void
+     */
     public function init(): void {
         $this->form = false;
         $this->unique = true;
@@ -44,7 +56,13 @@ class plugin_coursemodules extends plugin_base {
         return get_string('filtercoursemodules_summary', 'block_configurable_reports');
     }
 
-    public function execute($finalelements, $data) {
+    /**
+     * Execute
+     *
+     * @param $finalelements
+     * @return array|mixed|string|string[]
+     */
+    public function execute($finalelements) {
         global $remotedb;
 
         $filtercoursemoduleid = optional_param('filter_coursemodules', 0, PARAM_INT);
@@ -54,29 +72,37 @@ class plugin_coursemodules extends plugin_base {
 
         if ($this->report->type !== 'sql') {
             return [$filtercoursemoduleid];
-        } else {
-            if (preg_match("/%%FILTER_COURSEMODULEID:([^%]+)%%/i", $finalelements, $output)) {
-                $replace = ' AND ' . $output[1] . ' = ' . $filtercoursemoduleid;
-                $finalelements = str_replace('%%FILTER_COURSEMODULEID:' . $output[1] . '%%', $replace, $finalelements);
-            }
-            if (preg_match("/%%FILTER_COURSEMODULEFIELDS:([^%]+)%%/i", $finalelements, $output)) {
-                $replace = ' ' . $output[1] . ' ';
-                $finalelements = str_replace('%%FILTER_COURSEMODULEFIELDS:' . $output[1] . '%%', $replace, $finalelements);
-            }
-            if (preg_match("/%%FILTER_COURSEMODULE:([^%]+)%%/i", $finalelements, $output)) {
-                $module = $remotedb->get_record('modules', ['id' => $filtercoursemoduleid]);
-                $replace = ' JOIN {' . $module->name . '} AS m ON m.id = ' . $output[1] . ' ';
-                $finalelements = str_replace('%%FILTER_COURSEMODULE:' . $output[1] . '%%', $replace, $finalelements);
-            }
+        }
+
+        if (preg_match("/%%FILTER_COURSEMODULEID:([^%]+)%%/i", $finalelements, $output)) {
+            $replace = ' AND ' . $output[1] . ' = ' . $filtercoursemoduleid;
+            $finalelements = str_replace('%%FILTER_COURSEMODULEID:' . $output[1] . '%%', $replace, $finalelements);
+        }
+
+        if (preg_match("/%%FILTER_COURSEMODULEFIELDS:([^%]+)%%/i", $finalelements, $output)) {
+            $replace = ' ' . $output[1] . ' ';
+            $finalelements = str_replace('%%FILTER_COURSEMODULEFIELDS:' . $output[1] . '%%', $replace, $finalelements);
+        }
+
+        if (preg_match("/%%FILTER_COURSEMODULE:([^%]+)%%/i", $finalelements, $output)) {
+            $module = $remotedb->get_record('modules', ['id' => $filtercoursemoduleid]);
+            $replace = ' JOIN {' . $module->name . '} AS m ON m.id = ' . $output[1] . ' ';
+            $finalelements = str_replace('%%FILTER_COURSEMODULE:' . $output[1] . '%%', $replace, $finalelements);
         }
 
         return $finalelements;
     }
 
-    public function print_filter(&$mform) {
-        global $remotedb;
+    /**
+     * Print filter
+     *
+     * @param MoodleQuickForm $mform
+     * @param bool|object $formdata
+     * @return void
+     */
+    public function print_filter(MoodleQuickForm $mform, $formdata = false): void {
 
-        $filtercoursemoduleid = optional_param('filter_coursemodules', 0, PARAM_INT);
+        global $remotedb;
 
         $reportclassname = 'report_' . $this->report->type;
         $reportclass = new $reportclassname($this->report);

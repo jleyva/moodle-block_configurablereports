@@ -23,14 +23,21 @@
  * @date     2009
  */
 
-// Based on Custom SQL Reports Plugin
-// See http://moodle.org/mod/data/view.php?d=13&rid=2884.
-
 defined('MOODLE_INTERNAL') || die;
 
 require_once($CFG->libdir . '/formslib.php');
 
+/**
+ * Class customsql_form
+ *
+ * @package  block_configurablereports
+ * @author   Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @date     2009
+ */
 class customsql_form extends moodleform {
+
+    // Based on Custom SQL Reports Plugin.
+    // See http://moodle.org/mod/data/view.php?d=13&rid=2884.
 
     /**
      * Form definition
@@ -60,8 +67,9 @@ class customsql_form extends moodleform {
 
             if (is_array($res)) {
                 $reportcategories = [get_string('choose')];
+
                 foreach ($res as $item) {
-                    if ($item->type == 'dir') {
+                    if ($item->type === 'dir') {
                         $reportcategories[$item->path] = $item->path;
                     }
                 }
@@ -97,13 +105,20 @@ class customsql_form extends moodleform {
     public function validation($data, $files): array {
         if (get_config('block_configurable_reports', 'sqlsecurity')) {
             return $this->validation_high_security($data, $files);
-        } else {
-            return $this->validation_low_security($data, $files);
         }
+
+        return $this->validation_low_security($data, $files);
     }
 
-    public function validation_high_security($data, $files) {
-        global $DB, $CFG, $db, $USER;
+    /**
+     * validation_high_security
+     *
+     * @param $data
+     * @param $files
+     * @return array
+     */
+    public function validation_high_security($data, $files): array {
+        global $CFG;
 
         $errors = parent::validation($data, $files);
 
@@ -134,6 +149,8 @@ class customsql_form extends moodleform {
                 $errors['querysql'] = get_string('queryfailed', 'block_configurable_reports', $e->error);
             }
             if ($rs && !empty($data['singlerow'])) {
+
+                // TODO check where rs_EOF is defined.
                 if (rs_EOF($rs)) {
                     $errors['querysql'] = get_string('norowsreturned', 'block_configurable_reports');
                 }
@@ -147,8 +164,15 @@ class customsql_form extends moodleform {
         return $errors;
     }
 
+    /**
+     * validation_low_security
+     *
+     * @param $data
+     * @param $files
+     * @return array
+     */
     public function validation_low_security($data, $files) {
-        global $DB, $CFG, $db, $USER;
+        global $CFG, $db;
 
         $errors = parent::validation($data, $files);
 

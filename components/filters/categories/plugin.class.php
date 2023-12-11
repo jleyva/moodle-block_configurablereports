@@ -25,8 +25,19 @@
 defined('MOODLE_INTERNAL') || die;
 require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
 
+/**
+ * Class plugin_categories
+ *
+ * @package  block_configurablereports
+ * @author   Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @date     2009
+ */
 class plugin_categories extends plugin_base {
 
+    /**
+     * Init
+     * @return void
+     */
     public function init(): void {
         $this->form = false;
         $this->unique = true;
@@ -53,21 +64,27 @@ class plugin_categories extends plugin_base {
 
         if ($this->report->type !== 'sql') {
             return [$filtercategories];
-        } else {
-            if (preg_match("/%%FILTER_CATEGORIES:([^%]+)%%/i", $finalelements, $output)) {
-                $replace = ' AND ' . $output[1] . ' = ' . $filtercategories;
+        }
 
-                return str_replace('%%FILTER_CATEGORIES:' . $output[1] . '%%', $replace, $finalelements);
-            }
+        if (preg_match("/%%FILTER_CATEGORIES:([^%]+)%%/i", $finalelements, $output)) {
+            $replace = ' AND ' . $output[1] . ' = ' . $filtercategories;
+
+            return str_replace('%%FILTER_CATEGORIES:' . $output[1] . '%%', $replace, $finalelements);
         }
 
         return $finalelements;
     }
 
-    public function print_filter(&$mform) {
-        global $remotedb, $CFG;
+    /**
+     * Print filter
+     *
+     * @param MoodleQuickForm $mform
+     * @param bool|object $formdata
+     * @return void
+     */
+    public function print_filter(MoodleQuickForm $mform, $formdata = false): void {
 
-        $filtercategories = optional_param('filter_categories', 0, PARAM_INT);
+        global $remotedb;
 
         $reportclassname = 'report_' . $this->report->type;
         $reportclass = new $reportclassname($this->report);

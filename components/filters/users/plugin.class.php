@@ -64,7 +64,15 @@ class plugin_users extends plugin_base {
         return $finalelements;
     }
 
-    public function print_filter(&$mform) {
+    /**
+     * Print filter
+     *
+     * @param MoodleQuickForm $mform
+     * @param bool|object $formdata
+     * @return void
+     */
+    public function print_filter(MoodleQuickForm $mform, $formdata = false): void {
+
         global $remotedb, $PAGE, $CFG;
 
         $reportclassname = 'report_' . $this->report->type;

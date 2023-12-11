@@ -104,8 +104,16 @@ class plugin_fuserfield extends plugin_base {
         return $finalelements;
     }
 
-    public function print_filter(&$mform, $data) {
-        global $remotedb, $CFG;
+    /**
+     * Print filter
+     *
+     * @param MoodleQuickForm $mform
+     * @param bool|object $formdata
+     * @return void
+     */
+    public function print_filter(MoodleQuickForm $mform, $formdata = false): void {
+
+        global $remotedb;
 
         $columns = $remotedb->get_columns('user');
         $filteroptions = [];
@@ -122,29 +130,27 @@ class plugin_fuserfield extends plugin_base {
             }
         }
 
-        if (!isset($usercolumns[$data->field])) {
+        if (!isset($usercolumns[$formdata->field])) {
             throw new moodle_exception('nosuchcolumn');
         }
 
         $reportclassname = 'report_' . $this->report->type;
         $reportclass = new $reportclassname($this->report);
 
-        if ($this->report->type == 'sql') {
+        if ($this->report->type === 'sql') {
             $conditions = [];
-            if ($data->excludedeletedusers) {
+            if ($formdata->excludedeletedusers) {
                 $conditions['deleted'] = 0;
             }
             $userlist = array_keys($remotedb->get_records('user', $conditions));
         } else {
             $components = cr_unserialize($this->report->components);
-            $conditions = array_key_exists('conditions', $components) ?
-                $components['conditions'] :
-                null;
+            $conditions = $components['conditions'] ?? null;
             $userlist = $reportclass->elements_by_conditions($conditions);
         }
         if (!empty($userlist)) {
-            if (strpos($data->field, 'profile_') === 0) {
-                $conditions = ['shortname' => str_replace('profile_', '', $data->field)];
+            if (strpos($formdata->field, 'profile_') === 0) {
+                $conditions = ['shortname' => str_replace('profile_', '', $formdata->field)];
                 if ($field = $remotedb->get_record('user_info_field', $conditions)) {
                     $selectname = $field->name;
                     [$usql, $params] = $remotedb->get_in_or_equal($userlist);
@@ -159,10 +165,10 @@ class plugin_fuserfield extends plugin_base {
                     }
                 }
             } else {
-                $selectname = get_string($data->field);
+                $selectname = get_string($formdata->field);
 
                 [$usql, $params] = $remotedb->get_in_or_equal($userlist);
-                $sql = "SELECT DISTINCT(" . $data->field . ") as ufield FROM {user} WHERE id $usql ORDER BY ufield ASC";
+                $sql = "SELECT DISTINCT(" . $formdata->field . ") as ufield FROM {user} WHERE id $usql ORDER BY ufield ASC";
                 if ($rs = $remotedb->get_recordset_sql($sql, $params)) {
                     foreach ($rs as $u) {
                         $filteroptions[base64_encode($u->ufield)] = $u->ufield;
@@ -172,12 +178,22 @@ class plugin_fuserfield extends plugin_base {
             }
         }
 
-        $mform->addElement('select', 'filter_fuserfield_' . $data->field, $selectname, $filteroptions);
-        $mform->setType('filter_fuserfield_' . $data->field, PARAM_BASE64);
+        $mform->addElement('select', 'filter_fuserfield_' . $formdata->field, $selectname, $filteroptions);
+        $mform->setType('filter_fuserfield_' . $formdata->field, PARAM_BASE64);
     }
 
+    /**
+     * sql_replace
+     *
+     * @param $filtersearchtext
+     * @param $filterstrmatch
+     * @param $finalelements
+     * @return array|mixed|string|string[]
+     */
     private function sql_replace($filtersearchtext, $filterstrmatch, $finalelements) {
         $operators = ['=', '<', '>', '<=', '>=', '~', 'in'];
+
+        // TODO this function is 2 times in the code, should be refactored.
 
         if (preg_match("/%%$filterstrmatch:([^%]+)%%/i", $finalelements, $output)) {
             [$field, $operator] = preg_split('/:/', $output[1]);
@@ -186,10 +202,12 @@ class plugin_fuserfield extends plugin_base {
             } else if (!in_array($operator, $operators)) {
                 throw new moodle_exception('nosuchoperator');
             }
-            if ($operator == '~') {
+            if ($operator === '~') {
                 $replace = " AND " . $field . " LIKE '%" . $filtersearchtext . "%'";
-            } else if ($operator == 'in') {
+            } else if ($operator === 'in') {
                 $processeditems = [];
+
+                // TODO can be improved by more native PDO approach.
                 // Accept comma-separated values, allowing for '\,' as a literal comma.
                 foreach (preg_split("/(?<!\\\\),/", $filtersearchtext) as $searchitem) {
                     // Strip leading/trailing whitespace and quotes (we'll add our own quotes later).

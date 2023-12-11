@@ -81,8 +81,16 @@ class plugin_competencytemplates extends plugin_base {
         return $finalelements;
     }
 
-    public function print_filter(&$mform) {
-        global $remotedb, $COURSE, $PAGE, $CFG;
+    /**
+     * Print filter
+     *
+     * @param MoodleQuickForm $mform
+     * @param bool|object $formdata
+     * @return void
+     */
+    public function print_filter(MoodleQuickForm $mform, $formdata = false): void {
+
+        global $remotedb;
 
         $reportclassname = 'report_' . $this->report->type;
         $reportclass = new $reportclassname($this->report);

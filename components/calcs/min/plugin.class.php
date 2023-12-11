@@ -25,8 +25,20 @@
 defined('MOODLE_INTERNAL') || die;
 require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
 
+/**
+ * Class plugin_min
+ *
+ * @package  block_configurablereports
+ * @author   Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @date     2009
+ */
 class plugin_min extends plugin_base {
 
+    /**
+     * Init
+     *
+     * @return void
+     */
     public function init(): void {
         $this->form = true;
         $this->unique = false;
@@ -41,7 +53,7 @@ class plugin_min extends plugin_base {
      * @return string
      */
     public function summary(object $data): string {
-        global $DB, $CFG;
+        global $CFG;
 
         if ($this->report->type !== 'sql') {
             $components = cr_unserialize($this->report->components);
@@ -65,7 +77,7 @@ class plugin_min extends plugin_base {
             $reportclass = new $reportclassname($this->report);
 
             $components = cr_unserialize($this->report->components);
-            $config = (isset($components['customsql']['config'])) ? $components['customsql']['config'] : new stdclass;
+            $config = $components['customsql']['config'] ?? new stdclass;
 
             if (isset($config->querysql)) {
 
@@ -90,7 +102,13 @@ class plugin_min extends plugin_base {
         return '';
     }
 
-    public function execute($rows) {
+    /**
+     * execute
+     *
+     * @param array $rows
+     * @return string|int
+     */
+    public function execute(array $rows) {
         $result = '';
         foreach ($rows as $r) {
             if (is_numeric($r)) {

@@ -43,7 +43,15 @@ class plugin_searchtext extends plugin_base {
         return empty($data->idnumber) ? get_string('filter_searchtext_summary', 'block_configurable_reports') : $data->idnumber;
     }
 
+    /**
+     * Execute
+     *
+     * @param string $finalelements
+     * @param object $data
+     * @return string|array
+     */
     public function execute($finalelements, $data) {
+
         // For backwards compatibility and filters without idnumber, includes old method of matching without idnumber
         if (!empty($data->idnumber)) {
             $filtersearchtext = optional_param('filter_searchtext_' . $data->idnumber, '', PARAM_RAW);
@@ -53,30 +61,38 @@ class plugin_searchtext extends plugin_base {
 
         if ($this->report->type !== 'sql') {
             return [$filtersearchtext];
-        } else {
-            if ($filtersearchtext) {
-                if (!empty($data->idnumber)) {
-                    $filtermatch = "FILTER_SEARCHTEXT_{$data->idnumber}";
-                } else {
-                    $filtermatch = "FILTER_SEARCHTEXT";
-                }
+        }
 
-                $finalelements = $this->sql_replace($filtersearchtext, $filtermatch, $finalelements);
+        if ($filtersearchtext) {
+            if (!empty($data->idnumber)) {
+                $filtermatch = "FILTER_SEARCHTEXT_{$data->idnumber}";
+            } else {
+                $filtermatch = "FILTER_SEARCHTEXT";
             }
+
+            $finalelements = $this->sql_replace($filtersearchtext, $filtermatch, $finalelements);
         }
 
         return $finalelements;
     }
 
-    public function print_filter(&$mform, $data) {
+    /**
+     * Print filter
+     *
+     * @param MoodleQuickForm $mform
+     * @param bool|object $formdata
+     * @return void
+     */
+    public function print_filter(MoodleQuickForm $mform, $formdata = false): void {
+
         // For backwards compatibility and filters without idnumber, includes old method of matching without idnumber
-        if (!empty($data->idnumber)) {
-            $filtername = 'filter_searchtext_' . $data->idnumber;
+        if (!empty($formdata->idnumber)) {
+            $filtername = 'filter_searchtext_' . $formdata->idnumber;
         } else {
             $filtername = 'filter_searchtext';
         }
-        if (isset($data->label)) {
-            $filterlabel = $data->label;
+        if (isset($formdata->label)) {
+            $filterlabel = $formdata->label;
         } else {
             $filterlabel = get_string('filter', 'block_configurable_reports');
         }
@@ -86,7 +102,17 @@ class plugin_searchtext extends plugin_base {
         $mform->setDefault($filtername, $filtersearchtext);
     }
 
+    /**
+     * sql_replace
+     *
+     * @param $filtersearchtext
+     * @param $filterstrmatch
+     * @param $finalelements
+     * @return array|mixed|string|string[]
+     */
     private function sql_replace($filtersearchtext, $filterstrmatch, $finalelements) {
+
+        // TODO check if this is a duplicate of the same function in plugin_fuserfield
         $operators = ['=', '<', '>', '<=', '>=', '~', 'in'];
 
         if (preg_match("/%%$filterstrmatch:([^%]+)%%/i", $finalelements, $output)) {

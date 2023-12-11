@@ -25,8 +25,20 @@
 defined('MOODLE_INTERNAL') || die;
 require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
 
+/**
+ * Class plugin_parentcategory
+ *
+ * @package  block_configurablereports
+ * @author   Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @date     2009
+ */
 class plugin_parentcategory extends plugin_base {
 
+    /**
+     * Init
+     *
+     * @return void
+     */
     public function init(): void {
         $this->fullname = get_string('parentcategory', 'block_configurable_reports');
         $this->type = 'text';
@@ -46,15 +58,20 @@ class plugin_parentcategory extends plugin_base {
         $cat = $DB->get_record('course_categories', ['id' => $data->categoryid]);
         if ($cat) {
             return format_string(get_string('category') . ' ' . $cat->name);
-        } else {
-            return get_string('category') . ' ' . get_string('top');
         }
+
+        return get_string('category') . ' ' . get_string('top');
     }
 
-    // Data -> Plugin configuration data.
-    public function execute($data, $user, $courseid) {
+    /**
+     * Execute
+     *
+     * @param $data
+     * @return array
+     */
+    public function execute($data) {
         global $DB, $CFG;
-
+        // Data -> Plugin configuration data.
         require_once($CFG->dirroot . '/course/lib.php');
 
         if (isset($data->includesubcats)) {
@@ -66,11 +83,11 @@ class plugin_parentcategory extends plugin_base {
             unset($options[$data->categoryid]);
 
             return array_keys($options);
-        } else {
-            $categories = $DB->get_records('course_categories', ['parent' => $data->categoryid]);
-            if ($categories) {
-                return array_keys($categories);
-            }
+        }
+
+        $categories = $DB->get_records('course_categories', ['parent' => $data->categoryid]);
+        if ($categories) {
+            return array_keys($categories);
         }
 
         return [];

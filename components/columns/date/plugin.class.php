@@ -25,8 +25,20 @@
 defined('MOODLE_INTERNAL') || die;
 require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
 
+/**
+ * Class plugin_date
+ *
+ * @package  block_configurablereports
+ * @author   Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @date     2009
+ */
 class plugin_date extends plugin_base {
 
+    /**
+     * Init
+     *
+     * @return void
+     */
     public function init(): void {
         $this->fullname = get_string('date', 'block_configurable_reports');
         $this->type = 'undefined';
@@ -44,20 +56,23 @@ class plugin_date extends plugin_base {
         return format_string($data->columname);
     }
 
-    public function colformat($data) {
-        $align = (isset($data->align)) ? $data->align : '';
-        $size = (isset($data->size)) ? $data->size : '';
-        $wrap = (isset($data->wrap)) ? $data->wrap : '';
-
-        return [$align, $size, $wrap];
-    }
-
-    // Data -> Plugin configuration data.
-    // Row -> Complet course row c->id, c->fullname, etc...
+    /**
+     * @param $data
+     * @param $row
+     * @param $user
+     * @param $courseid
+     * @param $starttime
+     * @param $endtime
+     * @return string
+     */
     public function execute($data, $row, $user, $courseid, $starttime = 0, $endtime = 0) {
-        $date = ($data->date == 'starttime') ? $row->starttime : $row->endtime;
-        $format = (isset($data->dateformat)) ? $data->dateformat : '';
-        $format = ($data->dateformat == 'custom') ? $data->customdateformat : $format;
+
+        // Data -> Plugin configuration data.
+        // Row -> Complet course row c->id, c->fullname, etc...
+
+        $date = ($data->date === 'starttime') ? $row->starttime : $row->endtime;
+        $format = $data->dateformat ?? '';
+        $format = ($data->dateformat === 'custom') ? $data->customdateformat : $format;
         $format = preg_replace('/[^a-zA-Z%]/i', '', $format);
 
         return userdate($date, $format);

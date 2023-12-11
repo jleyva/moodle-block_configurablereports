@@ -221,6 +221,7 @@ function cr_unserialize(string $data): array {
 
     // TODO remove unserialize
     $data = unserialize($data);
+
     return (array) urldecode_recursive($data);
 }
 
@@ -238,8 +239,8 @@ function cr_check_report_permissions($report, int $userid, context $context) {
     require_once($CFG->dirroot . '/blocks/configurable_reports/report.class.php');
     require_once($CFG->dirroot . '/blocks/configurable_reports/reports/' . $report->type . '/report.class.php');
 
-
     $classn = 'report_' . $report->type;
+
     return (new $classn($report->id))->check_permissions($userid, $context);
 }
 
@@ -249,7 +250,7 @@ function cr_check_report_permissions($report, int $userid, context $context) {
  * @param int $courseid
  * @return array
  */
-function cr_get_report_plugins(int $courseid) {
+function cr_get_report_plugins(int $courseid): array {
     $pluginoptions = [];
     $context = ($courseid === SITEID) ? context_system::instance() : context_course::instance($courseid);
     $plugins = get_list_of_plugins('blocks/configurable_reports/reports');
@@ -361,7 +362,7 @@ function cr_print_table(object $table, bool $return = false) {
         $keys = array_keys($table->head);
         $lastkey = end($keys);
         foreach ($table->head as $key => $heading) {
-            if ($heading == 'sendemail') {
+            if ($heading === 'sendemail') {
                 $isuserid = $key;
             }
             if (!isset($size[$key])) {
@@ -391,35 +392,40 @@ function cr_print_table(object $table, bool $return = false) {
             if (!isset($table->rowclass[$key])) {
                 $table->rowclass[$key] = '';
             }
+
             if ($key == $lastrowkey) {
                 $table->rowclass[$key] .= ' lastrow';
             }
+
             $output .= '<tr class="r' . $oddeven . ' ' . $table->rowclass[$key] . '">' . "\n";
-            if ($row == 'hr' and $countcols) {
+            if ($row === 'hr' and $countcols) {
                 $output .= '<td colspan="' . $countcols . '"><div class="tabledivider"></div></td>';
             } else {  // It's a normal row of data.
                 $keys2 = array_keys($row);
                 $lastkey = end($keys2);
-                foreach ($row as $key => $item) {
-                    if (!isset($size[$key])) {
-                        $size[$key] = '';
+
+                foreach ($row as $keyouter => $item) {
+                    if (!isset($size[$keyouter])) {
+                        $size[$keyouter] = '';
                     }
-                    if (!isset($align[$key])) {
-                        $align[$key] = '';
+                    if (!isset($align[$keyouter])) {
+                        $align[$keyouter] = '';
                     }
-                    if (!isset($wrap[$key])) {
-                        $wrap[$key] = '';
+                    if (!isset($wrap[$keyouter])) {
+                        $wrap[$keyouter] = '';
                     }
-                    if ($key == $lastkey) {
+                    if ($keyouter == $lastkey) {
                         $extraclass = ' lastcol';
                     } else {
                         $extraclass = '';
                     }
-                    if ($key == $isuserid) {
-                        $output .= '<td style="' . $align[$key] . $size[$key] . $wrap[$key] . '" class="cell c' . $key .
+                    if ($keyouter == $isuserid) {
+                        $output .= '<td style="' . $align[$keyouter] . $size[$keyouter] . $wrap[$keyouter] . '" class="cell c' .
+                            $keyouter .
                             $extraclass . '"><input name="userids[]" type="checkbox" value="' . $item . '"></td>';
                     } else {
-                        $output .= '<td style="' . $align[$key] . $size[$key] . $wrap[$key] . '" class="cell c' . $key .
+                        $output .= '<td style="' . $align[$keyouter] . $size[$keyouter] . $wrap[$keyouter] . '" class="cell c' .
+                            $keyouter .
                             $extraclass . '">' . $item . '</td>';
                     }
 
@@ -475,8 +481,9 @@ function table_to_excel(string $filename, $table) {
     $workbook = new MoodleExcelWorkbook("-");
     // Sending HTTP headers.
     $workbook->send($downloadfilename);
+
     // Adding the worksheet.
-    $myxls =& $workbook->add_worksheet($filename);
+    $myxls = $workbook->add_worksheet($filename);
 
     foreach ($matrix as $ri => $col) {
         foreach ($col as $ci => $cv) {
@@ -581,7 +588,14 @@ function cr_make_categories_list(&$list, &$parents, $requiredcapability = '', $e
     }
 }
 
-function cr_import_xml($xml, $course) {
+/**
+ * cr_import_xml
+ *
+ * @param string $xml
+ * @param object $course
+ * @return bool
+ */
+function cr_import_xml(string $xml, object $course) {
     global $CFG, $DB, $USER;
 
     require_once($CFG->dirroot . '/lib/xmlize.php');
@@ -590,16 +604,17 @@ function cr_import_xml($xml, $course) {
     if (isset($data['report']['@']['version'])) {
         $newreport = new stdclass;
         foreach ($data['report']['#'] as $key => $val) {
-            if ($key == 'components') {
+            if ($key === 'components') {
                 $val[0]['#'] = base64_decode(trim($val[0]['#']));
                 // Fix url_encode " and ' when importing SQL queries.
                 $tempcomponents = cr_unserialize($val[0]['#']);
+
                 if (array_key_exists('customsql', $tempcomponents)) {
-                    $tempcomponents['customsql']['config']->querysql =
-                        str_replace("\'", "'", $tempcomponents['customsql']['config']->querysql);
-                    $tempcomponents['customsql']['config']->querysql =
-                        str_replace('\"', '"', $tempcomponents['customsql']['config']->querysql);
+
+                    $querysql = str_replace(["\'", '\"'], ["'", '"'], $tempcomponents['customsql']['config']->querysql);
+                    $tempcomponents['customsql']['config']->querysql = $querysql;
                 }
+
                 $val[0]['#'] = cr_serialize($tempcomponents);
             }
             $newreport->{$key} = trim($val[0]['#']);
@@ -619,6 +634,8 @@ function cr_import_xml($xml, $course) {
 }
 
 /**
+ * cr_logging_info
+ *
  * @return array
  */
 function cr_logging_info(): array {
@@ -628,7 +645,7 @@ function cr_logging_info(): array {
     static $useinternalreader;
     static $logtable;
 
-    if (isset($uselegacyreader) && isset($useinternalreader) && isset($logtable)) {
+    if (isset($uselegacyreader, $useinternalreader, $logtable)) {
         return [
             $uselegacyreader,
             $useinternalreader,
