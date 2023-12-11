@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -16,9 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Version details
- *
- * Configurable Reports - A Moodle block for creating customizable reports
+ * Capabilities for the configurable_reports block
  *
  * @package       block_configurable_reports
  * @author        Juan leyva <http://www.twitter.com/jleyvadelgado>
@@ -26,6 +23,8 @@
  * @copyright     Juan leyva <http://www.twitter.com/jleyvadelgado>
  * @license       http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+
+defined('MOODLE_INTERNAL') || die;
 
 $capabilities = [
 

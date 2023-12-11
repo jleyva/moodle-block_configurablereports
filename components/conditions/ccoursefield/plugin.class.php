@@ -15,12 +15,11 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Configurable Reports
- * A Moodle block for creating customizable reports
+ * Configurable Reports a Moodle block for creating customizable reports
  *
- * @package  block_configurablereports
- * @author   Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date     2009
+ * @package   block_configurable_reports
+ * @author    Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die;
@@ -29,10 +28,10 @@ require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
 /**
  * Class plugin_ccoursefield
  *
- * @package  block_configurablereports
+ * @package   block_configurable_reports
  *
- * @author   Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date     2009
+ * @author    Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class plugin_ccoursefield extends plugin_base {
 

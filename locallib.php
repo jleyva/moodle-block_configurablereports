@@ -15,12 +15,11 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Configurable Reports
- * A Moodle block for creating Configurable Reports
+ * Configurable Reports a Moodle block for creating customizable reports
  *
- * @package  block_configurablereports
- * @author   Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date     2009
+ * @package   block_configurable_reports
+ * @author    Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 /**
@@ -400,7 +399,7 @@ function cr_print_table(object $table, bool $return = false) {
             }
 
             $output .= '<tr class="r' . $oddeven . ' ' . $table->rowclass[$key] . '">' . "\n";
-            if ($row === 'hr' and $countcols) {
+            if ($row === 'hr' && $countcols) {
                 $output .= '<td colspan="' . $countcols . '"><div class="tabledivider"></div></td>';
             } else {  // It's a normal row of data.
                 $keys2 = array_keys($row);
@@ -659,7 +658,7 @@ function cr_logging_info(): array {
             }
 
             // If sql_internal_table_reader is preferred reader.
-            if ($reader instanceof \core\log\sql_internal_table_reader or $reader instanceof \core\log\sql_internal_reader) {
+            if ($reader instanceof \core\log\sql_internal_table_reader || $reader instanceof \core\log\sql_internal_reader) {
                 $useinternalreader = true;
                 $logtable = $reader->get_internal_log_table_name();
             }

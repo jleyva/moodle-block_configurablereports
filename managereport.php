@@ -15,12 +15,11 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Configurable Reports
- * A Moodle block for creating Configurable Reports
+ * Configurable Reports a Moodle block for creating customizable reports
  *
- * @package block_configurablereports
- * @author   Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date 2009
+ * @package   block_configurable_reports
+ * @author    Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 require_once("../../config.php");
@@ -31,7 +30,7 @@ $courseid = optional_param('courseid', SITEID, PARAM_INT);
 $importurl = optional_param('importurl', '', PARAM_RAW);
 
 if (!$course = $DB->get_record("course", ['id' => $courseid])) {
-      throw new \moodle_exception("No such course id");
+    throw new moodle_exception("No such course id");
 }
 
 // Force user login in course (SITE or Course).
@@ -45,7 +44,7 @@ if ($course->id == SITEID) {
 
 if (!has_capability('block/configurable_reports:managereports', $context) &&
     !has_capability('block/configurable_reports:manageownreports', $context)) {
-      throw new \moodle_exception('badpermissions');
+    throw new moodle_exception('badpermissions');
 }
 
 $PAGE->set_url('/blocks/configurable_reports/managereport.php', ['courseid' => $course->id]);
@@ -58,7 +57,7 @@ if ($importurl) {
         $data = json_decode($data);
         $xml = base64_decode($data->content);
     } else {
-          throw new \moodle_exception('errorimporting');
+        throw new moodle_exception('errorimporting');
     }
 
     if (cr_import_xml($xml, $course)) {
@@ -67,7 +66,7 @@ if ($importurl) {
             get_string('reportcreated', 'block_configurable_reports')
         );
     } else {
-          throw new \moodle_exception('errorimporting');
+        throw new moodle_exception('errorimporting');
     }
 }
 
@@ -81,7 +80,7 @@ if ($data = $mform->get_data()) {
                 get_string('reportcreated', 'block_configurable_reports')
             );
         } else {
-              throw new \moodle_exception('errorimporting');
+            throw new moodle_exception('errorimporting');
         }
     }
 }

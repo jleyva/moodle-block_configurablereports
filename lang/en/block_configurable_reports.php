@@ -54,7 +54,7 @@ $string['configurable_reports:viewreports'] = "View reports";
 $string['exportoptions'] = "Export options";
 $string['field'] = "Field";
 
-// Report form
+// Report form.
 $string['typeofreport'] = "Type of report";
 $string['enablejsordering'] = "Enable JavaScript ordering";
 $string['enablejspagination'] = "Enable JavaScript Pagination";
@@ -73,7 +73,7 @@ $string['remotedescription'] = 'Do you want to run this query on the remote db';
 $string['remote_help'] = 'Do you want to run this query on the remote db';
 $string['setcourseid'] = 'Set courseid';
 
-// Columns
+// Columns.
 $string['column'] = "Column";
 $string['nocolumnsyet'] = "No columns yet";
 $string['tablealign'] = "Table align";
@@ -85,14 +85,14 @@ $string['cellalign'] = "Cell align";
 $string['cellwrap'] = "Cell wrap";
 $string['cellsize'] = "Cell size";
 
-// Conditions
+// Conditions.
 $string['conditionexpr'] = "Condition";
 $string['conditionexprhelp'] = "Enter a valid condition i.e: (c1 and c2) or (c4 and c3)";
 $string['noconditionsyet'] = "No conditions yet";
 $string['operator'] = "Operator";
 $string['value'] = "Value";
 
-// Filter
+// Filter.
 $string['filter'] = "Filter";
 $string['nofilteryet'] = "No filters yet";
 $string['courses'] = "Courses";
@@ -146,22 +146,22 @@ $string['filtercohorts'] = 'Cohorts';
 $string['filtercohorts_summary'] = 'Use: %%FILTER_COHORTS:prefix_cohort.id%%';
 $string['student'] = 'Student';
 
-// Calcs
+// Calcs.
 $string['nocalcsyet'] = "No calculations yet";
 
-// Plot
+// Plot.
 $string['noplotyet'] = "No plots yet";
 
-// Permissions
+// Permissions.
 
 $string['nopermissionsyet'] = "No permissions yet";
 
-// Ordering
+// Ordering.
 
 $string['noorderingyet'] = "No ordering yet";
 $string['userfieldorder'] = "User field order";
 
-// Plugins
+// Plugins.
 $string['coursefield'] = "Course field";
 $string['ccoursefield'] = "Course field condition";
 $string['roleusersn'] = "Number of users with role...";
@@ -187,8 +187,9 @@ $string['barsummary'] = "A bar graph";
 $string['label_field'] = "Label field";
 $string['label_field_help'] = "The field that provides names for the things represented in the graph";
 $string['value_fields'] = "Value fields";
-$string['value_fields_help'] =  "Fields that should be represented in the graph. Ctrl+click (Cmd+click on Mac) to select multiple.
+$string['value_fields_help'] = "Fields that should be represented in the graph. Ctrl+click (Cmd+click on Mac) to select multiple.
 If you select the Label field or a field with non-numeric values it will be ignored";
+
 $string['width'] = "Width";
 $string['height'] = "Height";
 $string['head_data'] = "Graph data";
@@ -454,8 +455,8 @@ $string['sqlsyntaxhighlightinfo'] = 'Highlight SQL syntax in code editor (CodeMi
 $string['datatables'] = 'Enable DataTables JS library';
 $string['datatablesinfo'] = 'DataTables JS library (Column sort, fixed header, search, paging...)';
 $string['reporttableui'] = 'Report table UI';
-$string['reporttableuiinfo'] =
-    'Display the report table as: Simple scrollable HTML table, jQuery with column sorting Or DataTables JS library (Column sort, fixed header, search, paging...)';
+$string['reporttableuiinfo'] = 'Display the report table as: Simple scrollable HTML table, jQuery with column sorting Or
+DataTables JS library (Column sort, fixed header, search, paging...)';
 
 $string['email_subject'] = 'Subject';
 $string['email_message'] = 'Message';
@@ -540,9 +541,10 @@ $string['description_help'] = 'Text used to describe the filter that will be dis
 $string['label'] = 'Label';
 $string['label_help'] = 'Text describing the filter to be displayed on the report page.';
 $string['idnumber'] = 'ID Number';
-$string['idnumber_help'] =
-    'Used to differentiate between filters of the same type. Case-sensitive. Example usage: %%FILTER_SEARCHTEXT_username:u.username:~%%';
-// Pie Chart Strings
+$string['idnumber_help'] = 'Used to differentiate between filters of the same type. Case-sensitive.
+Example usage: %%FILTER_SEARCHTEXT_username:u.username:~%%';
+
+// Pie Chart Strings.
 $string['description'] = 'Description';
 $string['legendheader'] = 'Mapped Palette';
 $string['legendheaderdesc'] = 'Map color codes to specific keys in the pie chart legend.';
@@ -552,11 +554,13 @@ $string['piechart_add_colors'] = 'Add color';
 $string['invalidcolorcode'] = 'Invalid color code';
 $string['generalcolorpaletteheader'] = 'General color palette';
 $string['generalcolorpalette'] = 'Unmapped Palette';
-$string['generalcolorpalette_help'] =
-    'Hexadecimal color codes for general use in the pie chart. Codes should be separated by new lines in the order you wish them to be used in the pie chart.';
+$string['generalcolorpalette_help'] = 'Hexadecimal color codes for general use in the pie chart. Codes should be separated
+by new lines in the order you wish them to be used in the pie chart.';
+
 $string['checksql_execution'] = 'Block Configurable Reports SQL execution';
 $string['checksql_execution_ok'] = 'SQL execution is disabled.';
-$string['checksql_execution_warning'] =
-    'It is recommended to disable SQL execution to avoid execution of arbitrary SQL code in your server.';
-$string['checksql_execution_details'] =
-    'By allowing SQL code execution there is a potential security issue with users adding arbitrary code. SQL code execution should be disable to only allow SQL queries for reading/retreaving data. SQL execution can be disabled in your config.php file by setting $CFG->block_configurable_reports_enable_sql_execution to 0';
+$string['checksql_execution_warning'] = 'It is recommended to disable SQL execution to avoid execution of arbitrary SQL code in
+your server.';
+$string['checksql_execution_details'] = 'By allowing SQL code execution there is a potential security issue with users adding
+arbitrary code. SQL code execution should be disable to only allow SQL queries for reading/retreaving data. SQL execution can
+be disabled in your config.php file by setting $CFG->block_configurable_reports_enable_sql_execution to 0';

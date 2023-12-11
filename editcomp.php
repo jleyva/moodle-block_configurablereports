@@ -15,12 +15,11 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Configurable Reports
- * A Moodle block for creating Configurable Reports
+ * Configurable Reports a Moodle block for creating customizable reports
  *
- * @package block_configurablereports
- * @author   Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date 2009
+ * @package   block_configurable_reports
+ * @author    Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 require_once('../../config.php');
@@ -35,7 +34,7 @@ $comp = required_param('comp', PARAM_ALPHA);
 $courseid = optional_param('courseid', null, PARAM_INT);
 
 if (!$report = $DB->get_record('block_configurable_reports', ['id' => $id])) {
-      throw new \moodle_exception('reportdoesnotexists');
+    throw new moodle_exception('reportdoesnotexists');
 }
 
 // Ignore report's courseid, If we are running this report on a specific courseid
@@ -45,16 +44,16 @@ if (empty($courseid)) {
 }
 
 if (!$course = $DB->get_record("course", ['id' => $courseid])) {
-      throw new \moodle_exception("No such course id");
+    throw new moodle_exception("No such course id");
 }
 
 // Force user login in course (SITE or Course).
 if ($course->id == SITEID) {
     require_login();
-    $context = \context_system::instance();
+    $context = context_system::instance();
 } else {
     require_login($course->id);
-    $context = \context_course::instance($course->id);
+    $context = context_course::instance($course->id);
 }
 
 $PAGE->set_url('/blocks/configurable_reports/editreport.php', ['id' => $id, 'comp' => $comp]);
@@ -65,15 +64,15 @@ $PAGE->requires->js('/blocks/configurable_reports/js/configurable_reports.js');
 
 $hasreportscap = has_capability('block/configurable_reports:managereports', $context);
 if (!$hasreportscap && !has_capability('block/configurable_reports:manageownreports', $context)) {
-      throw new \moodle_exception('badpermissions');
+    throw new moodle_exception('badpermissions');
 }
 
 if (!$hasreportscap && $report->ownerid != $USER->id) {
-      throw new \moodle_exception('badpermissions');
+    throw new moodle_exception('badpermissions');
 }
 
 if ($report->type === 'sql' && !block_configurable_reports_can_managesqlreports($context)) {
-      throw new \moodle_exception('nosqlpermissions');
+    throw new moodle_exception('nosqlpermissions');
 }
 
 require_once($CFG->dirroot . '/blocks/configurable_reports/reports/' . $report->type . '/report.class.php');
@@ -82,7 +81,7 @@ $reportclassname = 'report_' . $report->type;
 $reportclass = new $reportclassname($report->id);
 
 if (!in_array($comp, $reportclass->components)) {
-      throw new \moodle_exception('badcomponent');
+    throw new moodle_exception('badcomponent');
 }
 
 $elements = cr_unserialize($report->components);
@@ -132,7 +131,7 @@ if ($compclass->plugins) {
     asort($optionsplugins);
 }
 
-$managereporturl = new \moodle_url('/blocks/configurable_reports/managereport.php', ['courseid' => $courseid]);
+$managereporturl = new moodle_url('/blocks/configurable_reports/managereport.php', ['courseid' => $courseid]);
 $PAGE->navbar->add(get_string('managereports', 'block_configurable_reports'), $managereporturl);
 
 $PAGE->navbar->add($report->name);
@@ -148,7 +147,7 @@ $currenttab = $comp;
 require('tabs.php');
 
 if ($elements) {
-    $table = new \stdclass;
+    $table = new stdclass;
     $table->head = [get_string('idnumber'), get_string('name'), get_string('summary'), get_string('edit')];
     $i = 0;
 
@@ -208,7 +207,7 @@ if ($compclass->plugins) {
 
     $attributes = ['id' => 'menuplugin'];
 
-    echo \html_writer::select($optionsplugins, 'plugin', '', ['' => get_string('choose')], $attributes);
+    echo html_writer::select($optionsplugins, 'plugin', '', ['' => get_string('choose')], $attributes);
     $OUTPUT->add_action_handler(
         new component_action('change', 'menuplugin', ['url' => "editplugin.php?id=" . $id . "&comp=" . $comp . "&pname="]),
         'menuplugin'

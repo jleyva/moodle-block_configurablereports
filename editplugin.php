@@ -15,12 +15,11 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Configurable Reports
- * A Moodle block for creating Configurable Reports
+ * Configurable Reports a Moodle block for creating customizable reports
  *
- * @package block_configurablereports
- * @author   Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date 2009
+ * @package   block_configurable_reports
+ * @author    Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 require_once("../../config.php");
@@ -37,16 +36,16 @@ $movedown = optional_param('movedown', 0, PARAM_INT);
 $delete = optional_param('delete', 0, PARAM_INT);
 
 if (!$pname) {
-    redirect(new \moodle_url('/blocks/configurable_reports/editcomp.php', ['id' => $id, 'comp' => $comp]));
+    redirect(new moodle_url('/blocks/configurable_reports/editcomp.php', ['id' => $id, 'comp' => $comp]));
     exit;
 }
 
 if (!$report = $DB->get_record('block_configurable_reports', ['id' => $id])) {
-      throw new \moodle_exception('reportdoesnotexists');
+    throw new moodle_exception('reportdoesnotexists');
 }
 
 if (!$course = $DB->get_record("course", ['id' => $report->courseid])) {
-      throw new \moodle_exception("No such course id");
+    throw new moodle_exception("No such course id");
 }
 
 // Force user login in course (SITE or Course).
@@ -60,11 +59,11 @@ if ($course->id == SITEID) {
 
 $hasmanagereportcap = has_capability('block/configurable_reports:managereports', $context);
 if (!$hasmanagereportcap && !has_capability('block/configurable_reports:manageownreports', $context)) {
-      throw new \moodle_exception('badpermissions');
+    throw new moodle_exception('badpermissions');
 }
 
 if (!$hasmanagereportcap && $report->ownerid != $USER->id) {
-      throw new \moodle_exception('badpermissions');
+    throw new moodle_exception('badpermissions');
 }
 
 require_once($CFG->dirroot . '/blocks/configurable_reports/report.class.php');
@@ -74,7 +73,7 @@ $reportclassname = 'report_' . $report->type;
 $reportclass = new $reportclassname($report->id);
 
 if (!in_array($comp, $reportclass->components)) {
-      throw new \moodle_exception('badcomponent');
+    throw new moodle_exception('badcomponent');
 }
 
 $PAGE->set_context($context);
@@ -124,7 +123,7 @@ if (!$cid) {
 }
 
 if (!$plugin || $plugin !== $pname) {
-      throw new \moodle_exception('nosuchplugin');
+    throw new moodle_exception('nosuchplugin');
 }
 defined('MOODLE_INTERNAL') || die;
 require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
@@ -179,7 +178,7 @@ if (isset($pluginclass->form) && $pluginclass->form) {
 
             $report->components = cr_serialize($allelements);
             if (!$DB->update_record('block_configurable_reports', $report)) {
-                  throw new \moodle_exception('errorsaving');
+                throw new moodle_exception('errorsaving');
             }
 
             redirect(new moodle_url('/blocks/configurable_reports/editcomp.php', ['id' => $id, 'comp' => $comp]));
@@ -205,7 +204,7 @@ if (isset($pluginclass->form) && $pluginclass->form) {
         $allelements[$comp]['elements'][] = $cdata;
         $report->components = cr_serialize($allelements, false);
         if (!$DB->update_record('block_configurable_reports', $report)) {
-              throw new \moodle_exception('errorsaving');
+            throw new moodle_exception('errorsaving');
         }
 
         redirect(new moodle_url('/blocks/configurable_reports/editcomp.php', ['id' => $id, 'comp' => $comp]));
@@ -221,16 +220,16 @@ if (isset($pluginclass->form) && $pluginclass->form) {
 
     $cdata = [
         'id' => $uniqueid,
-        'formdata' => new \stdclass,
+        'formdata' => new stdclass,
         'pluginname' => $pname,
         'pluginfullname' => $pluginclass->fullname,
-        'summary' => $pluginclass->summary(new \stdclass),
+        'summary' => $pluginclass->summary(new stdclass),
     ];
 
     $allelements[$comp]['elements'][] = $cdata;
     $report->components = cr_serialize($allelements);
     if (!$DB->update_record('block_configurable_reports', $report)) {
-          throw new \moodle_exception('errorsaving');
+        throw new moodle_exception('errorsaving');
     }
 
     redirect(new moodle_url('/blocks/configurable_reports/editcomp.php', ['id' => $id, 'comp' => $comp]));

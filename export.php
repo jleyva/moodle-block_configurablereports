@@ -15,12 +15,11 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Configurable Reports
- * A Moodle block for creating Configurable Reports
+ * Configurable Reports a Moodle block for creating customizable reports
  *
- * @package  block_configurablereports
- * @author   Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date     2009
+ * @package   block_configurable_reports
+ * @author    Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 require_once("../../config.php");
@@ -30,11 +29,11 @@ require_once($CFG->dirroot . "/blocks/configurable_reports/locallib.php");
 $id = required_param('id', PARAM_INT);
 
 if (!$report = $DB->get_record('block_configurable_reports', ['id' => $id])) {
-    throw new \moodle_exception('reportdoesnotexists', 'block_configurable_reports');
+    throw new moodle_exception('reportdoesnotexists', 'block_configurable_reports');
 }
 
 if (!$course = $DB->get_record('course', ['id' => $report->courseid])) {
-    throw new \moodle_exception('nosuchcourseid', 'block_configurable_reports');
+    throw new moodle_exception('nosuchcourseid', 'block_configurable_reports');
 }
 
 // Force user login in course (SITE or Course).
@@ -50,18 +49,18 @@ $PAGE->set_context($context);
 
 if (!has_capability('block/configurable_reports:managereports', $context) &&
     !(has_capability('block/configurable_reports:manageownreports', $context) && $report->ownerid == $USER->id)) {
-    throw new \moodle_exception('badpermissions', 'block_configurable_reports');
+    throw new moodle_exception('badpermissions', 'block_configurable_reports');
 }
 
 if (!confirm_sesskey()) {
-    throw new \moodle_exception('badpermissions', 'block_configurable_reports');
+    throw new moodle_exception('badpermissions', 'block_configurable_reports');
 }
 
 $downloadfilename = clean_filename(format_string($report->name)) . '.xml';
 
 $version = $DB->get_field('config_plugins', 'value', ['plugin' => 'block_configurable_reports', 'name' => 'version']);
 if (!$version && !$version = $DB->get_field('block', 'version', ['name' => 'configurable_reports'])) {
-    throw new \moodle_exception('Plugin not found');
+    throw new moodle_exception('Plugin not found');
 }
 
 $data = '<?xml version="1.0" encoding="UTF-8" ?>' . "\n";

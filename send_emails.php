@@ -15,12 +15,11 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Configurable Reports
- * A Moodle block for creating Configurable Reports
+ * Configurable Reports a Moodle block for creating customizable reports
  *
- * @package  block_configurablereports
- * @author   Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date     2009
+ * @package   block_configurable_reports
+ * @author    Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 // Email form added to enable email to selected users.
@@ -36,15 +35,15 @@ $PAGE->set_context($context);
 
 if (!has_capability('block/configurable_reports:managereports', $context) &&
     !has_capability('block/configurable_reports:manageownreports', $context)) {
-    throw new \moodle_exception('badpermissions');
+    throw new moodle_exception('badpermissions');
 }
 
 /**
  * Class sendemail_form
  *
- * @package  block_configurablereports
- * @author   Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date     2009
+ * @package   block_configurable_reports
+ * @author    Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class sendemail_form extends moodleform {
 

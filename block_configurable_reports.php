@@ -15,12 +15,11 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Configurable Reports
- * A Moodle block for creating customizable reports
+ * Configurable Reports a Moodle block for creating customizable reports
  *
- * @package block_configurablereports
- * @author   Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date 2009
+ * @package   block_configurable_reports
+ * @author    Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class block_configurable_reports extends block_list {
 
@@ -36,7 +35,7 @@ class block_configurable_reports extends block_list {
     /**
      * Act on instance data.
      */
-    public function specialization() : void{
+    public function specialization(): void {
 
         if ($this->config) {
             $this->title = $this->config->title ?: get_string('pluginname', 'block_configurable_reports');
@@ -61,7 +60,7 @@ class block_configurable_reports extends block_list {
      *
      * @return array
      **/
-    public function applicable_formats() : array {
+    public function applicable_formats(): array {
         return [
             'site' => true,
             'course' => true,
@@ -102,7 +101,7 @@ class block_configurable_reports extends block_list {
         $course = $DB->get_record('course', ['id' => $COURSE->id]);
 
         if (!$course) {
-            throw new \moodle_exception('coursedoesnotexists');
+            throw new moodle_exception('coursedoesnotexists');
         }
 
         if ($course->id == SITEID) {
@@ -120,9 +119,9 @@ class block_configurable_reports extends block_list {
                     if ($report->visible && cr_check_report_permissions($report, $USER->id, $context)) {
                         $rname = format_string($report->name);
                         $params = ['id' => $report->id, 'courseid' => $course->id];
-                        $url = new \moodle_url('/blocks/configurable_reports/viewreport.php', $params);
+                        $url = new moodle_url('/blocks/configurable_reports/viewreport.php', $params);
                         $attrs = ['alt' => $rname];
-                        $this->content->items[] = \html_writer::link($url, $rname, $attrs);
+                        $this->content->items[] = html_writer::link($url, $rname, $attrs);
                     }
                 }
                 if (!empty($this->content->items)) {
@@ -133,8 +132,8 @@ class block_configurable_reports extends block_list {
 
         // Course reports.
         if (!property_exists($this, 'config')
-            or !isset($this->config->displayreportslist)
-            or $this->config->displayreportslist) {
+            || !isset($this->config->displayreportslist)
+            || $this->config->displayreportslist) {
             $reports = $DB->get_records('block_configurable_reports', ['courseid' => $course->id], 'name ASC');
 
             if ($reports) {
@@ -142,9 +141,9 @@ class block_configurable_reports extends block_list {
                     if (!$report->global && $report->visible && cr_check_report_permissions($report, $USER->id, $context)) {
                         $rname = format_string($report->name);
                         $params = ['id' => $report->id, 'courseid' => $course->id];
-                        $url = new \moodle_url('/blocks/configurable_reports/viewreport.php', $params);
+                        $url = new moodle_url('/blocks/configurable_reports/viewreport.php', $params);
                         $attrs = ['alt' => $rname];
-                        $this->content->items[] = \html_writer::link($url, $rname, $attrs);
+                        $this->content->items[] = html_writer::link($url, $rname, $attrs);
                     }
                 }
                 if (!empty($this->content->items)) {
@@ -155,9 +154,9 @@ class block_configurable_reports extends block_list {
 
         if (has_capability('block/configurable_reports:managereports', $context)
             || has_capability('block/configurable_reports:manageownreports', $context)) {
-            $url = new \moodle_url('/blocks/configurable_reports/managereport.php', ['courseid' => $course->id]);
+            $url = new moodle_url('/blocks/configurable_reports/managereport.php', ['courseid' => $course->id]);
             $linktext = get_string('managereports', 'block_configurable_reports');
-            $this->content->items[] = \html_writer::link($url, $linktext);
+            $this->content->items[] = html_writer::link($url, $linktext);
         }
 
         return $this->content;
@@ -182,7 +181,7 @@ class block_configurable_reports extends block_list {
         }
 
         $lastcron = $DB->get_field('block', 'lastcron', ['name' => 'configurable_reports']);
-        if (!$lastcron and ($lastcron + $this->cron < time())) {
+        if (!$lastcron && ($lastcron + $this->cron < time())) {
             return false;
         }
 
@@ -197,7 +196,7 @@ class block_configurable_reports extends block_list {
         if ($reports) {
             foreach ($reports as $report) {
                 // Running only SQL reports. $report->type == 'sql'.
-                if ($report->type === 'sql' and (!empty($report->cron) and $report->cron == '1')) {
+                if ($report->type === 'sql' && (!empty($report->cron) && $report->cron == '1')) {
                     $reportclass = new report_sql($report);
 
                     // Execute it using $remotedb.

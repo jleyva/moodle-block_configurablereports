@@ -15,8 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Configurable Reports
- * A Moodle block for creating customizable reports
+ * Configurable Reports a Moodle block for creating customizable reports
  *
  * @package block_configurable_reports
  * @author  David Pesce <davidpesce@gmail.com>

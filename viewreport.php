@@ -15,12 +15,11 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Configurable Reports
- * A Moodle block for creating Configurable Reports
+ * Configurable Reports a Moodle block for creating customizable reports
  *
- * @package  block_configurablereports
- * @author   Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date     2009
+ * @package   block_configurable_reports
+ * @author    Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 require_once("../../config.php");
@@ -32,7 +31,7 @@ $format = optional_param('format', '', PARAM_ALPHA);
 $courseid = optional_param('courseid', null, PARAM_INT);
 
 if (!$report = $DB->get_record('block_configurable_reports', ['id' => $id])) {
-    throw new \moodle_exception('reportdoesnotexists', 'block_configurable_reports');
+    throw new moodle_exception('reportdoesnotexists', 'block_configurable_reports');
 }
 
 if ($courseid && $report->global) {
@@ -42,7 +41,7 @@ if ($courseid && $report->global) {
 }
 
 if (!$course = $DB->get_record('course', ['id' => $courseid])) {
-    throw new \moodle_exception('No such course id');
+    throw new moodle_exception('No such course id');
 }
 
 // Force user login in course (SITE or Course).
@@ -61,7 +60,7 @@ $reportclassname = 'report_' . $report->type;
 $reportclass = new $reportclassname($report);
 
 if (!$reportclass->check_permissions($USER->id, $context)) {
-    throw new \moodle_exception('badpermissions', 'block_configurable_reports');
+    throw new moodle_exception('badpermissions', 'block_configurable_reports');
 }
 
 $PAGE->set_context($context);
@@ -88,7 +87,7 @@ if (!$download) {
     $hasmanageowncap = has_capability('block/configurable_reports:manageownreports', $context);
 
     if ($hasmanageallcap || ($hasmanageowncap && $report->ownerid == $USER->id)) {
-        $managereporturl = new \moodle_url('/blocks/configurable_reports/managereport.php', ['courseid' => $report->courseid]);
+        $managereporturl = new moodle_url('/blocks/configurable_reports/managereport.php', ['courseid' => $report->courseid]);
         $PAGE->navbar->add(get_string('managereports', 'block_configurable_reports'), $managereporturl);
         $PAGE->navbar->add($report->name);
     } else {

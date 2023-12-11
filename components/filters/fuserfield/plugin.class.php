@@ -15,18 +15,29 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Configurable Reports
- * A Moodle block for creating customizable reports
+ * Configurable Reports a Moodle block for creating customizable reports
  *
- * @package  block_configurablereports
- * @author   Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date     2009
+ * @package   block_configurable_reports
+ * @author    Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 defined('MOODLE_INTERNAL') || die;
 require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
 
+/**
+ * Class plugin_fuserfield
+ *
+ * @package   block_configurable_reports
+ * @author    Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 class plugin_fuserfield extends plugin_base {
 
+    /**
+     * Init
+     *
+     * @return void
+     */
     public function init(): void {
         $this->form = true;
         $this->unique = false;
@@ -44,14 +55,28 @@ class plugin_fuserfield extends plugin_base {
         return $data->field;
     }
 
+    /**
+     * Execute
+     *
+     * @param $finalelements
+     * @param $data
+     * @return array|int[]|mixed|string|string[]
+     */
     public function execute($finalelements, $data) {
-        if ($this->report->type == 'sql') {
+        if ($this->report->type === 'sql') {
             return $this->execute_sql($finalelements, $data);
         }
 
         return $this->execute_users($finalelements, $data);
     }
 
+    /**
+     * execute_sql
+     *
+     * @param $finalelements
+     * @param $data
+     * @return array|mixed|string|string[]
+     */
     private function execute_sql($finalelements, $data) {
         $filterfuserfield = optional_param('filter_fuserfield_' . $data->field, 0, PARAM_BASE64);
         $filter = base64_decode($filterfuserfield);
@@ -68,8 +93,15 @@ class plugin_fuserfield extends plugin_base {
         return $finalelements;
     }
 
+    /**
+     * execute_users
+     *
+     * @param $finalelements
+     * @param $data
+     * @return array|int[]|mixed|string[]
+     */
     private function execute_users($finalelements, $data) {
-        global $remotedb, $CFG;
+        global $remotedb;
 
         $filterfuserfield = optional_param('filter_fuserfield_' . $data->field, 0, PARAM_BASE64);
         if ($filterfuserfield) {

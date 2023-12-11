@@ -15,8 +15,6 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Version details
- *
  * Configurable Reports - A Moodle block for creating customizable reports
  *
  * @package    block_configurable_reports

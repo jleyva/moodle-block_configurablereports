@@ -15,12 +15,11 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Configurable Reports
- * A Moodle block for creating Configurable Reports
+ * Configurable Reports a Moodle block for creating customizable reports
  *
- * @package  block_configurablereports
- * @author   Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date     2009
+ * @package   block_configurable_reports
+ * @author    Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die;
@@ -30,9 +29,9 @@ require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
 /**
  * Class report_base
  *
- * @package  block_configurablereports
- * @author   Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date     2009
+ * @package   block_configurable_reports
+ * @author    Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 abstract class report_base {
 
@@ -733,16 +732,16 @@ abstract class report_base {
     /**
      * add_jsordering
      *
-     * @param moodle_page $moodle_page
+     * @param moodle_page $moodlepage
      * @return void
      */
-    public function add_jsordering(moodle_page $moodle_page): void {
+    public function add_jsordering(moodle_page $moodlepage): void {
         switch (get_config('block_configurable_reports', 'reporttableui')) {
             case 'datatables':
-                cr_add_jsdatatables('#reporttable', $moodle_page);
+                cr_add_jsdatatables('#reporttable', $moodlepage);
                 break;
             case 'jquery':
-                cr_add_jsordering('#reporttable', $moodle_page);
+                cr_add_jsordering('#reporttable', $moodlepage);
                 echo html_writer::tag(
                     'style',
                     '#page-blocks-configurable_reports-viewreport .generaltable {
@@ -769,10 +768,10 @@ abstract class report_base {
      * print_template
      *
      * @param $config
-     * @param moodle_page $moodle_page
+     * @param moodle_page $moodlepage
      * @return void
      */
-    public function print_template($config, moodle_page $moodle_page): void {
+    public function print_template($config, moodle_page $moodlepage): void {
         global $OUTPUT;
 
         $pagecontents = [];
@@ -846,7 +845,7 @@ abstract class report_base {
         }
 
         if ($this->config->jsordering) {
-            $this->add_jsordering($moodle_page);
+            $this->add_jsordering($moodlepage);
         }
         $this->print_filters();
 
@@ -922,7 +921,7 @@ abstract class report_base {
 
         // Debug.
         $debug = optional_param('debug', false, PARAM_BOOL);
-        if ($debug or !empty($this->config->debug)) {
+        if ($debug || !empty($this->config->debug)) {
             echo html_writer::empty_tag('hr');
             echo html_writer::tag('div', $this->sql, ['id' => 'debug', 'style' => 'direction:ltr;text-align:left;']);
             echo html_writer::empty_tag('hr');

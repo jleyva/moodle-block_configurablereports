@@ -15,13 +15,12 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Configurable Reports
- * A Moodle block for creating customizable reports
+ * Configurable Reports a Moodle block for creating customizable reports
  *
  * @param $report
  * @author   Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date 2009
- * @package block_configurablereports
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package  block_configurablereports
  */
 
 /**
@@ -36,11 +35,11 @@ function export_report($report) {
     $json = [];
     $headers = $table->head;
     foreach ($table->data as $data) {
-        $jsonObject = [];
+        $jsonobject = [];
         foreach ($data as $index => $value) {
-            $jsonObject[$headers[$index]] = $value;
+            $jsonobject[$headers[$index]] = $value;
         }
-        $json[] = $jsonObject;
+        $json[] = $jsonobject;
     }
 
     $downloadfilename = clean_filename($filename);

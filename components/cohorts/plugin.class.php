@@ -15,10 +15,9 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Configurable Reports
- * A Moodle block for creating customizable reports
+ * Configurable Reports a Moodle block for creating customizable reports
  *
- * @package  block_configurablereports
+ * @package  block_configurable_reports
  * @author   Juan leyva <http://www.twitter.com/jleyvadelgado>
  * @author   : François Parlant <https://www.linkedin.com/in/francois-parlant/>
  * @date     : 2020
@@ -30,9 +29,9 @@ require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
 /**
  * Class plugin_cohorts
  *
- * @package  block_configurablereports
- * @author   Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date     2009
+ * @package   block_configurable_reports
+ * @author    Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class plugin_cohorts extends plugin_base {
 
@@ -74,33 +73,7 @@ class plugin_cohorts extends plugin_base {
             return [$filtercohorts];
         }
 
-        /**
-         * COHORT FILTER
-         * A filter for configurable reports
-         */
-        /* example of report query
-        ***********
-        * Display the students from a cohort and all the courses they are enrolled in
-        ***********
-            SELECT
-            u.firstname AS Firstname,
-            u.lastname AS Lastname,
-            u.email AS Email,
-            c.fullname AS Course
-
-            FROM prefix_course AS c
-            JOIN prefix_enrol AS en ON en.courseid = c.id
-            JOIN prefix_user_enrolments AS ue ON ue.enrolid = en.id
-            JOIN prefix_user AS u ON ue.userid = u.id
-            WHERE u.id in (SELECT u.id
-            FROM prefix_cohort AS h
-            JOIN prefix_cohort_members AS hm ON h.id = hm.cohortid
-            JOIN prefix_user AS u ON hm.userid = u.id
-            WHERE 1=1
-            %%FILTER_COHORTS:h.id%%
-            ORDER BY u.firstname)
-        */
-
+        // Example https://gist.github.com/luukverhoeven/aac43e35cb7199057d5592c90d5cde4c
         if (preg_match("/%%FILTER_COHORTS:([^%]+)%%/i", $finalelements, $output)) {
             $replace = ' AND ' . $output[1] . ' = ' . $filtercohorts;
 

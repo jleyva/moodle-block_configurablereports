@@ -15,12 +15,11 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Configurable Reports
- * A Moodle block for creating Configurable Reports
+ * Configurable Reports a Moodle block for creating customizable reports
  *
- * @package  block_configurablereports
- * @author   Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date     2009
+ * @package   block_configurable_reports
+ * @author    Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 if (!defined('MOODLE_INTERNAL')) {
@@ -33,9 +32,9 @@ require_once($CFG->libdir . '/formslib.php');
 /**
  * Class report_edit_form
  *
- * @package  block_configurablereports
- * @author   Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date     2009
+ * @package   block_configurable_reports
+ * @author    Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class report_edit_form extends moodleform {
 
@@ -169,7 +168,7 @@ class report_edit_form extends moodleform {
     public function get_data() {
         $data = parent::get_data();
 
-        if ($data !== null and isset($data->summary_editor)) {
+        if ($data !== null && isset($data->summary_editor)) {
             $data->summaryformat = $data->summary_editor['format'];
             $data->summary = $data->summary_editor['text'];
         }
@@ -180,16 +179,16 @@ class report_edit_form extends moodleform {
     /**
      * Load in existing data as form defaults.
      *
-     * @param stdClass|array $default_values object or array of default values.
+     * @param stdClass|array $defaultvalues object or array of default values.
      */
-    public function set_data($default_values) {
-        if (!is_object($default_values)) {
+    public function set_data($defaultvalues) {
+        if (!is_object($defaultvalues)) {
             // We need object for file_prepare_standard_editor.
-            $default_values = (object) $default_values;
+            $defaultvalues = (object) $defaultvalues;
         }
-        $default_values = file_prepare_standard_editor($default_values, 'summary', $this->get_editor_options());
+        $defaultvalues = file_prepare_standard_editor($defaultvalues, 'summary', $this->get_editor_options());
 
-        parent::set_data($default_values);
+        parent::set_data($defaultvalues);
     }
 
     /**
