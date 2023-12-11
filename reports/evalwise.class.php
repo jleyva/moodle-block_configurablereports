@@ -88,12 +88,14 @@ class EvalWise extends EvalMath {
                         return $this->trigger("internal error");
                     }
                     $fnn = preg_replace("/^arc/", "a", $fnn); // For the 'arc' trig synonyms.
-                    if ($fnn == 'ln') {
+                    if ($fnn === 'ln') {
                         $fnn = 'log';
                     }
 
                     // TODO Use the PHP internal function if possible.
+                    // @codingStandardsIgnoreStart
                     eval('$stack->push(' . $fnn . '($op1));'); // Perfectly safe eval().
+                    // @codingStandardsIgnoreEnd
 
                 } else if (array_key_exists($fnn, $this->fc)) { // Calc emulation function.
                     // Get args.
