@@ -29,7 +29,7 @@ require_once($CFG->dirroot . "/blocks/configurable_reports/locallib.php");
 require_login();
 
 error_reporting(0);
-ini_set('display_erros', false);
+ini_set('display_errors', false);
 
 $id = required_param('id', PARAM_ALPHANUM);
 $reportid = required_param('reportid', PARAM_INT);
@@ -45,7 +45,7 @@ if (!$course = $DB->get_record('course', ['id' => $courseid])) {
 }
 
 // Force user login in course (SITE or Course).
-if ((int) $course->id == SITEID) {
+if ((int) $course->id === SITEID) {
     require_login();
     $context = context_system::instance();
 } else {
