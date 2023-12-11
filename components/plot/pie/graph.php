@@ -45,7 +45,7 @@ if (!$course = $DB->get_record('course', ['id' => $courseid])) {
 }
 
 // Force user login in course (SITE or Course).
-if ($course->id == SITEID) {
+if ((int) $course->id == SITEID) {
     require_login();
     $context = context_system::instance();
 } else {
@@ -61,67 +61,67 @@ $reportclass = new $reportclassname($report);
 
 if (!$reportclass->check_permissions($USER->id, $context)) {
     throw new moodle_exception("No permissions");
-} else {
+}
 
-    $components = cr_unserialize($report->components);
-    $graphs = $components['plot']['elements'];
+$components = cr_unserialize($report->components);
+$graphs = $components['plot']['elements'];
 
-    if (!empty($graphs)) {
-        $series = [];
-        foreach ($graphs as $g) {
-            require_once($CFG->dirroot . '/blocks/configurable_reports/components/plot/' . $g['pluginname'] . '/plugin.class.php');
-            if ($g['id'] == $id) {
-                $classname = 'plugin_' . $g['pluginname'];
-                $class = new $classname($report);
-                $series = $class->get_series($g['formdata']);
-                $colors = $class->get_color_palette($g['formdata']);
-                break;
-            }
-        }
-
+if (!empty($graphs)) {
+    $series = [];
+    foreach ($graphs as $g) {
+        require_once($CFG->dirroot . '/blocks/configurable_reports/components/plot/' . $g['pluginname'] . '/plugin.class.php');
         if ($g['id'] == $id) {
-
-            // Standard inclusions.
-            include($CFG->dirroot . "/blocks/configurable_reports/lib/pChart/pData.class");
-            include($CFG->dirroot . "/blocks/configurable_reports/lib/pChart/pChart.class");
-
-            // Dataset definition.
-            $dataset = new pData;
-
-            $dataset->AddPoint($series[1], "Serie1");
-            // Invert/Reverse Hebrew labels so it can be rendered using PHP imagettftext().
-            foreach ($series[0] as $key => $value) {
-                $invertedlabels[$key] = strip_tags(
-                    (preg_match("/[\xE0-\xFA]/", iconv("UTF-8", "ISO-8859-8", $value))) ? $reportclass->utf8_strrev($value) : $value
-                );
-            }
-            $dataset->AddPoint($invertedlabels /* $series[0] */, "Serie2");
-            $dataset->AddAllSeries();
-            $dataset->SetAbsciseLabelSerie("Serie2");
-
-            // Initialise the graph.
-            $test = new pChart(450, 200 + (count($series[0]) * 10));
-            $test->drawFilledRoundedRectangle(7, 7, 293, 193, 5, 240, 240, 240);
-            $test->drawRoundedRectangle(5, 5, 295, 195, 5, 230, 230, 230);
-            $test->createColorGradientPalette(195, 204, 56, 223, 110, 41, 5);
-
-            // Custom colors.
-            if ($colors) {
-                foreach ($colors as $index => $color) {
-                    if (!empty($color)) {
-                        $test->Palette[$index] = ["R" => $color[0], "G" => $color[1], "B" => $color[2]];
-                    }
-                }
-            }
-
-            // Draw the pie chart.
-            $test->setFontProperties($CFG->dirroot . "/blocks/configurable_reports/lib/Fonts/tahoma.ttf", 8);
-            $test->AntialiasQuality = 0;
-            $test->drawPieGraph($dataset->GetData(), $dataset->GetDataDescription(), 150, 90, 110, PIE_PERCENTAGE, true, 50, 20, 5);
-            $test->drawPieLegend(300, 15, $dataset->GetData(), $dataset->GetDataDescription(), 250, 250, 250);
-
-            ob_clean(); // Hack to clear output and send only IMAGE data to browser.
-            $test->Stroke();
+            $classname = 'plugin_' . $g['pluginname'];
+            $class = new $classname($report);
+            $series = $class->get_series($g['formdata']);
+            $colors = $class->get_color_palette($g['formdata']);
+            break;
         }
     }
+
+    if ($g['id'] == $id) {
+
+        // Standard inclusions.
+        include($CFG->dirroot . "/blocks/configurable_reports/lib/pChart/pData.class.php");
+        include($CFG->dirroot . "/blocks/configurable_reports/lib/pChart/pChart.class.php");
+
+        // Dataset definition.
+        $dataset = new pData;
+
+        $dataset->AddPoint($series[1], "Serie1");
+        // Invert/Reverse Hebrew labels so it can be rendered using PHP imagettftext().
+        foreach ($series[0] as $key => $value) {
+            $invertedlabels[$key] = strip_tags(
+                (preg_match("/[\xE0-\xFA]/", iconv("UTF-8", "ISO-8859-8", $value))) ? $reportclass->utf8_strrev($value) : $value
+            );
+        }
+        $dataset->AddPoint($invertedlabels /* $series[0] */, "Serie2");
+        $dataset->AddAllSeries();
+        $dataset->SetAbsciseLabelSerie("Serie2");
+
+        // Initialise the graph.
+        $test = new pChart(450, 200 + (count($series[0]) * 10));
+        $test->drawFilledRoundedRectangle(7, 7, 293, 193, 5, 240, 240, 240);
+        $test->drawRoundedRectangle(5, 5, 295, 195, 5, 230, 230, 230);
+        $test->createColorGradientPalette(195, 204, 56, 223, 110, 41, 5);
+
+        // Custom colors.
+        if ($colors) {
+            foreach ($colors as $index => $color) {
+                if (!empty($color)) {
+                    $test->Palette[$index] = ["R" => $color[0], "G" => $color[1], "B" => $color[2]];
+                }
+            }
+        }
+
+        // Draw the pie chart.
+        $test->setFontProperties($CFG->dirroot . "/blocks/configurable_reports/lib/Fonts/tahoma.ttf", 8);
+        $test->AntialiasQuality = 0;
+        $test->drawPieGraph($dataset->GetData(), $dataset->GetDataDescription(), 150, 90, 110, PIE_PERCENTAGE, true, 50, 20, 5);
+        $test->drawPieLegend(300, 15, $dataset->GetData(), $dataset->GetDataDescription(), 250, 250, 250);
+
+        ob_clean(); // Hack to clear output and send only IMAGE data to browser.
+        $test->Stroke();
+    }
+
 }

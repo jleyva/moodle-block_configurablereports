@@ -304,7 +304,7 @@ abstract class report_base {
         if ($graphs) {
             foreach ($graphs as $g) {
                 $output .= '<div class="centerpara">';
-                $output .= ' <img src="' . $g . '" alt="' . $this->config->name . '"><br />';
+                $output .= ' <img src="' . $g . '" alt="' . s($this->config->name) . '"><br />';
                 $output .= '</div>';
             }
         }
@@ -335,17 +335,20 @@ abstract class report_base {
             $id = clean_param($request['id'], PARAM_INT);
             $wwwpath = 'viewreport.php?id=' . $id;
             unset($request['id']);
+
             foreach ($request as $key => $val) {
-                $key = clean_param($key, PARAM_CLEANHTML);
+
+                $key = s(clean_param($key, PARAM_CLEANHTML));
+
                 if (is_array($val)) {
                     foreach ($val as $k => $v) {
-                        $k = clean_param($k, PARAM_CLEANHTML);
-                        $v = clean_param($v, PARAM_CLEANHTML);
+                        $k = s(clean_param($k, PARAM_CLEANHTML));
+                        $v = s(clean_param($v, PARAM_CLEANHTML));
                         $wwwpath .= "&amp;{$key}[$k]=" . $v;
                     }
                 } else {
                     $val = clean_param($val, PARAM_CLEANHTML);
-                    $wwwpath .= "&amp;$key=" . $val;
+                    $wwwpath .= "&amp;$key=" . s($val);
                 }
             }
         }
@@ -363,12 +366,11 @@ abstract class report_base {
                     continue;
                 }
 
-                // TODO escaping
                 // TODO Use moodle_url.
                 $output .= '<a href="' . s($wwwpath) . '&amp;download=1&amp;format=' . s($e) . '">
-                                    <img src="' . $CFG->wwwroot . '/blocks/configurable_reports/export/' . $e . '/pix.gif"
-                                     alt="' . $e . '">
-                                    &nbsp;' . (strtoupper($e)) .
+                                    <img src="' . $CFG->wwwroot . '/blocks/configurable_reports/export/' . s($e) . '/pix.gif"
+                                     alt="' . s($e) . '">
+                                    &nbsp;' . (s(strtoupper($e))) .
                     '</a>&nbsp;';
             }
             $output .= '</div>';
@@ -530,7 +532,7 @@ abstract class report_base {
             $i++;
         }
 
-        if (count($conditions['elements']) == 1) {
+        if (count($conditions['elements']) === 1) {
             $finalelements = $elements[1];
         } else {
             $logic = $conditions['config']->conditionexpr;
@@ -793,15 +795,15 @@ abstract class report_base {
             if ($request) {
                 foreach ($request as $key => $val) {
                     if (strpos($key, 'filter_') !== false) {
-                        $key = clean_param($key, PARAM_CLEANHTML);
+                        $key = s(clean_param($key, PARAM_CLEANHTML));
                         if (is_array($val)) {
                             foreach ($val as $k => $v) {
-                                $k = clean_param($k, PARAM_CLEANHTML);
-                                $v = clean_param($v, PARAM_CLEANHTML);
+                                $k = s(clean_param($k, PARAM_CLEANHTML));
+                                $v = s(clean_param($v, PARAM_CLEANHTML));
                                 $postfiltervars .= "&amp;{$key}[$k]=" . $v;
                             }
                         } else {
-                            $val = clean_param($val, PARAM_CLEANHTML);
+                            $val = s(clean_param($val, PARAM_CLEANHTML));
                             $postfiltervars .= "&amp;$key=" . $val;
                         }
                     }
@@ -813,7 +815,8 @@ abstract class report_base {
                 $this->totalrecords,
                 $page,
                 $this->config->pagination,
-                "viewreport.php?id=" . $this->config->id . "&courseid=" . $this->config->courseid . "$postfiltervars&amp;"
+                "viewreport.php?id=" . s($this->config->id) . "&courseid=" . ((int) $this->config->courseid) .
+                "$postfiltervars&amp;"
             );
             $pagingbar->pagevar = 'page';
             $pagination = $OUTPUT->render($pagingbar);
@@ -955,15 +958,15 @@ abstract class report_base {
                 if ($request) {
                     foreach ($request as $key => $val) {
                         if (strpos($key, 'filter_') !== false) {
-                            $key = clean_param($key, PARAM_CLEANHTML);
+                            $key = s(clean_param($key, PARAM_CLEANHTML));
                             if (is_array($val)) {
                                 foreach ($val as $k => $v) {
-                                    $k = clean_param($k, PARAM_CLEANHTML);
-                                    $v = clean_param($v, PARAM_CLEANHTML);
+                                    $k = s(clean_param($k, PARAM_CLEANHTML));
+                                    $v = s(clean_param($v, PARAM_CLEANHTML));
                                     $postfiltervars .= "&amp;{$key}[$k]=" . $v;
                                 }
                             } else {
-                                $val = clean_param($val, PARAM_CLEANHTML);
+                                $val = s(clean_param($val, PARAM_CLEANHTML));
                                 $postfiltervars .= "&amp;$key=" . $val;
                             }
                         }
@@ -974,7 +977,7 @@ abstract class report_base {
                     $this->totalrecords,
                     $page,
                     $this->config->pagination,
-                    "viewreport.php?id=" . $this->config->id . "&courseid=" . $this->config->courseid . "$postfiltervars&amp;"
+                    "viewreport.php?id=" . s($this->config->id) . "&courseid=" . s($this->config->courseid) . "$postfiltervars&amp;"
                 );
                 $pagingbar->pagevar = 'page';
                 echo $OUTPUT->render($pagingbar);

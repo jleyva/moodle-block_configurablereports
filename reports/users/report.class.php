@@ -32,6 +32,10 @@
  */
 class report_users extends report_base {
 
+    /**
+     * Init
+     * @return void
+     */
     public function init(): void {
         $this->components = [
             'columns',
@@ -46,6 +50,8 @@ class report_users extends report_base {
     }
 
     /**
+     * get_all_elements
+     *
      * @return array
      */
     public function get_all_elements(): array {

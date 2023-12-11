@@ -14,24 +14,40 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+/**
+ * Configurable Reports
+ * A Moodle block for creating customizable reports
+ *
+ * @package  block_configurablereports
+ * @author   Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @date     2009
+ */
+
 defined('MOODLE_INTERNAL') || die;
 
 require_once($CFG->libdir . '/formslib.php');
 
+/**
+ * Class pie_form
+ *
+ * @package  block_configurablereports
+ * @author   Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @date     2009
+ */
 class pie_form extends moodleform {
 
     /**
      * Form definition
      */
     public function definition(): void {
-        global $DB, $USER, $CFG;
+        global $CFG;
 
         $mform =& $this->_form;
         $options = [];
 
         $report = $this->_customdata['report'];
 
-        if ($report->type != 'sql') {
+        if ($report->type !== 'sql') {
             $components = cr_unserialize($this->_customdata['report']->components);
 
             if (!is_array($components) || empty($components['columns']['elements'])) {
@@ -130,7 +146,15 @@ class pie_form extends moodleform {
         $this->add_action_buttons(true, get_string('add'));
     }
 
-    function validation($data, $files) {
+    /**
+     * Server side rules do not work for uploaded files, implement serverside rules here if needed.
+     *
+     * @param array $data  array of ("fieldname"=>value) of submitted data
+     * @param array $files array of uploaded files "element_name"=>tmp_file_path
+     * @return array of "element_name"=>"error_description" if there are errors,
+     *                     or an empty array if everything is OK (true allowed for backwards compatibility too).
+     */
+    function validation($data, $files): array {
         $errors = [];
 
         $length = count($data['piechart_label']);

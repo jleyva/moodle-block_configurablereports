@@ -22,6 +22,14 @@
  * @author   Juan leyva <http://www.twitter.com/jleyvadelgado>
  * @date     2009
  */
+
+/**
+ * Class report_categories
+ *
+ * @package  block_configurablereports
+ * @author   Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @date     2009
+ */
 class report_categories extends report_base {
 
     /**

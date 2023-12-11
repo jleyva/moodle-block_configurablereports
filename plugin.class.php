@@ -70,6 +70,11 @@ abstract class plugin_base {
     public $reporttypes = [];
 
     /**
+     * @var true
+     */
+    public bool $ordering;
+
+    /**
      * @param $report
      */
     public function __construct($report) {

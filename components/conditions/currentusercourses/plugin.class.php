@@ -37,6 +37,7 @@ class plugin_currentusercourses extends plugin_base {
 
     /**
      * Init
+     *
      * @return void
      */
     public function init(): void {

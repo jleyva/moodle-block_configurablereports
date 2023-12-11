@@ -55,6 +55,7 @@ class import_form extends moodleform {
         // Buttons.
         $this->add_action_buttons(false, get_string('importreport', 'block_configurable_reports'));
     }
+
     /**
      * Server side rules do not work for uploaded files, implement serverside rules here if needed.
      *

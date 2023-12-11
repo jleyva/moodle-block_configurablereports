@@ -23,6 +23,12 @@
  * @date     2009
  */
 
+/**
+ * Export report
+ *
+ * @param $report
+ * @return void
+ */
 function export_report($report) {
     global $CFG;
     require_once($CFG->dirroot . '/lib/odslib.class.php');
@@ -32,7 +38,6 @@ function export_report($report) {
     $filename = 'report_' . (time()) . '.ods';
 
     if (!empty($table->head)) {
-        $keys = array_keys($table->head);
         foreach ($table->head as $key => $heading) {
             $matrix[0][$key] = str_replace("\n", ' ', htmlspecialchars_decode(strip_tags(nl2br($heading))));
         }

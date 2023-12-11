@@ -26,6 +26,7 @@ class component_conditions extends component_base {
 
     /**
      * Init
+     *
      * @return void
      */
     public function init(): void {

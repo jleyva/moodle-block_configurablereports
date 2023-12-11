@@ -23,8 +23,14 @@
  * @date 2009
  */
 
+/**
+ * export_report
+ *
+ * @param $report
+ * @return void
+ */
 function export_report($report) {
-    global $DB, $CFG;
+    global $CFG;
     require_once($CFG->libdir . '/csvlib.class.php');
 
     $table = $report->table;
@@ -32,9 +38,6 @@ function export_report($report) {
     $filename = 'report';
 
     if (!empty($table->head)) {
-        $countcols = count($table->head);
-        $keys = array_keys($table->head);
-        $lastkey = end($keys);
         foreach ($table->head as $key => $heading) {
             $matrix[0][$key] = str_replace("\n", ' ', htmlspecialchars_decode(strip_tags(nl2br($heading))));
         }

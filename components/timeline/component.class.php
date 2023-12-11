@@ -22,8 +22,21 @@
  * @author   Juan leyva <http://www.twitter.com/jleyvadelgado>
  * @date     2009
  */
+
+/**
+ * Class component_timeline
+ *
+ * @package  block_configurablereports
+ * @author   Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @date     2009
+ */
 class component_timeline extends component_base {
 
+    /**
+     * Init
+     *
+     * @return void
+     */
     public function init(): void {
         $this->plugins = false;
         $this->ordering = false;
@@ -31,6 +44,12 @@ class component_timeline extends component_base {
         $this->help = true;
     }
 
+    /**
+     * form_process_data
+     *
+     * @param moodleform $cform
+     * @return void
+     */
     public function form_process_data(moodleform $cform) {
         global $DB;
         if ($this->form) {
@@ -42,11 +61,16 @@ class component_timeline extends component_base {
         }
     }
 
+    /**
+     * form_set_data
+     *
+     * @param moodleform $cform
+     * @return void
+     */
     public function form_set_data(moodleform $cform) {
         if ($this->form) {
-            $fdata = new stdclass;
             $components = cr_unserialize($this->config->components);
-            $compconfig = (isset($components['timeline']['config'])) ? $components['timeline']['config'] : new stdclass;
+            $compconfig = $components['timeline']['config'] ?? new stdclass;
             $cform->set_data($compconfig);
         }
     }

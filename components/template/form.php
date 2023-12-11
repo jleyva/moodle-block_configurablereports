@@ -27,13 +27,20 @@ defined('MOODLE_INTERNAL') || die;
 
 require_once($CFG->libdir . '/formslib.php');
 
+/**
+ * Class template_form
+ *
+ * @package  block_configurablereports
+ * @author   Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @date     2009
+ */
 class template_form extends moodleform {
 
     /**
      * Form definition
      */
     public function definition(): void {
-        global $DB, $CFG;
+        global $CFG;
 
         $mform =& $this->_form;
 
@@ -41,7 +48,7 @@ class template_form extends moodleform {
 
         $options = [];
 
-        if ($report->type != 'sql') {
+        if ($report->type !== 'sql') {
             $components = cr_unserialize($this->_customdata['report']->components);
 
             if (is_array($components) && !empty($components['columns']['elements'])) {
@@ -122,10 +129,8 @@ class template_form extends moodleform {
      */
     public function validation($data, $files): array {
         $errors = parent::validation($data, $files);
-        if ($data['enabled']) {
-            if (!$data['record']) {
-                $errors['record'] = get_string('required');
-            }
+        if ($data['enabled'] && !$data['record']) {
+            $errors['record'] = get_string('required');
         }
 
         return $errors;

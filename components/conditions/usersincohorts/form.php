@@ -31,8 +31,8 @@ require_once($CFG->libdir . '/formslib.php');
  * Class usersincohorts_form
  *
  * @package  block_configurablereports
- * @author  Juan leyva
- * @date  2009
+ * @author   Juan leyva
+ * @date     2009
  */
 class usersincohorts_form extends moodleform {
 

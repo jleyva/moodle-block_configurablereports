@@ -18,9 +18,9 @@
  * Configurable Reports
  * A Moodle block for creating Configurable Reports
  *
- * @package block_configurablereports
+ * @package  block_configurablereports
  * @author   Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date 2009
+ * @date     2009
  */
 
 require_once("../../config.php");
@@ -32,7 +32,7 @@ $format = optional_param('format', '', PARAM_ALPHA);
 $courseid = optional_param('courseid', null, PARAM_INT);
 
 if (!$report = $DB->get_record('block_configurable_reports', ['id' => $id])) {
-      throw new \moodle_exception('reportdoesnotexists', 'block_configurable_reports');
+    throw new \moodle_exception('reportdoesnotexists', 'block_configurable_reports');
 }
 
 if ($courseid && $report->global) {
@@ -42,11 +42,11 @@ if ($courseid && $report->global) {
 }
 
 if (!$course = $DB->get_record('course', ['id' => $courseid])) {
-      throw new \moodle_exception('No such course id');
+    throw new \moodle_exception('No such course id');
 }
 
 // Force user login in course (SITE or Course).
-if ($course->id == SITEID) {
+if ((int) $course->id === SITEID) {
     require_login();
     $context = context_system::instance();
 } else {
@@ -61,7 +61,7 @@ $reportclassname = 'report_' . $report->type;
 $reportclass = new $reportclassname($report);
 
 if (!$reportclass->check_permissions($USER->id, $context)) {
-      throw new \moodle_exception('badpermissions', 'block_configurable_reports');
+    throw new \moodle_exception('badpermissions', 'block_configurable_reports');
 }
 
 $PAGE->set_context($context);
@@ -71,7 +71,7 @@ $PAGE->requires->jquery();
 
 $download = ($download && $format && strpos($report->export, $format . ',') !== false) ? true : false;
 
-if ($download && $report->type == "sql") {
+if ($download && $report->type === "sql") {
     $reportclass->setForExport(true);
 }
 $reportclass->create_report();

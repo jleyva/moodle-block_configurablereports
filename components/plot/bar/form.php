@@ -14,23 +14,39 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+/**
+ * Configurable Reports
+ * A Moodle block for creating customizable reports
+ *
+ * @package  block_configurablereports
+ * @author   Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @date     2009
+ */
+
 defined('MOODLE_INTERNAL') || die;
 
 require_once($CFG->libdir . '/formslib.php');
 
+/**
+ * Class bar_form
+ *
+ * @package  block_configurablereports
+ * @author   Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @date     2009
+ */
 class bar_form extends moodleform {
 
     /**
      * Form definition
      */
     public function definition(): void {
-        global $DB, $USER, $CFG;
+        global $CFG;
 
         $mform =& $this->_form;
         $options = [];
         $report = $this->_customdata['report'];
 
-        if ($report->type != 'sql') {
+        if ($report->type !== 'sql') {
             $components = cr_unserialize($this->_customdata['report']->components);
 
             if (!is_array($components) || empty($components['columns']['elements'])) {
@@ -54,7 +70,7 @@ class bar_form extends moodleform {
             $reportclass = new $reportclassname($report);
 
             $components = cr_unserialize($report->components);
-            $config = (isset($components['customsql']['config'])) ? $components['customsql']['config'] : new stdclass;
+            $config = $components['customsql']['config'] ?? new stdclass;
 
             if (isset($config->querysql)) {
                 $sql = $config->querysql;
@@ -86,7 +102,11 @@ class bar_form extends moodleform {
         $this->add_formatting_elements($mform);
     }
 
-    public function add_formatting_elements($mform) {
+    /**
+     * @param $mform
+     * @return void
+     */
+    public function add_formatting_elements($mform): void {
         $mform->addElement('header', 'size', get_string('head_size', 'block_configurable_reports'));
 
         $mform->addElement('text', 'width', get_string('width', 'block_configurable_reports'));
@@ -95,38 +115,6 @@ class bar_form extends moodleform {
         $mform->addElement('text', 'height', get_string('height', 'block_configurable_reports'));
         $mform->setDefault('height', 500);
         $mform->setType("height", PARAM_INT);
-
-        /* Shouldn't use these without a way to automatically
-         * calculate colors for the text and bars that contrast
-         * with the chosen background.
-         *
-        $mform->addElement(
-            'header',
-            'color',
-            get_string('head_color', 'block_configurable_reports')
-        );
-        $mform->addElement(
-            'text',
-            'color_r',
-            "R",
-            "size = 5"
-        );
-        $mform->setDefault("color_r",170);
-        $mform->addElement(
-            'text',
-            'color_g',
-            "G",
-            "size = 5"
-        );
-        $mform->setDefault("color_g",183);
-        $mform->addElement(
-            'text',
-            'color_b',
-            "B",
-            "size = 5"
-        );
-        $mform->setDefault("color_b",87);
-        */
 
         // Buttons.
         $this->add_action_buttons(true, get_string('add'));

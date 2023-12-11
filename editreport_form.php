@@ -18,9 +18,9 @@
  * Configurable Reports
  * A Moodle block for creating Configurable Reports
  *
- * @package block_configurablereports
+ * @package  block_configurablereports
  * @author   Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date 2009
+ * @date     2009
  */
 
 if (!defined('MOODLE_INTERNAL')) {
@@ -30,13 +30,20 @@ if (!defined('MOODLE_INTERNAL')) {
 
 require_once($CFG->libdir . '/formslib.php');
 
+/**
+ * Class report_edit_form
+ *
+ * @package  block_configurablereports
+ * @author   Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @date     2009
+ */
 class report_edit_form extends moodleform {
 
     /**
-* Form definition
-*/
-public function definition():void {
-        global $DB, $USER, $CFG;
+     * Form definition
+     */
+    public function definition(): void {
+        global $CFG;
 
         $adminmode = optional_param('adminmode', null, PARAM_INT);
 
@@ -141,6 +148,7 @@ public function definition():void {
         // Buttons.
         $this->add_action_buttons(true, get_string('add'));
     }
+
     /**
      * Server side rules do not work for uploaded files, implement serverside rules here if needed.
      *
@@ -149,7 +157,7 @@ public function definition():void {
      * @return array of "element_name"=>"error_description" if there are errors,
      *                     or an empty array if everything is OK (true allowed for backwards compatibility too).
      */
-    public function validation($data, $files) : array{
+    public function validation($data, $files): array {
         return parent::validation($data, $files);
     }
 
@@ -158,7 +166,7 @@ public function definition():void {
      *
      * @return stdClass
      */
-    function get_data() {
+    public function get_data() {
         $data = parent::get_data();
 
         if ($data !== null and isset($data->summary_editor)) {
@@ -174,7 +182,7 @@ public function definition():void {
      *
      * @param stdClass|array $default_values object or array of default values.
      */
-    function set_data($default_values) {
+    public function set_data($default_values) {
         if (!is_object($default_values)) {
             // We need object for file_prepare_standard_editor.
             $default_values = (object) $default_values;
@@ -189,16 +197,14 @@ public function definition():void {
      *
      * @return array An array of options.
      */
-    function get_editor_options() {
-        $editoroptions = [
+    public function get_editor_options(): array {
+        return [
             'subdirs' => 0,
             'maxbytes' => 0,
             'maxfiles' => 0,
             'noclean' => false,
             'trusttext' => false,
         ];
-
-        return $editoroptions;
     }
 
 }

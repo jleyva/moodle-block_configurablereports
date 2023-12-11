@@ -23,6 +23,12 @@
  * @date 2009
  */
 
+/**
+ * Export report
+ *
+ * @param $report
+ * @return void
+ */
 function export_report($report) {
     global $CFG;
     require_once($CFG->dirroot . '/lib/excellib.class.php');

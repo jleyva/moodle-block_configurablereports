@@ -84,14 +84,14 @@ class sendemail_form extends moodleform {
 // TODO _POST?? not Moodle way.
 $form = new sendemail_form(null, [
     'usersids' => implode(',', $_POST['userids']),
-    'courseid' => $_POST['courseid'],
+    'courseid' => (int) $_POST['courseid'],
 ]);
 
 if ($form->is_cancelled()) {
     redirect(new moodle_url('/course/view.php?id=' . $data->courseid));
 } else if ($data = $form->get_data()) {
     foreach (explode(',', $data->usersids) as $userid) {
-        $abouttosenduser = $DB->get_record('user', ['id' => $userid]);
+        $abouttosenduser = $DB->get_record('user', ['id' => (int) $userid]);
         email_to_user($abouttosenduser, $USER, $data->subject, format_text($data->content['text']), $data->content['text']);
     }
     // After emails were sent... go back to where you came from.

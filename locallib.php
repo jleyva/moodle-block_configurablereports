@@ -24,6 +24,8 @@
  */
 
 /**
+ * cr_print_js_function
+ *
  * @return void
  */
 function cr_print_js_function() {
@@ -499,51 +501,37 @@ function table_to_excel(string $filename, $table) {
  * Returns contexts in deprecated and current modes
  *
  * @param int $context The context
- * @param int $id      The context id
- * @param int $flags   The flags to be used
+ * @param int|null $id The context id
+ * @param null $strictness The flags to be used
  * @return stdClass     An object instance
  */
-function cr_get_context($context, $id = null, $flags = null) {
+function cr_get_context(int $context, ?int $id = null, $strictness = null) {
 
-    if ($context == CONTEXT_SYSTEM) {
-        if (class_exists('context_system')) {
-            return context_system::instance();
-        } else {
-            return get_context_instance(CONTEXT_SYSTEM);
-        }
-    } else if ($context == CONTEXT_COURSE) {
-        if (class_exists('context_course')) {
-            return context_course::instance($id, $flags);
-        } else {
-            return get_context_instance($context, $id, $flags);
-        }
-    } else if ($context == CONTEXT_COURSECAT) {
-        if (class_exists('context_coursecat')) {
-            return context_coursecat::instance($id, $flags);
-        } else {
-            return get_context_instance($context, $id, $flags);
-        }
-    } else if ($context == CONTEXT_BLOCK) {
-        if (class_exists('context_block')) {
-            return context_block::instance($id, $flags);
-        } else {
-            return get_context_instance($context, $id, $flags);
-        }
-    } else if ($context == CONTEXT_MODULE) {
-        if (class_exists('context_module')) {
-            return get_context_instance::instance($id, $flags);
-        } else {
-            return get_context_instance($context, $id, $flags);
-        }
-    } else if ($context == CONTEXT_USER) {
-        if (class_exists('context_user')) {
-            return context_user::instance($id, $flags);
-        } else {
-            return get_context_instance($context, $id, $flags);
-        }
+    if ($context === CONTEXT_SYSTEM) {
+        return context_system::instance();
     }
 
-    return get_context_instance($context, $id, $flags);
+    if ($context === CONTEXT_COURSE) {
+        return context_course::instance($id, $strictness);
+    }
+
+    if ($context === CONTEXT_COURSECAT) {
+        return context_coursecat::instance($id, $strictness);
+    }
+
+    if ($context === CONTEXT_BLOCK) {
+        return context_block::instance($id, $strictness);
+    }
+
+    if ($context === CONTEXT_MODULE) {
+        return context_module::instance($id, $strictness);
+    }
+
+    if ($context === CONTEXT_USER) {
+        return context_user::instance($id, $strictness);
+    }
+
+    return get_context_instance($context, $id, $strictness);
 }
 
 /**
@@ -657,30 +645,23 @@ function cr_logging_info(): array {
     $useinternalreader = false; // Flag to determine if we should use the internal reader.
     $logtable = '';
 
-    // Pre 2.7.
-    if ($CFG->version < 2014051200) {
-        $uselegacyreader = true;
-        $logtable = 'log';
-    } else {
+    // Get list of readers.
+    $logmanager = get_log_manager();
+    $readers = $logmanager->get_readers();
 
-        // Get list of readers.
-        $logmanager = get_log_manager();
-        $readers = $logmanager->get_readers();
+    // Get preferred reader.
+    if (!empty($readers)) {
+        foreach ($readers as $readerpluginname => $reader) {
+            // If legacy reader is preferred reader.
+            if ($readerpluginname == 'logstore_legacy') {
+                $uselegacyreader = true;
+                $logtable = 'log';
+            }
 
-        // Get preferred reader.
-        if (!empty($readers)) {
-            foreach ($readers as $readerpluginname => $reader) {
-                // If legacy reader is preferred reader.
-                if ($readerpluginname == 'logstore_legacy') {
-                    $uselegacyreader = true;
-                    $logtable = 'log';
-                }
-
-                // If sql_internal_table_reader is preferred reader.
-                if ($reader instanceof \core\log\sql_internal_table_reader or $reader instanceof \core\log\sql_internal_reader) {
-                    $useinternalreader = true;
-                    $logtable = $reader->get_internal_log_table_name();
-                }
+            // If sql_internal_table_reader is preferred reader.
+            if ($reader instanceof \core\log\sql_internal_table_reader or $reader instanceof \core\log\sql_internal_reader) {
+                $useinternalreader = true;
+                $logtable = $reader->get_internal_log_table_name();
             }
         }
     }

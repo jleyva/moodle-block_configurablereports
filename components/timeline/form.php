@@ -30,13 +30,19 @@ defined('MOODLE_INTERNAL') || die;
 
 require_once($CFG->libdir . '/formslib.php');
 
+/**
+ * Class timeline_form
+ *
+ * @package  block_configurablereports
+ * @author   Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @date     2009
+ */
 class timeline_form extends moodleform {
 
     /**
      * Form definition
      */
     public function definition(): void {
-        global $DB, $CFG;
 
         $mform =& $this->_form;
 

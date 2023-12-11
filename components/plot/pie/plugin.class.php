@@ -25,8 +25,20 @@
 defined('MOODLE_INTERNAL') || die;
 require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
 
+/**
+ * Class plugin_pie
+ *
+ * @package  block_configurablereports
+ * @author   Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @date     2009
+ */
 class plugin_pie extends plugin_base {
 
+    /**
+     * Init
+     *
+     * @return void
+     */
     public function init(): void {
         $this->fullname = get_string('pie', 'block_configurable_reports');
         $this->form = true;
@@ -44,10 +56,18 @@ class plugin_pie extends plugin_base {
         return get_string('piesummary', 'block_configurable_reports');
     }
 
-    // Data -> Plugin configuration data.
+    /**
+     * Execute
+     *
+     * @param $id
+     * @param $data
+     * @param $finalreport
+     * @return string
+     */
     public function execute($id, $data, $finalreport) {
-        global $DB, $CFG;
+        global $CFG;
 
+        // Data -> Plugin configuration data.
         $series = [];
         if ($finalreport) {
             foreach ($finalreport as $r) {
@@ -131,14 +151,20 @@ class plugin_pie extends plugin_base {
             $id . '&serie0=' . $serie0 . '&serie1=' . $serie1 . '&colorpalette=' . $colorpalette;
     }
 
-    public function get_series($data) {
+    /**
+     * @return array
+     */
+    public function get_series(): array {
         $serie0 = required_param('serie0', PARAM_RAW);
         $serie1 = required_param('serie1', PARAM_RAW);
 
         return [explode(',', base64_decode($serie0)), explode(',', base64_decode($serie1))];
     }
 
-    public function get_color_palette($data) {
+    /**
+     * @return array|string[]|null
+     */
+    public function get_color_palette(): ?array {
         if ($colorpalette = optional_param('colorpalette', '', PARAM_RAW)) {
             $colorpalette = explode(',', base64_decode($colorpalette));
             foreach ($colorpalette as $index => $item) {
@@ -155,7 +181,13 @@ class plugin_pie extends plugin_base {
         return null;
     }
 
-    public function parse_color($colorcode) {
+    /**
+     * Parse color
+     *
+     * @param string $colorcode
+     * @return string
+     */
+    public function parse_color(string $colorcode): string {
         return implode(
             '|',
             array_map(

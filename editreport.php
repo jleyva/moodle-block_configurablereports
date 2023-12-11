@@ -178,9 +178,10 @@ if (!empty($report)) {
 if ($editform->is_cancelled()) {
     if (!empty($report)) {
         redirect($CFG->wwwroot . '/blocks/configurable_reports/editreport.php?id=' . $report->id);
-    } else {
-        redirect($CFG->wwwroot . '/blocks/configurable_reports/editreport.php');
     }
+
+    redirect($CFG->wwwroot . '/blocks/configurable_reports/editreport.php');
+
 } else if ($data = $editform->get_data()) {
     require_once($CFG->dirroot . '/blocks/configurable_reports/report.class.php');
     require_once($CFG->dirroot . '/blocks/configurable_reports/reports/' . $data->type . '/report.class.php');
@@ -221,7 +222,7 @@ if ($editform->is_cancelled()) {
         $data->components = '';
 
         // Extra check.
-        if ($data->type == 'sql' && !block_configurable_reports_can_managesqlreports($context)) {
+        if ($data->type === 'sql' && !block_configurable_reports_can_managesqlreports($context)) {
             throw new \moodle_exception('nosqlpermissions');
         }
 

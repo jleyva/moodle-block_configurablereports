@@ -37,6 +37,7 @@ class plugin_coursecategory extends plugin_base {
 
     /**
      * Init
+     *
      * @return void
      */
     public function init(): void {

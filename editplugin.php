@@ -180,37 +180,36 @@ if (isset($pluginclass->form) && $pluginclass->form) {
             $report->components = cr_serialize($allelements);
             if (!$DB->update_record('block_configurable_reports', $report)) {
                   throw new \moodle_exception('errorsaving');
-            } else {
-                redirect(new moodle_url('/blocks/configurable_reports/editcomp.php', ['id' => $id, 'comp' => $comp]));
-                exit;
             }
 
-        } else {
+            redirect(new moodle_url('/blocks/configurable_reports/editcomp.php', ['id' => $id, 'comp' => $comp]));
+            exit;
 
-            $allelements = cr_unserialize($report->components);
-
-            $uniqueid = random_string(15);
-            while (strpos($report->components, $uniqueid) !== false) {
-                $uniqueid = random_string(15);
-            }
-
-            $cdata = [
-                'id' => $uniqueid,
-                'formdata' => $data,
-                'pluginname' => $pname,
-                'pluginfullname' => $pluginclass->fullname,
-                'summary' => $pluginclass->summary($data),
-            ];
-
-            $allelements[$comp]['elements'][] = $cdata;
-            $report->components = cr_serialize($allelements, false);
-            if (!$DB->update_record('block_configurable_reports', $report)) {
-                  throw new \moodle_exception('errorsaving');
-            } else {
-                redirect(new moodle_url('/blocks/configurable_reports/editcomp.php', ['id' => $id, 'comp' => $comp]));
-                exit;
-            }
         }
+
+        $allelements = cr_unserialize($report->components);
+
+        $uniqueid = random_string(15);
+        while (strpos($report->components, $uniqueid) !== false) {
+            $uniqueid = random_string(15);
+        }
+
+        $cdata = [
+            'id' => $uniqueid,
+            'formdata' => $data,
+            'pluginname' => $pname,
+            'pluginfullname' => $pluginclass->fullname,
+            'summary' => $pluginclass->summary($data),
+        ];
+
+        $allelements[$comp]['elements'][] = $cdata;
+        $report->components = cr_serialize($allelements, false);
+        if (!$DB->update_record('block_configurable_reports', $report)) {
+              throw new \moodle_exception('errorsaving');
+        }
+
+        redirect(new moodle_url('/blocks/configurable_reports/editcomp.php', ['id' => $id, 'comp' => $comp]));
+        exit;
     }
 } else {
     $allelements = cr_unserialize($report->components);
@@ -232,10 +231,10 @@ if (isset($pluginclass->form) && $pluginclass->form) {
     $report->components = cr_serialize($allelements);
     if (!$DB->update_record('block_configurable_reports', $report)) {
           throw new \moodle_exception('errorsaving');
-    } else {
-        redirect(new moodle_url('/blocks/configurable_reports/editcomp.php', ['id' => $id, 'comp' => $comp]));
-        exit;
     }
+
+    redirect(new moodle_url('/blocks/configurable_reports/editcomp.php', ['id' => $id, 'comp' => $comp]));
+    exit;
 }
 
 $title = format_string($report->name) . ' ' . get_string($comp, 'block_configurable_reports');
@@ -253,6 +252,7 @@ $PAGE->set_cacheable(true);
 
 echo $OUTPUT->header();
 
+// TODO more OOP approach.
 $currenttab = $comp;
 require('tabs.php');
 

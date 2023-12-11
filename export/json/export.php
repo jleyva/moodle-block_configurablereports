@@ -23,6 +23,13 @@
  * @date 2009
  * @package block_configurablereports
  */
+
+/**
+ * Export report
+ *
+ * @param $report
+ * @return void
+ */
 function export_report($report) {
     $table = $report->table;
     $filename = 'report_' . (time()) . '.json';

@@ -46,7 +46,6 @@ class usermodoutline_form extends moodleform {
 
         $mform->addElement('header', 'crformheader', get_string('usermodoutline', 'block_configurable_reports'), '');
 
-
         $modules = [];
 
         get_fast_modinfo($this->_customdata['report']->courseid);

@@ -25,8 +25,20 @@
 defined('MOODLE_INTERNAL') || die;
 require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
 
+/**
+ * Class plugin_line
+ *
+ * @package  block_configurablereports
+ * @author   Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @date     2009
+ */
 class plugin_line extends plugin_base {
 
+    /**
+     * Init
+     *
+     * @return void
+     */
     public function init(): void {
         $this->fullname = get_string('line', 'block_configurable_reports');
         $this->form = true;
@@ -44,9 +56,16 @@ class plugin_line extends plugin_base {
         return get_string('linesummary', 'block_configurable_reports');
     }
 
-    // Data -> Plugin configuration data.
+    /**
+     * Execute
+     *
+     * @param $id
+     * @param $data
+     * @param $finalreport
+     * @return string
+     */
     public function execute($id, $data, $finalreport) {
-        global $DB, $CFG;
+        global $CFG;
 
         $series = [];
         $data->xaxis--;
@@ -78,8 +97,15 @@ class plugin_line extends plugin_base {
             '&id=' . $id . $params . '&amp;min=' . $minvalue . '&amp;max=' . $maxvalue;
     }
 
-    public function get_series($data) {
+    /**
+     * Get series
+     *
+     * @return array
+     */
+    public function get_series(): array {
         $series = [];
+
+        // TODO don't use $_GET.
         foreach ($_GET as $key => $val) {
             if (strpos($key, 'serie') !== false) {
                 $id = (int) str_replace('serie', '', $key);

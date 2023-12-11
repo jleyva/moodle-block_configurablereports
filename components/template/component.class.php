@@ -22,8 +22,21 @@
  * @author   Juan leyva <http://www.twitter.com/jleyvadelgado>
  * @date     2009
  */
+
+/**
+ * Class component_template
+ *
+ * @package  block_configurablereports
+ * @author   Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @date     2009
+ */
 class component_template extends component_base {
 
+    /**
+     * Init
+     *
+     * @return void
+     */
     public function init(): void {
         $this->plugins = false;
         $this->ordering = false;
@@ -31,13 +44,19 @@ class component_template extends component_base {
         $this->help = true;
     }
 
-    public function form_process_data(moodleform $cform) {
+    /**
+     * form_process_data
+     *
+     * @param moodleform $cform
+     * @return void
+     */
+    public function form_process_data(moodleform $cform): void {
         global $DB;
 
         if ($this->form) {
             $data = $cform->get_data();
-            // Function cr_serialize() will add slashes.
 
+            // Function cr_serialize() will add slashes.
             $components = cr_unserialize($this->config->components);
             $components['template']['config'] = $data;
 
@@ -47,11 +66,16 @@ class component_template extends component_base {
         }
     }
 
+    /**
+     * form_set_data
+     *
+     * @param moodleform $cform
+     * @return void
+     */
     public function form_set_data(moodleform $cform) {
         if ($this->form) {
-            $fdata = new stdclass;
             $components = cr_unserialize($this->config->components);
-            $config = (isset($components['template']['config'])) ? $components['template']['config'] : new stdclass;
+            $config = $components['template']['config'] ?? new stdclass;
             $cform->set_data($config);
         }
     }

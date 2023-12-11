@@ -25,8 +25,20 @@
 defined('MOODLE_INTERNAL') || die;
 require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
 
+/**
+ * Class plugin_bar
+ *
+ * @package  block_configurablereports
+ * @author   Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @date     2009
+ */
 class plugin_bar extends plugin_base {
 
+    /**
+     * Init
+     *
+     * @return void
+     */
     public function init(): void {
         $this->fullname = "Bar chart";
         $this->form = true;
@@ -44,9 +56,18 @@ class plugin_bar extends plugin_base {
         return "Bar chart summary";
     }
 
-    // Data -> Plugin configuration data.
+    /**
+     * Execute
+     *
+     * @param $id
+     * @param $data
+     * @param $finalreport
+     * @return string
+     */
     public function execute($id, $data, $finalreport) {
-        global $DB, $CFG;
+        global $CFG;
+        // Data -> Plugin configuration data.
+
         $series = [];
         if ($finalreport) {
             [$labelidx, $labelname] = explode(",", $data->label_field);
@@ -85,9 +106,15 @@ class plugin_bar extends plugin_base {
             $id . '&graphdata=' . $graphdata;
     }
 
-    public function get_series($data) {
+    /**
+     * Get series
+     *
+     * @param $data
+     * @return array
+     */
+    public function get_series($data): array {
         $graphdataraw = required_param('graphdata', PARAM_RAW);
-        $graphdata = json_decode(urldecode($graphdataraw));
+        $graphdata = json_decode(urldecode($graphdataraw), false, 512, JSON_THROW_ON_ERROR);
 
         return (array) $graphdata;
     }

@@ -34,6 +34,7 @@ class component_filters extends component_base {
 
     /**
      * Init
+     *
      * @return void
      */
     public function init(): void {

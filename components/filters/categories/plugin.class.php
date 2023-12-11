@@ -36,6 +36,7 @@ class plugin_categories extends plugin_base {
 
     /**
      * Init
+     *
      * @return void
      */
     public function init(): void {
