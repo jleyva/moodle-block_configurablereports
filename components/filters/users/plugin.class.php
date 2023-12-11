@@ -97,7 +97,7 @@ class plugin_users extends plugin_base {
                 $nameformat = $CFG->fullnamedisplay;
             }
 
-            if ($nameformat == 'language') {
+            if ($nameformat === 'language') {
                 $nameformat = get_string('fullnamedisplay');
             }
 

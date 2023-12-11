@@ -25,8 +25,19 @@
 defined('MOODLE_INTERNAL') || die;
 require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
 
+/**
+ * Class plugin_yearhebrew
+ *
+ * @package  block_configurablereports
+ * @author   Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @date     2009
+ */
 class plugin_yearhebrew extends plugin_base {
 
+    /**
+     * Init
+     * @return void
+     */
     public function init(): void {
         $this->form = false;
         $this->unique = true;
@@ -44,7 +55,13 @@ class plugin_yearhebrew extends plugin_base {
         return get_string('filteryearhebrew_summary', 'block_configurable_reports');
     }
 
-    public function execute($finalelements, $data) {
+    /**
+     * Execute
+     *
+     * @param $finalelements
+     * @return array|string|string[]
+     */
+    public function execute($finalelements) {
 
         $filteryearhebrew = optional_param('filter_yearhebrew', '', PARAM_RAW);
         if (!$filteryearhebrew) {
@@ -53,12 +70,12 @@ class plugin_yearhebrew extends plugin_base {
 
         if ($this->report->type !== 'sql') {
             return [$filteryearhebrew];
-        } else {
-            if (preg_match("/%%FILTER_YEARHEBREW:([^%]+)%%/i", $finalelements, $output)) {
-                $replace = ' AND ' . $output[1] . ' LIKE \'%' . $filteryearhebrew . '%\'';
+        }
 
-                return str_replace('%%FILTER_YEARHEBREW:' . $output[1] . '%%', $replace, $finalelements);
-            }
+        if (preg_match("/%%FILTER_YEARHEBREW:([^%]+)%%/i", $finalelements, $output)) {
+            $replace = ' AND ' . $output[1] . ' LIKE \'%' . $filteryearhebrew . '%\'';
+
+            return str_replace('%%FILTER_YEARHEBREW:' . $output[1] . '%%', $replace, $finalelements);
         }
 
         return $finalelements;
@@ -72,10 +89,6 @@ class plugin_yearhebrew extends plugin_base {
      * @return void
      */
     public function print_filter(MoodleQuickForm $mform, $formdata = false): void {
-
-        global $remotedb, $CFG;
-
-        $filteryearhebrew = optional_param('filter_yearhebrew', 0, PARAM_RAW);
 
         $reportclassname = 'report_' . $this->report->type;
         $reportclass = new $reportclassname($this->report);

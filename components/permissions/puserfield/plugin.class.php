@@ -25,8 +25,20 @@
 defined('MOODLE_INTERNAL') || die;
 require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
 
+/**
+ * Class plugin_puserfield
+ *
+ * @package  block_configurablereports
+ * @author   Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @date     2009
+ */
 class plugin_puserfield extends plugin_base {
 
+    /**
+     * Init
+     *
+     * @return void
+     */
     public function init(): void {
         $this->form = true;
         $this->unique = false;
@@ -52,8 +64,16 @@ class plugin_puserfield extends plugin_base {
         return $data->field . ' = ' . $data->value;
     }
 
-    public function execute($userid, $context, $data) {
-        global $DB, $CFG;
+    /**
+     * Execute
+     *
+     * @param $userid
+     * @param $context
+     * @param $data
+     * @return bool
+     */
+    public function execute($userid, $context, $data): bool {
+        global $DB;
 
         if (!$user = $DB->get_record('user', ['id' => $userid])) {
             return false;

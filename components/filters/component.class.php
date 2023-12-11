@@ -22,8 +22,20 @@
  * @author   Juan leyva <http://www.twitter.com/jleyvadelgado>
  * @date     2009
  */
+
+/**
+ * Class component_filters
+ *
+ * @package  block_configurablereports
+ * @author   Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @date     2009
+ */
 class component_filters extends component_base {
 
+    /**
+     * Init
+     * @return void
+     */
     public function init(): void {
         $this->plugins = true;
         $this->ordering = true;

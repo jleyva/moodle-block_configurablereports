@@ -25,8 +25,20 @@
 defined('MOODLE_INTERNAL') || die;
 require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
 
+/**
+ * Class plugin_roleincourse
+ *
+ * @package  block_configurablereports
+ * @author   Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @date     2009
+ */
 class plugin_roleincourse extends plugin_base {
 
+    /**
+     * Init
+     *
+     * @return void
+     */
     public function init(): void {
         $this->form = true;
         $this->unique = false;
@@ -49,11 +61,19 @@ class plugin_roleincourse extends plugin_base {
         return $rolename . ' ' . $coursename;
     }
 
-    public function execute($userid, $context, $data) {
+    /**
+     * Execute
+     *
+     * @param $userid
+     * @param $context
+     * @param $data
+     * @return bool
+     */
+    public function execute($userid, $context, $data): bool {
         $roles = get_user_roles($context, $userid);
         if (!empty($roles)) {
             foreach ($roles as $rol) {
-                if ($rol->roleid == $data->roleid) {
+                if ((int) $rol->roleid === (int) $data->roleid) {
                     return true;
                 }
             }

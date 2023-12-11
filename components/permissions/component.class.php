@@ -32,6 +32,11 @@
  */
 class component_permissions extends component_base {
 
+    /**
+     * Init
+     *
+     * @return void
+     */
     public function init(): void {
         $this->plugins = true;
         $this->ordering = false;
@@ -39,6 +44,12 @@ class component_permissions extends component_base {
         $this->help = true;
     }
 
+    /**
+     * form_process_data
+     *
+     * @param moodleform $cform
+     * @return void
+     */
     public function form_process_data(moodleform $cform) {
         global $DB;
 
@@ -57,14 +68,22 @@ class component_permissions extends component_base {
         }
     }
 
+    /**
+     * Add missing conditions.
+     *
+     * @param $cond
+     * @return array|mixed|string|string[]|null
+     */
     public function add_missing_conditions($cond) {
         $components = cr_unserialize($this->config->components);
         if (isset($components['permissions']['elements'])) {
             $elements = $components['permissions']['elements'];
             $count = count($elements);
-            if ($count == 0 || $count == 1) {
+
+            if ($count === 0 || $count === 1) {
                 return '';
             }
+
             for ($i = $count; $i > 0; $i--) {
                 if (strpos($cond, 'c' . $i) === false) {
                     if ($count > 1 && $cond) {
@@ -103,6 +122,7 @@ class component_permissions extends component_base {
                 $fdata->conditionexpr = '';
                 $conditionsconfig->conditionexpr = '';
             }
+
             $conditionsconfig->conditionexpr = $this->add_missing_conditions($conditionsconfig->conditionexpr);
             $fdata->conditionexpr = $conditionsconfig->conditionexpr;
 

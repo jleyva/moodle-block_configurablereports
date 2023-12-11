@@ -25,13 +25,31 @@
 defined('MOODLE_INTERNAL') || die;
 require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
 
+/**
+ * Class plugin_anyone
+ *
+ * @package  block_configurablereports
+ * @author   Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @date     2009
+ */
 class plugin_anyone extends plugin_base {
 
+    /**
+     * Init
+     *
+     * @return void
+     */
     public function init(): void {
         $this->form = false;
         $this->unique = true;
         $this->fullname = get_string('anyone', 'block_configurable_reports');
-        $this->reporttypes = ['courses', 'sql', 'users', 'timeline', 'categories'];
+        $this->reporttypes = [
+            'courses',
+            'sql',
+            'users',
+            'timeline',
+            'categories',
+        ];
     }
 
     /**
@@ -44,9 +62,15 @@ class plugin_anyone extends plugin_base {
         return get_string('anyone_summary', 'block_configurable_reports');
     }
 
+    /**
+     * Execute
+     *
+     * @param $userid
+     * @param $context
+     * @param $data
+     * @return true
+     */
     public function execute($userid, $context, $data) {
-        global $DB, $CFG;
-
         return true;
     }
 

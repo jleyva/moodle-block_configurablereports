@@ -27,13 +27,20 @@ defined('MOODLE_INTERNAL') || die;
 
 require_once($CFG->libdir . '/formslib.php');
 
+/**
+ * Class puserfield_form
+ *
+ * @package  block_configurablereports
+ * @author   Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @date     2009
+ */
 class puserfield_form extends moodleform {
 
     /**
      * Form definition
      */
     public function definition(): void {
-        global $DB, $USER, $CFG;
+        global $DB;
 
         $mform =& $this->_form;
 
@@ -52,8 +59,7 @@ class puserfield_form extends moodleform {
             }
         }
 
-        unset($usercolumns['password']);
-        unset($usercolumns['secret']);
+        unset($usercolumns['password'], $usercolumns['secret']);
 
         $mform->addElement('select', 'field', get_string('column', 'block_configurable_reports'), $usercolumns);
 
@@ -75,7 +81,7 @@ class puserfield_form extends moodleform {
      *                     or an empty array if everything is OK (true allowed for backwards compatibility too).
      */
     public function validation($data, $files): array {
-        global $DB, $db, $CFG;
+        global $DB;
 
         $errors = parent::validation($data, $files);
 

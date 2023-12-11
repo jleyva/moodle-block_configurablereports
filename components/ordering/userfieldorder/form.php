@@ -27,18 +27,24 @@ defined('MOODLE_INTERNAL') || die;
 
 require_once($CFG->libdir . '/formslib.php');
 
+/**
+ * Class userfieldorder_form
+ *
+ * @package  block_configurablereports
+ * @author   Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @date     2009
+ */
 class userfieldorder_form extends moodleform {
 
     /**
      * Form definition
      */
     public function definition(): void {
-        global $DB, $USER, $CFG;
+        global $DB;
 
         $mform =& $this->_form;
 
         $columns = $DB->get_columns('user');
-
         $coursecolumns = [];
         foreach ($columns as $c) {
             $coursecolumns[$c->name] = $c->name;

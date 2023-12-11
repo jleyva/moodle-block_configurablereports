@@ -25,8 +25,20 @@
 defined('MOODLE_INTERNAL') || die;
 require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
 
+/**
+ * Class plugin_userfieldorder
+ *
+ * @package  block_configurablereports
+ * @author   Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @date     2009
+ */
 class plugin_reportscapabilities extends plugin_base {
 
+    /**
+     * Init
+     *
+     * @return void
+     */
     public function init(): void {
         $this->form = false;
         $this->unique = true;
@@ -44,9 +56,13 @@ class plugin_reportscapabilities extends plugin_base {
         return get_string('reportscapabilities_summary', 'block_configurable_reports');
     }
 
-    public function execute($userid, $context, $data) {
-        global $DB, $CFG;
-
+    /**
+     * Execute
+     *
+     * @param $userid
+     * @return bool
+     */
+    public function execute($userid): bool {
         return has_capability('moodle/site:viewreports', context_system::instance(), $userid);
     }
 

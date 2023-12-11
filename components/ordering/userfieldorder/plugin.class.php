@@ -25,10 +25,25 @@
 defined('MOODLE_INTERNAL') || die;
 require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
 
+/**
+ * Class plugin_userfieldorder
+ *
+ * @package  block_configurablereports
+ * @author   Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @date     2009
+ */
 class plugin_userfieldorder extends plugin_base {
 
-    public $sql = true;
+    /**
+     * @var bool
+     */
+    public bool $sql = true;
 
+    /**
+     * init
+     *
+     * @return void
+     */
     public function init(): void {
         $this->fullname = get_string('userfield', 'block_configurable_reports');
         $this->form = true;
@@ -47,11 +62,17 @@ class plugin_userfieldorder extends plugin_base {
         return get_string($data->column) . ' ' . (strtoupper($data->direction));
     }
 
-    // Data -> Plugin configuration data.
-    public function execute($data) {
-        global $DB, $CFG;
+    /**
+     * Execute
+     *
+     * @param object $data
+     * @return string
+     */
+    public function execute(object $data): string {
+        global $DB;
 
-        if ($data->direction == 'asc' || $data->direction == 'desc') {
+        // Data -> Plugin configuration data.
+        if ($data->direction === 'asc' || $data->direction === 'desc') {
             $direction = strtoupper($data->direction);
             $columns = $DB->get_columns('user');
 

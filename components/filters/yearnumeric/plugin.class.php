@@ -25,8 +25,20 @@
 defined('MOODLE_INTERNAL') || die;
 require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
 
+/**
+ * Class plugin_yearnumeric
+ *
+ * @package  block_configurablereports
+ * @author   Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @date     2009
+ */
 class plugin_yearnumeric extends plugin_base {
 
+    /**
+     * Init
+     *
+     * @return void
+     */
     public function init(): void {
         $this->form = false;
         $this->unique = true;
@@ -44,7 +56,13 @@ class plugin_yearnumeric extends plugin_base {
         return get_string('filteryearnumeric_summary', 'block_configurable_reports');
     }
 
-    public function execute($finalelements, $data) {
+    /**
+     * Execute
+     *
+     * @param $finalelements
+     * @return array|string|string[]
+     */
+    public function execute($finalelements) {
 
         $filteryearnumeric = optional_param('filter_yearnumeric', 0, PARAM_INT);
         if (!$filteryearnumeric) {
@@ -53,12 +71,12 @@ class plugin_yearnumeric extends plugin_base {
 
         if ($this->report->type !== 'sql') {
             return [$filteryearnumeric];
-        } else {
-            if (preg_match("/%%FILTER_YEARNUMERIC:([^%]+)%%/i", $finalelements, $output)) {
-                $replace = ' AND ' . $output[1] . ' LIKE \'%' . $filteryearnumeric . '%\'';
+        }
 
-                return str_replace('%%FILTER_YEARNUMERIC:' . $output[1] . '%%', $replace, $finalelements);
-            }
+        if (preg_match("/%%FILTER_YEARNUMERIC:([^%]+)%%/i", $finalelements, $output)) {
+            $replace = ' AND ' . $output[1] . ' LIKE \'%' . $filteryearnumeric . '%\'';
+
+            return str_replace('%%FILTER_YEARNUMERIC:' . $output[1] . '%%', $replace, $finalelements);
         }
 
         return $finalelements;
@@ -72,10 +90,6 @@ class plugin_yearnumeric extends plugin_base {
      * @return void
      */
     public function print_filter(MoodleQuickForm $mform, $formdata = false): void {
-
-        global $remotedb, $CFG;
-
-        $filteryearnumeric = optional_param('filter_yearnumeric', 0, PARAM_INT);
 
         $reportclassname = 'report_' . $this->report->type;
         $reportclass = new $reportclassname($this->report);
