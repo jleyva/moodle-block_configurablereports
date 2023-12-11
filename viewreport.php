@@ -69,7 +69,7 @@ $PAGE->set_pagelayout('incourse');
 $PAGE->set_url('/blocks/configurable_reports/viewreport.php', ['id' => $id]);
 $PAGE->requires->jquery();
 
-$download = ($download && $format && strpos($report->export, $format . ',') !== false) ? true : false;
+$download = $download && $format && strpos($report->export, $format . ',') !== false;
 
 if ($download && $report->type === "sql") {
     $reportclass->set_forexport(true);
