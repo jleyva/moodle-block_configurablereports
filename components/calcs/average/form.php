@@ -15,8 +15,6 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Configurable Reports a Moodle block for creating customizable reports
- *
  * @package   block_configurable_reports
  * @author    Juan leyva <http://www.twitter.com/jleyvadelgado>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -32,7 +30,6 @@ require_once($CFG->libdir . '/formslib.php');
  * @package   block_configurable_reports
  *
  * @author    Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class average_form extends moodleform {
 

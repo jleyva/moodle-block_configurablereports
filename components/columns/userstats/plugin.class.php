@@ -17,9 +17,10 @@
 /**
  * Configurable Reports a Moodle block for creating customizable reports
  *
- * @package   block_configurable_reports
- * @author    Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @copyright  2020 Juan Leyva <juan@moodle.com>
+ * @package    block_configurable_reports
+ * @author     Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 defined('MOODLE_INTERNAL') || die;
 require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
@@ -59,7 +60,7 @@ class plugin_userstats extends plugin_base {
             $filterendtime = 0;
         }
 
-        if ($filterstarttime and $filterendtime) {
+        if ($filterstarttime && $filterendtime) {
             $filterstarttime = make_timestamp($filterstarttime['year'], $filterstarttime['month'], $filterstarttime['day']);
             $filterendtime = make_timestamp($filterendtime['year'], $filterendtime['month'], $filterendtime['day']);
         }
@@ -83,7 +84,7 @@ class plugin_userstats extends plugin_base {
                     $params = array_merge($params, [$courseid]);
                 }
 
-                if ($starttime and $endtime) {
+                if ($starttime && $endtime) {
                     $starttime = usergetmidnight($starttime) + 24 * 60 * 60;
                     $endtime = usergetmidnight($endtime) + 24 * 60 * 60;
                     $sql .= " AND time >= ? AND time <= ?";
@@ -99,7 +100,7 @@ class plugin_userstats extends plugin_base {
                     $params = array_merge($params, [$courseid]);
                 }
 
-                if ($starttime and $endtime) {
+                if ($starttime && $endtime) {
                     $starttime = usergetmidnight($starttime) + 24 * 60 * 60;
                     $endtime = usergetmidnight($endtime) + 24 * 60 * 60;
                     $sql .= " AND timecreated >= ? AND timecreated <= ?";
@@ -159,12 +160,12 @@ class plugin_userstats extends plugin_base {
         $sql = "SELECT SUM($total) as total FROM {stats_user_daily} WHERE stattype = ? AND userid = ?";
         $params = [$stattype, $row->id];
 
-        if ($courseid != SITEID and $data->stat != 'logins') {
+        if ($courseid != SITEID && $data->stat != 'logins') {
             $sql .= " AND courseid = ?";
             $params[] = $courseid;
         }
 
-        if ($starttime and $endtime) {
+        if ($starttime && $endtime) {
             $starttime = usergetmidnight($starttime) + 24 * 60 * 60;
             $endtime = usergetmidnight($endtime) + 24 * 60 * 60;
             $sql .= " AND timeend >= $starttime AND timeend <= $endtime";

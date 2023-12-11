@@ -29,7 +29,6 @@ require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
  *
  * @package   block_configurable_reports
  * @author    Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class plugin_fsearchuserfield extends plugin_base {
 

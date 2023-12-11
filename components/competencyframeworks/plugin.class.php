@@ -15,49 +15,31 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Configurable Reports a Moodle block for creating customizable reports
+ * COMPETENCY FRAMEWORK FILTER A filter for configurable reports
  *
- * @package   block_configurable_reports
- * @author    Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @copyright  2020 Juan Leyva <juan@moodle.com>
+ * @package    block_configurable_reports
+ * @author     Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @author     François Parlant <https://www.linkedin.com/in/francois-parlant/>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-/**
- * COMPETENCY FRAMEWORK FILTER
- * A filter for configurable reports
- *
- * @author François Parlant <https://www.linkedin.com/in/francois-parlant/>
- * @date   : 2020
- */
-
-/* example of report query
-***********
-* Display the courses in which the competencies of a framework are used
-***********
-SELECT  ccc.id, ccc.courseid, ccc.competencyid, cf.shortname as 'referentiel', cf.idnumber as 'framework Id', c.fullname as 'cours', comp.shortname
-FROM  prefix_competency_coursecomp ccc
-INNER JOIN prefix_course AS c ON c.id = ccc.courseid
-INNER JOIN prefix_competency AS comp ON comp.id = ccc.competencyid
-INNER JOIN prefix_competency_framework AS cf ON cf.id = comp.competencyframeworkid
-JOIN prefix_course_categories cc ON c.category = cc.id
-WHERE 1=1
-%%FILTER_COMPETENCYFRAMEWORKS:cf.id%%
-%%FILTER_SUBCATEGORIES:cc.path%%
-%%FILTER_STARTTIME:c.startdate:>=%% %%FILTER_ENDTIME:c.startdate:<=%%
-
-*/
 defined('MOODLE_INTERNAL') || die;
 require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
 
 /**
- * Class plugin_competencyframeworks
+ * Class plugin_competencyframeworks example https://gist.github.com/luukverhoeven/a50c614ef19e7bd4e0d824c12e1a09af.
  *
  * @package   block_configurable_reports
  * @author    Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class plugin_competencyframeworks extends plugin_base {
 
+    /**
+     * Init
+     *
+     * @return void
+     */
     public function init(): void {
         $this->form = false;
         $this->unique = true;

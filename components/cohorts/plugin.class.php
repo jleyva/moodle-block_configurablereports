@@ -17,10 +17,10 @@
 /**
  * Configurable Reports a Moodle block for creating customizable reports
  *
- * @package  block_configurable_reports
- * @author   Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @author   : François Parlant <https://www.linkedin.com/in/francois-parlant/>
- * @date     : 2020
+ * @copyright  2020 Juan Leyva <juan@moodle.com>
+ * @package    block_configurable_reports
+ * @author     Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @author     François Parlant <https://www.linkedin.com/in/francois-parlant/>
  */
 
 defined('MOODLE_INTERNAL') || die;
@@ -31,7 +31,6 @@ require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
  *
  * @package   block_configurable_reports
  * @author    Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class plugin_cohorts extends plugin_base {
 

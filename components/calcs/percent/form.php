@@ -17,9 +17,9 @@
 /**
  * Configurable Reports a Moodle block for creating customizable reports
  *
- * @package block_configurable_reports
- * @author  David Pesce <davidpesce@gmail.com>
- * @date    2019
+ * @copyright  2020 Juan Leyva <juan@moodle.com>
+ * @package    block_configurable_reports
+ * @author     David Pesce <davidpesce@gmail.com>
  */
 
 defined('MOODLE_INTERNAL') || die;
@@ -31,7 +31,6 @@ require_once($CFG->libdir . '/formslib.php');
  *
  * @package block_configurable_reports
  * @author  David Pesce <davidpesce@gmail.com>
- * @date    2019
  * /
  */
 class percent_form extends moodleform {

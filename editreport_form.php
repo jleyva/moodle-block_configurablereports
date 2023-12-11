@@ -17,16 +17,13 @@
 /**
  * Configurable Reports a Moodle block for creating customizable reports
  *
- * @package   block_configurable_reports
- * @author    Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @copyright  2020 Juan Leyva <juan@moodle.com>
+ * @package    block_configurable_reports
+ * @author     Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-if (!defined('MOODLE_INTERNAL')) {
-    //  Must be included from a Moodle page.
-    die('Direct access to this script is forbidden.');
-}
-
+defined('MOODLE_INTERNAL') || die;
 require_once($CFG->libdir . '/formslib.php');
 
 /**
@@ -34,7 +31,6 @@ require_once($CFG->libdir . '/formslib.php');
  *
  * @package   block_configurable_reports
  * @author    Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class report_edit_form extends moodleform {
 
@@ -146,18 +142,6 @@ class report_edit_form extends moodleform {
 
         // Buttons.
         $this->add_action_buttons(true, get_string('add'));
-    }
-
-    /**
-     * Server side rules do not work for uploaded files, implement serverside rules here if needed.
-     *
-     * @param array $data  array of ("fieldname"=>value) of submitted data
-     * @param array $files array of uploaded files "element_name"=>tmp_file_path
-     * @return array of "element_name"=>"error_description" if there are errors,
-     *                     or an empty array if everything is OK (true allowed for backwards compatibility too).
-     */
-    public function validation($data, $files): array {
-        return parent::validation($data, $files);
     }
 
     /**

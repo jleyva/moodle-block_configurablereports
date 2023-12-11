@@ -15,8 +15,6 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Configurable Reports a Moodle block for creating customizable reports
- *
  * @package block_configurablereports
  * @author  Juan leyva <http://www.twitter.com/jleyvadelgado>
  * @date    2009
@@ -30,8 +28,6 @@
  * @date    2009
  */
 abstract class component_base {
-
-    // TODO namespace
 
     /**
      * @var bool

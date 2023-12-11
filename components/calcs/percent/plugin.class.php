@@ -17,9 +17,9 @@
 /**
  * Configurable Reports a Moodle block for creating customizable reports
  *
- * @package block_configurable_reports
- * @author  David Pesce <davidpesce@gmail.com>
- * @date    2019
+ * @copyright  2020 Juan Leyva <juan@moodle.com>
+ * @package    block_configurable_reports
+ * @author     David Pesce <davidpesce@gmail.com>
  */
 defined('MOODLE_INTERNAL') || die;
 require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
@@ -29,7 +29,6 @@ require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
  *
  * @package block_configurable_reports
  * @author  David Pesce <davidpesce@gmail.com>
- * @date    2019
  */
 class plugin_percent extends plugin_base {
 

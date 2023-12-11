@@ -17,6 +17,7 @@
 /**
  * Configurable Reports a Moodle block for creating customizable reports
  *
+ * @copyright  2020 Juan Leyva <juan@moodle.com>
  * @param $report
  * @author   Juan leyva <http://www.twitter.com/jleyvadelgado>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
