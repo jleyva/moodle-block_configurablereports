@@ -63,15 +63,15 @@ class github extends \curl {
     /**
      * Get
      *
-     * @param string $endpoint
+     * @param string $url
      * @param array $params
      * @param array $options
      * @return bool|string
      */
-    public function get(string $endpoint, array $params = [], array $options = []) {
+    public function get($url, $params = [], $options = []) {
         $repolink = 'https://api.github.com/repos/';
         $repolink .= $this->repo;
-        $repolink .= $endpoint;
+        $repolink .= $url;
 
         return parent::get($repolink, $params, $options);
     }
