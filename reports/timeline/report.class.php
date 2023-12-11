@@ -73,7 +73,7 @@ class report_timeline extends report_base {
             $filterstarttime = optional_param('filter_starttime', 0, PARAM_RAW);
             $filterendtime = optional_param('filter_endtime', 0, PARAM_RAW);
 
-            if ($filterstarttime and $filterendtime) {
+            if ($filterstarttime && $filterendtime) {
                 $filterstarttime = make_timestamp($filterstarttime['year'], $filterstarttime['month'], $filterstarttime['day']);
                 $filterendtime = make_timestamp($filterendtime['year'], $filterendtime['month'], $filterendtime['day']);
 

@@ -22,6 +22,7 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+defined('MOODLE_INTERNAL') || die;
 defined('BLOCK_CONFIGURABLE_REPORTS_MAX_RECORDS') || define('BLOCK_CONFIGURABLE_REPORTS_MAX_RECORDS', 5000);
 
 /**
@@ -119,7 +120,7 @@ class report_sql extends report_base {
         $sql = preg_replace('/\bprefix_(?=\w+)/i', $CFG->prefix, $sql);
 
         $reportlimit = get_config('block_configurable_reports', 'reportlimit');
-        if (empty($reportlimit) or $reportlimit == '0') {
+        if (empty($reportlimit) || $reportlimit == '0') {
             $reportlimit = BLOCK_CONFIGURABLE_REPORTS_MAX_RECORDS;
         }
 

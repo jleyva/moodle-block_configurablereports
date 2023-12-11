@@ -81,13 +81,19 @@ class plugin_bar extends plugin_base {
                     $value = $r[$idx];
 
                     if ($idx == $labelidx) {
-                        error_log("moodle:configurable_reports:bar:  refusing to chart label field");
+                        debugging(
+                            "moodle:configurable_reports:bar:  refusing to chart label field",
+                            DEBUG_DEVELOPER
+                        );
                         continue;
                     }
 
                     if (!is_numeric($value)) {
                         // Can't just skip. That would throw off the indexes if a column has bad values in some but not all rows.
-                        error_log("moodle:configurable_reports:bar:  substituting 0 for non-numeric value '$value'");
+                        debugging(
+                            "moodle:configurable_reports:bar:  substituting 0 for non-numeric value '$value'",
+                            DEBUG_DEVELOPER
+                        );
                         $value = 0;
                     }
 
@@ -108,10 +114,9 @@ class plugin_bar extends plugin_base {
     /**
      * Get series
      *
-     * @param $data
      * @return array
      */
-    public function get_series($data): array {
+    public function get_series(): array {
         $graphdataraw = required_param('graphdata', PARAM_RAW);
         $graphdata = json_decode(urldecode($graphdataraw), false, 512, JSON_THROW_ON_ERROR);
 

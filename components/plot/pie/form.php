@@ -153,7 +153,7 @@ class pie_form extends moodleform {
      * @return array of "element_name"=>"error_description" if there are errors,
      *                     or an empty array if everything is OK (true allowed for backwards compatibility too).
      */
-    function validation($data, $files): array {
+    public function validation($data, $files): array {
         $errors = [];
 
         $length = count($data['piechart_label']);

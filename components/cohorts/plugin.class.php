@@ -73,7 +73,7 @@ class plugin_cohorts extends plugin_base {
             return [$filtercohorts];
         }
 
-        // Example https://gist.github.com/luukverhoeven/aac43e35cb7199057d5592c90d5cde4c
+        // Example https://gist.github.com/luukverhoeven/aac43e35cb7199057d5592c90d5cde4c.
         if (preg_match("/%%FILTER_COHORTS:([^%]+)%%/i", $finalelements, $output)) {
             $replace = ' AND ' . $output[1] . ' = ' . $filtercohorts;
 
