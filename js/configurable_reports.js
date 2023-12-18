@@ -5,11 +5,9 @@ var editor_remotequerysql = null;
 
 M.block_configurable_reports = {
 
-    sesskey: null,
 
-    init: function(Y, sesskey) {
+    init: function(Y) {
         this.Y = Y;
-        this.sesskey = sesskey;
 
         // Documentation can be found @ http://codemirror.net/
         editor_querysql = CodeMirror.fromTextArea(document.getElementById('id_querysql'), {
@@ -33,13 +31,12 @@ M.block_configurable_reports = {
 
     },
 
-    loadReportCategories: function(Y, sesskey) {
+    loadReportCategories: function(Y) {
         this.Y = Y;
-        this.sesskey = sesskey;
 
         select_reportcategories = Y.one('#id_crreportcategories');
         Y.io(M.cfg.wwwroot + '/blocks/configurable_reports/repository.php', {
-            data: 'action=listreports&sesskey=' + sesskey,
+            data: 'action=listreports&sesskey=' + M.cfg.sesskey,
             context: this,
             method: "GET",
             on: {
@@ -63,13 +60,13 @@ M.block_configurable_reports = {
 
     },
 
-    onchange_crreportcategories: function(select_element, sesskey) {
+    onchange_crreportcategories: function(select_element) {
         var Y = this.Y;
 
         select_reportnames = Y.one('#id_crreportnames');
 
-        var xhr = Y.io(M.cfg.wwwroot + '/blocks/configurable_reports/repository.php', {
-            data: 'action=listcategory&category=' + select_element[select_element.selectedIndex].value + '&sesskey=' + sesskey,
+        Y.io(M.cfg.wwwroot + '/blocks/configurable_reports/repository.php', {
+            data: 'action=listcategory&category=' + select_element[select_element.selectedIndex].value + '&sesskey=' + M.cfg.sesskey,
             context: this,
             method: "GET",
             on: {
@@ -93,20 +90,20 @@ M.block_configurable_reports = {
         });
     },
 
-    onchange_crreportnames: function(select_element, sesskey) {
+    onchange_crreportnames: function(select_element) {
         var Y = this.Y;
 
         var path = select_element[select_element.selectedIndex].value;
         location.href = location.href + "&importurl=" + encodeURIComponent(path);
     },
 
-    onchange_reportcategories: function(select_element, sesskey) {
+    onchange_reportcategories: function(select_element) {
         var Y = this.Y;
 
         select_reportsincategory = Y.one('#id_reportsincategory');
         select_reportsincategory.setStyle('visibility', 'hidden');
-        var xhr = Y.io(M.cfg.wwwroot + '/blocks/configurable_reports/list_reports_in_category.php', {
-            data: 'category=' + select_element[select_element.selectedIndex].value + '&sesskey=' + sesskey,
+        Y.io(M.cfg.wwwroot + '/blocks/configurable_reports/list_reports_in_category.php', {
+            data: 'category=' + select_element[select_element.selectedIndex].value + '&sesskey=' + M.cfg.sesskey,
             context: this,
             method: "GET",
             on: {
@@ -137,12 +134,12 @@ M.block_configurable_reports = {
         });
     },
 
-    onchange_reportsincategory: function(select_element, sesskey) {
+    onchange_reportsincategory: function(select_element) {
         var Y = this.Y;
 
         textarea_reportsincategory = Y.one('#id_remotequerysql');
-        var xhr = Y.io(M.cfg.wwwroot + '/blocks/configurable_reports/get_remote_report.php', {
-            data: 'reportname=' + select_element[select_element.selectedIndex].value + '&sesskey=' + sesskey,
+        Y.io(M.cfg.wwwroot + '/blocks/configurable_reports/get_remote_report.php', {
+            data: 'reportname=' + select_element[select_element.selectedIndex].value + '&sesskey=' + M.cfg.sesskey,
             context: this,
             method: "GET",
             on: {
