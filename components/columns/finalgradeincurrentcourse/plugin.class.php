@@ -25,8 +25,19 @@
 defined('MOODLE_INTERNAL') || die;
 require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
 
+/**
+ * Class plugin_finalgradeincurrentcourse
+ *
+ * @package   block_configurable_reports
+ * @author    Juan leyva <http://www.twitter.com/jleyvadelgado>
+ */
 class plugin_finalgradeincurrentcourse extends plugin_base {
 
+    /**
+     * Init
+     *
+     * @return void
+     */
     public function init(): void {
         $this->fullname = get_string('finalgradeincurrentcourse', 'block_configurable_reports');
         $this->form = true;
@@ -43,11 +54,20 @@ class plugin_finalgradeincurrentcourse extends plugin_base {
         return format_string($data->columname);
     }
 
-    // Data -> Plugin configuration data
-    // Row -> Complet course row c->id, c->fullname, etc...
-    public function execute($data, $row, $user, $courseid, $starttime = 0, $endtime = 0) {
-        global $DB, $USER, $CFG;
+    /**
+     * Execute
+     *
+     * @param array $data
+     * @param object $row
+     * @param object $user
+     * @param int $courseid
+     * @return string
+     */
+    public function execute($data, $row, $user, $courseid) {
+        global $CFG;
 
+        // Data -> Plugin configuration data.
+        // Row -> Complet course row c->id, c->fullname, etc.
         $userid = $row->id;
         require_once($CFG->libdir . '/gradelib.php');
         require_once($CFG->dirroot . '/grade/querylib.php');

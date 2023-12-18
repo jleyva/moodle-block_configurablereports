@@ -63,7 +63,7 @@ class plugin_searchtext extends plugin_base {
      */
     public function execute($finalelements, $data) {
 
-        // For backwards compatibility and filters without idnumber, includes old method of matching without idnumber
+        // For backwards compatibility and filters without idnumber, includes old method of matching without idnumber.
         if (!empty($data->idnumber)) {
             $filtersearchtext = optional_param('filter_searchtext_' . $data->idnumber, '', PARAM_RAW);
         } else {
@@ -96,7 +96,7 @@ class plugin_searchtext extends plugin_base {
      */
     public function print_filter(MoodleQuickForm $mform, $formdata = false): void {
 
-        // For backwards compatibility and filters without idnumber, includes old method of matching without idnumber
+        // For backwards compatibility and filters without idnumber, includes old method of matching without idnumber.
         if (!empty($formdata->idnumber)) {
             $filtername = 'filter_searchtext_' . $formdata->idnumber;
         } else {
@@ -123,7 +123,7 @@ class plugin_searchtext extends plugin_base {
      */
     private function sql_replace($filtersearchtext, $filterstrmatch, $finalelements) {
 
-        // TODO check if this is a duplicate of the same function in plugin_fuserfield
+        // TODO Check if this is a duplicate of the same function in plugin_fuserfield.
         $operators = ['=', '<', '>', '<=', '>=', '~', 'in'];
 
         if (preg_match("/%%$filterstrmatch:([^%]+)%%/i", $finalelements, $output)) {

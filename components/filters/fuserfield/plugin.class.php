@@ -82,7 +82,7 @@ class plugin_fuserfield extends plugin_base {
         $filter = base64_decode($filterfuserfield);
 
         if ($filterfuserfield) {
-            // For backwards compatibility with existing reports
+            // For backwards compatibility with existing reports.
             $filtermatch = "FILTER_USERS";
             $finalelements = $this->sql_replace($filter, $filtermatch, $finalelements);
 

@@ -21,6 +21,7 @@
  * @package    block_configurable_reports
  * @author     Juan leyva <http://www.twitter.com/jleyvadelgado>
  * @author     François Parlant <https://www.linkedin.com/in/francois-parlant/>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die;
@@ -35,6 +36,8 @@ require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
 class plugin_cohorts extends plugin_base {
 
     /**
+     * Init
+     *
      * @return void
      */
     public function init(): void {
@@ -55,13 +58,12 @@ class plugin_cohorts extends plugin_base {
     }
 
     /**
-     * execute
+     * Execute
      *
      * @param string $finalelements
-     * @param $data
      * @return array|string|string[]
      */
-    public function execute($finalelements, $data) {
+    public function execute($finalelements) {
 
         $filtercohorts = optional_param('filter_cohorts', 0, PARAM_INT);
         if (!$filtercohorts) {

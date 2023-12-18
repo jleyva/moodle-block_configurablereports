@@ -55,11 +55,18 @@ class plugin_userfield extends plugin_base {
         return format_string($data->columname);
     }
 
+    /**
+     * Execute
+     *
+     * @param object $data
+     * @param object $row
+     * @return string
+     */
+    public function execute($data, $row) {
+        global $DB;
 
-    // Data -> Plugin configuration data.
-    // Row -> Complet user row c->id, c->fullname, etc...
-    public function execute($data, $row, $user, $courseid, $starttime = 0, $endtime = 0) {
-        global $DB, $CFG;
+        // Data -> Plugin configuration data.
+        // Row -> Complet user row c->id, c->fullname, etc...
 
         if (strpos($data->column, 'profile_') === 0) {
             $sql = "SELECT d.*, f.shortname, f.datatype
@@ -102,7 +109,7 @@ class plugin_userfield extends plugin_base {
             }
         }
 
-        return (isset($row->{$data->column})) ? $row->{$data->column} : '';
+        return $row->{$data->column} ?? '';
     }
 
 }

@@ -19,7 +19,6 @@
  *
  * @package       block_configurable_reports
  * @author        Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date          2013-09-07
  * @copyright     Juan leyva <http://www.twitter.com/jleyvadelgado>
  * @license       http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */

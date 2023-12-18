@@ -26,6 +26,7 @@
 define('AJAX_SCRIPT', true);
 require(dirname(__FILE__, 3) . '/config.php');
 require_once($CFG->libdir . '/filelib.php');
+require_login();
 
 $action = required_param('action', PARAM_ALPHA);
 

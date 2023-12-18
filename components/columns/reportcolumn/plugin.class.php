@@ -25,10 +25,24 @@
 defined('MOODLE_INTERNAL') || die;
 require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
 
+/**
+ * Class plugin_reportcolumn
+ *
+ * @package   block_configurable_reports
+ * @author    Juan leyva <http://www.twitter.com/jleyvadelgado>
+ */
 class plugin_reportcolumn extends plugin_base {
 
-    public $reportcache = [];
+    /**
+     * @var array
+     */
+    public array $reportcache = [];
 
+    /**
+     * Init
+     *
+     * @return void
+     */
     public function init(): void {
         $this->fullname = get_string('reportcolumn', 'block_configurable_reports');
         $this->type = 'undefined';
@@ -46,8 +60,13 @@ class plugin_reportcolumn extends plugin_base {
         return format_string($data->columname);
     }
 
-    public function get_user_reports() {
-        global $DB, $USER;
+    /**
+     * get_user_reports
+     *
+     * @return array
+     */
+    public function get_user_reports(): array {
+        global $USER;
 
         $supported = [
             'courses' => ['users'],
@@ -68,6 +87,12 @@ class plugin_reportcolumn extends plugin_base {
         return $reports;
     }
 
+    /**
+     * get_current_report
+     *
+     * @param $report
+     * @return false|int
+     */
     public function get_current_report($report) {
         $components = cr_unserialize($report->components);
 
@@ -85,7 +110,13 @@ class plugin_reportcolumn extends plugin_base {
         return 0;
     }
 
-    public function get_report_columns($reportid) {
+    /**
+     * get_report_columns
+     *
+     * @param int $reportid
+     * @return array
+     */
+    public function get_report_columns(int $reportid) {
         global $DB;
 
         $columns = [];
@@ -107,11 +138,17 @@ class plugin_reportcolumn extends plugin_base {
         return $columns;
     }
 
-    public function fix_condition_expr($condition, $count) {
+    /**
+     * fix_condition_expr
+     *
+     * @param string $condition
+     * @param int $count
+     * @return string
+     */
+    public function fix_condition_expr($condition, $count): string {
         switch ($count) {
-            case 0:
-                return '';
             case 1:
+            case 0:
                 return '';
             case 2:
                 return 'c1 and c2';
@@ -120,10 +157,22 @@ class plugin_reportcolumn extends plugin_base {
         }
     }
 
-    // Data -> Plugin configuration data.
-    // Row -> Complet course/user row c->id, c->fullname, etc...
+    /**
+     * Execute
+     *
+     * @param array $data
+     * @param object $row
+     * @param object $user
+     * @param int $courseid
+     * @param int $starttime
+     * @param int $endtime
+     * @return array|string
+     */
     public function execute($data, $row, $user, $courseid, $starttime = 0, $endtime = 0) {
         global $DB, $CFG;
+
+        // Data -> Plugin configuration data.
+        // Row -> Complet course/user row c->id, c->fullname, etc...
 
         if (!$report = $DB->get_record('block_configurable_reports', ['id' => $data->reportid])) {
             throw new moodle_exception('reportdoesnotexists', 'block_configurable_reports');
@@ -137,16 +186,16 @@ class plugin_reportcolumn extends plugin_base {
             $reportclassname = 'report_' . $report->type;
             $reportclass = new $reportclassname($report);
 
-            // Delete conditions - TODO
-            // Add new condition
-            // User report -> New condition "User courses"
+            // TODO Delete conditions.
+            // Add new condition.
+            // User report -> New condition "User courses".
             // Course report -> New condition "Course users".
-            if ($this->report->type == 'users') {
+            if ($this->report->type === 'users') {
                 $reportclass->currentuser = $row;
                 $reportclass->starttime = $starttime;
                 $reportclass->endtime = $endtime;
 
-                if ($report->type == 'courses') {
+                if ($report->type === 'courses') {
                     $components = cr_unserialize($reportclass->config->components);
                     $newplugin = [
                         'pluginname' => 'currentusercourses',
@@ -165,12 +214,12 @@ class plugin_reportcolumn extends plugin_base {
                     );
                     $reportclass->config->components = cr_serialize($components);
                 }
-            } else if ($this->report->type == 'courses') {
+            } else if ($this->report->type === 'courses') {
                 $reportclass->currentcourseid = $row->id;
                 $reportclass->starttime = $starttime;
                 $reportclass->endtime = $endtime;
 
-                if ($report->type == 'users') {
+                if ($report->type === 'users') {
                     $components = cr_unserialize($reportclass->config->components);
 
                     $roles = $DB->get_records('role');
@@ -193,14 +242,14 @@ class plugin_reportcolumn extends plugin_base {
                     }
                     $reportclass->config->components = cr_serialize($components);
                 }
-            } else if ($this->report->type == 'timeline') {
+            } else if ($this->report->type === 'timeline') {
                 $reportclass->starttime = $row->starttime;
                 $reportclass->endtime = $row->endtime;
-            } else if ($this->report->type == 'categories') {
+            } else if ($this->report->type === 'categories') {
                 $reportclass->starttime = $starttime;
                 $reportclass->endtime = $endtime;
 
-                if ($report->type == 'courses') {
+                if ($report->type === 'courses') {
                     $components = cr_unserialize($reportclass->config->components);
 
                     $formdata = new stdclass;

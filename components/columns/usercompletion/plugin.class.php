@@ -25,8 +25,19 @@
 defined('MOODLE_INTERNAL') || die;
 require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
 
+/**
+ * Class plugin_usercompletion
+ *
+ * @package   block_configurable_reports
+ * @author    Juan leyva <http://www.twitter.com/jleyvadelgado>
+ */
 class plugin_usercompletion extends plugin_base {
 
+    /**
+     * Init
+     *
+     * @return void
+     */
     public function init(): void {
         $this->fullname = get_string('usercompletion', 'block_configurable_reports');
         $this->type = 'undefined';
@@ -44,13 +55,22 @@ class plugin_usercompletion extends plugin_base {
         return get_string('usercompletionsummary', 'block_configurable_reports');
     }
 
-
-
-    // Data -> Plugin configuration data.
-    // Row -> Complet user row c->id, c->fullname, etc...
+    /**
+     * Execute
+     *
+     * @param array $data
+     * @param object $row
+     * @param object $user
+     * @param int $courseid
+     * @param int $starttime
+     * @param int $endtime
+     * @return string
+     */
     public function execute($data, $row, $user, $courseid, $starttime = 0, $endtime = 0) {
         global $DB, $CFG;
 
+        // Data -> Plugin configuration data.
+        // Row -> Complet user row c->id, c->fullname, etc...
         require_once("{$CFG->libdir}/completionlib.php");
 
         $course = $DB->get_record('course', ['id' => $courseid], '*', MUST_EXIST);

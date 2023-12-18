@@ -27,6 +27,7 @@ define('AJAX_SCRIPT', true);
 require(dirname(__FILE__, 3) . '/config.php');
 require_once($CFG->libdir . '/filelib.php');
 
+require_login();
 $reportname = required_param('reportname', PARAM_RAW);
 
 if (!$userandrepo = get_config('block_configurable_reports', 'sharedsqlrepository')) {

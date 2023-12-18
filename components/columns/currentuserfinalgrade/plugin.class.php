@@ -55,17 +55,14 @@ class plugin_currentuserfinalgrade extends plugin_base {
     }
 
     /**
-     * execute
+     * Execute
      *
-     * @param $data
-     * @param $row
-     * @param $user
-     * @param $courseid
-     * @param $starttime
-     * @param $endtime
+     * @param array $data
+     * @param object $row
+     * @param object $user
      * @return string
      */
-    public function execute($data, $row, $user, $courseid, $starttime = 0, $endtime = 0) {
+    public function execute($data, $row, $user) {
         global $CFG;
 
         // Data -> Plugin configuration data.

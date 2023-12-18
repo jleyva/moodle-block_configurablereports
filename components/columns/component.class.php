@@ -58,7 +58,7 @@ class component_columns extends component_base {
      * add_form_elements
      *
      * @param MoodleQuickForm $mform
-     * @param $components
+     * @param string|object $components
      */
     public function add_form_elements(MoodleQuickForm $mform, $components): void {
 

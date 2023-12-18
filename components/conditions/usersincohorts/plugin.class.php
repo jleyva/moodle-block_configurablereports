@@ -28,7 +28,7 @@ require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
 /**
  * Class plugin_usersincohorts
  *
- * @package          block_configurablereports
+ * @package          block_configurable_reports
  * @author           Juan leyva <http://www.twitter.com/jleyvadelgado>
  */
 class plugin_usersincohorts extends plugin_base {

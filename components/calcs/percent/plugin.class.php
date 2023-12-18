@@ -100,9 +100,9 @@ class plugin_percent extends plugin_base {
     }
 
     /**
-     * execute
+     * Execute
      *
-     * @param $rows
+     * @param array $rows
      * @return string
      */
     public function execute($rows): string {

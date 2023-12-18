@@ -53,10 +53,18 @@ class plugin_categoryfield extends plugin_base {
         return format_string($data->columname);
     }
 
-    // Data -> Plugin configuration data.
-    // Row -> Complet course row c->id, c->fullname, etc...
-    public function execute($data, $row, $user, $courseid, $starttime = 0, $endtime = 0) {
+    /**
+     * Execute
+     *
+     * @param array $data
+     * @param object $row
+     * @return string
+     */
+    public function execute($data, $row) {
         global $DB;
+
+        // Data -> Plugin configuration data.
+        // Row -> Complet course row c->id, c->fullname, etc...
 
         if (isset($row->{$data->column})) {
             switch ($data->column) {
@@ -73,7 +81,7 @@ class plugin_categoryfield extends plugin_base {
             }
         }
 
-        return (isset($row->{$data->column})) ? $row->{$data->column} : '';
+        return $row->{$data->column} ?? '';
     }
 
 }

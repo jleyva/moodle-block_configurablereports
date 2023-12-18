@@ -22,15 +22,6 @@
  * @author     Juan leyva <http://www.twitter.com/jleyvadelgado>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-/*
-    evaluate postfix notation
-    modified to perform bitwise-like operations in arrays
-    * => & => array_intersect
-    + => | => array_merge
-    - => ^ => array_diff
- */
-
-// TODO namespace
 
 /**
  * Class EvalWise
@@ -94,6 +85,13 @@ class EvalWise extends EvalMath {
 
                     // TODO Use the PHP internal function if possible.
                     // @codingStandardsIgnoreStart
+                    /*
+                        evaluate postfix notation
+                        modified to perform bitwise-like operations in arrays
+                        * => & => array_intersect
+                        + => | => array_merge
+                        - => ^ => array_diff
+                     */
                     eval('$stack->push(' . $fnn . '($op1));'); // Perfectly safe eval().
                     // @codingStandardsIgnoreEnd
 
@@ -118,7 +116,9 @@ class EvalWise extends EvalMath {
                             return $this->trigger('internal error');
                         }
                     }
-                    $stack->push($this->pfx($this->f[$fnn]['func'], $args)); // Yay... recursion!!!!
+
+                    // Yay...recursion!
+                    $stack->push($this->pfx($this->f[$fnn]['func'], $args));
                 }
             } else if (in_array($token, ['+', '-', '*', '/', '^'], true)) {
                 // If the token is a binary operator, pop two values off the stack, do the operation, and push the result back on.

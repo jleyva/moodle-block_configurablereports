@@ -27,13 +27,19 @@ defined('MOODLE_INTERNAL') || die;
 
 require_once($CFG->libdir . '/formslib.php');
 
+/**
+ * Class roleusersn_form
+ *
+ * @package   block_configurable_reports
+ * @author    Juan leyva <http://www.twitter.com/jleyvadelgado>
+ */
 class roleusersn_form extends moodleform {
 
     /**
      * Form definition
      */
     public function definition(): void {
-        global $DB, $USER, $CFG;
+        global $DB;
 
         $mform =& $this->_form;
 

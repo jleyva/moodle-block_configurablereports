@@ -32,6 +32,8 @@
 class plugin_average extends plugin_base {
 
     /**
+     * Init
+     *
      * @return void
      */
     public function init(): void {
@@ -101,7 +103,7 @@ class plugin_average extends plugin_base {
     /**
      * Execute
      *
-     * @param $rows
+     * @param array $rows
      * @return float
      */
     public function execute($rows): float {
