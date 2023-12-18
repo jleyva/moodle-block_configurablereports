@@ -113,7 +113,7 @@ class report_sql extends report_base {
     /**
      * execute_query
      *
-     * @param $sql
+     * @param string $sql
      * @return mixed
      */
     public function execute_query($sql) {

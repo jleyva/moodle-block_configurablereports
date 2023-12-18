@@ -64,12 +64,9 @@ class plugin_anyone extends plugin_base {
     /**
      * Execute
      *
-     * @param $userid
-     * @param $context
-     * @param $data
-     * @return true
+     * @return bool
      */
-    public function execute($userid, $context, $data) {
+    public function execute() {
         return true;
     }
 

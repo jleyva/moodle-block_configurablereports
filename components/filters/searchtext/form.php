@@ -18,6 +18,7 @@
  * Form for searchtext filter
  *
  * @copyright  2020 David Saylor
+ * @package    block_configurable_reports
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @author     David Saylor <david@mylearningconsultants.com>
  */

@@ -59,11 +59,10 @@ class plugin_usersincoursereport extends plugin_base {
      * execute
      *
      * @param int $userid
-     * @param $context
-     * @param $data
+     * @param context $context
      * @return bool
      */
-    public function execute(int $userid, $context, $data) {
+    public function execute(int $userid, $context) {
 
         // Everyone should be enrolled at the system level.
         if ($context === context_system::instance()) {

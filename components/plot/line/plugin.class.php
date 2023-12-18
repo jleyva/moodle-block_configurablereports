@@ -58,9 +58,9 @@ class plugin_line extends plugin_base {
     /**
      * Execute
      *
-     * @param $id
-     * @param $data
-     * @param $finalreport
+     * @param int $id
+     * @param object $data
+     * @param array $finalreport
      * @return string
      */
     public function execute($id, $data, $finalreport) {

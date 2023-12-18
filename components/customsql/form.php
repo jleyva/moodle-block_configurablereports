@@ -112,8 +112,8 @@ class customsql_form extends moodleform {
     /**
      * validation_high_security
      *
-     * @param $data
-     * @param $files
+     * @param array $data
+     * @param array $files
      * @return array
      */
     public function validation_high_security($data, $files): array {
@@ -166,8 +166,8 @@ class customsql_form extends moodleform {
     /**
      * validation_low_security
      *
-     * @param $data
-     * @param $files
+     * @param array $data
+     * @param array $files
      * @return array
      */
     public function validation_low_security($data, $files) {

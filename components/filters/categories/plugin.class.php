@@ -55,7 +55,13 @@ class plugin_categories extends plugin_base {
         return get_string('filtercategories_summary', 'block_configurable_reports');
     }
 
-    public function execute($finalelements, $data) {
+    /**
+     * Execute
+     *
+     * @param string $finalelements
+     * @return array|string|string[]
+     */
+    public function execute($finalelements) {
 
         $filtercategories = optional_param('filter_categories', 0, PARAM_INT);
         if (!$filtercategories) {

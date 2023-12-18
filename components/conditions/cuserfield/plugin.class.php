@@ -66,12 +66,11 @@ class plugin_cuserfield extends plugin_base {
     /**
      * Execute
      *
-     * @param $data
-     * @param $user
-     * @param $courseid
+     * @param object $data
+     * @param object $user
      * @return array|int[]|string[]
      */
-    public function execute($data, $user, $courseid) {
+    public function execute($data, $user) {
         global $DB;
         // Data -> Plugin configuration data.
         // TODO - Use $DB->sql_like().

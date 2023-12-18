@@ -55,7 +55,13 @@ class plugin_users extends plugin_base {
         return get_string('filterusers_summary', 'block_configurable_reports');
     }
 
-    public function execute($finalelements, $data) {
+    /**
+     * Execute
+     *
+     * @param string $finalelements
+     * @return string|array
+     */
+    public function execute($finalelements) {
 
         $filterusers = optional_param('filter_users', 0, PARAM_INT);
         if (!$filterusers) {
@@ -64,12 +70,12 @@ class plugin_users extends plugin_base {
 
         if ($this->report->type !== 'sql') {
             return [$filterusers];
-        } else {
-            if (preg_match("/%%FILTER_SYSTEMUSER:([^%]+)%%/i", $finalelements, $output)) {
-                $replace = ' AND ' . $output[1] . ' = ' . $filterusers;
+        }
 
-                return str_replace('%%FILTER_SYSTEMUSER:' . $output[1] . '%%', $replace, $finalelements);
-            }
+        if (preg_match("/%%FILTER_SYSTEMUSER:([^%]+)%%/i", $finalelements, $output)) {
+            $replace = ' AND ' . $output[1] . ' = ' . $filterusers;
+
+            return str_replace('%%FILTER_SYSTEMUSER:' . $output[1] . '%%', $replace, $finalelements);
         }
 
         return $finalelements;

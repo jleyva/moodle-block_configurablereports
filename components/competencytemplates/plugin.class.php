@@ -57,7 +57,13 @@ class plugin_competencytemplates extends plugin_base {
         return get_string('filtercompetencytemplates_summary', 'block_configurable_reports');
     }
 
-    public function execute($finalelements, $data) {
+    /**
+     * Execute
+     *
+     * @param string $finalelements
+     * @return array|string|string[]
+     */
+    public function execute($finalelements) {
 
         $filtercompetencytemplates = optional_param('filter_competencytemplates', 0, PARAM_INT);
         if (!$filtercompetencytemplates) {

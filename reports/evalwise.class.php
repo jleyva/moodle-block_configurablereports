@@ -42,7 +42,9 @@ class EvalWise extends EvalMath {
     public int $index = 0;
 
     /**
-     * @param $data
+     * Set data
+     *
+     * @param array $data
      * @return void
      */
     public function set_data($data): void {
@@ -53,7 +55,7 @@ class EvalWise extends EvalMath {
     /**
      * pfx
      *
-     * @param $tokens
+     * @param array|bool $tokens
      * @param array $vars
      * @return array|false|mixed|null
      */

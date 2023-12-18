@@ -65,7 +65,7 @@ class plugin_parentcategory extends plugin_base {
     /**
      * Execute
      *
-     * @param $data
+     * @param object $data
      * @return array
      */
     public function execute($data) {

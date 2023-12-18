@@ -58,7 +58,7 @@ class plugin_reportscapabilities extends plugin_base {
     /**
      * Execute
      *
-     * @param $userid
+     * @param int $userid
      * @return bool
      */
     public function execute($userid): bool {

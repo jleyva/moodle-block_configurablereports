@@ -241,6 +241,8 @@ abstract class report_base {
     }
 
     /**
+     * check_filters_request
+     *
      * @return void
      */
     public function check_filters_request(): void {

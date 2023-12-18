@@ -59,7 +59,7 @@ class plugin_fuserfield extends plugin_base {
      * Execute
      *
      * @param string $finalelements
-     * @param $data
+     * @param object $data
      * @return array|int[]|mixed|string|string[]
      */
     public function execute($finalelements, $data) {
@@ -74,7 +74,7 @@ class plugin_fuserfield extends plugin_base {
      * execute_sql
      *
      * @param string $finalelements
-     * @param $data
+     * @param object $data
      * @return array|mixed|string|string[]
      */
     private function execute_sql($finalelements, $data) {
@@ -97,7 +97,7 @@ class plugin_fuserfield extends plugin_base {
      * execute_users
      *
      * @param string $finalelements
-     * @param $data
+     * @param object $data
      * @return array|int[]|mixed|string[]
      */
     private function execute_users($finalelements, $data) {
@@ -217,12 +217,12 @@ class plugin_fuserfield extends plugin_base {
     /**
      * sql_replace
      *
-     * @param $filtersearchtext
-     * @param $filterstrmatch
+     * @param string $filtersearchtext
+     * @param string $filterstrmatch
      * @param string $finalelements
      * @return array|mixed|string|string[]
      */
-    private function sql_replace($filtersearchtext, $filterstrmatch, $finalelements) {
+    private function sql_replace(string $filtersearchtext, $filterstrmatch, $finalelements) {
         $operators = ['=', '<', '>', '<=', '>=', '~', 'in'];
 
         // TODO this function is 2 times in the code, should be refactored.
@@ -235,6 +235,7 @@ class plugin_fuserfield extends plugin_base {
                 throw new moodle_exception('nosuchoperator');
             }
             if ($operator === '~') {
+                // TODO can be improved by more native PDO approach.
                 $replace = " AND " . $field . " LIKE '%" . $filtersearchtext . "%'";
             } else if ($operator === 'in') {
                 $processeditems = [];

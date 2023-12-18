@@ -55,7 +55,13 @@ class plugin_role extends plugin_base {
         return get_string('filterrole_summary', 'block_configurable_reports');
     }
 
-    public function execute($finalelements, $data) {
+    /**
+     * Execute
+     *
+     * @param string $finalelements
+     * @return array|string|string[]
+     */
+    public function execute($finalelements) {
 
         $filterrole = optional_param('filter_role', 0, PARAM_INT);
         if (!$filterrole) {

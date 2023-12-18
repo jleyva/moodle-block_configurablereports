@@ -57,7 +57,7 @@ class plugin_usersincohorts extends plugin_base {
     /**
      * Execute
      *
-     * @param $data
+     * @param object $data
      * @return array|int[]|string[]
      */
     public function execute($data) {

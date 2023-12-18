@@ -59,10 +59,9 @@ class plugin_coursecategories extends plugin_base {
      * Execute
      *
      * @param string $finalelements
-     * @param $data
      * @return mixed
      */
-    public function execute($finalelements, $data) {
+    public function execute($finalelements) {
         global $remotedb, $CFG;
         require_once($CFG->dirroot . "/course/lib.php");
 

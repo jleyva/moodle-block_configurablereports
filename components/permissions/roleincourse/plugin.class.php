@@ -63,9 +63,9 @@ class plugin_roleincourse extends plugin_base {
     /**
      * Execute
      *
-     * @param $userid
-     * @param $context
-     * @param $data
+     * @param int $userid
+     * @param context $context
+     * @param object $data
      * @return bool
      */
     public function execute($userid, $context, $data): bool {

@@ -538,28 +538,23 @@ function cr_get_context(int $context, ?int $id = null, $strictness = null) {
 /**
  * cr_make_categories_list
  *
- * @param $list
- * @param $parents
- * @param $requiredcapability
- * @param $excludeid
- * @param $category
- * @param $path
+ * @param array $list
+ * @param array $parents
+ * @param string $requiredcapability
+ * @param int $excludeid
+ * @param object $category
+ * @param string $path
  * @return void
  */
 function cr_make_categories_list(&$list, &$parents, $requiredcapability = '', $excludeid = 0, $category = null, $path = '') {
-    global $CFG, $DB;
+    global $DB;
 
     // For categories list use just this one function.
     if (empty($list)) {
         $list = [];
     }
 
-    if (class_exists('core_course_category')) {
-        $list += core_course_category::make_categories_list($requiredcapability, $excludeid);
-    } else {
-        require_once($CFG->libdir . '/coursecatlib.php');
-        $list += coursecat::make_categories_list($requiredcapability, $excludeid);
-    }
+    $list += core_course_category::make_categories_list($requiredcapability, $excludeid);
 
     // Building the list of all parents of all categories in the system is highly undesirable and hardly ever needed.
     // Usually user needs only parents for one particular category, in which case should be used:

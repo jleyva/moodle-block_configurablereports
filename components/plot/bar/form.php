@@ -102,7 +102,9 @@ class bar_form extends moodleform {
     }
 
     /**
-     * @param $mform
+     * add_formatting_elements
+     *
+     * @param moodleform $mform
      * @return void
      */
     public function add_formatting_elements($mform): void {

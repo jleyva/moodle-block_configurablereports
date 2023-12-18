@@ -55,7 +55,13 @@ class plugin_startendtime extends plugin_base {
         return get_string('filterstartendtime_summary', 'block_configurable_reports');
     }
 
-    public function execute($finalelements, $data) {
+    /**
+     * Execute
+     *
+     * @param string $finalelements
+     * @return array|string|string[]
+     */
+    public function execute($finalelements) {
         global $CFG;
 
         if ($this->report->type !== 'sql') {

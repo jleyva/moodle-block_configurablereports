@@ -12,7 +12,6 @@ jobs:
       disable_grunt: true
       disable_phpunit: true
       disable_phpcpd: true # Old code we don't going to rewrite everything for now.
-      disable_phpdoc: true # Old code we don't going to rewrite everything for now.
       disable_release : true
       release_branches: main
       min_php : 7.4
