@@ -57,7 +57,7 @@ class plugin_cohorts extends plugin_base {
     /**
      * execute
      *
-     * @param $finalelements
+     * @param string $finalelements
      * @param $data
      * @return array|string|string[]
      */

@@ -58,7 +58,7 @@ class plugin_fuserfield extends plugin_base {
     /**
      * Execute
      *
-     * @param $finalelements
+     * @param string $finalelements
      * @param $data
      * @return array|int[]|mixed|string|string[]
      */
@@ -73,7 +73,7 @@ class plugin_fuserfield extends plugin_base {
     /**
      * execute_sql
      *
-     * @param $finalelements
+     * @param string $finalelements
      * @param $data
      * @return array|mixed|string|string[]
      */
@@ -96,7 +96,7 @@ class plugin_fuserfield extends plugin_base {
     /**
      * execute_users
      *
-     * @param $finalelements
+     * @param string $finalelements
      * @param $data
      * @return array|int[]|mixed|string[]
      */
@@ -219,7 +219,7 @@ class plugin_fuserfield extends plugin_base {
      *
      * @param $filtersearchtext
      * @param $filterstrmatch
-     * @param $finalelements
+     * @param string $finalelements
      * @return array|mixed|string|string[]
      */
     private function sql_replace($filtersearchtext, $filterstrmatch, $finalelements) {

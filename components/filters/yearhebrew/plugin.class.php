@@ -58,7 +58,7 @@ class plugin_yearhebrew extends plugin_base {
     /**
      * Execute
      *
-     * @param $finalelements
+     * @param string $finalelements
      * @return array|string|string[]
      */
     public function execute($finalelements) {

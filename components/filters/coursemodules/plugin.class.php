@@ -58,7 +58,7 @@ class plugin_coursemodules extends plugin_base {
     /**
      * Execute
      *
-     * @param $finalelements
+     * @param string $finalelements
      * @return array|mixed|string|string[]
      */
     public function execute($finalelements) {

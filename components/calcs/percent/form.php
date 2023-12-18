@@ -20,6 +20,7 @@
  * @copyright  2020 Juan Leyva <juan@moodle.com>
  * @package    block_configurable_reports
  * @author     David Pesce <davidpesce@gmail.com>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die;
@@ -31,7 +32,6 @@ require_once($CFG->libdir . '/formslib.php');
  *
  * @package block_configurable_reports
  * @author  David Pesce <davidpesce@gmail.com>
- * /
  */
 class percent_form extends moodleform {
 

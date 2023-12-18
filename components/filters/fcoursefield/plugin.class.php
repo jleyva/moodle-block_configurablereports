@@ -58,7 +58,7 @@ class plugin_fcoursefield extends plugin_base {
     /**
      * Execute
      *
-     * @param $finalelements
+     * @param string $finalelements
      * @param $data
      * @return int[]|mixed|string[]
      */

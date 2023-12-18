@@ -58,7 +58,7 @@ class plugin_coursecategories extends plugin_base {
     /**
      * Execute
      *
-     * @param $finalelements
+     * @param string $finalelements
      * @param $data
      * @return mixed
      */

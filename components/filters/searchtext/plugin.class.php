@@ -118,7 +118,7 @@ class plugin_searchtext extends plugin_base {
      *
      * @param $filtersearchtext
      * @param $filterstrmatch
-     * @param $finalelements
+     * @param string $finalelements
      * @return array|mixed|string|string[]
      */
     private function sql_replace($filtersearchtext, $filterstrmatch, $finalelements) {

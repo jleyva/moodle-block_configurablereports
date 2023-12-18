@@ -15,17 +15,19 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * @package block_configurablereports
- * @author  Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date    2009
+ * Configurable Reports a Moodle block for creating customizable reports
+ *
+ * @copyright  2020 Juan Leyva <juan@moodle.com>
+ * @package    block_configurable_reports
+ * @author     Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 /**
  * Class component_base
  *
- * @package block_configurablereports
+ * @package block_configurable_reports
  * @author  Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date    2009
  */
 abstract class component_base {
 

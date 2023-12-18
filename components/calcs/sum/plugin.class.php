@@ -50,7 +50,7 @@ class plugin_sum extends plugin_base {
      * @return string
      */
     public function summary(object $data): string {
-        global $DB, $CFG;
+        global $CFG;
 
         if ($this->report->type !== 'sql') {
             $components = cr_unserialize($this->report->components);
@@ -102,7 +102,7 @@ class plugin_sum extends plugin_base {
     /**
      * Execute
      *
-     * @param $rows
+     * @param array $rows
      * @return float|int|string
      */
     public function execute($rows) {

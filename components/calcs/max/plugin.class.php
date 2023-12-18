@@ -105,7 +105,7 @@ class plugin_max extends plugin_base {
     /**
      * Execute
      *
-     * @param $rows
+     * @param array $rows
      * @return float|int|string
      */
     public function execute($rows) {

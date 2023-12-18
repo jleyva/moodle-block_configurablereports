@@ -55,7 +55,7 @@ class plugin_fsearchuserfield extends plugin_base {
     /**
      * execute
      *
-     * @param $finalelements
+     * @param string $finalelements
      * @param $data
      * @return array|int[]|mixed|string|string[]
      */
@@ -68,7 +68,7 @@ class plugin_fsearchuserfield extends plugin_base {
     }
 
     /**
-     * @param $finalelements
+     * @param string $finalelements
      * @param object $data
      * @return array|string|string[]
      */
