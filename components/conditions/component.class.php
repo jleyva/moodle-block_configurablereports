@@ -63,7 +63,7 @@ class component_conditions extends component_base {
     /**
      * add_missing_conditions
      *
-     * @param $cond
+     * @param string $cond
      * @return array|mixed|string|string[]|null
      */
     public function add_missing_conditions($cond) {

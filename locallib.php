@@ -457,7 +457,7 @@ function cr_print_table(object $table, bool $return = false) {
  * table_to_excel
  *
  * @param string $filename
- * @param $table
+ * @param object $table
  * @return void
  */
 function table_to_excel(string $filename, $table) {
@@ -677,7 +677,7 @@ function cr_logging_info(): array {
 /**
  * Check if the current user is allowed to manage sql reports.
  *
- * @param $context
+ * @param context $context
  * @return bool
  */
 function block_configurable_reports_can_managesqlreports($context): bool {

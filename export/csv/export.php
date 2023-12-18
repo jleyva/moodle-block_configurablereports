@@ -26,7 +26,7 @@
 /**
  * export_report
  *
- * @param $report
+ * @param object $report
  * @return void
  */
 function export_report($report) {

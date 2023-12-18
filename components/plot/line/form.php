@@ -14,24 +14,39 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+/**
+ * Configurable Reports a Moodle block for creating customizable reports
+ *
+ * @copyright  2020 Juan Leyva <juan@moodle.com>
+ * @package    block_configurable_reports
+ * @author     Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
 defined('MOODLE_INTERNAL') || die;
 
 require_once($CFG->libdir . '/formslib.php');
 
+/**
+ * Class line_form
+ *
+ * @package   block_configurable_reports
+ * @author    Juan leyva <http://www.twitter.com/jleyvadelgado>
+ */
 class line_form extends moodleform {
 
     /**
      * Form definition
      */
     public function definition(): void {
-        global $DB, $USER, $CFG;
+        global $CFG;
 
         $mform =& $this->_form;
         $options = [0 => get_string('choose')];
 
         $report = $this->_customdata['report'];
 
-        if ($report->type != 'sql') {
+        if ($report->type !== 'sql') {
             $components = cr_unserialize($this->_customdata['report']->components);
 
             if (!is_array($components) || empty($components['columns']['elements'])) {

@@ -418,7 +418,7 @@ abstract class report_base {
     /**
      * get_graphs
      *
-     * @param $finalreport
+     * @param array $finalreport
      * @return array
      */
     public function get_graphs($finalreport): array {
@@ -511,7 +511,7 @@ abstract class report_base {
     /**
      * elements_by_conditions
      *
-     * @param $conditions
+     * @param array $conditions
      * @return bool|mixed|null
      */
     public function elements_by_conditions($conditions) {
@@ -768,7 +768,7 @@ abstract class report_base {
     /**
      * print_template
      *
-     * @param $config
+     * @param object $config
      * @param moodle_page $moodlepage
      * @return void
      */

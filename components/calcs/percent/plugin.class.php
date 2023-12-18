@@ -20,7 +20,9 @@
  * @copyright  2020 Juan Leyva <juan@moodle.com>
  * @package    block_configurable_reports
  * @author     David Pesce <davidpesce@gmail.com>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+
 defined('MOODLE_INTERNAL') || die;
 require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
 

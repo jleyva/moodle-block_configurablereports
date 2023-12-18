@@ -20,13 +20,21 @@
  * @copyright  2020 Juan Leyva <juan@moodle.com>
  * @package    block_configurable_reports
  * @author     Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
+/**
+ * Class block_configurable_reports_edit_form
+ *
+ * @package   block_configurable_reports
+ * @author    Juan leyva <http://www.twitter.com/jleyvadelgado>
  */
 class block_configurable_reports_edit_form extends block_edit_form {
 
     /**
      * specific_definition
      *
-     * @param $mform
+     * @param moodleform $mform
      * @return void
      */
     protected function specific_definition($mform) {

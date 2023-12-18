@@ -66,9 +66,9 @@ class plugin_puserfield extends plugin_base {
     /**
      * Execute
      *
-     * @param $userid
-     * @param $context
-     * @param $data
+     * @param int $userid
+     * @param object $context
+     * @param object $data
      * @return bool
      */
     public function execute($userid, $context, $data): bool {

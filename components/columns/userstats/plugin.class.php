@@ -25,8 +25,19 @@
 defined('MOODLE_INTERNAL') || die;
 require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
 
+/**
+ * Class plugin_userstats
+ *
+ * @package   block_configurable_reports
+ * @author    Juan leyva <http://www.twitter.com/jleyvadelgado>
+ */
 class plugin_userstats extends plugin_base {
 
+    /**
+     * Init
+     *
+     * @return void
+     */
     public function init(): void {
         $this->fullname = get_string('userstats', 'block_configurable_reports');
         $this->type = 'undefined';
@@ -44,11 +55,21 @@ class plugin_userstats extends plugin_base {
         return format_string($data->columname);
     }
 
-    // Data -> Plugin configuration data.
-    // Row -> Complet user row c->id, c->fullname, etc...
+    /**
+     * Execute
+     *
+     * @param object $data
+     * @param object $row
+     * @param object $user
+     * @param int $courseid
+     * @param int $starttime
+     * @param int $endtime
+     * @return string
+     */
     public function execute($data, $row, $user, $courseid, $starttime = 0, $endtime = 0) {
         global $DB, $CFG;
-
+        // Data -> Plugin configuration data.
+        // Row -> Complet user row c->id, c->fullname, etc.
         $stat = '--';
 
         $filterstarttime = optional_param('filter_starttime', 0, PARAM_RAW);
@@ -68,7 +89,7 @@ class plugin_userstats extends plugin_base {
         $starttime = ($filterstarttime) ? $filterstarttime : $starttime;
         $endtime = ($filterendtime) ? $filterendtime : $endtime;
 
-        if ($data->stat == 'coursededicationtime') {
+        if ($data->stat === 'coursededicationtime') {
             $sql = "userid = ?";
             $params = [$row->id];
 
@@ -160,7 +181,7 @@ class plugin_userstats extends plugin_base {
         $sql = "SELECT SUM($total) as total FROM {stats_user_daily} WHERE stattype = ? AND userid = ?";
         $params = [$stattype, $row->id];
 
-        if ($courseid != SITEID && $data->stat != 'logins') {
+        if ($courseid != SITEID && $data->stat !== 'logins') {
             $sql .= " AND courseid = ?";
             $params[] = $courseid;
         }
@@ -176,9 +197,9 @@ class plugin_userstats extends plugin_base {
             $res = array_shift($res);
             if ($res->total != null) {
                 return $res->total;
-            } else {
-                return 0;
             }
+
+            return 0;
         }
 
         return $stat;

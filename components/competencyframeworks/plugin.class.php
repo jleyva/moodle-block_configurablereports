@@ -61,10 +61,9 @@ class plugin_competencyframeworks extends plugin_base {
      * execute
      *
      * @param string $finalelements
-     * @param $data
      * @return array|string|string[]
      */
-    public function execute($finalelements, $data) {
+    public function execute($finalelements) {
 
         $filtercompetencyframeworks = optional_param('filter_competencyframeworks', 0, PARAM_INT);
         if (!$filtercompetencyframeworks) {

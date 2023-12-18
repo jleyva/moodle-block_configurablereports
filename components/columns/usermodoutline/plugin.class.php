@@ -67,12 +67,12 @@ class plugin_usermodoutline extends plugin_base {
     /**
      * Execute
      *
-     * @param $data
-     * @param $row
-     * @param $user
-     * @param $courseid
-     * @param $starttime
-     * @param $endtime
+     * @param object $data
+     * @param object $row
+     * @param object $user
+     * @param int $courseid
+     * @param int $starttime
+     * @param int $endtime
      * @return string
      */
     public function execute($data, $row, $user, $courseid, $starttime = 0, $endtime = 0) {

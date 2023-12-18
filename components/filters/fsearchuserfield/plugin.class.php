@@ -14,9 +14,10 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-/** Configurable Reports
- * A Moodle block for creating customizable reports
+/**
+ * Configurable Reports A Moodle block for creating customizable reports
  *
+ * @copyright  2020 Juan Leyva <juan@moodle.com>
  * @package   block_configurable_reports
  * @author    Juan leyva <http://www.twitter.com/jleyvadelgado>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -33,6 +34,8 @@ require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
 class plugin_fsearchuserfield extends plugin_base {
 
     /**
+     * Init
+     *
      * @return void
      */
     public function init(): void {
@@ -55,8 +58,8 @@ class plugin_fsearchuserfield extends plugin_base {
     /**
      * execute
      *
-     * @param string $finalelements
-     * @param $data
+     * @param string|array $finalelements
+     * @param object $data
      * @return array|int[]|mixed|string|string[]
      */
     public function execute($finalelements, $data) {
@@ -68,6 +71,8 @@ class plugin_fsearchuserfield extends plugin_base {
     }
 
     /**
+     * execute_sql
+     *
      * @param string $finalelements
      * @param object $data
      * @return array|string|string[]
@@ -168,7 +173,7 @@ class plugin_fsearchuserfield extends plugin_base {
             $userlist = array_keys($remotedb->get_records('user'));
         } else {
             $components = cr_unserialize($this->report->components);
-            $conditions = array_key_exists('conditions', $components) ? $components['conditions'] : null;
+            $conditions = $components['conditions'] ?? null;
             $userlist = $reportclass->elements_by_conditions($conditions);
         }
 
@@ -184,7 +189,6 @@ class plugin_fsearchuserfield extends plugin_base {
                     $params = array_merge([$field->id], $params);
 
                     if ($infodata = $remotedb->get_records_sql($sql, $params)) {
-                        $finalusersid = [];
                         foreach ($infodata as $d) {
                             $filteroptions[base64_encode($d->data)] = $d->data;
                         }

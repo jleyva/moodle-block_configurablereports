@@ -58,12 +58,11 @@ class plugin_currentuser extends plugin_base {
     /**
      * Execute
      *
-     * @param $data
-     * @param $user
-     * @param $courseid
+     * @param object $data
+     * @param object $user
      * @return array
      */
-    public function execute($data, $user, $courseid) {
+    public function execute($data, $user) {
         // Data -> Plugin configuration data.
         return [$user->id];
     }

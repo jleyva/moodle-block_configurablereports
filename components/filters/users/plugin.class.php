@@ -25,8 +25,19 @@
 defined('MOODLE_INTERNAL') || die;
 require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
 
+/**
+ * Class plugin_users
+ *
+ * @package   block_configurable_reports
+ * @author    Juan leyva <http://www.twitter.com/jleyvadelgado>
+ */
 class plugin_users extends plugin_base {
 
+    /**
+     * Init
+     *
+     * @return void
+     */
     public function init(): void {
         $this->form = false;
         $this->unique = true;

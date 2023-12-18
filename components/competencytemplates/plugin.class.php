@@ -20,29 +20,26 @@
  * @copyright  2020 Juan Leyva <juan@moodle.com>
  * @package    block_configurable_reports
  * @author     Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @author     François Parlant <https://www.linkedin.com/in/francois-parlant/>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
-/**
- * COMPETENCY TEMPLATE FILTER
- * A filter for configurable reports
- *
- * @author François Parlant <https://www.linkedin.com/in/francois-parlant/>
- */
-
-/* example of report query
-***********
-* Display the courses in which the competencies of a template are used
-***********
-
-
-*/
 
 defined('MOODLE_INTERNAL') || die;
 require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
 
+/**
+ * Class plugin_competencytemplates - Display the courses in which the competencies of a template are used
+ *
+ * @package   block_configurable_reports
+ * @author    Juan leyva <http://www.twitter.com/jleyvadelgado>
+ */
 class plugin_competencytemplates extends plugin_base {
 
+    /**
+     * Init
+     *
+     * @return void
+     */
     public function init(): void {
         $this->form = false;
         $this->unique = true;
@@ -69,12 +66,12 @@ class plugin_competencytemplates extends plugin_base {
 
         if ($this->report->type !== 'sql') {
             return [$filtercompetencytemplates];
-        } else {
-            if (preg_match("/%%FILTER_COMPETENCYTEMPLATES:([^%]+)%%/i", $finalelements, $output)) {
-                $replace = ' AND ' . $output[1] . ' = ' . $filtercompetencytemplates;
+        }
 
-                return str_replace('%%FILTER_COMPETENCYTEMPLATES:' . $output[1] . '%%', $replace, $finalelements);
-            }
+        if (preg_match("/%%FILTER_COMPETENCYTEMPLATES:([^%]+)%%/i", $finalelements, $output)) {
+            $replace = ' AND ' . $output[1] . ' = ' . $filtercompetencytemplates;
+
+            return str_replace('%%FILTER_COMPETENCYTEMPLATES:' . $output[1] . '%%', $replace, $finalelements);
         }
 
         return $finalelements;
@@ -107,7 +104,6 @@ class plugin_competencytemplates extends plugin_base {
             foreach ($studentlist as $student) {
                 $competencytemplateslist[] = $student->userid;
             }
-
         }
 
         $competencytemplatesoptions = [];

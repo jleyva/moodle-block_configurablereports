@@ -54,10 +54,10 @@ class EvalWise extends EvalMath {
      * pfx
      *
      * @param $tokens
-     * @param $vars
+     * @param array $vars
      * @return array|false|mixed|null
      */
-    public function pfx($tokens, $vars = []) {
+    public function pfx($tokens, array $vars = []) {
 
         if ($tokens === false) {
             return false;
@@ -108,7 +108,8 @@ class EvalWise extends EvalMath {
                         return $this->trigger("internal error");
                     }
                     $stack->push($res);
-                } else if (array_key_exists($fnn, $this->f)) { // User function.
+                } else if (array_key_exists($fnn, $this->f)) {
+                    // User function.
                     // Get args.
                     $args = [];
                     for ($i = count($this->f[$fnn]['args']) - 1; $i >= 0; $i--) {
@@ -117,7 +118,7 @@ class EvalWise extends EvalMath {
                         }
                     }
 
-                    // Yay...recursion!
+                    // Yay recursion!
                     $stack->push($this->pfx($this->f[$fnn]['func'], $args));
                 }
             } else if (in_array($token, ['+', '-', '*', '/', '^'], true)) {
@@ -169,11 +170,8 @@ class EvalWise extends EvalMath {
         }
 
         $last = $stack->pop();
-        if (isset($this->data[$last])) {
-            return $this->data[$last];
-        }
 
-        return false;
+        return $this->data[$last] ?? false;
     }
 
 }

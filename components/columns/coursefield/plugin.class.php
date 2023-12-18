@@ -25,9 +25,17 @@
 defined('MOODLE_INTERNAL') || die;
 require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
 
+/**
+ * Class plugin_coursefield
+ *
+ * @package   block_configurable_reports
+ * @author    Juan leyva <http://www.twitter.com/jleyvadelgado>
+ */
 class plugin_coursefield extends plugin_base {
 
     /**
+     * Init
+     *
      * @return void
      */
     public function init(): void {
@@ -47,11 +55,17 @@ class plugin_coursefield extends plugin_base {
         return format_string($data->columname);
     }
 
+    /**
+     * Execute
+     *
+     * @param object $data
+     * @param object $row
+     * @return string
+     */
+    public function execute($data, $row) {
 
-    // Data -> Plugin configuration data.
-    // Row -> Complet course row c->id, c->fullname, etc...
-    public function execute($data, $row, $user, $courseid, $starttime = 0, $endtime = 0) {
-
+        // Data -> Plugin configuration data.
+        // Row -> Complet course row c->id, c->fullname, etc...
         if (isset($row->{$data->column})) {
             switch ($data->column) {
                 case 'enrolstartdate':

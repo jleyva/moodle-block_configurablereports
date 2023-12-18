@@ -25,8 +25,19 @@
 defined('MOODLE_INTERNAL') || die;
 require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
 
+/**
+ * Class plugin_subcategories
+ *
+ * @package   block_configurable_reports
+ * @author    Juan leyva <http://www.twitter.com/jleyvadelgado>
+ */
 class plugin_subcategories extends plugin_base {
 
+    /**
+     * Init
+     *
+     * @return void
+     */
     public function init(): void {
         $this->form = false;
         $this->unique = true;
@@ -44,7 +55,13 @@ class plugin_subcategories extends plugin_base {
         return get_string('filtersubcategories_summary', 'block_configurable_reports');
     }
 
-    public function execute($finalelements, $data) {
+    /**
+     * Execute
+     *
+     * @param string $finalelements
+     * @return array|string|string[]
+     */
+    public function execute($finalelements) {
         $filtersubcategories = optional_param('filter_subcategories', 0, PARAM_INT);
         if (!$filtersubcategories) {
             return $finalelements;

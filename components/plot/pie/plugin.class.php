@@ -22,6 +22,7 @@
  * @author     Juan leyva <http://www.twitter.com/jleyvadelgado>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+
 defined('MOODLE_INTERNAL') || die;
 require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
 
@@ -58,9 +59,9 @@ class plugin_pie extends plugin_base {
     /**
      * Execute
      *
-     * @param $id
-     * @param $data
-     * @param $finalreport
+     * @param int $id
+     * @param object $data
+     * @param object $finalreport
      * @return string
      */
     public function execute($id, $data, $finalreport) {
@@ -151,6 +152,8 @@ class plugin_pie extends plugin_base {
     }
 
     /**
+     * get_series
+     *
      * @return array
      */
     public function get_series(): array {
@@ -161,6 +164,8 @@ class plugin_pie extends plugin_base {
     }
 
     /**
+     * get_color_palette
+     *
      * @return array|string[]|null
      */
     public function get_color_palette(): ?array {

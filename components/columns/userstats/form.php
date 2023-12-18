@@ -27,13 +27,18 @@ defined('MOODLE_INTERNAL') || die;
 
 require_once($CFG->libdir . '/formslib.php');
 
+/**
+ * Class userstats_form
+ *
+ * @package   block_configurable_reports
+ * @author    Juan leyva <http://www.twitter.com/jleyvadelgado>
+ */
 class userstats_form extends moodleform {
 
     /**
      * Form definition
      */
     public function definition(): void {
-        global $DB, $USER, $CFG;
 
         $mform =& $this->_form;
 
@@ -78,12 +83,12 @@ class userstats_form extends moodleform {
      *                     or an empty array if everything is OK (true allowed for backwards compatibility too).
      */
     public function validation($data, $files): array {
-        global $DB, $CFG;
+        global $CFG;
         $errors = parent::validation($data, $files);
 
         $errors = $this->_customdata['compclass']->validate_form_elements($data, $errors);
 
-        if ($data['stat'] != 'coursededicationtime' && (!isset($CFG->enablestats) || !$CFG->enablestats)) {
+        if ($data['stat'] !== 'coursededicationtime' && (!isset($CFG->enablestats) || !$CFG->enablestats)) {
             $errors['stat'] = get_string('globalstatsshouldbeenabled', 'block_configurable_reports');
         }
 

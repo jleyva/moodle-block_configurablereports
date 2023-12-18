@@ -20,9 +20,22 @@
  * @copyright  2020 Juan Leyva <juan@moodle.com>
  * @package    block_configurable_reports
  * @author     Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
+/**
+ * Class plugin_roleusersn
+ *
+ * @package   block_configurable_reports
+ * @author    Juan leyva <http://www.twitter.com/jleyvadelgado>
  */
 class plugin_roleusersn extends plugin_base {
 
+    /**
+     * Init
+     *
+     * @return void
+     */
     public function init(): void {
         $this->fullname = get_string('roleusersn', 'block_configurable_reports');
         $this->type = 'numeric';
@@ -40,11 +53,16 @@ class plugin_roleusersn extends plugin_base {
         return format_string($data->columname);
     }
 
-
-
-    // Data -> Plugin configuration data.
-    // Row -> Full course row c->id, c->fullname, etc...
-    public function execute($data, $row, $user, $courseid, $starttime = 0, $endtime = 0) {
+    /**
+     * Execute
+     *
+     * @param object $data
+     * @param object $row
+     * @return int
+     */
+    public function execute($data, $row) {
+        // Data -> Plugin configuration data.
+        // Row -> Full course row c->id, c->fullname, etc...
         $courseid = $row->id;
         $context = cr_get_context(CONTEXT_COURSE, $courseid);
 

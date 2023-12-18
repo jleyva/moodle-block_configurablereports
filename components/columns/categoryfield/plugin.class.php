@@ -34,6 +34,8 @@ require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
 class plugin_categoryfield extends plugin_base {
 
     /**
+     * Init
+     *
      * @return void
      */
     public function init(): void {
@@ -56,7 +58,7 @@ class plugin_categoryfield extends plugin_base {
     /**
      * Execute
      *
-     * @param array $data
+     * @param object $data
      * @param object $row
      * @return string
      */

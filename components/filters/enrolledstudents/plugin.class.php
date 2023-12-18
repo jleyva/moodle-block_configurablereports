@@ -56,11 +56,12 @@ class plugin_enrolledstudents extends plugin_base {
     }
 
     /**
+     * Execute
+     *
      * @param string $finalelements
-     * @param $data
      * @return array|string|string[]
      */
-    public function execute($finalelements, $data) {
+    public function execute($finalelements) {
         $filterenrolledstudents = optional_param('filter_enrolledstudents', 0, PARAM_INT);
         if (!$filterenrolledstudents) {
             return $finalelements;

@@ -37,7 +37,7 @@ abstract class plugin_base {
     /**
      * @var string
      */
-    public $fullname = '';
+    public string $fullname = '';
 
     /**
      * @var string
@@ -52,7 +52,7 @@ abstract class plugin_base {
     /**
      * @var bool
      */
-    public $form = false;
+    public bool $form = false;
 
     /**
      * @var array
@@ -62,12 +62,12 @@ abstract class plugin_base {
     /**
      * @var bool
      */
-    public $unique = false;
+    public bool $unique = false;
 
     /**
      * @var array
      */
-    public $reporttypes = [];
+    public array $reporttypes = [];
 
     /**
      * @var true
@@ -75,7 +75,9 @@ abstract class plugin_base {
     public bool $ordering;
 
     /**
-     * @param $report
+     * __construct
+     *
+     * @param int|object $report
      */
     public function __construct($report) {
         global $DB;
@@ -110,7 +112,7 @@ abstract class plugin_base {
     /**
      * colformat
      *
-     * @param object| null $data
+     * @param object|null $data
      * @return string[]
      */
     public function colformat(?object $data): array {

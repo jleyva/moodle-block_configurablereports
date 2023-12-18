@@ -70,7 +70,7 @@ class component_permissions extends component_base {
     /**
      * Add missing conditions.
      *
-     * @param $cond
+     * @param string $cond
      * @return array|mixed|string|string[]|null
      */
     public function add_missing_conditions($cond) {
@@ -106,7 +106,9 @@ class component_permissions extends component_base {
     }
 
     /**
-     * @param $cform
+     * Form set data
+     *
+     * @param moodleform $cform
      * @return void
      */
     public function form_set_data(moodleform $cform) {

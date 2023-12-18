@@ -90,7 +90,7 @@ class plugin_reportcolumn extends plugin_base {
     /**
      * get_current_report
      *
-     * @param $report
+     * @param object $report
      * @return false|int
      */
     public function get_current_report($report) {

@@ -56,15 +56,13 @@ class plugin_date extends plugin_base {
     }
 
     /**
-     * @param $data
-     * @param $row
-     * @param $user
-     * @param $courseid
-     * @param $starttime
-     * @param $endtime
+     * Execute
+     *
+     * @param object $data
+     * @param object $row
      * @return string
      */
-    public function execute($data, $row, $user, $courseid, $starttime = 0, $endtime = 0) {
+    public function execute($data, $row) {
 
         // Data -> Plugin configuration data.
         // Row -> Complet course row c->id, c->fullname, etc...

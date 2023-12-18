@@ -65,12 +65,10 @@ class plugin_courseparent extends plugin_base {
     /**
      * Execute
      *
-     * @param $data
-     * @param $user
-     * @param $courseid
+     * @param object $data
      * @return array
      */
-    public function execute($data, $user, $courseid) {
+    public function execute($data) {
         global $DB;
         // Data -> Plugin configuration data.
         $finalcourses = [];

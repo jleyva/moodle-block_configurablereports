@@ -58,12 +58,11 @@ class plugin_currentusercourses extends plugin_base {
     /**
      * Execute
      *
-     * @param $data
-     * @param $user
-     * @param $courseid
+     * @param object $data
+     * @param object $user
      * @return array|int[]|string[]
      */
-    public function execute($data, $user, $courseid) {
+    public function execute($data, $user) {
         global $CFG;
 
         // Data -> Plugin configuration data.

@@ -25,8 +25,19 @@
 defined('MOODLE_INTERNAL') || die;
 require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
 
+/**
+ * Class plugin_coursestats
+ *
+ * @package   block_configurable_reports
+ * @author    Juan leyva <http://www.twitter.com/jleyvadelgado>
+ */
 class plugin_coursestats extends plugin_base {
 
+    /**
+     * Init
+     *
+     * @return void
+     */
     public function init(): void {
         $this->fullname = get_string('coursestats', 'block_configurable_reports');
         $this->type = 'undefined';
@@ -47,12 +58,12 @@ class plugin_coursestats extends plugin_base {
     /**
      * execute
      *
-     * @param $data
-     * @param $row
-     * @param $user
-     * @param $courseid
-     * @param $starttime
-     * @param $endtime
+     * @param object $data
+     * @param object $row
+     * @param object $user
+     * @param int $courseid
+     * @param int $starttime
+     * @param int $endtime
      * @return int|string
      */
     public function execute($data, $row, $user, $courseid, $starttime = 0, $endtime = 0) {

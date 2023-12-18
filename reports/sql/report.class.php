@@ -75,6 +75,8 @@ class report_sql extends report_base {
     }
 
     /**
+     * prepare_sql
+     *
      * @param string $sql
      * @return array|string|string[]
      */
@@ -144,6 +146,8 @@ class report_sql extends report_base {
     }
 
     /**
+     * create_report
+     *
      * @return bool
      */
     public function create_report(): bool {
@@ -224,4 +228,3 @@ class report_sql extends report_base {
     }
 
 }
-

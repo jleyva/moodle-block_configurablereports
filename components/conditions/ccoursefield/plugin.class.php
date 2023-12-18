@@ -30,7 +30,6 @@ require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
  * Class plugin_ccoursefield
  *
  * @package   block_configurable_reports
- *
  * @author    Juan leyva <http://www.twitter.com/jleyvadelgado>
  */
 class plugin_ccoursefield extends plugin_base {
@@ -60,7 +59,7 @@ class plugin_ccoursefield extends plugin_base {
     /**
      * Execute
      *
-     * @param $data
+     * @param object $data
      * @return array|int[]|string[]
      */
     public function execute($data) {

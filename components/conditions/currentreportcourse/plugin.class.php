@@ -58,9 +58,9 @@ class plugin_currentreportcourse extends plugin_base {
     /**
      * Execute
      *
-     * @param $data
-     * @param $user
-     * @param $courseid
+     * @param object $data
+     * @param object $user
+     * @param int $courseid
      * @return array
      */
     public function execute($data, $user, $courseid) {
