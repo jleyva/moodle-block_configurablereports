@@ -33,7 +33,7 @@
         'use strict';
         var ts = $.tablesorter = {
 
-            version: '2.31.0',
+            version: '2.31.3',
 
             parsers: [],
             widgets: [],
@@ -44,7 +44,7 @@
                 widthFixed: false,      // adds colgroup to fix widths of columns
                 showProcessing: false,      // show an indeterminate timer icon in the header when the table is sorted or filtered.
 
-                headerTemplate: '{content}',// header layout template (HTML ok); {content} = innerHTML, {icon} = <i/> // class from cssIcon
+                headerTemplate: '{content}',// header layout template (HTML ok); {content} = innerHTML, {icon} = <i></i> // class from cssIcon
                 onRenderTemplate: null,       // function( index, template ) { return template; }, // template is a string
                 onRenderHeader: null,       // function( index ) {}, // nothing to return
 
@@ -218,11 +218,11 @@
             instanceMethods: {},
 
             /*
-		▄█████ ██████ ██████ ██  ██ █████▄
-		▀█▄    ██▄▄     ██   ██  ██ ██▄▄██
-		   ▀█▄ ██▀▀     ██   ██  ██ ██▀▀▀
-		█████▀ ██████   ██   ▀████▀ ██
-		*/
+            ▄█████ ██████ ██████ ██  ██ █████▄
+            ▀█▄    ██▄▄     ██   ██  ██ ██▄▄██
+               ▀█▄ ██▀▀     ██   ██  ██ ██▀▀▀
+            █████▀ ██████   ██   ▀████▀ ██
+            */
 
             setup: function(table, c) {
                 // if no thead or tbody, or tablesorter is already present, quit
@@ -334,6 +334,8 @@
                 ts.applyWidget(table, true);
                 // if user has supplied a sort list to constructor
                 if (c.sortList.length > 0) {
+                    // save sortList before any sortAppend is added
+                    c.last.sortList = c.sortList;
                     ts.sortOn(c, c.sortList, {}, !c.initWidgets);
                 } else {
                     ts.setHeadersCss(c);
@@ -674,11 +676,11 @@
             },
 
             /*
-		█████▄ ▄████▄ █████▄ ▄█████ ██████ █████▄ ▄█████
-		██▄▄██ ██▄▄██ ██▄▄██ ▀█▄    ██▄▄   ██▄▄██ ▀█▄
-		██▀▀▀  ██▀▀██ ██▀██     ▀█▄ ██▀▀   ██▀██     ▀█▄
-		██     ██  ██ ██  ██ █████▀ ██████ ██  ██ █████▀
-		*/
+            █████▄ ▄████▄ █████▄ ▄█████ ██████ █████▄ ▄█████
+            ██▄▄██ ██▄▄██ ██▄▄██ ▀█▄    ██▄▄   ██▄▄██ ▀█▄
+            ██▀▀▀  ██▀▀██ ██▀██     ▀█▄ ██▀▀   ██▀██     ▀█▄
+            ██     ██  ██ ██  ██ █████▀ ██████ ██  ██ █████▀
+            */
             setupParsers: function(c, $tbodies) {
                 var rows, list, span, max, colIndex, indx, header, configHeaders,
                     noParser, parser, extractor, time, tbody, len,
@@ -895,11 +897,11 @@
             },
 
             /*
-		▄████▄ ▄████▄ ▄████▄ ██  ██ ██████
-		██  ▀▀ ██▄▄██ ██  ▀▀ ██▄▄██ ██▄▄
-		██  ▄▄ ██▀▀██ ██  ▄▄ ██▀▀██ ██▀▀
-		▀████▀ ██  ██ ▀████▀ ██  ██ ██████
-		*/
+            ▄████▄ ▄████▄ ▄████▄ ██  ██ ██████
+            ██  ▀▀ ██▄▄██ ██  ▀▀ ██▄▄██ ██▄▄
+            ██  ▄▄ ██▀▀██ ██  ▄▄ ██▀▀██ ██▀▀
+            ▀████▀ ██  ██ ▀████▀ ██  ██ ██████
+            */
             buildCache: function(c, callback, $tbodies) {
                 var cache, val, txt, rowIndex, colIndex, tbodyIndex, $tbody, $row,
                     cols, $cells, cell, cacheTime, totalRows, rowData, prevRowData,
@@ -1007,7 +1009,7 @@
                                         // instead of setting duplicate span to empty string, use textExtraction to try to get a value
                                         // see http://stackoverflow.com/q/36449711/145346
                                         txt = c.duplicateSpan || index === 0 ?
-                                            val :
+                                            txt :
                                             typeof c.textExtraction !== 'string' ?
                                                 ts.getElementText(c, cell, cacheIndex + index) || '' :
                                                 '';
@@ -1107,11 +1109,11 @@
             },
 
             /*
-		██  ██ █████▄ █████▄ ▄████▄ ██████ ██████
-		██  ██ ██▄▄██ ██  ██ ██▄▄██   ██   ██▄▄
-		██  ██ ██▀▀▀  ██  ██ ██▀▀██   ██   ██▀▀
-		▀████▀ ██     █████▀ ██  ██   ██   ██████
-		*/
+            ██  ██ █████▄ █████▄ ▄████▄ ██████ ██████
+            ██  ██ ██▄▄██ ██  ██ ██▄▄██   ██   ██▄▄
+            ██  ██ ██▀▀▀  ██  ██ ██▀▀██   ██   ██▀▀
+            ▀████▀ ██     █████▀ ██  ██   ██   ██████
+            */
             setHeadersCss: function(c) {
                 var indx, column,
                     list = c.sortList,
@@ -1567,11 +1569,11 @@
             },
 
             /*
-		▄█████ ▄████▄ █████▄ ██████ ██ █████▄ ▄████▄
-		▀█▄    ██  ██ ██▄▄██   ██   ██ ██  ██ ██ ▄▄▄
-		   ▀█▄ ██  ██ ██▀██    ██   ██ ██  ██ ██ ▀██
-		█████▀ ▀████▀ ██  ██   ██   ██ ██  ██ ▀████▀
-		*/
+            ▄█████ ▄████▄ █████▄ ██████ ██ █████▄ ▄████▄
+            ▀█▄    ██  ██ ██▄▄██   ██   ██ ██  ██ ██ ▄▄▄
+               ▀█▄ ██  ██ ██▀██    ██   ██ ██  ██ ██ ▀██
+            █████▀ ▀████▀ ██  ██   ██   ██ ██  ██ ▀████▀
+            */
             initSort: function(c, cell, event) {
                 if (c.table.isUpdating) {
                     // let any updates complete before initializing a sort
@@ -2034,11 +2036,11 @@
             },
 
             /*
-		██ ██ ██ ██ █████▄ ▄████▄ ██████ ██████ ▄█████
-		██ ██ ██ ██ ██  ██ ██ ▄▄▄ ██▄▄     ██   ▀█▄
-		██ ██ ██ ██ ██  ██ ██ ▀██ ██▀▀     ██      ▀█▄
-		███████▀ ██ █████▀ ▀████▀ ██████   ██   █████▀
-		*/
+            ██ ██ ██ ██ █████▄ ▄████▄ ██████ ██████ ▄█████
+            ██ ██ ██ ██ ██  ██ ██ ▄▄▄ ██▄▄     ██   ▀█▄
+            ██ ██ ██ ██ ██  ██ ██ ▀██ ██▀▀     ██      ▀█▄
+            ███████▀ ██ █████▀ ▀████▀ ██████   ██   █████▀
+            */
             addWidget: function(widget) {
                 if (widget.id && !ts.isEmptyObject(ts.getWidgetById(widget.id))) {
                     console.warn('"' + widget.id + '" widget was loaded more than once!');
@@ -2294,11 +2296,11 @@
             },
 
             /*
-		██  ██ ██████ ██ ██     ██ ██████ ██ ██████ ▄█████
-		██  ██   ██   ██ ██     ██   ██   ██ ██▄▄   ▀█▄
-		██  ██   ██   ██ ██     ██   ██   ██ ██▀▀      ▀█▄
-		▀████▀   ██   ██ ██████ ██   ██   ██ ██████ █████▀
-		*/
+            ██  ██ ██████ ██ ██     ██ ██████ ██ ██████ ▄█████
+            ██  ██   ██   ██ ██     ██   ██   ██ ██▄▄   ▀█▄
+            ██  ██   ██   ██ ██     ██   ██   ██ ██▀▀      ▀█▄
+            ▀████▀   ██   ██ ██████ ██   ██   ██ ██████ █████▀
+            */
             benchmark: function(diff) {
                 return (' (' + (new Date().getTime() - diff.getTime()) + ' ms)');
             },
@@ -2961,11 +2963,11 @@
         });
 
         /*
-		██████ ██████ █████▄ █████▄ ▄████▄
-		  ▄█▀  ██▄▄   ██▄▄██ ██▄▄██ ██▄▄██
-		▄█▀    ██▀▀   ██▀▀██ ██▀▀█  ██▀▀██
-		██████ ██████ █████▀ ██  ██ ██  ██
-		*/
+            ██████ ██████ █████▄ █████▄ ▄████▄
+              ▄█▀  ██▄▄   ██▄▄██ ██▄▄██ ██▄▄██
+            ▄█▀    ██▀▀   ██▀▀██ ██▀▀█  ██▀▀██
+            ██████ ██████ █████▀ ██  ██ ██  ██
+            */
         // add default widgets
         ts.addWidget({
             id: 'zebra',
