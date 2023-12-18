@@ -623,7 +623,6 @@ function cr_import_xml(string $xml, object $course) {
  * @return array
  */
 function cr_logging_info(): array {
-    global $CFG;
 
     static $uselegacyreader;
     static $useinternalreader;

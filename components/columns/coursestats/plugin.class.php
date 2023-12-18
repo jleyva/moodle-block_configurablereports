@@ -92,17 +92,18 @@ class plugin_coursestats extends plugin_base {
         $endtime = ($filterendtime) ? $filterendtime : $endtime;
 
         $limit = 0;
+        $numericroles = array_filter($data->roles, 'is_numeric');
 
         switch ($data->stat) {
             case 'activityview':
                 $total = 'SUM(stat1)';
                 $stattype = 'activity';
-                $extrasql = " AND roleid IN (" . implode(',', $data->roles) . ")";
+                $extrasql = " AND roleid IN (" . implode(',', $numericroles ). ")";
                 break;
             case 'activitypost':
                 $total = 'SUM(stat2)';
                 $stattype = 'activity';
-                $extrasql = " AND roleid IN (" . implode(',', $data->roles) . ")";
+                $extrasql = " AND roleid IN (" . implode(',', $numericroles) . ")";
                 break;
             case 'activeenrolments':
                 $total = 'stat2';

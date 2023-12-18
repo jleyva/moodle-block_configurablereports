@@ -199,6 +199,12 @@ class plugin_fsearchuserfield extends plugin_base {
                 $selectname = get_string($formdata->field);
 
                 [$usql, $params] = $remotedb->get_in_or_equal($userlist);
+                $columns = $remotedb->get_columns('user');
+
+                if (!array_key_exists($formdata->field, $columns)) {
+                    throw new moodle_exception('nosuchcolumn', 'error', '', null, "The column '{$formdata->field}' does not exist in the user table.");
+                }
+
                 $sql = "SELECT DISTINCT(" . $formdata->field . ") as ufield FROM {user} WHERE id $usql ORDER BY ufield ASC";
                 if ($rs = $remotedb->get_recordset_sql($sql, $params)) {
                     foreach ($rs as $u) {
