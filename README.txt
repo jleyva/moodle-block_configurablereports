@@ -39,8 +39,6 @@ This release focuses on solving issues in Moodle 4.1 and PHP 7.4 and start with 
 - pChart library updated to version 2.4.0
 - JS tablesorter library updated to version 2.31.3
 - JS CodeMirror library updated to version 5.65.16
-
-
 - Move repository to https://github.com/Lesterhuis-Training-en-Consultancy/moodle-block_configurablereports
 - Original repository (https://github.com/jleyva/moodle-block_configurablereports) can be used for older release or use the old branches within this repository
 - removed cr_add_to_log not used anymore
