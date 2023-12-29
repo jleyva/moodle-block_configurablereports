@@ -75,25 +75,10 @@ class plugin_line extends plugin_base {
 
         if ($finalreport) {
             foreach ($finalreport as $r) {
-
-                $val = 0;
-                $hash = null;
-                $hashkeyexists = isset($r[$data->serieid]);
-                $yaxiskeyexists = isset($r[$data->yaxis]);
-
-                if ($hashkeyexists) {
-                    $hash = md5(strtolower($r[$data->serieid]));
-                    $sname[$hash] = $r[$data->serieid];
-                }
-
-                if ($yaxiskeyexists && is_numeric($r[$data->yaxis])) {
-                    $val = $r[$data->yaxis];
-                }
-
-                if ($hash !== null) {
-                    $series[$hash][] = $val;
-                }
-
+                $hash = md5(strtolower($r[$data->serieid] ?? ''));
+                $sname[$hash] = $r[$data->serieid] ?? null;
+                $val = (isset($r[$data->yaxis]) && is_numeric($r[$data->yaxis])) ? $r[$data->yaxis] : 0;
+                $series[$hash][] = $val;
                 $minvalue = ($val < $minvalue) ? $val : $minvalue;
                 $maxvalue = ($val > $maxvalue) ? $val : $maxvalue;
             }
