@@ -92,8 +92,8 @@ if (!empty($graphs)) {
         }
 
         // Standard inclusions.
-        include($CFG->dirroot . "/blocks/configurable_reports/lib/pChart/pData.class");
-        include($CFG->dirroot . "/blocks/configurable_reports/lib/pChart/pChart.class");
+        include($CFG->dirroot . "/blocks/configurable_reports/lib/pChart/pData.class.php");
+        include($CFG->dirroot . "/blocks/configurable_reports/lib/pChart/pChart.class.php");
 
         // Dataset definition.
         $dataset = new pData;

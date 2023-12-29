@@ -37,7 +37,7 @@ class report_sql extends report_base {
     /**
      * @var bool
      */
-    private $forexport = false;
+    private bool $forexport = false;
 
     /**
      * set_forexport
