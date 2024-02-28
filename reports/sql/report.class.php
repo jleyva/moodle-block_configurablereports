@@ -132,7 +132,7 @@ class report_sql extends report_base {
             $filterform = isset($this->filterform);
             $formhasdata = $filterform && $this->filterform->get_data();
 
-            if (($formhasdata || !$filterform) && $rs = $this->execute_query($sql)) {
+            if (($formhasdata || !$filterform || $this->isForExport()) && $rs = $this->execute_query($sql)) {
                 foreach ($rs as $row) {
                     if (empty($finaltable)) {
                         foreach ($row as $colname => $value) {
