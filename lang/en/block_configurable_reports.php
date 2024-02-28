@@ -54,6 +54,7 @@ $string['exportoptions'] = "Export options";
 $string['field'] = "Field";
 
 // Report form
+$string['applyfilters'] = "Apply filters to run the report";
 $string['typeofreport'] = "Type of report";
 $string['enablejsordering'] = "Enable JavaScript ordering";
 $string['enablejspagination'] = "Enable JavaScript Pagination";
