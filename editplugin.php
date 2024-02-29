@@ -15,17 +15,17 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Configurable Reports
- * A Moodle block for creating Configurable Reports
- * @package blocks
- * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date: 2009
+ * Configurable Reports a Moodle block for creating customizable reports
+ *
+ * @copyright  2020 Juan Leyva <juan@moodle.com>
+ * @package    block_configurable_reports
+ * @author     Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 require_once("../../config.php");
 
-require_once($CFG->dirroot."/blocks/configurable_reports/locallib.php");
-
+require_once($CFG->dirroot . "/blocks/configurable_reports/locallib.php");
 
 $id = required_param('id', PARAM_INT);
 $comp = required_param('comp', PARAM_ALPHA);
@@ -37,16 +37,16 @@ $movedown = optional_param('movedown', 0, PARAM_INT);
 $delete = optional_param('delete', 0, PARAM_INT);
 
 if (!$pname) {
-    redirect(new \moodle_url('/blocks/configurable_reports/editcomp.php', ['id' => $id, 'comp' => $comp]));
+    redirect(new moodle_url('/blocks/configurable_reports/editcomp.php', ['id' => $id, 'comp' => $comp]));
     exit;
 }
 
-if (!$report = $DB->get_record('block_configurable_reports', array('id' => $id))) {
-    print_error('reportdoesnotexists');
+if (!$report = $DB->get_record('block_configurable_reports', ['id' => $id])) {
+    throw new moodle_exception('reportdoesnotexists');
 }
 
 if (!$course = $DB->get_record("course", ['id' => $report->courseid])) {
-    print_error("No such course id");
+    throw new moodle_exception("No such course id");
 }
 
 // Force user login in course (SITE or Course).
@@ -60,31 +60,31 @@ if ($course->id == SITEID) {
 
 $hasmanagereportcap = has_capability('block/configurable_reports:managereports', $context);
 if (!$hasmanagereportcap && !has_capability('block/configurable_reports:manageownreports', $context)) {
-    print_error('badpermissions');
+    throw new moodle_exception('badpermissions');
 }
 
 if (!$hasmanagereportcap && $report->ownerid != $USER->id) {
-    print_error('badpermissions');
+    throw new moodle_exception('badpermissions');
 }
 
-require_once($CFG->dirroot.'/blocks/configurable_reports/report.class.php');
-require_once($CFG->dirroot.'/blocks/configurable_reports/reports/'.$report->type.'/report.class.php');
+require_once($CFG->dirroot . '/blocks/configurable_reports/report.class.php');
+require_once($CFG->dirroot . '/blocks/configurable_reports/reports/' . $report->type . '/report.class.php');
 
-$reportclassname = 'report_'.$report->type;
+$reportclassname = 'report_' . $report->type;
 $reportclass = new $reportclassname($report->id);
 
 if (!in_array($comp, $reportclass->components)) {
-    print_error('badcomponent');
+    throw new moodle_exception('badcomponent');
 }
 
 $PAGE->set_context($context);
 $PAGE->set_pagelayout('incourse');
 $PAGE->set_url('/blocks/configurable_reports/editplugin.php', ['id' => $id, 'comp' => $comp, 'cid' => $cid, 'pname' => $pname]);
 
-    $cdata = null;
-    $plugin = '';
+$cdata = null;
+$plugin = '';
 if (!$cid) {
-    if (filetype($CFG->dirroot.'/blocks/configurable_reports/components/'.$comp.'/'.$pname) == 'dir') {
+    if (filetype($CFG->dirroot . '/blocks/configurable_reports/components/' . $comp . '/' . $pname) === 'dir') {
         $plugin = $pname;
     }
 } else {
@@ -123,25 +123,25 @@ if (!$cid) {
     }
 }
 
-if (!$plugin || $plugin != $pname) {
-    print_error('nosuchplugin');
+if (!$plugin || $plugin !== $pname) {
+    throw new moodle_exception('nosuchplugin');
 }
-
-require_once($CFG->dirroot.'/blocks/configurable_reports/plugin.class.php');
-require_once($CFG->dirroot.'/blocks/configurable_reports/components/'.$comp.'/'.$pname.'/plugin.class.php');
-$pluginclassname = 'plugin_'.$pname;
+defined('MOODLE_INTERNAL') || die;
+require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
+require_once($CFG->dirroot . '/blocks/configurable_reports/components/' . $comp . '/' . $pname . '/plugin.class.php');
+$pluginclassname = 'plugin_' . $pname;
 $pluginclass = new $pluginclassname($report);
 
 if (isset($pluginclass->form) && $pluginclass->form) {
-    require_once($CFG->dirroot.'/blocks/configurable_reports/component.class.php');
-    require_once($CFG->dirroot.'/blocks/configurable_reports/components/'.$comp.'/component.class.php');
-    $componentclassname = 'component_'.$comp;
+    require_once($CFG->dirroot . '/blocks/configurable_reports/component.class.php');
+    require_once($CFG->dirroot . '/blocks/configurable_reports/components/' . $comp . '/component.class.php');
+    $componentclassname = 'component_' . $comp;
     $compclass = new $componentclassname($report->id);
 
-    require_once($CFG->dirroot.'/blocks/configurable_reports/components/'.$comp.'/'.$pname.'/form.php');
-    $classname = $pname.'_form';
+    require_once($CFG->dirroot . '/blocks/configurable_reports/components/' . $comp . '/' . $pname . '/form.php');
+    $classname = $pname . '_form';
 
-    $formurlparams = array('id' => $id, 'comp' => $comp, 'pname' => $pname);
+    $formurlparams = ['id' => $id, 'comp' => $comp, 'pname' => $pname];
     if ($cid) {
         $formurlparams['cid'] = $cid;
     }
@@ -154,12 +154,11 @@ if (isset($pluginclass->form) && $pluginclass->form) {
 
     if ($editform->is_cancelled()) {
         if (!empty($report)) {
-            redirect($CFG->wwwroot.'/blocks/configurable_reports/editreport.php?id='.$report->id);
+            redirect($CFG->wwwroot . '/blocks/configurable_reports/editreport.php?id=' . $report->id);
         } else {
-            redirect($CFG->wwwroot.'/blocks/configurable_reports/editreport.php');
+            redirect($CFG->wwwroot . '/blocks/configurable_reports/editreport.php');
         }
     } else if ($data = $editform->get_data()) {
-        cr_add_to_log($report->courseid, 'configurable_reports', 'edit', '', $report->name);
         if (!empty($cdata)) {
             $cdata['formdata'] = $data;
             $cdata['summary'] = $pluginclass->summary($data);
@@ -180,38 +179,37 @@ if (isset($pluginclass->form) && $pluginclass->form) {
 
             $report->components = cr_serialize($allelements);
             if (!$DB->update_record('block_configurable_reports', $report)) {
-                print_error('errorsaving');
-            } else {
-                redirect(new moodle_url('/blocks/configurable_reports/editcomp.php', array('id' => $id, 'comp' => $comp)));
-                exit;
+                throw new moodle_exception('errorsaving');
             }
 
-        } else {
+            redirect(new moodle_url('/blocks/configurable_reports/editcomp.php', ['id' => $id, 'comp' => $comp]));
+            exit;
 
-            $allelements = cr_unserialize($report->components);
-
-            $uniqueid = random_string(15);
-            while (strpos($report->components, $uniqueid) !== false) {
-                $uniqueid = random_string(15);
-            }
-
-            $cdata = [
-                'id' => $uniqueid,
-                'formdata' => $data,
-                'pluginname' => $pname,
-                'pluginfullname' => $pluginclass->fullname,
-                'summary' => $pluginclass->summary($data)
-            ];
-
-            $allelements[$comp]['elements'][] = $cdata;
-            $report->components = cr_serialize($allelements, false);
-            if (!$DB->update_record('block_configurable_reports', $report)) {
-                print_error('errorsaving');
-            } else {
-                redirect(new moodle_url('/blocks/configurable_reports/editcomp.php', array('id' => $id, 'comp' => $comp)));
-                exit;
-            }
         }
+
+        $allelements = cr_unserialize($report->components);
+
+        $uniqueid = random_string(15);
+        while (strpos($report->components, $uniqueid) !== false) {
+            $uniqueid = random_string(15);
+        }
+
+        $cdata = [
+            'id' => $uniqueid,
+            'formdata' => $data,
+            'pluginname' => $pname,
+            'pluginfullname' => $pluginclass->fullname,
+            'summary' => $pluginclass->summary($data),
+        ];
+
+        $allelements[$comp]['elements'][] = $cdata;
+        $report->components = cr_serialize($allelements, false);
+        if (!$DB->update_record('block_configurable_reports', $report)) {
+            throw new moodle_exception('errorsaving');
+        }
+
+        redirect(new moodle_url('/blocks/configurable_reports/editcomp.php', ['id' => $id, 'comp' => $comp]));
+        exit;
     }
 } else {
     $allelements = cr_unserialize($report->components);
@@ -223,36 +221,38 @@ if (isset($pluginclass->form) && $pluginclass->form) {
 
     $cdata = [
         'id' => $uniqueid,
-        'formdata' => new \stdclass,
+        'formdata' => new stdclass,
         'pluginname' => $pname,
         'pluginfullname' => $pluginclass->fullname,
-        'summary' => $pluginclass->summary(new \stdclass)
+        'summary' => $pluginclass->summary(new stdclass),
     ];
 
     $allelements[$comp]['elements'][] = $cdata;
     $report->components = cr_serialize($allelements);
     if (!$DB->update_record('block_configurable_reports', $report)) {
-        print_error('errorsaving');
-    } else {
-        redirect(new moodle_url('/blocks/configurable_reports/editcomp.php', ['id' => $id, 'comp' => $comp]));
-        exit;
+        throw new moodle_exception('errorsaving');
     }
+
+    redirect(new moodle_url('/blocks/configurable_reports/editcomp.php', ['id' => $id, 'comp' => $comp]));
+    exit;
 }
 
-$title = format_string($report->name).' '.get_string($comp, 'block_configurable_reports');
+$title = format_string($report->name) . ' ' . get_string($comp, 'block_configurable_reports');
 
-
-$PAGE->navbar->add(get_string('managereports', 'block_configurable_reports'), $CFG->wwwroot.'/blocks/configurable_reports/managereport.php?courseid='.$report->courseid);
-$PAGE->navbar->add($title, $CFG->wwwroot.'/blocks/configurable_reports/editcomp.php?id='.$id.'&amp;comp='.$comp);
+$PAGE->navbar->add(
+    get_string('managereports', 'block_configurable_reports'),
+    $CFG->wwwroot . '/blocks/configurable_reports/managereport.php?courseid=' . $report->courseid
+);
+$PAGE->navbar->add($title, $CFG->wwwroot . '/blocks/configurable_reports/editcomp.php?id=' . $id . '&amp;comp=' . $comp);
 $PAGE->navbar->add(get_string($pname, 'block_configurable_reports'));
 
-
 $PAGE->set_title($title);
-$PAGE->set_heading( $title);
-$PAGE->set_cacheable( true);
+$PAGE->set_heading($title);
+$PAGE->set_cacheable(true);
 
 echo $OUTPUT->header();
 
+// TODO more OOP approach.
 $currenttab = $comp;
 require('tabs.php');
 

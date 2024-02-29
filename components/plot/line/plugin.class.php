@@ -15,33 +15,58 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Configurable Reports
- * A Moodle block for creating customizable reports
- * @package blocks
- * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date: 2009
+ * Configurable Reports a Moodle block for creating customizable reports
+ *
+ * @copyright  2020 Juan Leyva <juan@moodle.com>
+ * @package    block_configurable_reports
+ * @author     Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+defined('MOODLE_INTERNAL') || die;
+require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
 
-require_once($CFG->dirroot.'/blocks/configurable_reports/plugin.class.php');
-
+/**
+ * Class plugin_line
+ *
+ * @package   block_configurable_reports
+ * @author    Juan leyva <http://www.twitter.com/jleyvadelgado>
+ */
 class plugin_line extends plugin_base {
 
-    public function init() {
+    /**
+     * Init
+     *
+     * @return void
+     */
+    public function init(): void {
         $this->fullname = get_string('line', 'block_configurable_reports');
         $this->form = true;
         $this->ordering = true;
-        $this->reporttypes = array('timeline', 'sql', 'timeline');
+        $this->reporttypes = ['timeline', 'sql', 'timeline'];
     }
 
-    public function summary($data) {
+    /**
+     * Summary
+     *
+     * @param object $data
+     * @return string
+     */
+    public function summary(object $data): string {
         return get_string('linesummary', 'block_configurable_reports');
     }
 
-    // Data -> Plugin configuration data.
+    /**
+     * Execute
+     *
+     * @param int $id
+     * @param object $data
+     * @param array $finalreport
+     * @return string
+     */
     public function execute($id, $data, $finalreport) {
-        global $DB, $CFG;
+        global $CFG;
 
-        $series = array();
+        $series = [];
         $data->xaxis--;
         $data->yaxis--;
         $data->serieid--;
@@ -50,8 +75,8 @@ class plugin_line extends plugin_base {
 
         if ($finalreport) {
             foreach ($finalreport as $r) {
-                $hash = md5(strtolower($r[$data->serieid]));
-                $sname[$hash] = $r[$data->serieid];
+                $hash = md5(strtolower($r[$data->serieid] ?? ''));
+                $sname[$hash] = $r[$data->serieid] ?? null;
                 $val = (isset($r[$data->yaxis]) && is_numeric($r[$data->yaxis])) ? $r[$data->yaxis] : 0;
                 $series[$hash][] = $val;
                 $minvalue = ($val < $minvalue) ? $val : $minvalue;
@@ -63,22 +88,32 @@ class plugin_line extends plugin_base {
 
         $i = 0;
         foreach ($series as $h => $s) {
-            $params .= "&amp;serie$i=".base64_encode($sname[$h].'||'.implode(',', $s));
+            $params .= "&amp;serie$i=" . base64_encode($sname[$h] . '||' . implode(',', $s));
             $i++;
         }
 
-        return $CFG->wwwroot.'/blocks/configurable_reports/components/plot/line/graph.php?reportid='.$this->report->id.'&id='.$id.$params.'&amp;min='.$minvalue.'&amp;max='.$maxvalue;
+        return $CFG->wwwroot . '/blocks/configurable_reports/components/plot/line/graph.php?reportid=' . $this->report->id .
+            '&id=' . $id . $params . '&amp;min=' . $minvalue . '&amp;max=' . $maxvalue;
     }
 
-    public function get_series($data) {
-        $series = array();
+    /**
+     * Get series
+     *
+     * @return array
+     */
+    public function get_series(): array {
+        $series = [];
+
+        // TODO don't use $_GET.
         foreach ($_GET as $key => $val) {
             if (strpos($key, 'serie') !== false) {
                 $id = (int) str_replace('serie', '', $key);
-                list($name, $values) = explode('||', base64_decode($val));
-                $series[$id] = array('serie' => explode(',', $values), 'name' => $name);
+                [$name, $values] = explode('||', base64_decode($val));
+                $series[$id] = ['serie' => explode(',', $values), 'name' => $name];
             }
         }
+
         return $series;
     }
+
 }

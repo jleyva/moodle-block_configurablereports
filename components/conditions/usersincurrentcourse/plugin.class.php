@@ -15,37 +15,61 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Configurable Reports
- * A Moodle block for creating customizable reports
- * @package blocks
- * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date: 2009
+ * Configurable Reports a Moodle block for creating customizable reports
+ *
+ * @copyright  2020 Juan Leyva <juan@moodle.com>
+ * @package    block_configurable_reports
+ * @author     Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+defined('MOODLE_INTERNAL') || die;
+require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
 
-require_once($CFG->dirroot.'/blocks/configurable_reports/plugin.class.php');
+/**
+ * Class plugin_usersincurrentcourse
+ *
+ * @package   block_configurable_reports
+ * @author    Juan leyva <http://www.twitter.com/jleyvadelgado>
+ */
+class plugin_usersincurrentcourse extends plugin_base {
 
-class plugin_usersincurrentcourse extends plugin_base{
-
-    public function init() {
+    /**
+     * Init
+     *
+     * @return void
+     */
+    public function init(): void {
         $this->fullname = get_string('usersincurrentcourse', 'block_configurable_reports');
-        $this->reporttypes = array('users');
+        $this->reporttypes = ['users'];
         $this->form = true;
     }
 
-    public function summary($data) {
+    /**
+     * Summary
+     *
+     * @param object $data
+     * @return string
+     */
+    public function summary(object $data): string {
         return get_string('usersincurrentcourse_summary', 'block_configurable_reports');
-
     }
 
-    // Data -> Plugin configuration data.
+    /**
+     * Execute
+     *
+     * @param object $data
+     * @param object $user
+     * @param int $courseid
+     * @return array|int[]|string[]
+     */
     public function execute($data, $user, $courseid) {
-        global $DB;
-
+        // Data -> Plugin configuration data.
         $context = cr_get_context(CONTEXT_COURSE, $courseid);
         if ($users = get_role_users($data->roles, $context, false, 'ra.id, u.id', 'u.id')) {
             return array_keys($users);
         }
 
-        return array();
+        return [];
     }
+
 }

@@ -24,13 +24,13 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$functions = array(
+$functions = [
 
-    'block_configurable_reports_get_report_data' => array(
-        'classname'   => 'block_configurable_reports\external',
-        'methodname'  => 'get_report_data',
+    'block_configurable_reports_get_report_data' => [
+        'classname' => 'block_configurable_reports\external',
+        'methodname' => 'get_report_data',
         'description' => 'Return data as JSON for given report ID.',
-        'type'        => 'read',
-        'ajax'        => true,
-    ),
-);
+        'type' => 'read',
+        'ajax' => true,
+    ],
+];

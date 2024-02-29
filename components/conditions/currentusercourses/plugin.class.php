@@ -15,33 +15,60 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Configurable Reports
- * A Moodle block for creating customizable reports
- * @package blocks
- * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date: 2009
+ * Configurable Reports a Moodle block for creating customizable reports
+ *
+ * @copyright  2020 Juan Leyva <juan@moodle.com>
+ * @package    block_configurable_reports
+ * @author     Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-require_once($CFG->dirroot.'/blocks/configurable_reports/plugin.class.php');
+defined('MOODLE_INTERNAL') || die;
+require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
 
+/**
+ * Class plugin_currentusercourses
+ *
+ * @package   block_configurable_reports
+ * @author    Juan leyva <http://www.twitter.com/jleyvadelgado>
+ */
 class plugin_currentusercourses extends plugin_base {
 
-    public function init() {
+    /**
+     * Init
+     *
+     * @return void
+     */
+    public function init(): void {
         $this->fullname = get_string('currentusercourses', 'block_configurable_reports');
         $this->form = false;
-        $this->reporttypes = array('courses');
+        $this->reporttypes = ['courses'];
     }
 
-    public function summary($data) {
+    /**
+     * Summary
+     *
+     * @param object $data
+     * @return string
+     */
+    public function summary(object $data): string {
         return get_string('currentusercourses_summary', 'block_configurable_reports');
     }
 
-    // Data -> Plugin configuration data.
-    public function execute($data, $user, $courseid) {
-        global $DB, $CFG;
-        require_once($CFG->libdir.'/enrollib.php');
+    /**
+     * Execute
+     *
+     * @param object $data
+     * @param object $user
+     * @return array|int[]|string[]
+     */
+    public function execute($data, $user) {
+        global $CFG;
 
-        $finalcourses = array();
+        // Data -> Plugin configuration data.
+        require_once($CFG->libdir . '/enrollib.php');
+
+        $finalcourses = [];
         $mycourses = enrol_get_users_courses($user->id);
         if (!empty($mycourses)) {
             $finalcourses = array_keys($mycourses);
@@ -49,4 +76,5 @@ class plugin_currentusercourses extends plugin_base {
 
         return $finalcourses;
     }
+
 }

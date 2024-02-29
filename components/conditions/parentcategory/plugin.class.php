@@ -15,56 +15,81 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Configurable Reports
- * A Moodle block for creating customizable reports
- * @package blocks
- * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date: 2009
+ * Configurable Reports a Moodle block for creating customizable reports
+ *
+ * @copyright  2020 Juan Leyva <juan@moodle.com>
+ * @package    block_configurable_reports
+ * @author     Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+defined('MOODLE_INTERNAL') || die;
+require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
 
-require_once($CFG->dirroot.'/blocks/configurable_reports/plugin.class.php');
-
+/**
+ * Class plugin_parentcategory
+ *
+ * @package   block_configurable_reports
+ * @author    Juan leyva <http://www.twitter.com/jleyvadelgado>
+ */
 class plugin_parentcategory extends plugin_base {
 
-    public function init() {
+    /**
+     * Init
+     *
+     * @return void
+     */
+    public function init(): void {
         $this->fullname = get_string('parentcategory', 'block_configurable_reports');
         $this->type = 'text';
         $this->form = true;
-        $this->reporttypes = array('categories');
+        $this->reporttypes = ['categories'];
     }
 
-    public function summary($data) {
+    /**
+     * Summary
+     *
+     * @param object $data
+     * @return string
+     */
+    public function summary(object $data): string {
         global $DB;
 
-        $cat = $DB->get_record('course_categories', array('id' => $data->categoryid));
+        $cat = $DB->get_record('course_categories', ['id' => $data->categoryid]);
         if ($cat) {
-            return format_string(get_string('category').' '.$cat->name);
-        } else {
-            return get_string('category').' '.get_string('top');
+            return format_string(get_string('category') . ' ' . $cat->name);
         }
+
+        return get_string('category') . ' ' . get_string('top');
     }
 
-    // Data -> Plugin configuration data.
-    public function execute($data, $user, $courseid) {
+    /**
+     * Execute
+     *
+     * @param object $data
+     * @return array
+     */
+    public function execute($data) {
         global $DB, $CFG;
-
-        require_once($CFG->dirroot.'/course/lib.php');
+        // Data -> Plugin configuration data.
+        require_once($CFG->dirroot . '/course/lib.php');
 
         if (isset($data->includesubcats)) {
-            if ($category = $DB->get_record('course_categories', array('id' => $data->categoryid))) {
+            if ($category = $DB->get_record('course_categories', ['id' => $data->categoryid])) {
                 cr_make_categories_list($options, $parents, '', 0, $category);
             } else {
                 cr_make_categories_list($options, $parents);
             }
             unset($options[$data->categoryid]);
+
             return array_keys($options);
-        } else {
-            $categories = $DB->get_records('course_categories', array('parent' => $data->categoryid));
-            if ($categories) {
-                return array_keys($categories);
-            }
         }
 
-        return array();
+        $categories = $DB->get_records('course_categories', ['parent' => $data->categoryid]);
+        if ($categories) {
+            return array_keys($categories);
+        }
+
+        return [];
     }
+
 }

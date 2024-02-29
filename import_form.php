@@ -15,23 +15,30 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Configurable Reports
- * A Moodle block for creating Configurable Reports
- * @package blocks
- * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date: 2009
+ * Configurable Reports a Moodle block for creating customizable reports
+ *
+ * @copyright  2020 Juan Leyva <juan@moodle.com>
+ * @package    block_configurable_reports
+ * @author     Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-if (!defined('MOODLE_INTERNAL')) {
-    //  It must be included from a Moodle page.
-    die('Direct access to this script is forbidden.');
-}
+defined('MOODLE_INTERNAL') || die;
 
-require_once($CFG->libdir.'/formslib.php');
+require_once($CFG->libdir . '/formslib.php');
 
+/**
+ * Class import_form
+ *
+ * @package   block_configurable_reports
+ * @author    Juan leyva <http://www.twitter.com/jleyvadelgado>
+ */
 class import_form extends moodleform {
-    public function definition() {
-        global $DB, $USER, $CFG;
+
+    /**
+     * Form definition
+     */
+    public function definition(): void {
 
         $mform =& $this->_form;
 
@@ -48,8 +55,4 @@ class import_form extends moodleform {
         $this->add_action_buttons(false, get_string('importreport', 'block_configurable_reports'));
     }
 
-    public function validation($data, $files) {
-        $errors = parent::validation($data, $files);
-        return $errors;
-    }
 }

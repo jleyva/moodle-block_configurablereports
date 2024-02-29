@@ -15,43 +15,67 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Configurable Reports
- * A Moodle block for creating customizable reports
- * @package blocks
- * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date: 2009
+ * Configurable Reports a Moodle block for creating customizable reports
+ *
+ * @copyright  2020 Juan Leyva <juan@moodle.com>
+ * @package    block_configurable_reports
+ * @author     Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-require_once($CFG->dirroot.'/blocks/configurable_reports/plugin.class.php');
+defined('MOODLE_INTERNAL') || die;
+require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
 
-class plugin_ccoursefield extends plugin_base{
-    public function init() {
+/**
+ * Class plugin_ccoursefield
+ *
+ * @package   block_configurable_reports
+ * @author    Juan leyva <http://www.twitter.com/jleyvadelgado>
+ */
+class plugin_ccoursefield extends plugin_base {
+
+    /**
+     * Init
+     *
+     * @return void
+     */
+    public function init(): void {
         $this->fullname = get_string('ccoursefield', 'block_configurable_reports');
-        $this->reporttypes = array('courses');
+        $this->reporttypes = ['courses'];
         $this->form = true;
     }
 
-    public function summary($data) {
-        return get_string($data->field).' '.$data->operator.' '.$data->value;
+    /**
+     * Summary
+     *
+     * @param object $data
+     * @return string
+     */
+    public function summary(object $data): string {
+        return get_string($data->field) . ' ' . $data->operator . ' ' . $data->value;
 
     }
 
-    // Data -> Plugin configuration data.
-    public function execute($data, $user, $courseid) {
+    /**
+     * Execute
+     *
+     * @param object $data
+     * @return array|int[]|string[]
+     */
+    public function execute($data) {
         global $DB;
 
-        $data->value = $data->value;
-        // TODO - Use $DB->sql_like().
+        // TODO - Use DB -> sql_like().
         $ilike = " LIKE ";
 
         switch ($data->operator) {
             case 'LIKE % %':
                 $sql = "$data->field $ilike ?";
-                $params = array("%$data->value%");
+                $params = ["%$data->value%"];
                 break;
             default:
                 $sql = "$data->field $data->operator ?";
-                $params = array($data->value);
+                $params = [$data->value];
         }
 
         $courses = $DB->get_records_select('course', $sql, $params);
@@ -60,6 +84,7 @@ class plugin_ccoursefield extends plugin_base{
             return array_keys($courses);
         }
 
-        return array();
+        return [];
     }
+
 }

@@ -15,30 +15,54 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Configurable Reports
- * A Moodle block for creating customizable reports
- * @package blocks
- * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date: 2009
+ * Configurable Reports a Moodle block for creating customizable reports
+ *
+ * @copyright  2020 Juan Leyva <juan@moodle.com>
+ * @package    block_configurable_reports
+ * @author     Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+defined('MOODLE_INTERNAL') || die;
+require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
 
-require_once($CFG->dirroot.'/blocks/configurable_reports/plugin.class.php');
-
+/**
+ * Class plugin_userfieldorder
+ *
+ * @package   block_configurable_reports
+ * @author    Juan leyva <http://www.twitter.com/jleyvadelgado>
+ */
 class plugin_reportscapabilities extends plugin_base {
 
-    public function init() {
+    /**
+     * Init
+     *
+     * @return void
+     */
+    public function init(): void {
         $this->form = false;
         $this->unique = true;
         $this->fullname = get_string('reportscapabilities', 'block_configurable_reports');
-        $this->reporttypes = array('courses', 'sql', 'users', 'timeline', 'categories');
+        $this->reporttypes = ['courses', 'sql', 'users', 'timeline', 'categories'];
     }
 
-    public function summary($data) {
+    /**
+     * Summary
+     *
+     * @param object $data
+     * @return string
+     */
+    public function summary(object $data): string {
         return get_string('reportscapabilities_summary', 'block_configurable_reports');
     }
 
-    public function execute($userid, $context, $data) {
-        global $DB, $CFG;
-        return has_capability('moodle/site:viewreports', \context_system::instance(), $userid);
+    /**
+     * Execute
+     *
+     * @param int $userid
+     * @return bool
+     */
+    public function execute($userid): bool {
+        return has_capability('moodle/site:viewreports', context_system::instance(), $userid);
     }
+
 }

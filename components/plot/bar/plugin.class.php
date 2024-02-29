@@ -15,57 +15,90 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Configurable Reports
- * A Moodle block for creating customizable reports
- * @package blocks
- * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date: 2009
+ * Configurable Reports a Moodle block for creating customizable reports
+ *
+ * @copyright  2020 Juan Leyva <juan@moodle.com>
+ * @package    block_configurable_reports
+ * @author     Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+defined('MOODLE_INTERNAL') || die;
+require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
 
-require_once($CFG->dirroot.'/blocks/configurable_reports/plugin.class.php');
-
+/**
+ * Class plugin_bar
+ *
+ * @package   block_configurable_reports
+ * @author    Juan leyva <http://www.twitter.com/jleyvadelgado>
+ */
 class plugin_bar extends plugin_base {
 
-    public function init() {
+    /**
+     * Init
+     *
+     * @return void
+     */
+    public function init(): void {
         $this->fullname = "Bar chart";
         $this->form = true;
         $this->ordering = true;
-        $this->reporttypes = array('courses', 'sql', 'users', 'timeline', 'categories');
+        $this->reporttypes = ['courses', 'sql', 'users', 'timeline', 'categories'];
     }
 
-    public function summary($data) {
+    /**
+     * Summary
+     *
+     * @param object $data
+     * @return string
+     */
+    public function summary(object $data): string {
         return "Bar chart summary";
     }
 
-    // Data -> Plugin configuration data.
+    /**
+     * Execute
+     *
+     * @param int $id
+     * @param object $data
+     * @param array $finalreport
+     * @return string
+     */
     public function execute($id, $data, $finalreport) {
-        global $DB, $CFG;
-        $series = array();
+        global $CFG;
+        // Data -> Plugin configuration data.
+
+        $series = [];
         if ($finalreport) {
-            list($labelidx, $labelname) = explode(",", $data->label_field);
-            $series[$labelname] = array();
+            [$labelidx, $labelname] = explode(",", $data->label_field);
+            $series[$labelname] = [];
             if (!is_array($data->value_fields)) {
-                $data->value_fields = array($data->value_fields);
+                $data->value_fields = [$data->value_fields];
             }
             foreach ($finalreport as $r) {
                 $series[$labelname][] = $r[$labelidx];
                 foreach ($data->value_fields as $valuefields) {
-                    list($idx, $name) = explode(",", $valuefields);
+                    [$idx, $name] = explode(",", $valuefields);
                     $value = $r[$idx];
 
                     if ($idx == $labelidx) {
-                        error_log("moodle:configurable_reports:bar:  refusing to chart label field");
+                        debugging(
+                            "moodle:configurable_reports:bar:  refusing to chart label field",
+                            DEBUG_DEVELOPER
+                        );
                         continue;
                     }
 
                     if (!is_numeric($value)) {
                         // Can't just skip. That would throw off the indexes if a column has bad values in some but not all rows.
-                        error_log("moodle:configurable_reports:bar:  substituting 0 for non-numeric value '$value'");
+                        debugging(
+                            "moodle:configurable_reports:bar:  substituting 0 for non-numeric value '$value'",
+                            DEBUG_DEVELOPER
+                        );
                         $value = 0;
                     }
 
                     if (!array_key_exists($name, $series)) {
-                        $series[$name] = array();
+                        $series[$name] = [];
                     }
                     $series[$name][] = $value;
                 }
@@ -74,12 +107,20 @@ class plugin_bar extends plugin_base {
 
         $graphdata = urlencode(json_encode($series));
 
-        return $CFG->wwwroot.'/blocks/configurable_reports/components/plot/bar/graph.php?reportid='.$this->report->id.'&id='.$id.'&graphdata='.$graphdata;
+        return $CFG->wwwroot . '/blocks/configurable_reports/components/plot/bar/graph.php?reportid=' . $this->report->id . '&id=' .
+            $id . '&graphdata=' . $graphdata;
     }
 
-    public function get_series($data) {
+    /**
+     * Get series
+     *
+     * @return array
+     */
+    public function get_series(): array {
         $graphdataraw = required_param('graphdata', PARAM_RAW);
-        $graphdata = json_decode(urldecode($graphdataraw));
-        return (array)$graphdata;
+        $graphdata = json_decode(urldecode($graphdataraw), false, 512, JSON_THROW_ON_ERROR);
+
+        return (array) $graphdata;
     }
+
 }

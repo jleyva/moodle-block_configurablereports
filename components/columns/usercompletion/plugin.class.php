@@ -15,55 +15,77 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Configurable Reports
- * A Moodle block for creating customizable reports
- * @package blocks
- * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date: 2009
+ * Configurable Reports a Moodle block for creating customizable reports
+ *
+ * @copyright  2020 Juan Leyva <juan@moodle.com>
+ * @package    block_configurable_reports
+ * @author     Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+defined('MOODLE_INTERNAL') || die;
+require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
 
-require_once($CFG->dirroot.'/blocks/configurable_reports/plugin.class.php');
+/**
+ * Class plugin_usercompletion
+ *
+ * @package   block_configurable_reports
+ * @author    Juan leyva <http://www.twitter.com/jleyvadelgado>
+ */
+class plugin_usercompletion extends plugin_base {
 
-class plugin_usercompletion extends plugin_base{
-
-    public function init() {
+    /**
+     * Init
+     *
+     * @return void
+     */
+    public function init(): void {
         $this->fullname = get_string('usercompletion', 'block_configurable_reports');
         $this->type = 'undefined';
         $this->form = false;
-        $this->reporttypes = array('users');
+        $this->reporttypes = ['users'];
     }
 
-    public function summary($data) {
+    /**
+     * Summary
+     *
+     * @param object $data
+     * @return string
+     */
+    public function summary(object $data): string {
         return get_string('usercompletionsummary', 'block_configurable_reports');
     }
 
-    public function colformat($data) {
-        $align = (isset($data->align)) ? $data->align : '';
-        $size = (isset($data->size)) ? $data->size : '';
-        $wrap = (isset($data->wrap)) ? $data->wrap : '';
-        return array($align, $size, $wrap);
-    }
-
-    // Data -> Plugin configuration data.
-    // Row -> Complet user row c->id, c->fullname, etc...
+    /**
+     * Execute
+     *
+     * @param array $data
+     * @param object $row
+     * @param object $user
+     * @param int $courseid
+     * @param int $starttime
+     * @param int $endtime
+     * @return string
+     */
     public function execute($data, $row, $user, $courseid, $starttime = 0, $endtime = 0) {
         global $DB, $CFG;
 
+        // Data -> Plugin configuration data.
+        // Row -> Complet user row c->id, c->fullname, etc...
         require_once("{$CFG->libdir}/completionlib.php");
 
-        $course = $DB->get_record('course', array('id' => $courseid), '*', MUST_EXIST);
+        $course = $DB->get_record('course', ['id' => $courseid], '*', MUST_EXIST);
 
-        $info = new \completion_info($course);
+        $info = new completion_info($course);
 
         // Is course complete?
         $coursecomplete = $info->is_course_complete($row->id);
 
         // Load course completion.
-        $params = array(
+        $params = [
             'userid' => $row->id,
-            'course' => $course->id
-        );
-        $ccompletion = new \completion_completion($params);
+            'course' => $course->id,
+        ];
+        $ccompletion = new completion_completion($params);
 
         // Has this user completed any criteria?
         $criteriacomplete = $info->count_course_user_data($row->id);
@@ -72,10 +94,12 @@ class plugin_usercompletion extends plugin_base{
         if ($coursecomplete) {
             $content .= get_string('complete');
         } else if (!$criteriacomplete && !$ccompletion->timestarted) {
-            $content .= \html_writer::tag('i', get_string('notyetstarted', 'completion'));
+            $content .= html_writer::tag('i', get_string('notyetstarted', 'completion'));
         } else {
-            $content .= \html_writer::tag('i', get_string('inprogress', 'completion'));
+            $content .= html_writer::tag('i', get_string('inprogress', 'completion'));
         }
+
         return $content;
     }
+
 }

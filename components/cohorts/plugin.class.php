@@ -15,85 +15,90 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Configurable Reports
- * A Moodle block for creating customizable reports
- * @package blocks
- * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date: 2009
+ * Configurable Reports a Moodle block for creating customizable reports
+ *
+ * @copyright  2020 Juan Leyva <juan@moodle.com>
+ * @package    block_configurable_reports
+ * @author     Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @author     François Parlant <https://www.linkedin.com/in/francois-parlant/>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
- 
- /**
- * COHORT FILTER
- * A filter for configurable reports
- * @author: François Parlant <https://www.linkedin.com/in/francois-parlant/>
- * @date: 2020
- */ 
- 
- /* example of report query
- ***********
- * Display the students from a cohort and all the courses they are enrolled in
- ***********
-SELECT
-u.firstname AS Firstname,
-u.lastname AS Lastname,
-u.email AS Email,
-c.fullname AS Course
 
-FROM prefix_course AS c 
-JOIN prefix_enrol AS en ON en.courseid = c.id
-JOIN prefix_user_enrolments AS ue ON ue.enrolid = en.id
-JOIN prefix_user AS u ON ue.userid = u.id
-WHERE u.id in (SELECT u.id
-FROM prefix_cohort AS h
-JOIN prefix_cohort_members AS hm ON h.id = hm.cohortid
-JOIN prefix_user AS u ON hm.userid = u.id
-WHERE 1=1
-%%FILTER_COHORTS:h.id%%
-ORDER BY u.firstname)
- 
+defined('MOODLE_INTERNAL') || die;
+require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
+
+/**
+ * Class plugin_cohorts
+ *
+ * @package   block_configurable_reports
+ * @author    Juan leyva <http://www.twitter.com/jleyvadelgado>
  */
- 
+class plugin_cohorts extends plugin_base {
 
-require_once($CFG->dirroot.'/blocks/configurable_reports/plugin.class.php');
-
-class plugin_cohorts extends plugin_base{
-
-    public function init() {
+    /**
+     * Init
+     *
+     * @return void
+     */
+    public function init(): void {
         $this->form = false;
         $this->unique = true;
         $this->fullname = get_string('filtercohorts', 'block_configurable_reports');
-        $this->reporttypes = array('courses', 'sql');
+        $this->reporttypes = ['courses', 'sql'];
     }
 
-    public function summary($data) {
+    /**
+     * Summary
+     *
+     * @param object $data
+     * @return string
+     */
+    public function summary(object $data): string {
         return get_string('filtercohorts_summary', 'block_configurable_reports');
     }
 
-    public function execute($finalelements, $data) {
-		
+    /**
+     * Execute
+     *
+     * @param string $finalelements
+     * @return array|string|string[]
+     */
+    public function execute($finalelements) {
+
         $filtercohorts = optional_param('filter_cohorts', 0, PARAM_INT);
         if (!$filtercohorts) {
             return $finalelements;
         }
 
-        if ($this->report->type != 'sql') {
-            return array($filtercohorts);
-        } else {
-            if (preg_match("/%%FILTER_COHORTS:([^%]+)%%/i", $finalelements, $output)) {
-                $replace = ' AND '.$output[1].' = '.$filtercohorts;
-                return str_replace('%%FILTER_COHORTS:'.$output[1].'%%', $replace, $finalelements);
-            }
+        if ($this->report->type !== 'sql') {
+            return [$filtercohorts];
         }
+
+        // Example https://gist.github.com/luukverhoeven/aac43e35cb7199057d5592c90d5cde4c.
+        if (preg_match("/%%FILTER_COHORTS:([^%]+)%%/i", $finalelements, $output)) {
+            $replace = ' AND ' . $output[1] . ' = ' . $filtercohorts;
+
+            return str_replace('%%FILTER_COHORTS:' . $output[1] . '%%', $replace, $finalelements);
+        }
+
         return $finalelements;
     }
 
-    public function print_filter(&$mform) {
-        global $remotedb, $COURSE, $PAGE, $CFG;
+    /**
+     * Print filter
+     *
+     * @param MoodleQuickForm $mform
+     * @param bool|object $formdata
+     * @return void
+     */
+    public function print_filter(MoodleQuickForm $mform, $formdata = false): void {
 
-        $reportclassname = 'report_'.$this->report->type;
+        global $remotedb;
+
+        $reportclassname = 'report_' . $this->report->type;
         $reportclass = new $reportclassname($this->report);
 
-        if ($this->report->type != 'sql') {
+        if ($this->report->type !== 'sql') {
             $components = cr_unserialize($this->report->components);
             $conditions = $components['conditions'];
 
@@ -106,14 +111,13 @@ class plugin_cohorts extends plugin_base{
             foreach ($studentlist as $student) {
                 $cohortslist[] = $student->userid;
             }
-			
         }
 
-        $cohortsoptions = array();
+        $cohortsoptions = [];
         $cohortsoptions[0] = get_string('filter_all', 'block_configurable_reports');
 
         if (!empty($cohortslist)) {
-            
+
             $cohorts = $remotedb->get_records_sql($sql);
 
             foreach ($cohorts as $c) {
@@ -125,4 +129,5 @@ class plugin_cohorts extends plugin_base{
         $mform->addElement('select', 'filter_cohorts', $elestr, $cohortsoptions);
         $mform->setType('filter_cohorts', PARAM_INT);
     }
+
 }

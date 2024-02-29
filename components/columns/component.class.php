@@ -15,61 +15,103 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Configurable Reports
- * A Moodle block for creating customizable reports
- * @package blocks
- * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date: 2009
+ * Configurable Reports a Moodle block for creating customizable reports
+ *
+ * @copyright  2020 Juan Leyva <juan@moodle.com>
+ * @package    block_configurable_reports
+ * @author     Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-class component_columns extends component_base{
+/**
+ * Class component_columns
+ *
+ * @package   block_configurable_reports
+ * @author    Juan leyva <http://www.twitter.com/jleyvadelgado>
+ */
+class component_columns extends component_base {
 
-    public function init() {
+    /**
+     * Init
+     *
+     * @return void
+     */
+    public function init(): void {
         $this->plugins = true;
         $this->ordering = true;
         $this->form = true;
         $this->help = true;
     }
 
+    /**
+     * process_form
+     *
+     * @return true|void
+     */
     public function process_form() {
         if ($this->form) {
             return true;
         }
     }
 
-    public function add_form_elements(&$mform, $fullform) {
-        global $DB, $CFG;
+    /**
+     * add_form_elements
+     *
+     * @param MoodleQuickForm $mform
+     * @param string|object $components
+     */
+    public function add_form_elements(MoodleQuickForm $mform, $components): void {
 
         $mform->addElement('header', 'crformheader', get_string('columnandcellproperties', 'block_configurable_reports'), '');
 
         $mform->addElement('text', 'columname', get_string('name'));
-        if (!empty($CFG->formatstringstriptags)) {
-            $mform->setType('columname', PARAM_TEXT);
-        } else {
-            $mform->setType('columname', PARAM_CLEAN);
-        }
+        $mform->setType('columname', PARAM_TEXT);
 
-        $mform->addElement('select', 'align', get_string('cellalign', 'block_configurable_reports'), array('center' => 'center', 'left' => 'left', 'right' => 'right'));
+        $mform->addElement(
+            'select',
+            'align',
+            get_string('cellalign', 'block_configurable_reports'),
+            ['center' => 'center', 'left' => 'left', 'right' => 'right']
+        );
         $mform->setAdvanced('align');
 
         $mform->addElement('text', 'size', get_string('cellsize', 'block_configurable_reports'));
-        $mform->setType('size', PARAM_CLEAN);
+        $mform->setType('size', PARAM_TEXT);
         $mform->setAdvanced('size');
 
-        $mform->addElement('select', 'wrap', get_string('cellwrap', 'block_configurable_reports'), array('' => 'Wrap', 'nowrap' => 'No Wrap'));
+        $mform->addElement(
+            'select',
+            'wrap',
+            get_string('cellwrap', 'block_configurable_reports'),
+            ['' => 'Wrap', 'nowrap' => 'No Wrap']
+        );
         $mform->setAdvanced('wrap');
 
         $mform->addRule('columname', get_string('required'), 'required');
     }
 
-    public function validate_form_elements($data, $errors) {
+    /**
+     * validate_form_elements
+     *
+     * @param array $data
+     * @param array $errors
+     * @return array
+     */
+    public function validate_form_elements(array $data, array $errors): array {
         if (!empty($data['size']) && !preg_match("/^\d+(%|px)$/i", trim($data['size']))) {
             $errors['size'] = get_string('badsize', 'block_configurable_reports');
         }
+
         return $errors;
     }
 
-    public function form_process_data(&$cform) {
+    /**
+     * form_process_data
+     *
+     * @param moodleform $cform
+     * @return void
+     */
+    public function form_process_data(moodleform $cform): void {
         global $DB;
         if ($this->form) {
             $data = $cform->get_data();
@@ -82,14 +124,20 @@ class component_columns extends component_base{
         }
     }
 
-    public function form_set_data(&$cform) {
+    /**
+     * form_set_data
+     *
+     * @param moodleform $cform
+     * @return void
+     */
+    public function form_set_data(moodleform $cform): void {
         if ($this->form) {
             $fdata = new stdclass;
             $components = cr_unserialize($this->config->components);
 
-            $fdata = (isset($components['columns']['config'])) ? $components['columns']['config'] : $fdata;
-
+            $fdata = $components['columns']['config'] ?? $fdata;
             $cform->set_data($fdata);
         }
     }
+
 }

@@ -15,39 +15,62 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Configurable Reports
- * A Moodle block for creating customizable reports
- * @package blocks
- * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date: 2009
+ * Configurable Reports a Moodle block for creating customizable reports
+ *
+ * @copyright  2020 Juan Leyva <juan@moodle.com>
+ * @package    block_configurable_reports
+ * @author     Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+defined('MOODLE_INTERNAL') || die;
+require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
 
-require_once($CFG->dirroot.'/blocks/configurable_reports/plugin.class.php');
+/**
+ * Class plugin_coursestats
+ *
+ * @package   block_configurable_reports
+ * @author    Juan leyva <http://www.twitter.com/jleyvadelgado>
+ */
+class plugin_coursestats extends plugin_base {
 
-class plugin_coursestats extends plugin_base{
-
-    public function init() {
+    /**
+     * Init
+     *
+     * @return void
+     */
+    public function init(): void {
         $this->fullname = get_string('coursestats', 'block_configurable_reports');
         $this->type = 'undefined';
         $this->form = true;
-        $this->reporttypes = array('courses');
+        $this->reporttypes = ['courses'];
     }
 
-    public function summary($data) {
+    /**
+     * Summary
+     *
+     * @param object $data
+     * @return string
+     */
+    public function summary(object $data): string {
         return format_string($data->columname);
     }
 
-    public function colformat($data) {
-        $align = (isset($data->align)) ? $data->align : '';
-        $size = (isset($data->size)) ? $data->size : '';
-        $wrap = (isset($data->wrap)) ? $data->wrap : '';
-        return array($align, $size, $wrap);
-    }
-
-    // Data -> Plugin configuration data.
-    // Row -> Complet user row c->id, c->fullname, etc...
+    /**
+     * execute
+     *
+     * @param object $data
+     * @param object $row
+     * @param object $user
+     * @param int $courseid
+     * @param int $starttime
+     * @param int $endtime
+     * @return int|string
+     */
     public function execute($data, $row, $user, $courseid, $starttime = 0, $endtime = 0) {
-        global $DB, $CFG;
+        global $DB;
+
+        // Data -> Plugin configuration data.
+        // Row -> Complet user row c->id, c->fullname, etc...
 
         $stat = '--';
 
@@ -68,19 +91,19 @@ class plugin_coursestats extends plugin_base{
         $starttime = ($filterstarttime) ? $filterstarttime : $starttime;
         $endtime = ($filterendtime) ? $filterendtime : $endtime;
 
-        $extrasql = "";
         $limit = 0;
+        $numericroles = array_filter($data->roles, 'is_numeric');
 
-        switch($data->stat){
+        switch ($data->stat) {
             case 'activityview':
                 $total = 'SUM(stat1)';
                 $stattype = 'activity';
-                $extrasql = " AND roleid IN (".implode(',', $data->roles).")";
+                $extrasql = " AND roleid IN (" . implode(',', $numericroles ). ")";
                 break;
             case 'activitypost':
                 $total = 'SUM(stat2)';
                 $stattype = 'activity';
-                $extrasql = " AND roleid IN (".implode(',', $data->roles).")";
+                $extrasql = " AND roleid IN (" . implode(',', $numericroles) . ")";
                 break;
             case 'activeenrolments':
                 $total = 'stat2';
@@ -96,13 +119,13 @@ class plugin_coursestats extends plugin_base{
                 $limit = 1;
         }
         $sql = "SELECT $total as total FROM {stats_daily} WHERE stattype = ? AND courseid = ?";
-        $params = array($stattype, $row->id);
+        $params = [$stattype, $row->id];
 
         if ($starttime && $endtime) {
             $starttime = usergetmidnight($starttime) + 24 * 60 * 60;
             $endtime = usergetmidnight($endtime) + 24 * 60 * 60;
             $sql .= " AND timeend >= ? AND timeend <= ?";
-            $params = array_merge($params, array($starttime, $endtime));
+            $params = array_merge($params, [$starttime, $endtime]);
         }
 
         $sql .= $extrasql;
@@ -111,12 +134,13 @@ class plugin_coursestats extends plugin_base{
             $res = array_shift($res);
             if ($res->total != null) {
                 return $res->total;
-            } else {
-                return 0;
             }
+
+            return 0;
         }
 
         return $stat;
     }
+
 }
 

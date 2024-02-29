@@ -15,33 +15,40 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Configurable Reports
- * A Moodle block for creating customizable reports
- * @package blocks
- * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date: 2009
+ * Configurable Reports a Moodle block for creating customizable reports
+ *
+ * @copyright  2020 Juan Leyva <juan@moodle.com>
+ * @package    block_configurable_reports
+ * @author     Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-if (!defined('MOODLE_INTERNAL')) {
-    //  It must be included from a Moodle page.
-    die('Direct access to this script is forbidden.');
-}
+defined('MOODLE_INTERNAL') || die;
 
-require_once($CFG->libdir.'/formslib.php');
+require_once($CFG->libdir . '/formslib.php');
 
+/**
+ * Class userstats_form
+ *
+ * @package   block_configurable_reports
+ * @author    Juan leyva <http://www.twitter.com/jleyvadelgado>
+ */
 class userstats_form extends moodleform {
-    public function definition() {
-        global $DB, $USER, $CFG;
+
+    /**
+     * Form definition
+     */
+    public function definition(): void {
 
         $mform =& $this->_form;
 
-        $mform->addElement('header',  'crformheader', get_string('userstats', 'block_configurable_reports'), '');
+        $mform->addElement('header', 'crformheader', get_string('userstats', 'block_configurable_reports'), '');
 
-        $userstats = array(
+        $userstats = [
             'logins' => get_string('statslogins', 'block_configurable_reports'),
             'activityview' => get_string('activityview', 'block_configurable_reports'),
-            'activitypost' => get_string('activitypost', 'block_configurable_reports')
-        );
+            'activitypost' => get_string('activitypost', 'block_configurable_reports'),
+        ];
         $userstats['coursededicationtime'] = get_string('coursededicationtime', 'block_configurable_reports');
 
         $mform->addElement('select', 'stat', get_string('stat', 'block_configurable_reports'), $userstats);
@@ -52,13 +59,23 @@ class userstats_form extends moodleform {
         $this->add_action_buttons(true, get_string('add'));
     }
 
-    public function validation($data, $files) {
-        global $DB, $CFG;
+    /**
+     * Server side rules do not work for uploaded files, implement serverside rules here if needed.
+     *
+     * @param array $data  array of ("fieldname"=>value) of submitted data
+     * @param array $files array of uploaded files "element_name"=>tmp_file_path
+     * @return array of "element_name"=>"error_description" if there are errors,
+     *                     or an empty array if everything is OK (true allowed for backwards compatibility too).
+     */
+    public function validation($data, $files): array {
+        global $CFG;
         $errors = parent::validation($data, $files);
         $errors = $this->_customdata['compclass']->validate_form_elements($data, $errors);
-        if ($data['stat'] != 'coursededicationtime' && (!isset($CFG->enablestats) || !$CFG->enablestats)) {
+        if ($data['stat'] !== 'coursededicationtime' && (!isset($CFG->enablestats) || !$CFG->enablestats)) {
             $errors['stat'] = get_string('globalstatsshouldbeenabled', 'block_configurable_reports');
         }
+
         return $errors;
     }
+
 }

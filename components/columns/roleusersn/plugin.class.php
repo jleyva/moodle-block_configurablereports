@@ -15,37 +15,58 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Configurable Reports
- * A Moodle block for creating customizable reports
- * @package blocks
- * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date: 2009
+ * Configurable Reports a Moodle block for creating customizable reports
+ *
+ * @copyright  2020 Juan Leyva <juan@moodle.com>
+ * @package    block_configurable_reports
+ * @author     Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+/**
+ * Class plugin_roleusersn
+ *
+ * @package   block_configurable_reports
+ * @author    Juan leyva <http://www.twitter.com/jleyvadelgado>
+ */
 class plugin_roleusersn extends plugin_base {
-    public function init() {
+
+    /**
+     * Init
+     *
+     * @return void
+     */
+    public function init(): void {
         $this->fullname = get_string('roleusersn', 'block_configurable_reports');
         $this->type = 'numeric';
         $this->form = true;
-        $this->reporttypes = array('courses');
+        $this->reporttypes = ['courses'];
     }
 
-    public function summary($data) {
+    /**
+     * Summary
+     *
+     * @param object $data
+     * @return string
+     */
+    public function summary(object $data): string {
         return format_string($data->columname);
     }
 
-    public function colformat($data) {
-        $align = (isset($data->align)) ? $data->align : '';
-        $size = (isset($data->size)) ? $data->size : '';
-        $wrap = (isset($data->wrap)) ? $data->wrap : '';
-        return array($align, $size, $wrap);
-    }
-
-    // Data -> Plugin configuration data.
-    // Row -> Full course row c->id, c->fullname, etc...
-    public function execute($data, $row, $user, $courseid, $starttime = 0, $endtime = 0) {
+    /**
+     * Execute
+     *
+     * @param object $data
+     * @param object $row
+     * @return int
+     */
+    public function execute($data, $row) {
+        // Data -> Plugin configuration data.
+        // Row -> Full course row c->id, c->fullname, etc...
         $courseid = $row->id;
         $context = cr_get_context(CONTEXT_COURSE, $courseid);
+
         return count_role_users($data->roles, $context);
     }
+
 }

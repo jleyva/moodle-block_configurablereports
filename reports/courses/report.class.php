@@ -15,41 +15,78 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Configurable Reports
- * A Moodle block for creating customizable reports
- * @package blocks
- * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date: 2009
+ * Configurable Reports a Moodle block for creating customizable reports
+ *
+ * @copyright  2020 Juan Leyva <juan@moodle.com>
+ * @package    block_configurable_reports
+ * @author     Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+/**
+ * Class report_courses
+ *
+ * @package   block_configurable_reports
+ * @author    Juan leyva <http://www.twitter.com/jleyvadelgado>
+ */
 class report_courses extends report_base {
 
-    public function init() {
-        $this->components = array('columns', 'conditions', 'ordering', 'filters', 'template', 'permissions', 'calcs', 'plot');
+    /**
+     * Init
+     *
+     * @return void
+     */
+    public function init(): void {
+        $this->components = [
+            'columns',
+            'conditions',
+            'ordering',
+            'filters',
+            'template',
+            'permissions',
+            'calcs',
+            'plot',
+        ];
     }
 
-    public function get_all_elements() {
+    /**
+     * get_all_elements
+     *
+     * @return array
+     */
+    public function get_all_elements(): array {
         global $DB;
 
-        $elements = array();
+        $elements = [];
         $rs = $DB->get_recordset('course', null, '', 'id');
+
         foreach ($rs as $result) {
             $elements[] = $result->id;
         }
         $rs->close();
+
         return $elements;
     }
 
-    public function get_rows($elements, $sqlorder = '') {
-        global $DB, $CFG;
+    /**
+     * get_rows
+     *
+     * @param array $elements
+     * @param string $sqlorder
+     * @return array
+     */
+    public function get_rows(array $elements, string $sqlorder = '') {
+        global $DB;
 
-        $finalelements = array();
+        $finalelements = [];
 
         if (!empty($elements)) {
-            list($usql, $params) = $DB->get_in_or_equal($elements);
+            [$usql, $params] = $DB->get_in_or_equal($elements);
+
             return $DB->get_records_select('course', "id $usql", $params, $sqlorder);
         }
 
         return $finalelements;
     }
+
 }

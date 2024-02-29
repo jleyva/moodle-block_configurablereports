@@ -14,16 +14,33 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-if (!defined('MOODLE_INTERNAL')) {
-    // It must be included from a Moodle page.
-    die('Direct access to this script is forbidden.');
-}
+/**
+ * Configurable Reports a Moodle block for creating customizable reports
+ *
+ * @copyright  2020 Juan Leyva <juan@moodle.com>
+ * @package    block_configurable_reports
+ * @author     Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 
-require_once($CFG->libdir.'/formslib.php');
+defined('MOODLE_INTERNAL') || die;
 
+global $CFG;
+require_once($CFG->libdir . '/formslib.php');
+
+/**
+ * Class report_edit_form
+ *
+ * @package   block_configurable_reports
+ * @author    Juan leyva <http://www.twitter.com/jleyvadelgado>
+ */
 class report_edit_form extends moodleform {
-    public function definition() {
-        global $DB, $USER, $CFG, $COURSE;
+
+    /**
+     * Form definition
+     */
+    public function definition(): void {
+        global $COURSE;
 
         $mform =& $this->_form;
 
@@ -39,4 +56,5 @@ class report_edit_form extends moodleform {
         // Buttons.
         $this->add_action_buttons(true, get_string('filter_apply', 'block_configurable_reports'));
     }
+
 }

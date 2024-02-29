@@ -15,33 +15,60 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Configurable Reports
- * A Moodle block for creating customizable reports
- * @package blocks
- * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date: 2009
+ * Configurable Reports a Moodle block for creating customizable reports
+ *
+ * @copyright  2020 Juan Leyva <juan@moodle.com>
+ * @package    block_configurable_reports
+ * @author     Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-require_once($CFG->dirroot.'/blocks/configurable_reports/plugin.class.php');
+defined('MOODLE_INTERNAL') || die;
+require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
 
+/**
+ * Class plugin_currentreportcourse
+ *
+ * @package   block_configurable_reports
+ * @author    Juan leyva <http://www.twitter.com/jleyvadelgado>
+ */
 class plugin_currentreportcourse extends plugin_base {
-    public function init() {
+
+    /**
+     * Init
+     *
+     * @return void
+     */
+    public function init(): void {
         $this->fullname = get_string('currentreportcourse', 'block_configurable_reports');
         $this->form = false;
-        $this->reporttypes = array('courses');
+        $this->reporttypes = ['courses'];
     }
 
-    public function summary($data) {
+    /**
+     * Summary
+     *
+     * @param object $data
+     * @return string
+     */
+    public function summary(object $data): string {
         return get_string('currentreportcourse_summary', 'block_configurable_reports');
     }
 
-    // Data -> Plugin configuration data.
+    /**
+     * Execute
+     *
+     * @param object $data
+     * @param object $user
+     * @param int $courseid
+     * @return array
+     */
     public function execute($data, $user, $courseid) {
-        global $DB;
-
-        $finalcourses = array();
+        // Data -> Plugin configuration data.
+        $finalcourses = [];
         $finalcourses[] = $courseid;
 
         return $finalcourses;
     }
+
 }

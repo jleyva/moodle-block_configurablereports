@@ -15,37 +15,44 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Configurable Reports
- * A Moodle block for creating customizable reports
- * @package blocks
- * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date: 2009
+ * Configurable Reports a Moodle block for creating customizable reports
+ *
+ * @copyright  2020 Juan Leyva <juan@moodle.com>
+ * @package    block_configurable_reports
+ * @author     Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-if (!defined('MOODLE_INTERNAL')) {
-    //  It must be included from a Moodle page.
-    die('Direct access to this script is forbidden.');
-}
+defined('MOODLE_INTERNAL') || die;
 
-require_once($CFG->libdir.'/formslib.php');
+require_once($CFG->libdir . '/formslib.php');
 
+/**
+ * Class columns_form
+ *
+ * @package   block_configurable_reports
+ * @author    Juan leyva <http://www.twitter.com/jleyvadelgado>
+ */
 class columns_form extends moodleform {
-    public function definition() {
-        global $DB, $USER, $CFG;
+
+    /**
+     * Form definition
+     */
+    public function definition(): void {
 
         $mform =& $this->_form;
 
         $mform->addElement('header', get_string('reporttable', 'block_configurable_reports'), '');
 
         $mform->addElement('text', 'tablewidth', get_string('tablewidth', 'block_configurable_reports'));
-        $mform->setType('tablewidth', PARAM_CLEAN);
+        $mform->setType('tablewidth', PARAM_TEXT);
         $mform->setDefault('tablewidth', '100%');
         $mform->addHelpButton('tablewidth', 'reporttable', 'block_configurable_reports');
 
-        $options = array('center' => 'center', 'left' => 'left', 'right' => 'right');
+        $options = ['center' => 'center', 'left' => 'left', 'right' => 'right'];
 
         $mform->addElement('SELECT', 'tablealign', get_string('tablealign', 'block_configurable_reports'), $options);
-        $mform->setType('tablealign', PARAM_CLEAN);
+        $mform->setType('tablealign', PARAM_TEXT);
         $mform->setDefault('tablealign', 'center');
 
         $mform->addElement('text', 'cellspacing', get_string('tablecellspacing', 'block_configurable_reports'));
@@ -59,14 +66,22 @@ class columns_form extends moodleform {
         $mform->setAdvanced('cellpadding');
 
         $mform->addElement('text', 'class', get_string('tableclass', 'block_configurable_reports'));
-        $mform->setType('class', PARAM_CLEAN);
+        $mform->setType('class', PARAM_TEXT);
         $mform->setAdvanced('class');
 
         // Buttons.
         $this->add_action_buttons(true, get_string('update'));
     }
 
-    public function validation($data, $files) {
+    /**
+     * Server side rules do not work for uploaded files, implement serverside rules here if needed.
+     *
+     * @param array $data  array of ("fieldname"=>value) of submitted data
+     * @param array $files array of uploaded files "element_name"=>tmp_file_path
+     * @return array of "element_name"=>"error_description" if there are errors,
+     *                     or an empty array if everything is OK (true allowed for backwards compatibility too).
+     */
+    public function validation($data, $files): array {
         $errors = parent::validation($data, $files);
 
         if (!preg_match("/^\d+%?$/i", trim($data['tablewidth']))) {
@@ -75,4 +90,5 @@ class columns_form extends moodleform {
 
         return $errors;
     }
+
 }

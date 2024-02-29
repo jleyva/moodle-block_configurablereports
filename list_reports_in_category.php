@@ -15,17 +15,19 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Configurable Reports
- * A Moodle block for creating Configurable Reports
- * @package blocks
- * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date: 2009
+ * Configurable Reports a Moodle block for creating customizable reports
+ *
+ * @copyright  2020 Juan Leyva <juan@moodle.com>
+ * @package    block_configurable_reports
+ * @author     Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 define('AJAX_SCRIPT', true);
-require(dirname(dirname(dirname(__FILE__))).'/config.php');
+require(dirname(__FILE__, 3) . '/config.php');
 require_once($CFG->libdir . '/filelib.php');
 
+require_login();
 $category = required_param('category', PARAM_RAW);
 
 if (!$userandrepo = get_config('block_configurable_reports', 'sharedsqlrepository')) {
@@ -35,16 +37,16 @@ if (!$userandrepo = get_config('block_configurable_reports', 'sharedsqlrepositor
 
 $github = new \block_configurable_reports\github;
 $github->set_repo($userandrepo);
-$res = $github->get('/contents/'.$category);
+$res = $github->get('/contents/' . $category);
 
 $res = json_decode($res);
 
-$reportlist = array();
+$reportlist = [];
 foreach ($res as $item) {
     $report = new stdClass();
-    $report->name = str_replace($category.'/', '', $item->path);
+    $report->name = str_replace($category . '/', '', $item->path);
     $report->fullname = $item->path;
-    if ($item->type == 'file') {
+    if ($item->type === 'file') {
         $reportlist[] = $report;
     }
 }

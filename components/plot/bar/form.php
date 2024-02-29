@@ -14,26 +14,42 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-if (!defined('MOODLE_INTERNAL')) {
-    //  It must be included from a Moodle page.
-    die('Direct access to this script is forbidden.');
-}
+/**
+ * Configurable Reports a Moodle block for creating customizable reports
+ *
+ * @copyright  2020 Juan Leyva <juan@moodle.com>
+ * @package    block_configurable_reports
+ * @author     Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 
-require_once($CFG->libdir.'/formslib.php');
+defined('MOODLE_INTERNAL') || die;
 
+require_once($CFG->libdir . '/formslib.php');
+
+/**
+ * Class bar_form
+ *
+ * @package   block_configurable_reports
+ * @author    Juan leyva <http://www.twitter.com/jleyvadelgado>
+ */
 class bar_form extends moodleform {
-    public function definition() {
-        global $DB, $USER, $CFG;
+
+    /**
+     * Form definition
+     */
+    public function definition(): void {
+        global $CFG;
 
         $mform =& $this->_form;
-        $options = array();
+        $options = [];
         $report = $this->_customdata['report'];
 
-        if ($report->type != 'sql') {
+        if ($report->type !== 'sql') {
             $components = cr_unserialize($this->_customdata['report']->components);
 
             if (!is_array($components) || empty($components['columns']['elements'])) {
-                print_error('nocolumns');
+                throw new moodle_exception('nocolumns');
             }
 
             $columns = $components['columns']['elements'];
@@ -46,14 +62,14 @@ class bar_form extends moodleform {
                 }
             }
         } else {
-            require_once($CFG->dirroot.'/blocks/configurable_reports/report.class.php');
-            require_once($CFG->dirroot.'/blocks/configurable_reports/reports/'.$report->type.'/report.class.php');
+            require_once($CFG->dirroot . '/blocks/configurable_reports/report.class.php');
+            require_once($CFG->dirroot . '/blocks/configurable_reports/reports/' . $report->type . '/report.class.php');
 
-            $reportclassname = 'report_'.$report->type;
+            $reportclassname = 'report_' . $report->type;
             $reportclass = new $reportclassname($report);
 
             $components = cr_unserialize($report->components);
-            $config = (isset($components['customsql']['config'])) ? $components['customsql']['config'] : new \stdclass;
+            $config = $components['customsql']['config'] ?? new stdclass;
 
             if (isset($config->querysql)) {
                 $sql = $config->querysql;
@@ -85,7 +101,13 @@ class bar_form extends moodleform {
         $this->add_formatting_elements($mform);
     }
 
-    public function add_formatting_elements($mform) {
+    /**
+     * add_formatting_elements
+     *
+     * @param moodleform $mform
+     * @return void
+     */
+    public function add_formatting_elements($mform): void {
         $mform->addElement('header', 'size', get_string('head_size', 'block_configurable_reports'));
 
         $mform->addElement('text', 'width', get_string('width', 'block_configurable_reports'));
@@ -95,39 +117,8 @@ class bar_form extends moodleform {
         $mform->setDefault('height', 500);
         $mform->setType("height", PARAM_INT);
 
-        /* Shouldn't use these without a way to automatically
-         * calculate colors for the text and bars that contrast
-         * with the chosen background.
-         *
-        $mform->addElement(
-            'header',
-            'color',
-            get_string('head_color', 'block_configurable_reports')
-        );
-        $mform->addElement(
-            'text',
-            'color_r',
-            "R",
-            "size = 5"
-        );
-        $mform->setDefault("color_r",170);
-        $mform->addElement(
-            'text',
-            'color_g',
-            "G",
-            "size = 5"
-        );
-        $mform->setDefault("color_g",183);
-        $mform->addElement(
-            'text',
-            'color_b',
-            "B",
-            "size = 5"
-        );
-        $mform->setDefault("color_b",87);
-        */
-
         // Buttons.
         $this->add_action_buttons(true, get_string('add'));
     }
+
 }

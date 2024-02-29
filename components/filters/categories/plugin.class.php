@@ -15,55 +15,87 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Configurable Reports
- * A Moodle block for creating customizable reports
- * @package blocks
- * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date: 2009
+ * Configurable Reports a Moodle block for creating customizable reports
+ *
+ * @copyright  2020 Juan Leyva <juan@moodle.com>
+ * @package    block_configurable_reports
+ * @author     Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+defined('MOODLE_INTERNAL') || die;
+require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
 
-require_once($CFG->dirroot.'/blocks/configurable_reports/plugin.class.php');
-
+/**
+ * Class plugin_categories
+ *
+ * @package   block_configurable_reports
+ * @author    Juan leyva <http://www.twitter.com/jleyvadelgado>
+ */
 class plugin_categories extends plugin_base {
 
-    public function init() {
+    /**
+     * Init
+     *
+     * @return void
+     */
+    public function init(): void {
         $this->form = false;
         $this->unique = true;
         $this->fullname = get_string('filtercategories', 'block_configurable_reports');
-        $this->reporttypes = array('categories', 'sql');
+        $this->reporttypes = ['categories', 'sql'];
     }
 
-    public function summary($data) {
+    /**
+     * Summary
+     *
+     * @param object $data
+     * @return string
+     */
+    public function summary(object $data): string {
         return get_string('filtercategories_summary', 'block_configurable_reports');
     }
 
-    public function execute($finalelements, $data) {
+    /**
+     * Execute
+     *
+     * @param string $finalelements
+     * @return array|string|string[]
+     */
+    public function execute($finalelements) {
 
         $filtercategories = optional_param('filter_categories', 0, PARAM_INT);
         if (!$filtercategories) {
             return $finalelements;
         }
 
-        if ($this->report->type != 'sql') {
-            return array($filtercategories);
-        } else {
-            if (preg_match("/%%FILTER_CATEGORIES:([^%]+)%%/i", $finalelements, $output)) {
-                $replace = ' AND '.$output[1].' = '.$filtercategories;
-                return str_replace('%%FILTER_CATEGORIES:'.$output[1].'%%', $replace, $finalelements);
-            }
+        if ($this->report->type !== 'sql') {
+            return [$filtercategories];
         }
+
+        if (preg_match("/%%FILTER_CATEGORIES:([^%]+)%%/i", $finalelements, $output)) {
+            $replace = ' AND ' . $output[1] . ' = ' . $filtercategories;
+
+            return str_replace('%%FILTER_CATEGORIES:' . $output[1] . '%%', $replace, $finalelements);
+        }
+
         return $finalelements;
     }
 
-    public function print_filter(&$mform) {
-        global $remotedb, $CFG;
+    /**
+     * Print filter
+     *
+     * @param MoodleQuickForm $mform
+     * @param bool|object $formdata
+     * @return void
+     */
+    public function print_filter(MoodleQuickForm $mform, $formdata = false): void {
 
-        $filtercategories = optional_param('filter_categories', 0, PARAM_INT);
+        global $remotedb;
 
-        $reportclassname = 'report_'.$this->report->type;
+        $reportclassname = 'report_' . $this->report->type;
         $reportclass = new $reportclassname($this->report);
 
-        if ($this->report->type != 'sql') {
+        if ($this->report->type !== 'sql') {
             $components = cr_unserialize($this->report->components);
             $conditions = $components['conditions'];
 
@@ -72,11 +104,11 @@ class plugin_categories extends plugin_base {
             $categorieslist = array_keys($remotedb->get_records('course_categories'));
         }
 
-        $courseoptions = array();
+        $courseoptions = [];
         $courseoptions[0] = get_string('filter_all', 'block_configurable_reports');
 
         if (!empty($categorieslist)) {
-            list($usql, $params) = $remotedb->get_in_or_equal($categorieslist);
+            [$usql, $params] = $remotedb->get_in_or_equal($categorieslist);
             $categories = $remotedb->get_records_select('course_categories', "id $usql", $params);
 
             foreach ($categories as $c) {
@@ -87,4 +119,5 @@ class plugin_categories extends plugin_base {
         $mform->addElement('select', 'filter_categories', get_string('category'), $courseoptions);
         $mform->setType('filter_categories', PARAM_INT);
     }
+
 }

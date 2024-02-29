@@ -15,31 +15,39 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Configurable Reports
- * A Moodle block for creating customizable reports
- * @package blocks
- * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date: 2009
+ * Configurable Reports a Moodle block for creating customizable reports
+ *
+ * @copyright  2020 Juan Leyva <juan@moodle.com>
+ * @package    block_configurable_reports
+ * @author     Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-if (!defined('MOODLE_INTERNAL')) {
-    //  It must be included from a Moodle page.
-    die('Direct access to this script is forbidden.');
-}
+defined('MOODLE_INTERNAL') || die;
 
-require_once($CFG->libdir.'/formslib.php');
+require_once($CFG->libdir . '/formslib.php');
 
+/**
+ * Class roleincourse_form
+ *
+ * @package   block_configurable_reports
+ * @author    Juan leyva <http://www.twitter.com/jleyvadelgado>
+ */
 class roleincourse_form extends moodleform {
-    public function definition() {
-        global $DB, $USER, $CFG;
+
+    /**
+     * Form definition
+     */
+    public function definition(): void {
+        global $DB;
 
         $mform =& $this->_form;
 
-        $mform->addElement('header',  'crformheader', get_string('roleincourse', 'block_configurable_reports'), '');
+        $mform->addElement('header', 'crformheader', get_string('roleincourse', 'block_configurable_reports'), '');
 
         $roles = $DB->get_records('role');
 
-        $userroles = array();
+        $userroles = [];
         foreach ($roles as $r) {
             $userroles[$r->id] = $r->shortname;
         }
@@ -49,4 +57,5 @@ class roleincourse_form extends moodleform {
         // Buttons.
         $this->add_action_buttons(true, get_string('add'));
     }
+
 }

@@ -15,41 +15,70 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Configurable Reports
- * A Moodle block for creating customizable reports
- * @package blocks
- * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date: 2009
+ * Configurable Reports a Moodle block for creating customizable reports
+ *
+ * @copyright  2020 Juan Leyva <juan@moodle.com>
+ * @package    block_configurable_reports
+ * @author     Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+defined('MOODLE_INTERNAL') || die;
+require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
 
-require_once($CFG->dirroot.'/blocks/configurable_reports/plugin.class.php');
-
+/**
+ * Class plugin_roleincourse
+ *
+ * @package   block_configurable_reports
+ * @author    Juan leyva <http://www.twitter.com/jleyvadelgado>
+ */
 class plugin_roleincourse extends plugin_base {
 
-    public function init() {
+    /**
+     * Init
+     *
+     * @return void
+     */
+    public function init(): void {
         $this->form = true;
         $this->unique = false;
         $this->fullname = get_string('roleincourse', 'block_configurable_reports');
-        $this->reporttypes = array('courses', 'sql', 'users', 'timeline', 'categories');
+        $this->reporttypes = ['courses', 'sql', 'users', 'timeline', 'categories'];
     }
 
-    public function summary($data) {
+    /**
+     * Summary
+     *
+     * @param object $data
+     * @return string
+     */
+    public function summary(object $data): string {
         global $DB;
 
-        $rolename = $DB->get_field('role', 'shortname', array('id' => $data->roleid));
-        $coursename = $DB->get_field('course', 'fullname', array('id' => $this->report->courseid));
-        return $rolename.' '.$coursename;
+        $rolename = $DB->get_field('role', 'shortname', ['id' => $data->roleid]);
+        $coursename = $DB->get_field('course', 'fullname', ['id' => $this->report->courseid]);
+
+        return $rolename . ' ' . $coursename;
     }
 
-    public function execute($userid, $context, $data) {
+    /**
+     * Execute
+     *
+     * @param int $userid
+     * @param context $context
+     * @param object $data
+     * @return bool
+     */
+    public function execute($userid, $context, $data): bool {
         $roles = get_user_roles($context, $userid);
         if (!empty($roles)) {
             foreach ($roles as $rol) {
-                if ($rol->roleid == $data->roleid) {
+                if ((int) $rol->roleid === (int) $data->roleid) {
                     return true;
                 }
             }
         }
+
         return false;
     }
+
 }

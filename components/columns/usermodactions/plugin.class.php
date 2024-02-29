@@ -15,51 +15,70 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Configurable Reports
- * A Moodle block for creating customizable reports
- * @package blocks
- * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date: 2009
+ * Configurable Reports a Moodle block for creating customizable reports
+ *
+ * @copyright  2020 Juan Leyva <juan@moodle.com>
+ * @package    block_configurable_reports
+ * @author     Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+defined('MOODLE_INTERNAL') || die;
+require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
 
-require_once($CFG->dirroot.'/blocks/configurable_reports/plugin.class.php');
-
+/**
+ * Class plugin_usermodactions
+ *
+ * @package   block_configurable_reports
+ * @author    Juan leyva <http://www.twitter.com/jleyvadelgado>
+ */
 class plugin_usermodactions extends plugin_base {
 
-    public function init() {
+    /**
+     * Init
+     *
+     * @return void
+     */
+    public function init(): void {
         $this->fullname = get_string('usermodactions', 'block_configurable_reports');
         $this->type = 'undefined';
         $this->form = true;
-        $this->reporttypes = array('users');
+        $this->reporttypes = ['users'];
     }
 
-    public function summary($data) {
+    /**
+     * Summary
+     *
+     * @param object $data
+     * @return string
+     */
+    public function summary(object $data): string {
         global $DB;
         // Should be a better way to do this.
-        if ($cm = $DB->get_record('course_modules', array('id' => $data->cmid))) {
-            $modname = $DB->get_field('modules', 'name', array('id' => $cm->module));
-            if ($name = $DB->get_field("$modname", 'name', array('id' => $cm->instance))) {
-                return $data->columname.' ('.$name.')';
+        if ($cm = $DB->get_record('course_modules', ['id' => $data->cmid])) {
+            $modname = $DB->get_field('modules', 'name', ['id' => $cm->module]);
+            if ($name = $DB->get_field("$modname", 'name', ['id' => $cm->instance])) {
+                return $data->columname . ' (' . $name . ')';
             }
         }
 
         return $data->columname;
     }
 
-    public function colformat($data) {
-        $align = (isset($data->align)) ? $data->align : '';
-        $size = (isset($data->size)) ? $data->size : '';
-        $wrap = (isset($data->wrap)) ? $data->wrap : '';
-        return array($align, $size, $wrap);
-    }
-
-    // Data -> Plugin configuration data.
-    // Row -> Complet user row c->id, c->fullname, etc...
-    public function execute($data, $row, $user, $courseid, $starttime = 0, $endtime = 0) {
+    /**
+     * Execute
+     *
+     * @param object $data
+     * @param object $row
+     * @return string
+     */
+    public function execute($data, $row) {
         global $DB, $CFG;
+
+        // Data -> Plugin configuration data.
+        // Row -> Complet user row c->id, c->fullname, etc...
         require_once($CFG->dirroot . "/blocks/configurable_reports/locallib.php");
 
-        list($uselegacyreader, $useinternalreader, $logtable) = cr_logging_info();
+        [$uselegacyreader, $useinternalreader, $logtable] = cr_logging_info();
 
         $sql = '';
         if ($uselegacyreader) {
@@ -72,9 +91,9 @@ class plugin_usermodactions extends plugin_base {
                   GROUP BY cm.id";
         } else if ($useinternalreader) {
             $sql = "SELECT COUNT('x') AS numviews
-                      FROM {".$logtable."}
+                      FROM {" . $logtable . "}
                      WHERE contextinstanceid = $data->cmid
-                           AND contextlevel = ". CONTEXT_MODULE ."
+                           AND contextlevel = " . CONTEXT_MODULE . "
                            AND userid = $row->id
                            AND crud = 'r'
                   GROUP BY contextinstanceid";
@@ -83,6 +102,8 @@ class plugin_usermodactions extends plugin_base {
         if (!empty($sql) && $views = $DB->get_record_sql($sql)) {
             return $views->numviews;
         }
+
         return 0;
     }
+
 }

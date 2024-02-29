@@ -15,38 +15,64 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Configurable Reports
- * A Moodle block for creating customizable reports
- * @package blocks
- * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date: 2009
+ * Configurable Reports a Moodle block for creating customizable reports
+ *
+ * @copyright  2020 Juan Leyva <juan@moodle.com>
+ * @package    block_configurable_reports
+ * @author     Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+defined('MOODLE_INTERNAL') || die;
+require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
 
-require_once($CFG->dirroot.'/blocks/configurable_reports/plugin.class.php');
+/**
+ * Class plugin_cuserfield
+ *
+ * @package   block_configurable_reports
+ * @author    Juan leyva <http://www.twitter.com/jleyvadelgado>
+ */
+class plugin_cuserfield extends plugin_base {
 
-class plugin_cuserfield extends plugin_base{
-
-    public function init() {
+    /**
+     * Init
+     *
+     * @return void
+     */
+    public function init(): void {
         $this->fullname = get_string('cuserfield', 'block_configurable_reports');
-        $this->reporttypes = array('users');
+        $this->reporttypes = ['users'];
         $this->form = true;
     }
 
-    public function summary($data) {
+    /**
+     * Summary
+     *
+     * @param object $data
+     * @return string
+     */
+    public function summary(object $data): string {
         global $DB;
 
         if (strpos($data->field, 'profile_') === 0) {
-            $name = $DB->get_field('user_info_field', 'name', array('shortname' => str_replace('profile_', '', $data->field)));
-            return $name .' '.$data->operator.' '.$data->value;
+            $name = $DB->get_field('user_info_field', 'name', ['shortname' => str_replace('profile_', '', $data->field)]);
+
+            return $name . ' ' . $data->operator . ' ' . $data->value;
         }
-        return get_string($data->field).' '.$data->operator.' '.$data->value;
+
+        return get_string($data->field) . ' ' . $data->operator . ' ' . $data->value;
 
     }
 
-    // Data -> Plugin configuration data.
-    public function execute($data, $user, $courseid) {
+    /**
+     * Execute
+     *
+     * @param object $data
+     * @param object $user
+     * @return array|int[]|string[]
+     */
+    public function execute($data, $user) {
         global $DB;
-
+        // Data -> Plugin configuration data.
         // TODO - Use $DB->sql_like().
         $ilike = " LIKE ";
 
@@ -58,35 +84,38 @@ class plugin_cuserfield extends plugin_base{
             }
 
             if ($fieldid = $DB->get_field('user_info_field', 'id', ['shortname' => str_replace('profile_', '', $data->field)])) {
-                switch($data->operator){
+                switch ($data->operator) {
                     case 'LIKE % %':
                         $sql = "fieldid = $fieldid AND data $ilike ?";
-                        $params = array("%$data->value%");
+                        $params = ["%$data->value%"];
                         break;
                     default:
                         $sql = "fieldid = $fieldid AND data $data->operator ?";
-                        $params = array($data->value);
+                        $params = [$data->value];
                 }
 
                 if ($infodata = $DB->get_records_select('user_info_data', $sql, $params)) {
-                    $finalusersid = array();
+                    $finalusersid = [];
                     foreach ($infodata as $d) {
                         $finalusersid[] = $d->userid;
                     }
+
                     return $finalusersid;
                 }
             }
         } else {
-            if ($data->value == "%%CURRENTUSER%%") {
+            if ($data->value === "%%CURRENTUSER%%") {
                 $data->value = $user->{$data->field};
             }
 
-            switch($data->operator) {
-                case 'LIKE % %':    $sql = "$data->field $ilike ?";
-                                    $params = array("%$data->value%");
-                                    break;
-                default:    $sql = "$data->field $data->operator ?";
-                            $params = array($data->value);
+            switch ($data->operator) {
+                case 'LIKE % %':
+                    $sql = "$data->field $ilike ?";
+                    $params = ["%$data->value%"];
+                    break;
+                default:
+                    $sql = "$data->field $data->operator ?";
+                    $params = [$data->value];
             }
 
             $users = $DB->get_records_select('user', $sql, $params);
@@ -95,6 +124,7 @@ class plugin_cuserfield extends plugin_base{
             }
         }
 
-        return array();
+        return [];
     }
+
 }

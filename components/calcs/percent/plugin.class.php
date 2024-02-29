@@ -15,87 +15,114 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Configurable Reports
- * A Moodle block for creating customizable reports
- * @package block_configurable_reports
- * @author David Pesce <davidpesce@gmail.com>
- * @date 2019
+ * Configurable Reports a Moodle block for creating customizable reports
+ *
+ * @copyright  2020 Juan Leyva <juan@moodle.com>
+ * @package    block_configurable_reports
+ * @author     David Pesce <davidpesce@gmail.com>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-require_once($CFG->dirroot.'/blocks/configurable_reports/plugin.class.php');
+defined('MOODLE_INTERNAL') || die;
+require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
 
+/**
+ * Class plugin_percent
+ *
+ * @package block_configurable_reports
+ * @author  David Pesce <davidpesce@gmail.com>
+ */
 class plugin_percent extends plugin_base {
 
-	public function init() {
-		$this->form = true;
-		$this->unique = false;
-		$this->fullname = get_string('percent','block_configurable_reports');
-		$this->reporttypes = array('courses','users','sql','timeline','categories');
-	}
+    /**
+     * Init
+     *
+     * @return void
+     */
+    public function init(): void {
+        $this->form = true;
+        $this->unique = false;
+        $this->fullname = get_string('percent', 'block_configurable_reports');
+        $this->reporttypes = ['courses', 'users', 'sql', 'timeline', 'categories'];
+    }
 
-	public function summary($data) {
-		global $CFG;
+    /**
+     * Summary
+     *
+     * @param object $data
+     * @return string
+     */
+    public function summary(object $data): string {
+        global $CFG;
 
-		if ($this->report->type != 'sql') {
-			$components = cr_unserialize($this->report->components);
-			if (!is_array($components) || empty($components['columns']['elements'])) {
-				print_error('nocolumns');
-			}
+        if ($this->report->type !== 'sql') {
+            $components = cr_unserialize($this->report->components);
+            if (!is_array($components) || empty($components['columns']['elements'])) {
+                throw new moodle_exception('nocolumns');
+            }
 
-			$columns = $components['columns']['elements'];
-			$i = 0;
-			foreach ($columns as $c) {
-				if ($i == $data->column) {
-					return $c['summary'];
-				}
-				$i++;
-			}
-		} else {
-			require_once($CFG->dirroot.'/blocks/configurable_reports/report.class.php');
-			require_once($CFG->dirroot.'/blocks/configurable_reports/reports/'.$this->report->type.'/report.class.php');
+            $columns = $components['columns']['elements'];
+            $i = 0;
+            foreach ($columns as $c) {
+                if ($i == $data->column) {
+                    return $c['summary'];
+                }
+                $i++;
+            }
+        } else {
+            require_once($CFG->dirroot . '/blocks/configurable_reports/report.class.php');
+            require_once($CFG->dirroot . '/blocks/configurable_reports/reports/' . $this->report->type . '/report.class.php');
 
-			$reportclassname = 'report_'.$this->report->type;
-			$reportclass = new $reportclassname($this->report);
+            $reportclassname = 'report_' . $this->report->type;
+            $reportclass = new $reportclassname($this->report);
 
-			$components = cr_unserialize($this->report->components);
-			$config = (isset($components['customsql']['config']))? $components['customsql']['config'] : new stdclass;
+            $components = cr_unserialize($this->report->components);
+            $config = $components['customsql']['config'] ?? new stdclass;
 
-			if (isset($config->querysql)) {
-				$sql =$config->querysql;
-				$sql = $reportclass->prepare_sql($sql);
-				if ($rs = $reportclass->execute_query($sql)) {
-					foreach ($rs as $row) {
-						$i = 0;
-						foreach ($row as $colname=>$value) {
-							if ($i == $data->column) {
-								return str_replace('_', ' ', $colname);
-							}
-							$i++;
-						}
-						break;
-					}
-					$rs->close();
-				}
-			}
-		}
+            if (isset($config->querysql)) {
+                $sql = $config->querysql;
+                $sql = $reportclass->prepare_sql($sql);
+                if ($rs = $reportclass->execute_query($sql)) {
+                    foreach ($rs as $row) {
+                        $i = 0;
+                        foreach ($row as $colname => $value) {
+                            if ($i == $data->column) {
+                                return str_replace('_', ' ', $colname);
+                            }
+                            $i++;
+                        }
+                        break;
+                    }
+                    $rs->close();
+                }
+            }
+        }
 
-		return '';
-	}
+        return '';
+    }
 
-	public function execute($rows) {
-		$result = 0;
-		$totalrows = 0;
-		$resultrows = 0;
-		foreach ($rows as $r) {
-			$r = (is_numeric($r)) ? $r : 0;
-			if ($r >= 1) {
-			    $resultrows++;
-			}
-			$totalrows++;
-		}
-		if ($totalrows > 0) {
-			$result = round(($resultrows / $totalrows) * 100, 2);
-		}
-		return $result . ' %';
-	}
+    /**
+     * Execute
+     *
+     * @param array $rows
+     * @return string
+     */
+    public function execute($rows): string {
+        $result = 0;
+        $totalrows = 0;
+        $resultrows = 0;
+        foreach ($rows as $r) {
+            $r = (is_numeric($r)) ? $r : 0;
+            if ($r >= 1) {
+                $resultrows++;
+            }
+            $totalrows++;
+        }
+        if ($totalrows > 0) {
+            $result = round(($resultrows / $totalrows) * 100, 2);
+        }
+
+        return $result . ' %';
+    }
+
 }

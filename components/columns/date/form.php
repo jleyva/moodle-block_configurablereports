@@ -15,38 +15,45 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Configurable Reports
- * A Moodle block for creating customizable reports
- * @package blocks
- * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date: 2009
+ * Configurable Reports a Moodle block for creating customizable reports
+ *
+ * @copyright  2020 Juan Leyva <juan@moodle.com>
+ * @package    block_configurable_reports
+ * @author     Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-if (!defined('MOODLE_INTERNAL')) {
-    //  It must be included from a Moodle page.
-    die('Direct access to this script is forbidden.');
-}
+defined('MOODLE_INTERNAL') || die;
 
-require_once($CFG->libdir.'/formslib.php');
+require_once($CFG->libdir . '/formslib.php');
 
+/**
+ * Class date_form
+ *
+ * @package   block_configurable_reports
+ * @author    Juan leyva <http://www.twitter.com/jleyvadelgado>
+ */
 class date_form extends moodleform {
-    public function definition() {
-        global $DB, $USER, $CFG;
+
+    /**
+     * Form definition
+     */
+    public function definition(): void {
 
         $mform =& $this->_form;
 
-        $mform->addElement('header',  'crformheader', get_string('date', 'block_configurable_reports'), '');
+        $mform->addElement('header', 'crformheader', get_string('date', 'block_configurable_reports'), '');
 
         $this->_customdata['compclass']->add_form_elements($mform, $this);
 
-        $params = array(
+        $params = [
             'starttime' => get_string('starttime', 'block_configurable_reports'),
-            'endtime' => get_string('endtime', 'block_configurable_reports')
-        );
+            'endtime' => get_string('endtime', 'block_configurable_reports'),
+        ];
         $mform->addElement('select', 'date', get_string('date', 'block_configurable_reports'), $params);
 
-        $formats = array( '' => get_string('default'), 'custom' => get_string('custom', 'block_configurable_reports'));
-        foreach (array('%A, %d %B %Y', '%d %B %Y', '%d/%B/%Y', '%B %d %Y') as $f) {
+        $formats = ['' => get_string('default'), 'custom' => get_string('custom', 'block_configurable_reports')];
+        foreach (['%A, %d %B %Y', '%d %B %Y', '%d/%B/%Y', '%B %d %Y'] as $f) {
             $formats[$f] = $f;
         }
 
@@ -58,4 +65,5 @@ class date_form extends moodleform {
         // Buttons.
         $this->add_action_buttons(true, get_string('add'));
     }
+
 }

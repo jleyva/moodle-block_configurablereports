@@ -15,33 +15,40 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Configurable Reports
- * A Moodle block for creating customizable reports
- * @package blocks
- * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date: 2009
+ * Configurable Reports a Moodle block for creating customizable reports
+ *
+ * @copyright  2020 Juan Leyva <juan@moodle.com>
+ * @package    block_configurable_reports
+ * @author     Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 // Based on Custom SQL Reports Plugin
 // See http://moodle.org/mod/data/view.php?d=13&rid=2884.
 
-if (!defined('MOODLE_INTERNAL')) {
-    //  It must be included from a Moodle page.
-    die('Direct access to this script is forbidden.');
-}
+defined('MOODLE_INTERNAL') || die;
 
-require_once($CFG->libdir.'/formslib.php');
+require_once($CFG->libdir . '/formslib.php');
 
+/**
+ * Class timeline_form
+ *
+ * @package   block_configurable_reports
+ * @author    Juan leyva <http://www.twitter.com/jleyvadelgado>
+ */
 class timeline_form extends moodleform {
-    public function definition() {
-        global $DB, $CFG;
+
+    /**
+     * Form definition
+     */
+    public function definition(): void {
 
         $mform =& $this->_form;
 
-        $options = array(
+        $options = [
             'previous' => get_string('previousdays', 'block_configurable_reports'),
-            'fixeddate' => get_string('fixeddate', 'block_configurable_reports')
-        );
+            'fixeddate' => get_string('fixeddate', 'block_configurable_reports'),
+        ];
         $mform->addElement('select', 'timemode', get_string('timemode', 'block_configurable_reports'), $options);
         $mform->setDefault('timemode', 'previous');
 
@@ -75,16 +82,9 @@ class timeline_form extends moodleform {
         $mform->addRule('interval', null, 'nonzero', null, 'client');
 
         $orderingstr = get_string('ordering', 'block_configurable_reports');
-        $mform->addElement('select', 'ordering', $orderingstr, array('asc' => 'ASC', 'desc' => 'DESC'));
+        $mform->addElement('select', 'ordering', $orderingstr, ['asc' => 'ASC', 'desc' => 'DESC']);
 
         $this->add_action_buttons();
     }
 
-    public function validation($data, $files) {
-        global $DB, $CFG, $db, $USER;
-
-        $errors = parent::validation($data, $files);
-
-        return $errors;
-    }
 }

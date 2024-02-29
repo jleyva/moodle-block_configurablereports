@@ -19,16 +19,18 @@
  *
  * Configurable Reports - A Moodle block for creating customizable reports
  *
- * @package     block_configurable_reports
- * @author:     Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date:       2013-09-07
- *
- * @copyright  Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package             block_configurable_reports
+ * @author              Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @copyright           Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @license             http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die();
-
+/**
+ * Upgrade block configurable_reports
+ *
+ * @param int $oldversion
+ * @return bool
+ */
 function xmldb_block_configurable_reports_upgrade($oldversion) {
     global $DB, $CFG;
 
@@ -84,7 +86,12 @@ function xmldb_block_configurable_reports_upgrade($oldversion) {
 
         // Conditionally migrate to html format in summary.
         if ($CFG->texteditors !== 'textarea') {
-            $rs = $DB->get_recordset('block_configurable_reports', array('summaryformat'=>FORMAT_MOODLE), '', 'id, summary, summaryformat');
+            $rs = $DB->get_recordset(
+                'block_configurable_reports',
+                ['summaryformat' => FORMAT_MOODLE],
+                '',
+                'id, summary, summaryformat'
+            );
             foreach ($rs as $f) {
                 $f->summary = text_to_html($f->summary, false, false, true);
                 $f->summaryformat = FORMAT_HTML;

@@ -14,27 +14,43 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-if (!defined('MOODLE_INTERNAL')) {
-    //  It must be included from a Moodle page.
-    die('Direct access to this script is forbidden.');
-}
+/**
+ * Configurable Reports a Moodle block for creating customizable reports
+ *
+ * @copyright  2020 Juan Leyva <juan@moodle.com>
+ * @package    block_configurable_reports
+ * @author     Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 
-require_once($CFG->libdir.'/formslib.php');
+defined('MOODLE_INTERNAL') || die;
 
+require_once($CFG->libdir . '/formslib.php');
+
+/**
+ * Class line_form
+ *
+ * @package   block_configurable_reports
+ * @author    Juan leyva <http://www.twitter.com/jleyvadelgado>
+ */
 class line_form extends moodleform {
-    public function definition() {
-        global $DB, $USER, $CFG;
+
+    /**
+     * Form definition
+     */
+    public function definition(): void {
+        global $CFG;
 
         $mform =& $this->_form;
-        $options = array(0 => get_string('choose'));
+        $options = [0 => get_string('choose')];
 
         $report = $this->_customdata['report'];
 
-        if ($report->type != 'sql') {
+        if ($report->type !== 'sql') {
             $components = cr_unserialize($this->_customdata['report']->components);
 
             if (!is_array($components) || empty($components['columns']['elements'])) {
-                print_error('nocolumns');
+                throw new moodle_exception('nocolumns');
             }
 
             $columns = $components['columns']['elements'];
@@ -43,10 +59,10 @@ class line_form extends moodleform {
             }
         } else {
 
-            require_once($CFG->dirroot.'/blocks/configurable_reports/report.class.php');
-            require_once($CFG->dirroot.'/blocks/configurable_reports/reports/'.$report->type.'/report.class.php');
+            require_once($CFG->dirroot . '/blocks/configurable_reports/report.class.php');
+            require_once($CFG->dirroot . '/blocks/configurable_reports/reports/' . $report->type . '/report.class.php');
 
-            $reportclassname = 'report_'.$report->type;
+            $reportclassname = 'report_' . $report->type;
             $reportclass = new $reportclassname($report);
 
             $components = cr_unserialize($report->components);
@@ -69,7 +85,7 @@ class line_form extends moodleform {
             }
         }
 
-        $mform->addElement('header',  'crformheader', get_string('line', 'block_configurable_reports'), '');
+        $mform->addElement('header', 'crformheader', get_string('line', 'block_configurable_reports'), '');
 
         $mform->addElement('select', 'xaxis', get_string('xaxis', 'block_configurable_reports'), $options);
         $mform->addRule('xaxis', null, 'required', null, 'client');
@@ -86,7 +102,15 @@ class line_form extends moodleform {
         $this->add_action_buttons(true, get_string('add'));
     }
 
-    public function validation($data, $files) {
+    /**
+     * Server side rules do not work for uploaded files, implement serverside rules here if needed.
+     *
+     * @param array $data  array of ("fieldname"=>value) of submitted data
+     * @param array $files array of uploaded files "element_name"=>tmp_file_path
+     * @return array of "element_name"=>"error_description" if there are errors,
+     *                     or an empty array if everything is OK (true allowed for backwards compatibility too).
+     */
+    public function validation($data, $files): array {
         $errors = parent::validation($data, $files);
 
         if ($data['xaxis'] == $data['yaxis']) {
@@ -95,4 +119,5 @@ class line_form extends moodleform {
 
         return $errors;
     }
+
 }

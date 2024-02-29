@@ -15,41 +15,123 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Configurable Reports
- * A Moodle block for creating customizable reports
- * @package blocks
- * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date: 2009
+ * Configurable Reports a Moodle block for creating customizable reports
+ *
+ * @copyright  2020 Juan Leyva <juan@moodle.com>
+ * @package    block_configurable_reports
+ * @author     Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-class plugin_base {
+// TODO namespace.
 
-    public $fullname = '';
+/**
+ * Class plugin_base
+ *
+ * @package   block_configurable_reports
+ * @author    Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+abstract class plugin_base {
+
+    /**
+     * @var string
+     */
+    public string $fullname = '';
+
+    /**
+     * @var string
+     */
     public $type = '';
-    public $report = null;
-    public $form = false;
-    public $cache = array();
-    public $unique = false;
-    public $reporttypes = array();
 
+    /**
+     * @var false|mixed|stdClass|null
+     */
+    public $report = null;
+
+    /**
+     * @var bool
+     */
+    public bool $form = false;
+
+    /**
+     * @var array
+     */
+    public $cache = [];
+
+    /**
+     * @var bool
+     */
+    public bool $unique = false;
+
+    /**
+     * @var array
+     */
+    public array $reporttypes = [];
+
+    /**
+     * @var true
+     */
+    public bool $ordering;
+
+    /**
+     * __construct
+     *
+     * @param int|object $report
+     */
     public function __construct($report) {
-        global $DB, $CFG, $remotedb;
+        global $DB;
 
         if (is_numeric($report)) {
-            $this->report = $DB->get_record('block_configurable_reports', array('id' => $report));
+            $this->report = $DB->get_record('block_configurable_reports', ['id' => $report]);
         } else {
             $this->report = $report;
         }
         $this->init();
     }
 
-    public function summary($data) {
+    /**
+     * Summary
+     *
+     * @param object $data
+     * @return string
+     */
+    public function summary(object $data): string {
         return '';
     }
 
-    // Should be override.
-    public function init() {
-        return '';
+    /**
+     * Init
+     *
+     * @return void
+     */
+    public function init(): void {
+        throw new coding_exception('init method not implemented');
+    }
+
+    /**
+     * colformat
+     *
+     * @param object|null $data
+     * @return string[]
+     */
+    public function colformat(?object $data): array {
+        $align = $data->align ?? '';
+        $size = $data->size ?? '';
+        $wrap = $data->wrap ?? '';
+
+        return [$align, $size, $wrap];
+    }
+
+    /**
+     * print_filter
+     *
+     * @param MoodleQuickForm $mform
+     * @param bool|object $formdata
+     * @return mixed
+     */
+    public function print_filter(MoodleQuickForm $mform, $formdata = false): void {
+        throw new coding_exception('print_filter method not implemented');
     }
 
 }

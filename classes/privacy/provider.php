@@ -29,11 +29,9 @@ use core_privacy\local\metadata\collection;
 use core_privacy\local\request\approved_contextlist;
 use core_privacy\local\request\approved_userlist;
 use core_privacy\local\request\contextlist;
-use core_privacy\local\request\userlist;
 use core_privacy\local\request\transform;
+use core_privacy\local\request\userlist;
 use core_privacy\local\request\writer;
-
-defined('MOODLE_INTERNAL') || die();
 
 /**
  * Implementation of the privacy plugin provider for the configurable report block.
@@ -80,7 +78,7 @@ class provider implements
     /**
      * Get the list of contexts that contain user information for the specified user.
      *
-     * @param   int $userid The user to search.
+     * @param int $userid The user to search.
      * @return  contextlist $contextlist The contextlist containing the list of contexts used in this plugin.
      */
     public static function _get_contexts_for_userid($userid) {
@@ -96,6 +94,7 @@ class provider implements
         $params = ['ownerid' => $userid, 'contextlevel' => CONTEXT_USER];
 
         $contextlist->add_from_sql($sql, $params);
+
         return $contextlist;
     }
 
@@ -150,7 +149,7 @@ class provider implements
                 'summary' => $result->summary,
                 'type' => $result->type,
                 'components' => $result->components,
-                'lastexecutiontime' => transform::datetime($result->lastexecutiontime)
+                'lastexecutiontime' => transform::datetime($result->lastexecutiontime),
             ];
         }
         if (!empty($reportsdata)) {
@@ -158,7 +157,8 @@ class provider implements
                 'reports' => $reportsdata,
             ];
             writer::with_context($contextlist->current())->export_data([
-                    get_string('pluginname', 'block_configurable_reports')], $data);
+                get_string('pluginname', 'block_configurable_reports'),
+            ], $data);
         }
     }
 
@@ -198,7 +198,7 @@ class provider implements
     /**
      * Delete data related to a userid.
      *
-     * @param  int $userid The user ID
+     * @param int $userid The user ID
      */
     protected static function delete_data($userid) {
         global $DB;
@@ -209,4 +209,5 @@ class provider implements
         $params['ownerid'] = $userid;
         $DB->set_field_select('block_configurable_reports', 'ownerid', 0, "ownerid = :ownerid", $params);
     }
+
 }

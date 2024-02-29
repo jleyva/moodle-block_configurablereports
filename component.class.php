@@ -15,31 +15,72 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Configurable Reports
- * A Moodle block for creating customizable reports
- * @package blocks
- * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date: 2009
+ * Configurable Reports a Moodle block for creating customizable reports
+ *
+ * @copyright  2020 Juan Leyva <juan@moodle.com>
+ * @package    block_configurable_reports
+ * @author     Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-class component_base {
-    public $plugins = false;
-    public $ordering = false;
-    public $form = false;
-    public $help = '';
+/**
+ * Class component_base
+ *
+ * @package block_configurable_reports
+ * @author  Juan leyva <http://www.twitter.com/jleyvadelgado>
+ */
+abstract class component_base {
 
+    /**
+     * @var bool
+     */
+    public $plugins = false;
+
+    /**
+     * @var bool
+     */
+    public $ordering = false;
+
+    /**
+     * @var bool
+     */
+    public $form = false;
+
+    /**
+     * @var string
+     */
+    public string $help = '';
+
+    /**
+     * @var object
+     */
+    protected object $config;
+
+    /**
+     * __construct
+     *
+     * @param int|object $report
+     */
     public function __construct($report) {
-        global $DB, $CFG;
+        global $DB;
 
         if (is_numeric($report)) {
-            $this->config = $DB->get_record('block_configurable_reports', ['id' => $report]);
+            $this->config = $DB->get_record('block_configurable_reports', ['id' => $report], '*', MUST_EXIST);
         } else {
             $this->config = $report;
         }
         $this->init();
     }
 
-    public function add_form_elements(&$mform, $fullform) {
-        return false;
+    /**
+     * add_form_elements
+     *
+     * @param MoodleQuickForm $mform
+     * @param string|object $components
+     * @return void
+     */
+    public function add_form_elements(MoodleQuickForm $mform, $components): void {
+
     }
+
 }

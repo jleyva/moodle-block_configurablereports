@@ -15,67 +15,91 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Configurable Reports
- * A Moodle block for creating customizable reports
- * @package blocks
- * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date: 2009
+ * Configurable Reports a Moodle block for creating customizable reports
+ *
+ * @copyright  2020 Juan Leyva <juan@moodle.com>
+ * @package    block_configurable_reports
+ * @author     Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+defined('MOODLE_INTERNAL') || die;
+require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
 
-require_once($CFG->dirroot.'/blocks/configurable_reports/plugin.class.php');
+/**
+ * Class plugin_usermodoutline
+ *
+ * @package   block_configurable_reports
+ * @author    Juan leyva <http://www.twitter.com/jleyvadelgado>
+ */
+class plugin_usermodoutline extends plugin_base {
 
-class plugin_usermodoutline extends plugin_base{
-
-    public function init() {
+    /**
+     * Init
+     *
+     * @return void
+     */
+    public function init(): void {
         $this->fullname = get_string('usermodoutline', 'block_configurable_reports');
         $this->type = 'undefined';
         $this->form = true;
-        $this->reporttypes = array('users');
+        $this->reporttypes = ['users'];
     }
 
-    public function summary($data) {
+    /**
+     * Summary
+     *
+     * @param object $data
+     * @return string
+     */
+    public function summary(object $data): string {
         global $DB;
         // Should be a better way to do this.
-        if ($cm = $DB->get_record('course_modules', array('id' => $data->cmid))) {
-            $modname = $DB->get_field('modules', 'name', array('id' => $cm->module));
-            if ($name = $DB->get_field("$modname", 'name', array('id' => $cm->instance))) {
-                return $data->columname.' ('.$name.')';
+        if ($cm = $DB->get_record('course_modules', ['id' => $data->cmid])) {
+            $modname = $DB->get_field('modules', 'name', ['id' => $cm->module]);
+            if ($name = $DB->get_field("$modname", 'name', ['id' => $cm->instance])) {
+                return $data->columname . ' (' . $name . ')';
             }
         }
 
         return $data->columname;
     }
 
-    public function colformat($data) {
-        $align = (isset($data->align)) ? $data->align : '';
-        $size = (isset($data->size)) ? $data->size : '';
-        $wrap = (isset($data->wrap)) ? $data->wrap : '';
-        return array($align, $size, $wrap);
-    }
-
-    // Data -> Plugin configuration data.
-    // Row -> Complet user row c->id, c->fullname, etc...
+    /**
+     * Execute
+     *
+     * @param object $data
+     * @param object $row
+     * @param object $user
+     * @param int $courseid
+     * @param int $starttime
+     * @param int $endtime
+     * @return string
+     */
     public function execute($data, $row, $user, $courseid, $starttime = 0, $endtime = 0) {
+        // Data -> Plugin configuration data.
+        // Row -> Complet user row c->id, c->fullname, etc...
+
         global $DB, $CFG;
-        if ($cm = $DB->get_record('course_modules', array('id' => $data->cmid))) {
-            $mod = $DB->get_record('modules', array('id' => $cm->module));
-            if ($instance = $DB->get_record("$mod->name", array('id' => $cm->instance))) {
+        if ($cm = $DB->get_record('course_modules', ['id' => $data->cmid])) {
+            $mod = $DB->get_record('modules', ['id' => $cm->module]);
+            if ($instance = $DB->get_record("$mod->name", ['id' => $cm->instance])) {
                 $libfile = "$CFG->dirroot/mod/$mod->name/lib.php";
                 if (file_exists($libfile)) {
                     require_once($libfile);
-                    $useroutline = $mod->name."_user_outline";
+                    $useroutline = $mod->name . "_user_outline";
                     if (function_exists($useroutline)) {
-                        if ($course = $DB->get_record('course', array('id' => $this->report->courseid))) {
+                        if ($course = $DB->get_record('course', ['id' => $this->report->courseid])) {
                             $result = $useroutline($course, $row, $mod, $instance);
                             if ($result) {
                                 $returndata = '';
                                 if (isset($result->info)) {
-                                    $returndata .= $result->info.' ';
+                                    $returndata .= $result->info . ' ';
                                 }
 
                                 if ((!isset($data->donotshowtime) || !$data->donotshowtime) && !empty($result->time)) {
                                     $returndata .= userdate($result->time);
                                 }
+
                                 return $returndata;
                             }
                         }
@@ -83,6 +107,8 @@ class plugin_usermodoutline extends plugin_base{
                 }
             }
         }
+
         return '';
     }
+
 }

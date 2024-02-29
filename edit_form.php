@@ -15,26 +15,49 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Configurable Reports
- * A Moodle block for creating Configurable Reports
- * @package blocks
- * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date: 2009
+ * Configurable Reports a Moodle block for creating customizable reports
+ *
+ * @copyright  2020 Juan Leyva <juan@moodle.com>
+ * @package    block_configurable_reports
+ * @author     Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+/**
+ * Class block_configurable_reports_edit_form
+ *
+ * @package   block_configurable_reports
+ * @author    Juan leyva <http://www.twitter.com/jleyvadelgado>
+ */
 class block_configurable_reports_edit_form extends block_edit_form {
+
+    /**
+     * specific_definition
+     *
+     * @param moodleform $mform
+     * @return void
+     */
     protected function specific_definition($mform) {
 
         $mform->addElement('header', 'configheader', get_string('blocksettings', 'block'));
 
         $mform->addElement('text', 'config_title', get_string('name'));
-        $mform->setType('config_title', PARAM_MULTILANG);
+        $mform->setType('config_title', PARAM_TEXT);
         $mform->setDefault('config_title', get_string('pluginname', 'block_configurable_reports'));
 
-        $mform->addElement('selectyesno', 'config_displayreportslist', get_string('displayreportslist', 'block_configurable_reports'));
+        $mform->addElement(
+            'selectyesno',
+            'config_displayreportslist',
+            get_string('displayreportslist', 'block_configurable_reports')
+        );
         $mform->setDefault('config_displayreportslist', 1);
 
-        $mform->addElement('selectyesno', 'config_displayglobalreports', get_string('displayglobalreports', 'block_configurable_reports'));
+        $mform->addElement(
+            'selectyesno',
+            'config_displayglobalreports',
+            get_string('displayglobalreports', 'block_configurable_reports')
+        );
         $mform->setDefault('config_displayglobalreports', 1);
     }
+
 }

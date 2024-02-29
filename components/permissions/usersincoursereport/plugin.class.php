@@ -15,35 +15,61 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Configurable Reports
- * A Moodle block for creating customizable reports
- * @package blocks
- * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date: 2009
+ * Configurable Reports a Moodle block for creating customizable reports
+ *
+ * @copyright  2020 Juan Leyva <juan@moodle.com>
+ * @package    block_configurable_reports
+ * @author     Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+defined('MOODLE_INTERNAL') || die;
+require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
 
-require_once($CFG->dirroot.'/blocks/configurable_reports/plugin.class.php');
+/**
+ * Class plugin_usersincoursereport
+ *
+ * @package   block_configurable_reports
+ * @author    Juan leyva <http://www.twitter.com/jleyvadelgado>
+ */
+class plugin_usersincoursereport extends plugin_base {
 
-class plugin_usersincoursereport extends plugin_base{
+    /**
+     * Init
+     *
+     * @return void
+     */
+    public function init(): void {
+        $this->form = false;
+        $this->unique = true;
+        $this->fullname = get_string('usersincoursereport', 'block_configurable_reports');
+        $this->reporttypes = ['courses', 'sql', 'users', 'timeline', 'categories'];
+    }
 
-	function init(){
-		$this->form = false;
-		$this->unique = true;
-		$this->fullname = get_string('usersincoursereport','block_configurable_reports');
-		$this->reporttypes = array('courses','sql','users','timeline','categories');
-	}
-
-    public function summary($data) {
+    /**
+     * Summary
+     *
+     * @param object $data
+     * @return string
+     */
+    public function summary(object $data): string {
         return get_string('usersincoursereport_summary', 'block_configurable_reports');
     }
 
-    public function execute($userid, $context, $data) {
+    /**
+     * execute
+     *
+     * @param int $userid
+     * @param context $context
+     * @return bool
+     */
+    public function execute(int $userid, $context) {
 
         // Everyone should be enrolled at the system level.
-        if($context == context_system::instance()) {
+        if ($context === context_system::instance()) {
             return true;
         }
 
         return is_enrolled($context, $userid);
     }
+
 }

@@ -15,33 +15,56 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Configurable Reports
- * A Moodle block for creating customizable reports
- * @package blocks
- * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date: 2009
+ * Configurable Reports a Moodle block for creating customizable reports
+ *
+ * @copyright  2020 Juan Leyva <juan@moodle.com>
+ * @package    block_configurable_reports
+ * @author     Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+defined('MOODLE_INTERNAL') || die;
+require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
 
-require_once($CFG->dirroot.'/blocks/configurable_reports/plugin.class.php');
+/**
+ * Class plugin_usersincohorts
+ *
+ * @package          block_configurable_reports
+ * @author           Juan leyva <http://www.twitter.com/jleyvadelgado>
+ */
+class plugin_usersincohorts extends plugin_base {
 
-class plugin_usersincohorts extends plugin_base{
-    public function init() {
+    /**
+     * Init
+     *
+     * @return void
+     */
+    public function init(): void {
         $this->fullname = get_string('usersincohorts', 'block_configurable_reports');
-        $this->reporttypes = array('users');
+        $this->reporttypes = ['users'];
         $this->form = true;
     }
 
-    public function summary($data) {
+    /**
+     * Summary
+     *
+     * @param object $data
+     * @return string
+     */
+    public function summary(object $data): string {
         return get_string('usersincohorts_summary', 'block_configurable_reports');
-
     }
 
-    // Data -> Plugin configuration data.
-    public function execute($data, $user, $courseid) {
+    /**
+     * Execute
+     *
+     * @param object $data
+     * @return array|int[]|string[]
+     */
+    public function execute($data) {
         global $DB;
-
+        // Data -> Plugin configuration data.
         if ($data->cohorts) {
-            list($insql, $params) = $DB->get_in_or_equal($data->cohorts);
+            [$insql, $params] = $DB->get_in_or_equal($data->cohorts);
 
             $sql = "SELECT u.id
             FROM {user} u JOIN {cohort_members} c ON c.userid = u.id
@@ -50,6 +73,7 @@ class plugin_usersincohorts extends plugin_base{
             return array_keys($DB->get_records_sql($sql, $params));
         }
 
-        return array();
+        return [];
     }
+
 }

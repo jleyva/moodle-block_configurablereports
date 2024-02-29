@@ -15,15 +15,28 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Configurable Reports
- * A Moodle block for creating customizable reports
- * @package blocks
- * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date: 2009
+ * Configurable Reports a Moodle block for creating customizable reports
+ *
+ * @copyright  2020 Juan Leyva <juan@moodle.com>
+ * @package    block_configurable_reports
+ * @author     Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+/**
+ * Class component_customsql
+ *
+ * @package   block_configurable_reports
+ * @author    Juan leyva <http://www.twitter.com/jleyvadelgado>
+ */
 class component_customsql extends component_base {
-    public function init() {
+
+    /**
+     * Init
+     *
+     * @return void
+     */
+    public function init(): void {
         global $PAGE;
 
         $this->plugins = false;
@@ -36,7 +49,13 @@ class component_customsql extends component_base {
         }
     }
 
-    public function form_process_data(&$cform) {
+    /**
+     * form_process_data
+     *
+     * @param moodleform $cform
+     * @return void
+     */
+    public function form_process_data(moodleform $cform): void {
         global $DB;
         if ($this->form) {
             $data = $cform->get_data();
@@ -48,12 +67,18 @@ class component_customsql extends component_base {
         }
     }
 
-    public function form_set_data(&$cform) {
+    /**
+     * Form set data
+     *
+     * @param moodleform $cform
+     * @return void
+     */
+    public function form_set_data(moodleform $cform): void {
         if ($this->form) {
-            $fdata = new stdclass;
             $components = cr_unserialize($this->config->components);
-            $sqlconfig = (isset($components['customsql']['config'])) ? $components['customsql']['config'] : new stdclass;
+            $sqlconfig = $components['customsql']['config'] ?? new stdclass;
             $cform->set_data($sqlconfig);
         }
     }
+
 }

@@ -15,49 +15,77 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Configurable Reports
- * A Moodle block for creating customizable reports
- * @package blocks
- * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date: 2009
+ * Configurable Reports a Moodle block for creating customizable reports
+ *
+ * @copyright  2020 Juan Leyva <juan@moodle.com>
+ * @package    block_configurable_reports
+ * @author     Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+defined('MOODLE_INTERNAL') || die;
+require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
 
-require_once($CFG->dirroot.'/blocks/configurable_reports/plugin.class.php');
-
+/**
+ * Class plugin_userfieldorder
+ *
+ * @package   block_configurable_reports
+ * @author    Juan leyva <http://www.twitter.com/jleyvadelgado>
+ */
 class plugin_userfieldorder extends plugin_base {
 
-    public $sql = true;
+    /**
+     * @var bool
+     */
+    public bool $sql = true;
 
-    public function init() {
+    /**
+     * init
+     *
+     * @return void
+     */
+    public function init(): void {
         $this->fullname = get_string('userfield', 'block_configurable_reports');
         $this->form = true;
         $this->unique = true;
-        $this->reporttypes = array('users');
+        $this->reporttypes = ['users'];
         $this->sql = true;
     }
 
-    public function summary($data) {
-        return get_string($data->column).' '.(strtoupper($data->direction));
+    /**
+     * Summary
+     *
+     * @param object $data
+     * @return string
+     */
+    public function summary(object $data): string {
+        return get_string($data->column) . ' ' . (strtoupper($data->direction));
     }
 
-    // Data -> Plugin configuration data.
-    public function execute($data) {
-        global $DB, $CFG;
+    /**
+     * Execute
+     *
+     * @param object $data
+     * @return string
+     */
+    public function execute(object $data): string {
+        global $DB;
 
-        if ($data->direction == 'asc' || $data->direction == 'desc') {
+        // Data -> Plugin configuration data.
+        if ($data->direction === 'asc' || $data->direction === 'desc') {
             $direction = strtoupper($data->direction);
             $columns = $DB->get_columns('user');
 
-            $coursecolumns = array();
+            $coursecolumns = [];
             foreach ($columns as $c) {
                 $coursecolumns[$c->name] = $c->name;
             }
 
             if (isset($coursecolumns[$data->column])) {
-                return $data->column.' '.$direction;
+                return $data->column . ' ' . $direction;
             }
         }
 
         return '';
     }
+
 }

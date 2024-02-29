@@ -14,61 +14,97 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-/** Configurable Reports
- * A Moodle block for creating customizable reports
- * @package blocks
- * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date: 2009
+/**
+ * Configurable Reports a Moodle block for creating customizable reports
+ *
+ * @copyright  2020 Juan Leyva <juan@moodle.com>
+ * @package    block_configurable_reports
+ * @author     Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+defined('MOODLE_INTERNAL') || die;
+require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
 
-require_once($CFG->dirroot.'/blocks/configurable_reports/plugin.class.php');
+/**
+ * Class plugin_searchtext
+ *
+ * @package   block_configurable_reports
+ * @author    Juan leyva <http://www.twitter.com/jleyvadelgado>
+ */
+class plugin_searchtext extends plugin_base {
 
-class plugin_searchtext extends plugin_base{
-
-    public function init() {
+    /**
+     * Init
+     *
+     * @return void
+     */
+    public function init(): void {
         $this->form = true;
         $this->unique = false;
         $this->fullname = get_string('filter_searchtext', 'block_configurable_reports');
-        $this->reporttypes = array('searchtext', 'sql');
+        $this->reporttypes = ['searchtext', 'sql'];
     }
 
-    public function summary($data) {
+    /**
+     * Summary
+     *
+     * @param object $data
+     * @return string
+     */
+    public function summary(object $data): string {
         return empty($data->idnumber) ? get_string('filter_searchtext_summary', 'block_configurable_reports') : $data->idnumber;
     }
 
+    /**
+     * Execute
+     *
+     * @param string $finalelements
+     * @param object $data
+     * @return string|array
+     */
     public function execute($finalelements, $data) {
-        // For backwards compatibility and filters without idnumber, includes old method of matching without idnumber
+
+        // For backwards compatibility and filters without idnumber, includes old method of matching without idnumber.
         if (!empty($data->idnumber)) {
-            $filtersearchtext = optional_param('filter_searchtext_'.$data->idnumber, '', PARAM_RAW);
+            $filtersearchtext = optional_param('filter_searchtext_' . $data->idnumber, '', PARAM_RAW);
         } else {
             $filtersearchtext = optional_param('filter_searchtext', '', PARAM_RAW);
         }
 
-        if ($this->report->type != 'sql') {
-            return array($filtersearchtext);
-        } else {
-            if ($filtersearchtext) {
-                if (!empty($data->idnumber)) {
-                    $filtermatch = "FILTER_SEARCHTEXT_{$data->idnumber}";
-                } else {
-                    $filtermatch = "FILTER_SEARCHTEXT";
-                }
-
-                $finalelements = $this->sql_replace($filtersearchtext, $filtermatch, $finalelements);
-            }
+        if ($this->report->type !== 'sql') {
+            return [$filtersearchtext];
         }
+
+        if ($filtersearchtext) {
+            if (!empty($data->idnumber)) {
+                $filtermatch = "FILTER_SEARCHTEXT_{$data->idnumber}";
+            } else {
+                $filtermatch = "FILTER_SEARCHTEXT";
+            }
+
+            $finalelements = $this->sql_replace($filtersearchtext, $filtermatch, $finalelements);
+        }
+
         return $finalelements;
     }
 
-    public function print_filter(&$mform, $data) {
-        // For backwards compatibility and filters without idnumber, includes old method of matching without idnumber
-        if (!empty($data->idnumber)) {
-            $filtername = 'filter_searchtext_'.$data->idnumber;
+    /**
+     * Print filter
+     *
+     * @param MoodleQuickForm $mform
+     * @param bool|object $formdata
+     * @return void
+     */
+    public function print_filter(MoodleQuickForm $mform, $formdata = false): void {
+
+        // For backwards compatibility and filters without idnumber, includes old method of matching without idnumber.
+        if (!empty($formdata->idnumber)) {
+            $filtername = 'filter_searchtext_' . $formdata->idnumber;
         } else {
             $filtername = 'filter_searchtext';
         }
-        if (isset($data->label)) {
-            $filterlabel = $data->label;
+        if (isset($formdata->label)) {
+            $filterlabel = $formdata->label;
         } else {
             $filterlabel = get_string('filter', 'block_configurable_reports');
         }
@@ -78,18 +114,30 @@ class plugin_searchtext extends plugin_base{
         $mform->setDefault($filtername, $filtersearchtext);
     }
 
+    /**
+     * sql_replace
+     *
+     * @param string $filtersearchtext
+     * @param string $filterstrmatch
+     * @param string $finalelements
+     * @return array|mixed|string|string[]
+     */
     private function sql_replace($filtersearchtext, $filterstrmatch, $finalelements) {
-        $operators = array('=', '<', '>', '<=', '>=', '~', 'in');
+
+        // TODO Check if this is a duplicate of the same function in plugin_fuserfield.
+        $operators = ['=', '<', '>', '<=', '>=', '~', 'in'];
 
         if (preg_match("/%%$filterstrmatch:([^%]+)%%/i", $finalelements, $output)) {
-            list($field, $operator) = preg_split('/:/', $output[1]);
-            if (!in_array($operator, $operators)) {
-                print_error('nosuchoperator');
+            [$field, $operator] = preg_split('/:/', $output[1]);
+
+            if (!in_array($operator, $operators, true)) {
+                throw new moodle_exception('nosuchoperator');
             }
-            if ($operator == '~') {
+
+            if ($operator === '~') {
                 $replace = " AND " . $field . " LIKE '%" . $filtersearchtext . "%'";
-            } else if ($operator == 'in') {
-                $processeditems = array();
+            } else if ($operator === 'in') {
+                $processeditems = [];
                 // Accept comma-separated values, allowing for '\,' as a literal comma.
                 foreach (preg_split("/(?<!\\\\),/", $filtersearchtext) as $searchitem) {
                     // Strip leading/trailing whitespace and quotes (we'll add our own quotes later).
@@ -115,4 +163,5 @@ class plugin_searchtext extends plugin_base{
 
         return $finalelements;
     }
+
 }

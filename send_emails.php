@@ -14,8 +14,19 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+/**
+ * Configurable Reports a Moodle block for creating customizable reports
+ *
+ * @copyright  2020 Juan Leyva <juan@moodle.com>
+ * @package    block_configurable_reports
+ * @author     Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
 // Email form added to enable email to selected users.
 require_once('../../config.php');
+
+defined('MOODLE_INTERNAL') || die;
 require_once($CFG->libdir . '/formslib.php');
 
 require_login();
@@ -23,22 +34,32 @@ global $PAGE, $USER, $DB, $COURSE;
 $context = context_course::instance($COURSE->id);
 $PAGE->set_context($context);
 
-if (!has_capability('block/configurable_reports:managereports', $context) && !has_capability('block/configurable_reports:manageownreports', $context)) {
-    print_error('badpermissions');
+if (!has_capability('block/configurable_reports:managereports', $context) &&
+    !has_capability('block/configurable_reports:manageownreports', $context)) {
+    throw new moodle_exception('badpermissions');
 }
 
+/**
+ * Class sendemail_form
+ *
+ * @package   block_configurable_reports
+ * @author    Juan leyva <http://www.twitter.com/jleyvadelgado>
+ */
 class sendemail_form extends moodleform {
 
-    public function definition() {
+    /**
+     * Form definition
+     */
+    public function definition(): void {
         global $COURSE;
 
         $mform =& $this->_form;
-        $context = \context_course::instance($COURSE->id);
+        $context = context_course::instance($COURSE->id);
         $editoroptions = [
             'trusttext' => true,
             'subdirs' => true,
             'maxfiles' => EDITOR_UNLIMITED_FILES,
-            'context' => $context
+            'context' => $context,
         ];
 
         $mform->addElement('hidden', 'usersids', $this->_customdata['usersids']);
@@ -50,25 +71,30 @@ class sendemail_form extends moodleform {
 
         $mform->addElement('editor', 'content', get_string('email_message', 'block_configurable_reports'), null, $editoroptions);
 
-        $buttons = array();
+        $buttons = [];
         $buttons[] =& $mform->createElement('submit', 'send', get_string('email_send', 'block_configurable_reports'));
         $buttons[] =& $mform->createElement('cancel');
 
-        $mform->addGroup($buttons, 'buttons', get_string('actions'), array(' '), false);
+        $mform->addGroup($buttons, 'buttons', get_string('actions'), [' '], false);
     }
+
 }
 
-$form = new \sendemail_form(null, ['usersids' => implode(',', $_POST['userids']), 'courseid' => $_POST['courseid']]);
+// TODO _POST?? not Moodle way.
+$form = new sendemail_form(null, [
+    'usersids' => implode(',', $_POST['userids']),
+    'courseid' => (int) $_POST['courseid'],
+]);
 
 if ($form->is_cancelled()) {
-    redirect(new \moodle_url('/course/view.php?id='.$data->courseid));
+    redirect(new moodle_url('/course/view.php?id=' . $data->courseid));
 } else if ($data = $form->get_data()) {
     foreach (explode(',', $data->usersids) as $userid) {
-        $abouttosenduser = $DB->get_record('user', ['id' => $userid]);
+        $abouttosenduser = $DB->get_record('user', ['id' => (int) $userid]);
         email_to_user($abouttosenduser, $USER, $data->subject, format_text($data->content['text']), $data->content['text']);
     }
     // After emails were sent... go back to where you came from.
-    redirect(new \moodle_url('/course/view.php?id='.$data->courseid));
+    redirect(new moodle_url('/course/view.php?id=' . $data->courseid));
 }
 
 $PAGE->set_title(get_string('email', 'questionnaire'));
@@ -77,8 +103,8 @@ $PAGE->navbar->add(get_string('email', 'questionnaire'));
 
 echo $OUTPUT->header();
 
-echo \html_writer::start_tag('div', ['class' => 'no-overflow']);
+echo html_writer::start_tag('div', ['class' => 'no-overflow']);
 $form->display();
-echo \html_writer::end_tag('div');
+echo html_writer::end_tag('div');
 
 echo $OUTPUT->footer();

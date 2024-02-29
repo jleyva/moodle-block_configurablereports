@@ -23,14 +23,12 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * Add security check.
  *
  * @return array check
  */
-function block_configurable_reports_security_checks() {
+function block_configurable_reports_security_checks(): array {
     return [new block_configurable_reports\check\sql_execution()];
 }
 

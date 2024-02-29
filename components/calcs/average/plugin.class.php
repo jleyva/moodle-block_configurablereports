@@ -15,31 +15,47 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Configurable Reports
- * A Moodle block for creating customizable reports
- * @package blocks
- * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date: 2009
+ * Configurable Reports a Moodle block for creating customizable reports
+ *
+ * @copyright  2020 Juan Leyva <juan@moodle.com>
+ * @package    block_configurable_reports
+ * @author     Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-require_once($CFG->dirroot.'/blocks/configurable_reports/plugin.class.php');
+/**
+ * Class plugin_average
+ *
+ * @package   block_configurable_reports
+ * @author    Juan leyva <http://www.twitter.com/jleyvadelgado>
+ */
+class plugin_average extends plugin_base {
 
-class plugin_average extends plugin_base{
-
-    public function init() {
+    /**
+     * Init
+     *
+     * @return void
+     */
+    public function init(): void {
         $this->form = true;
         $this->unique = false;
         $this->fullname = get_string('average', 'block_configurable_reports');
-        $this->reporttypes = array('courses', 'users', 'sql', 'timeline', 'categories');
+        $this->reporttypes = ['courses', 'users', 'sql', 'timeline', 'categories'];
     }
 
-    public function summary($data) {
-        global $DB, $CFG;
+    /**
+     * Summary
+     *
+     * @param object $data
+     * @return string
+     */
+    public function summary(object $data): string {
+        global $CFG;
 
-        if ($this->report->type != 'sql') {
+        if ($this->report->type !== 'sql') {
             $components = cr_unserialize($this->report->components);
             if (!is_array($components) || empty($components['columns']['elements'])) {
-                print_error('nocolumns');
+                throw new moodle_exception('nocolumns');
             }
 
             $columns = $components['columns']['elements'];
@@ -52,14 +68,14 @@ class plugin_average extends plugin_base{
             }
         } else {
 
-            require_once($CFG->dirroot.'/blocks/configurable_reports/report.class.php');
-            require_once($CFG->dirroot.'/blocks/configurable_reports/reports/'.$this->report->type.'/report.class.php');
+            require_once($CFG->dirroot . '/blocks/configurable_reports/report.class.php');
+            require_once($CFG->dirroot . '/blocks/configurable_reports/reports/' . $this->report->type . '/report.class.php');
 
-            $reportclassname = 'report_'.$this->report->type;
+            $reportclassname = 'report_' . $this->report->type;
             $reportclass = new $reportclassname($this->report);
 
             $components = cr_unserialize($this->report->components);
-            $config = (isset($components['customsql']['config'])) ? $components['customsql']['config'] : new \stdclass;
+            $config = $components['customsql']['config'] ?? new stdclass;
 
             if (isset($config->querysql)) {
 
@@ -84,16 +100,25 @@ class plugin_average extends plugin_base{
         return '';
     }
 
-    public function execute($rows) {
+    /**
+     * Execute
+     *
+     * @param array $rows
+     * @return float
+     */
+    public function execute($rows): float {
         $result = 0;
         $els = 0;
         foreach ($rows as $r) {
             $result += (is_numeric($r)) ? $r : 0;
             $els++;
         }
-        if ($els == 0) {
+
+        if (empty($els)) {
             $els = 1;
         }
+
         return round($result / $els, 2);
     }
+
 }

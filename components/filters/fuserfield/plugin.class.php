@@ -15,42 +15,74 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Configurable Reports
- * A Moodle block for creating customizable reports
- * @package blocks
- * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date: 2009
+ * Configurable Reports a Moodle block for creating customizable reports
+ *
+ * @copyright  2020 Juan Leyva <juan@moodle.com>
+ * @package    block_configurable_reports
+ * @author     Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+defined('MOODLE_INTERNAL') || die;
+require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
 
-require_once($CFG->dirroot.'/blocks/configurable_reports/plugin.class.php');
-
+/**
+ * Class plugin_fuserfield
+ *
+ * @package   block_configurable_reports
+ * @author    Juan leyva <http://www.twitter.com/jleyvadelgado>
+ */
 class plugin_fuserfield extends plugin_base {
 
-    public function init() {
+    /**
+     * Init
+     *
+     * @return void
+     */
+    public function init(): void {
         $this->form = true;
         $this->unique = false;
         $this->fullname = get_string('fuserfield', 'block_configurable_reports');
-        $this->reporttypes = array('users', 'sql');
+        $this->reporttypes = ['users', 'sql'];
     }
 
-    public function summary($data) {
+    /**
+     * Summary
+     *
+     * @param object $data
+     * @return string
+     */
+    public function summary(object $data): string {
         return $data->field;
     }
 
+    /**
+     * Execute
+     *
+     * @param string $finalelements
+     * @param object $data
+     * @return array|int[]|mixed|string|string[]
+     */
     public function execute($finalelements, $data) {
-        if ($this->report->type == 'sql') {
+        if ($this->report->type === 'sql') {
             return $this->execute_sql($finalelements, $data);
         }
 
         return $this->execute_users($finalelements, $data);
     }
 
+    /**
+     * execute_sql
+     *
+     * @param string $finalelements
+     * @param object $data
+     * @return array|mixed|string|string[]
+     */
     private function execute_sql($finalelements, $data) {
-        $filterfuserfield = optional_param('filter_fuserfield_'.$data->field, 0, PARAM_BASE64);
+        $filterfuserfield = optional_param('filter_fuserfield_' . $data->field, 0, PARAM_BASE64);
         $filter = base64_decode($filterfuserfield);
 
         if ($filterfuserfield) {
-            // For backwards compatibility with existing reports
+            // For backwards compatibility with existing reports.
             $filtermatch = "FILTER_USERS";
             $finalelements = $this->sql_replace($filter, $filtermatch, $finalelements);
 
@@ -61,99 +93,114 @@ class plugin_fuserfield extends plugin_base {
         return $finalelements;
     }
 
+    /**
+     * execute_users
+     *
+     * @param string $finalelements
+     * @param object $data
+     * @return array|int[]|mixed|string[]
+     */
     private function execute_users($finalelements, $data) {
-        global $remotedb, $CFG;
+        global $remotedb;
 
-        $filterfuserfield = optional_param('filter_fuserfield_'.$data->field, 0, PARAM_BASE64);
+        $filterfuserfield = optional_param('filter_fuserfield_' . $data->field, 0, PARAM_BASE64);
         if ($filterfuserfield) {
             $filter = base64_decode($filterfuserfield);
 
             if (strpos($data->field, 'profile_') === 0) {
-                $conditions = array('shortname' => str_replace('profile_', '', $data->field));
+                $conditions = ['shortname' => str_replace('profile_', '', $data->field)];
                 if ($fieldid = $remotedb->get_field('user_info_field', 'id', $conditions)) {
-                    list($usql, $params) = $remotedb->get_in_or_equal($finalelements);
+                    [$usql, $params] = $remotedb->get_in_or_equal($finalelements);
                     $sql = "fieldid = ? AND data LIKE ? AND userid $usql";
-                    $params = array_merge(array($fieldid, "%$filter%"), $params);
+                    $params = array_merge([$fieldid, "%$filter%"], $params);
 
                     if ($infodata = $remotedb->get_records_select('user_info_data', $sql, $params)) {
-                        $finalusersid = array();
+                        $finalusersid = [];
                         foreach ($infodata as $d) {
                             $finalusersid[] = $d->userid;
                         }
+
                         return $finalusersid;
                     }
                 }
             } else {
-                list($usql, $params) = $remotedb->get_in_or_equal($finalelements);
+                [$usql, $params] = $remotedb->get_in_or_equal($finalelements);
                 $sql = "$data->field LIKE ? AND id $usql";
-                $params = array_merge(array("%$filter%"), $params);
+                $params = array_merge(["%$filter%"], $params);
                 if ($elements = $remotedb->get_records_select('user', $sql, $params)) {
                     $finalelements = array_keys($elements);
                 }
             }
         }
+
         return $finalelements;
     }
 
-    public function print_filter(&$mform, $data) {
-        global $remotedb, $CFG;
+    /**
+     * Print filter
+     *
+     * @param MoodleQuickForm $mform
+     * @param bool|object $formdata
+     * @return void
+     */
+    public function print_filter(MoodleQuickForm $mform, $formdata = false): void {
+
+        global $remotedb;
 
         $columns = $remotedb->get_columns('user');
-        $filteroptions = array();
+        $filteroptions = [];
         $filteroptions[''] = get_string('filter_all', 'block_configurable_reports');
 
-        $usercolumns = array();
+        $usercolumns = [];
         foreach ($columns as $c) {
             $usercolumns[$c->name] = $c->name;
         }
 
         if ($profile = $remotedb->get_records('user_info_field')) {
             foreach ($profile as $p) {
-                $usercolumns['profile_'.$p->shortname] = $p->name;
+                $usercolumns['profile_' . $p->shortname] = $p->name;
             }
         }
 
-        if (!isset($usercolumns[$data->field])) {
-            print_error('nosuchcolumn');
+        if (!isset($usercolumns[$formdata->field])) {
+            throw new moodle_exception('nosuchcolumn');
         }
 
-        $reportclassname = 'report_'.$this->report->type;
+        $reportclassname = 'report_' . $this->report->type;
         $reportclass = new $reportclassname($this->report);
 
-        if ($this->report->type == 'sql') {
-            $conditions = array();
-            if ($data->excludedeletedusers) {
+        if ($this->report->type === 'sql') {
+            $conditions = [];
+            if ($formdata->excludedeletedusers) {
                 $conditions['deleted'] = 0;
             }
             $userlist = array_keys($remotedb->get_records('user', $conditions));
         } else {
             $components = cr_unserialize($this->report->components);
-            $conditions = array_key_exists('conditions', $components) ?
-                $components['conditions'] :
-                null;
+            $conditions = $components['conditions'] ?? null;
             $userlist = $reportclass->elements_by_conditions($conditions);
         }
         if (!empty($userlist)) {
-            if (strpos($data->field, 'profile_') === 0) {
-                $conditions = array('shortname' => str_replace('profile_', '', $data->field));
+            if (strpos($formdata->field, 'profile_') === 0) {
+                $conditions = ['shortname' => str_replace('profile_', '', $formdata->field)];
                 if ($field = $remotedb->get_record('user_info_field', $conditions)) {
                     $selectname = $field->name;
-                    list($usql, $params) = $remotedb->get_in_or_equal($userlist);
+                    [$usql, $params] = $remotedb->get_in_or_equal($userlist);
                     $sql = "SELECT DISTINCT(data) as data FROM {user_info_data} WHERE fieldid = ? AND userid $usql";
-                    $params = array_merge(array($field->id), $params);
+                    $params = array_merge([$field->id], $params);
 
                     if ($infodata = $remotedb->get_records_sql($sql, $params)) {
-                        $finalusersid = array();
+                        $finalusersid = [];
                         foreach ($infodata as $d) {
                             $filteroptions[base64_encode($d->data)] = $d->data;
                         }
                     }
                 }
             } else {
-                $selectname = get_string($data->field);
+                $selectname = get_string($formdata->field);
 
-                list($usql, $params) = $remotedb->get_in_or_equal($userlist);
-                $sql = "SELECT DISTINCT(".$data->field.") as ufield FROM {user} WHERE id $usql ORDER BY ufield ASC";
+                [$usql, $params] = $remotedb->get_in_or_equal($userlist);
+                $sql = "SELECT DISTINCT(" . $formdata->field . ") as ufield FROM {user} WHERE id $usql ORDER BY ufield ASC";
                 if ($rs = $remotedb->get_recordset_sql($sql, $params)) {
                     foreach ($rs as $u) {
                         $filteroptions[base64_encode($u->ufield)] = $u->ufield;
@@ -163,24 +210,37 @@ class plugin_fuserfield extends plugin_base {
             }
         }
 
-        $mform->addElement('select', 'filter_fuserfield_'.$data->field, $selectname, $filteroptions);
-        $mform->setType('filter_fuserfield_'.$data->field, PARAM_BASE64);
+        $mform->addElement('select', 'filter_fuserfield_' . $formdata->field, $selectname, $filteroptions);
+        $mform->setType('filter_fuserfield_' . $formdata->field, PARAM_BASE64);
     }
 
-    private function sql_replace($filtersearchtext, $filterstrmatch, $finalelements) {
-        $operators = array('=', '<', '>', '<=', '>=', '~', 'in');
+    /**
+     * sql_replace
+     *
+     * @param string $filtersearchtext
+     * @param string $filterstrmatch
+     * @param string $finalelements
+     * @return array|mixed|string|string[]
+     */
+    private function sql_replace(string $filtersearchtext, $filterstrmatch, $finalelements) {
+        $operators = ['=', '<', '>', '<=', '>=', '~', 'in'];
+
+        // TODO this function is 2 times in the code, should be refactored.
 
         if (preg_match("/%%$filterstrmatch:([^%]+)%%/i", $finalelements, $output)) {
-            list($field, $operator) = preg_split('/:/', $output[1]);
+            [$field, $operator] = preg_split('/:/', $output[1]);
             if (empty($operator)) {
                 $operator = '~';
             } else if (!in_array($operator, $operators)) {
-                print_error('nosuchoperator');
+                throw new moodle_exception('nosuchoperator');
             }
-            if ($operator == '~') {
+            if ($operator === '~') {
+                // TODO can be improved by more native PDO approach.
                 $replace = " AND " . $field . " LIKE '%" . $filtersearchtext . "%'";
-            } else if ($operator == 'in') {
-                $processeditems = array();
+            } else if ($operator === 'in') {
+                $processeditems = [];
+
+                // TODO can be improved by more native PDO approach.
                 // Accept comma-separated values, allowing for '\,' as a literal comma.
                 foreach (preg_split("/(?<!\\\\),/", $filtersearchtext) as $searchitem) {
                     // Strip leading/trailing whitespace and quotes (we'll add our own quotes later).
@@ -206,4 +266,5 @@ class plugin_fuserfield extends plugin_base {
 
         return $finalelements;
     }
+
 }

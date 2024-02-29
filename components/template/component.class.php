@@ -15,29 +15,47 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Configurable Reports
- * A Moodle block for creating Configurable Reports
- * @package blocks
- * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date: 2009
+ * Configurable Reports a Moodle block for creating customizable reports
+ *
+ * @copyright  2020 Juan Leyva <juan@moodle.com>
+ * @package    block_configurable_reports
+ * @author     Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+/**
+ * Class component_template
+ *
+ * @package   block_configurable_reports
+ * @author    Juan leyva <http://www.twitter.com/jleyvadelgado>
+ */
 class component_template extends component_base {
 
-    public function init() {
+    /**
+     * Init
+     *
+     * @return void
+     */
+    public function init(): void {
         $this->plugins = false;
         $this->ordering = false;
         $this->form = true;
         $this->help = true;
     }
 
-    public function form_process_data(&$cform) {
+    /**
+     * form_process_data
+     *
+     * @param moodleform $cform
+     * @return void
+     */
+    public function form_process_data(moodleform $cform): void {
         global $DB;
 
         if ($this->form) {
             $data = $cform->get_data();
-            // Function cr_serialize() will add slashes.
 
+            // Function cr_serialize() will add slashes.
             $components = cr_unserialize($this->config->components);
             $components['template']['config'] = $data;
 
@@ -47,12 +65,18 @@ class component_template extends component_base {
         }
     }
 
-    public function form_set_data(&$cform) {
+    /**
+     * form_set_data
+     *
+     * @param moodleform $cform
+     * @return void
+     */
+    public function form_set_data(moodleform $cform) {
         if ($this->form) {
-            $fdata = new \stdclass;
             $components = cr_unserialize($this->config->components);
-            $config = (isset($components['template']['config'])) ? $components['template']['config'] : new \stdclass;
+            $config = $components['template']['config'] ?? new stdclass;
             $cform->set_data($config);
         }
     }
+
 }

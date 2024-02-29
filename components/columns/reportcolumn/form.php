@@ -15,23 +15,31 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Configurable Reports
- * A Moodle block for creating Configurable Reports
- * @package blocks
- * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date: 2009
+ * Configurable Reports a Moodle block for creating customizable reports
+ *
+ * @copyright  2020 Juan Leyva <juan@moodle.com>
+ * @package    block_configurable_reports
+ * @author     Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-if (!defined('MOODLE_INTERNAL')) {
-    //  It must be included from a Moodle page.
-    die('Direct access to this script is forbidden.');
-}
+defined('MOODLE_INTERNAL') || die;
 
-require_once($CFG->libdir.'/formslib.php');
+require_once($CFG->libdir . '/formslib.php');
 
+/**
+ * Class reportcolumn_form
+ *
+ * @package   block_configurable_reports
+ * @author    Juan leyva <http://www.twitter.com/jleyvadelgado>
+ */
 class reportcolumn_form extends moodleform {
-    public function definition() {
-        global $DB, $USER, $CFG;
+
+    /**
+     * Form definition
+     */
+    public function definition(): void {
+        global $CFG;
 
         $mform =& $this->_form;
         $mform->addElement('header', 'crformheader', get_string('reportcolumn', 'block_configurable_reports'), '');
@@ -42,7 +50,7 @@ class reportcolumn_form extends moodleform {
         }
 
         $reports = $this->_customdata['pluginclass']->get_user_reports();
-        $reportoptions = array(0 => get_string('choose'));
+        $reportoptions = [0 => get_string('choose')];
 
         if ($reports) {
             foreach ($reports as $r) {
@@ -50,8 +58,9 @@ class reportcolumn_form extends moodleform {
             }
         }
 
-        $furl = "$CFG->wwwroot/blocks/configurable_reports/editplugin.php?id=".$this->_customdata['report']->id."&comp=columns&pname=reportcolumn";
-        $options = array('onchange' => 'location.href="'.$furl.'&reportid="+document.getElementById("id_reportid").value');
+        $furl = "$CFG->wwwroot/blocks/configurable_reports/editplugin.php?id=" . $this->_customdata['report']->id .
+            "&comp=columns&pname=reportcolumn";
+        $options = ['onchange' => 'location.href="' . $furl . '&reportid="+document.getElementById("id_reportid").value'];
         if ($actualrid) {
             $options['disabled'] = 'disabled';
         }
@@ -69,7 +78,15 @@ class reportcolumn_form extends moodleform {
 
     }
 
-    public function validation($data, $files) {
+    /**
+     * Server side rules do not work for uploaded files, implement serverside rules here if needed.
+     *
+     * @param array $data  array of ("fieldname"=>value) of submitted data
+     * @param array $files array of uploaded files "element_name"=>tmp_file_path
+     * @return array of "element_name"=>"error_description" if there are errors,
+     *                     or an empty array if everything is OK (true allowed for backwards compatibility too).
+     */
+    public function validation($data, $files): array {
         $errors = parent::validation($data, $files);
 
         $errors = $this->_customdata['compclass']->validate_form_elements($data, $errors);
@@ -84,4 +101,5 @@ class reportcolumn_form extends moodleform {
 
         return $errors;
     }
+
 }

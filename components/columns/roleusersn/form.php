@@ -15,23 +15,31 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Configurable Reports
- * A Moodle block for creating customizable reports
- * @package blocks
- * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date: 2009
+ * Configurable Reports a Moodle block for creating customizable reports
+ *
+ * @copyright  2020 Juan Leyva <juan@moodle.com>
+ * @package    block_configurable_reports
+ * @author     Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-if (!defined('MOODLE_INTERNAL')) {
-    //  It must be included from a Moodle page.
-    die('Direct access to this script is forbidden.');
-}
+defined('MOODLE_INTERNAL') || die;
 
-require_once($CFG->libdir.'/formslib.php');
+require_once($CFG->libdir . '/formslib.php');
 
+/**
+ * Class roleusersn_form
+ *
+ * @package   block_configurable_reports
+ * @author    Juan leyva <http://www.twitter.com/jleyvadelgado>
+ */
 class roleusersn_form extends moodleform {
-    public function definition() {
-        global $DB, $USER, $CFG;
+
+    /**
+     * Form definition
+     */
+    public function definition(): void {
+        global $DB;
 
         $mform =& $this->_form;
 
@@ -39,12 +47,12 @@ class roleusersn_form extends moodleform {
 
         $roles = $DB->get_records('role');
 
-        $userroles = array();
+        $userroles = [];
         foreach ($roles as $r) {
             $userroles[$r->id] = $r->shortname;
         }
 
-        $mform->addElement('select', 'roles', get_string('roles'), $userroles, array('multiple' => 'multiple'));
+        $mform->addElement('select', 'roles', get_string('roles'), $userroles, ['multiple' => 'multiple']);
 
         $this->_customdata['compclass']->add_form_elements($mform, $this);
 
@@ -53,9 +61,19 @@ class roleusersn_form extends moodleform {
 
     }
 
-    public function validation($data, $files) {
+    /**
+     * Server side rules do not work for uploaded files, implement serverside rules here if needed.
+     *
+     * @param array $data  array of ("fieldname"=>value) of submitted data
+     * @param array $files array of uploaded files "element_name"=>tmp_file_path
+     * @return array of "element_name"=>"error_description" if there are errors,
+     *                     or an empty array if everything is OK (true allowed for backwards compatibility too).
+     */
+    public function validation($data, $files): array {
         $errors = parent::validation($data, $files);
         $errors = $this->_customdata['compclass']->validate_form_elements($data, $errors);
+
         return $errors;
     }
+
 }

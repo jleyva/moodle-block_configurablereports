@@ -15,27 +15,34 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Configurable Reports
- * A Moodle block for creating customizable reports
- * @package blocks
- * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date: 2009
+ * Configurable Reports a Moodle block for creating customizable reports
+ *
+ * @copyright  2020 Juan Leyva <juan@moodle.com>
+ * @package    block_configurable_reports
+ * @author     Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-// Based on Custom SQL Reports Plugin
-// See http://moodle.org/mod/data/view.php?d=13&rid=2884.
+defined('MOODLE_INTERNAL') || die;
 
-if (!defined('MOODLE_INTERNAL')) {
-    //  It must be included from a Moodle page.
-    die('Direct access to this script is forbidden.');
-}
+require_once($CFG->libdir . '/formslib.php');
 
-require_once($CFG->libdir.'/formslib.php');
-
+/**
+ * Class customsql_form
+ *
+ * @package   block_configurable_reports
+ * @author    Juan leyva <http://www.twitter.com/jleyvadelgado>
+ */
 class customsql_form extends moodleform {
 
-    public function definition() {
-        global $DB, $CFG, $COURSE;
+    // Based on Custom SQL Reports Plugin.
+    // See http://moodle.org/mod/data/view.php?d=13&rid=2884.
+
+    /**
+     * Form definition
+     */
+    public function definition(): void {
+        global $COURSE;
 
         $mform =& $this->_form;
 
@@ -58,37 +65,59 @@ class customsql_form extends moodleform {
             $res = json_decode($res);
 
             if (is_array($res)) {
-                $reportcategories = array(get_string('choose'));
+                $reportcategories = [get_string('choose')];
+
                 foreach ($res as $item) {
-                    if ($item->type == 'dir') {
+                    if ($item->type === 'dir') {
                         $reportcategories[$item->path] = $item->path;
                     }
                 }
 
                 $reportcatstr = get_string('reportcategories', 'block_configurable_reports');
-                $reportcatattrs = ['onchange' => 'M.block_configurable_reports.onchange_reportcategories(this,"'.sesskey().'")'];
+                $reportcatattrs =
+                    ['onchange' => 'M.block_configurable_reports.onchange_reportcategories(this,"' . sesskey() . '")'];
                 $mform->addElement('select', 'reportcategories', $reportcatstr, $reportcategories, $reportcatattrs);
 
                 $reportsincatstr = get_string('reportsincategory', 'block_configurable_reports');
-                $reportsincatattrs = ['onchange' => 'M.block_configurable_reports.onchange_reportsincategory(this,"'.sesskey().'")'];
+                $reportsincatattrs =
+                    ['onchange' => 'M.block_configurable_reports.onchange_reportsincategory(this,"' . sesskey() . '")'];
                 $mform->addElement('select', 'reportsincategory', $reportsincatstr, $reportcategories, $reportsincatattrs);
 
-                $mform->addElement('textarea', 'remotequerysql', get_string('remotequerysql', 'block_configurable_reports'),
-                    'rows="15" cols="90"');
+                $mform->addElement(
+                    'textarea',
+                    'remotequerysql',
+                    get_string('remotequerysql', 'block_configurable_reports'),
+                    'rows="15" cols="90"'
+                );
             }
         }
     }
 
-    public function validation($data, $files) {
+    /**
+     * Server side rules do not work for uploaded files, implement serverside rules here if needed.
+     *
+     * @param array $data  array of ("fieldname"=>value) of submitted data
+     * @param array $files array of uploaded files "element_name"=>tmp_file_path
+     * @return array of "element_name"=>"error_description" if there are errors,
+     *                     or an empty array if everything is OK (true allowed for backwards compatibility too).
+     */
+    public function validation($data, $files): array {
         if (get_config('block_configurable_reports', 'sqlsecurity')) {
             return $this->validation_high_security($data, $files);
-        } else {
-            return $this->validation_low_security($data, $files);
         }
+
+        return $this->validation_low_security($data, $files);
     }
 
-    public function validation_high_security($data, $files) {
-        global $DB, $CFG, $db, $USER;
+    /**
+     * validation_high_security
+     *
+     * @param array $data
+     * @param array $files
+     * @return array
+     */
+    public function validation_high_security($data, $files): array {
+        global $CFG;
 
         $errors = parent::validation($data, $files);
 
@@ -116,9 +145,11 @@ class customsql_form extends moodleform {
             try {
                 $rs = $this->_customdata['reportclass']->execute_query($sql, 2);
             } catch (dml_read_exception $e) {
-                $errors['querysql'] = get_string('queryfailed', 'block_configurable_reports', $e->error );
+                $errors['querysql'] = get_string('queryfailed', 'block_configurable_reports', $e->error);
             }
             if ($rs && !empty($data['singlerow'])) {
+
+                // TODO check where rs_EOF is defined.
                 if (rs_EOF($rs)) {
                     $errors['querysql'] = get_string('norowsreturned', 'block_configurable_reports');
                 }
@@ -132,8 +163,15 @@ class customsql_form extends moodleform {
         return $errors;
     }
 
+    /**
+     * validation_low_security
+     *
+     * @param array $data
+     * @param array $files
+     * @return array
+     */
     public function validation_low_security($data, $files) {
-        global $DB, $CFG, $db, $USER;
+        global $CFG, $db;
 
         $errors = parent::validation($data, $files);
 
@@ -144,7 +182,8 @@ class customsql_form extends moodleform {
             // Only allow INSERT|INTO|CREATE in low security.
             $errors['querysql'] = get_string('notallowedwords', 'block_configurable_reports');
 
-        } else if (preg_match('/\b(INSERT|INTO|CREATE)\b/i', $sql) && empty($CFG->block_configurable_reports_enable_sql_execution)) {
+        } else if (preg_match('/\b(INSERT|INTO|CREATE)\b/i', $sql) &&
+            empty($CFG->block_configurable_reports_enable_sql_execution)) {
             // Only allow INSERT|INTO|CREATE in low security when SQL execution is enabled in the server.
             $errors['querysql'] = get_string('notallowedwords', 'block_configurable_reports');
         } else {
@@ -166,4 +205,5 @@ class customsql_form extends moodleform {
 
         return $errors;
     }
+
 }

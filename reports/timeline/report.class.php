@@ -15,33 +15,55 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Configurable Reports
- * A Moodle block for creating customizable reports
- * @package blocks
- * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date: 2009
+ * Configurable Reports a Moodle block for creating customizable reports
+ *
+ * @copyright  2020 Juan Leyva <juan@moodle.com>
+ * @package    block_configurable_reports
+ * @author     Juan leyva <http://www.twitter.com/jleyvadelgado>
  */
-
 class report_timeline extends report_base {
 
-    public function init() {
-        $this->components = array('timeline', 'columns', 'filters', 'template', 'permissions', 'calcs', 'plot');
+    /**
+     * @var mixed
+     */
+    private $timeline;
+
+    /**
+     * Init
+     *
+     * @return void
+     */
+    public function init(): void {
+        $this->components = [
+            'timeline',
+            'columns',
+            'filters',
+            'template',
+            'permissions',
+            'calcs',
+            'plot',
+        ];
     }
 
-    public function get_all_elements() {
-        $elements = array();
+    /**
+     * Get all elements
+     *
+     * @return array
+     */
+    public function get_all_elements(): array {
+        $elements = [];
 
         $components = cr_unserialize($this->config->components);
 
-        $config = (isset($components['timeline']['config'])) ? $components['timeline']['config'] : new \stdclass();
+        $config = $components['timeline']['config'] ?? new stdclass();
 
         if (isset($config->timemode)) {
 
             $daysecs = 60 * 60 * 24;
 
-            if ($config->timemode == 'previous') {
-                $config->starttime = gmmktime() - $config->previousstart * $daysecs;
-                $config->endtime = gmmktime() - $config->previousend * $daysecs;
+            if ($config->timemode === 'previous') {
+                $config->starttime = time() - $config->previousstart * $daysecs;
+                $config->endtime = time() - $config->previousend * $daysecs;
                 if (isset($config->forcemidnight)) {
                     $config->starttime = usergetmidnight($config->starttime);
                     $config->endtime = usergetmidnight($config->endtime) + ($daysecs - 1);
@@ -51,7 +73,7 @@ class report_timeline extends report_base {
             $filterstarttime = optional_param('filter_starttime', 0, PARAM_RAW);
             $filterendtime = optional_param('filter_endtime', 0, PARAM_RAW);
 
-            if ($filterstarttime and $filterendtime) {
+            if ($filterstarttime && $filterendtime) {
                 $filterstarttime = make_timestamp($filterstarttime['year'], $filterstarttime['month'], $filterstarttime['day']);
                 $filterendtime = make_timestamp($filterendtime['year'], $filterendtime['month'], $filterendtime['day']);
 
@@ -71,7 +93,7 @@ class report_timeline extends report_base {
                 $elements[] = $row->starttime;
             }
 
-            if ($config->ordering == 'desc') {
+            if ($config->ordering === 'desc') {
                 rsort($elements);
             }
         }
@@ -79,18 +101,26 @@ class report_timeline extends report_base {
         return $elements;
     }
 
-    public function get_rows($elements, $sqlorder = '') {
-        global $DB, $CFG;
+    /**
+     * get_rows
+     *
+     * @param array $elements
+     * @param string $sqlorder
+     * @return array
+     */
+    public function get_rows(array $elements, string $sqlorder = '') {
 
         if (!empty($elements)) {
-            $finaltimeline = array();
+            $finaltimeline = [];
             foreach ($elements as $e) {
                 $finaltimeline[] = $this->timeline[$e];
             }
+
             return $finaltimeline;
-        } else {
-            return array();
         }
+
+        return [];
+
     }
 
 }

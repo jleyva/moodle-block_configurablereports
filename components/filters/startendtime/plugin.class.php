@@ -15,32 +15,56 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Configurable Reports
- * A Moodle block for creating customizable reports
- * @package blocks
- * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date: 2009
+ * Configurable Reports a Moodle block for creating customizable reports
+ *
+ * @copyright  2020 Juan Leyva <juan@moodle.com>
+ * @package    block_configurable_reports
+ * @author     Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+defined('MOODLE_INTERNAL') || die;
+require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
 
-require_once($CFG->dirroot.'/blocks/configurable_reports/plugin.class.php');
-
+/**
+ * Class plugin_startendtime
+ *
+ * @package   block_configurable_reports
+ * @author    Juan leyva <http://www.twitter.com/jleyvadelgado>
+ */
 class plugin_startendtime extends plugin_base {
 
-    public function init() {
+    /**
+     * Init
+     *
+     * @return void
+     */
+    public function init(): void {
         $this->form = false;
         $this->unique = true;
         $this->fullname = get_string('startendtime', 'block_configurable_reports');
-        $this->reporttypes = array('sql', 'timeline', 'users', 'courses');
+        $this->reporttypes = ['sql', 'timeline', 'users', 'courses'];
     }
 
-    public function summary($data) {
+    /**
+     * Summary
+     *
+     * @param object $data
+     * @return string
+     */
+    public function summary(object $data): string {
         return get_string('filterstartendtime_summary', 'block_configurable_reports');
     }
 
-    public function execute($finalelements, $data) {
+    /**
+     * Execute
+     *
+     * @param string $finalelements
+     * @return array|string|string[]
+     */
+    public function execute($finalelements) {
         global $CFG;
 
-        if ($this->report->type != 'sql') {
+        if ($this->report->type !== 'sql') {
             return $finalelements;
         }
 
@@ -56,29 +80,39 @@ class plugin_startendtime extends plugin_base {
             return $finalelements;
         }
 
-        $filterstarttime = make_timestamp($filterstarttime['year'], $filterstarttime['month'], $filterstarttime['day'],
-            $filterstarttime['hour'], $filterstarttime['minute']);
-        $filterendtime = make_timestamp($filterendtime['year'], $filterendtime['month'], $filterendtime['day'],
-            $filterendtime['hour'], $filterendtime['minute']);
+        $filterstarttime = make_timestamp(
+            $filterstarttime['year'],
+            $filterstarttime['month'],
+            $filterstarttime['day'],
+            $filterstarttime['hour'],
+            $filterstarttime['minute']
+        );
+        $filterendtime = make_timestamp(
+            $filterendtime['year'],
+            $filterendtime['month'],
+            $filterendtime['day'],
+            $filterendtime['hour'],
+            $filterendtime['minute']
+        );
 
-        $operators = array('<', '>', '<=', '>=');
+        $operators = ['<', '>', '<=', '>='];
 
         if (preg_match("/%%FILTER_STARTTIME:([^%]+)%%/i", $finalelements, $output)) {
-            list($field, $operator) = preg_split('/:/', $output[1]);
+            [$field, $operator] = preg_split('/:/', $output[1]);
             if (!in_array($operator, $operators)) {
-                print_error('nosuchoperator');
+                throw new moodle_exception('nosuchoperator');
             }
-            $replace = ' AND '.$field.' '.$operator.' '.$filterstarttime;
-            $finalelements = str_replace('%%FILTER_STARTTIME:'.$output[1].'%%', $replace, $finalelements);
+            $replace = ' AND ' . $field . ' ' . $operator . ' ' . $filterstarttime;
+            $finalelements = str_replace('%%FILTER_STARTTIME:' . $output[1] . '%%', $replace, $finalelements);
         }
 
         if (preg_match("/%%FILTER_ENDTIME:([^%]+)%%/i", $finalelements, $output)) {
-            list($field, $operator) = preg_split('/:/', $output[1]);
+            [$field, $operator] = preg_split('/:/', $output[1]);
             if (!in_array($operator, $operators)) {
-                print_error('nosuchoperator');
+                throw new moodle_exception('nosuchoperator');
             }
-            $replace = ' AND '.$field.' '.$operator.' '.$filterendtime;
-            $finalelements = str_replace('%%FILTER_ENDTIME:'.$output[1].'%%', $replace, $finalelements);
+            $replace = ' AND ' . $field . ' ' . $operator . ' ' . $filterendtime;
+            $finalelements = str_replace('%%FILTER_ENDTIME:' . $output[1] . '%%', $replace, $finalelements);
         }
 
         $finalelements = str_replace('%%STARTTIME%%', $filterstarttime, $finalelements);
@@ -87,11 +121,19 @@ class plugin_startendtime extends plugin_base {
         return $finalelements;
     }
 
-    public function print_filter(&$mform) {
-        global $DB, $CFG;
+    /**
+     * Print filter
+     *
+     * @param MoodleQuickForm $mform
+     * @param bool|object $formdata
+     * @return void
+     */
+    public function print_filter(MoodleQuickForm $mform, $formdata = false): void {
+
         $mform->addElement('date_time_selector', 'filter_starttime', get_string('starttime', 'block_configurable_reports'));
         $mform->setDefault('filter_starttime', time() - 3600 * 24);
         $mform->addElement('date_time_selector', 'filter_endtime', get_string('endtime', 'block_configurable_reports'));
         $mform->setDefault('filter_endtime', time() + 3600 * 24);
     }
+
 }

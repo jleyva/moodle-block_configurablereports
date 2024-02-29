@@ -15,43 +15,51 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Configurable Reports
- * A Moodle block for creating customizable reports
- * @package blocks
- * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date: 2009
+ * Configurable Reports a Moodle block for creating customizable reports
+ *
+ * @copyright  2020 Juan Leyva <juan@moodle.com>
+ * @package    block_configurable_reports
+ * @author     Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-if (!defined('MOODLE_INTERNAL')) {
-    //  It must be included from a Moodle page.
-    die('Direct access to this script is forbidden.');
-}
+defined('MOODLE_INTERNAL') || die;
 
-require_once($CFG->libdir.'/formslib.php');
+require_once($CFG->libdir . '/formslib.php');
 
+/**
+ * Class fcoursefield_form
+ *
+ * @package   block_configurable_reports
+ * @author    Juan leyva <http://www.twitter.com/jleyvadelgado>
+ */
 class fcoursefield_form extends moodleform {
-    public function definition() {
-        global $remotedb, $course, $CFG;
+
+    /**
+     * Form definition
+     */
+    public function definition(): void {
+        global $remotedb;
 
         $mform =& $this->_form;
 
-        $mform->addElement('header',  'crformheader', get_string('fcoursefield', 'block_configurable_reports'), '');
+        $mform->addElement('header', 'crformheader', get_string('fcoursefield', 'block_configurable_reports'), '');
 
         $this->_customdata['compclass']->add_form_elements($mform, $this);
 
         $columns = $remotedb->get_columns('course');
 
-        $coursecolumns = array();
+        $coursecolumns = [];
         foreach ($columns as $c) {
             $coursecolumns[$c->name] = $c->name;
         }
 
-        unset($coursecolumns['password']);
-        unset($coursecolumns['sesskey']);
+        unset($coursecolumns['password'], $coursecolumns['sesskey']);
 
         $mform->addElement('select', 'field', get_string('field', 'block_configurable_reports'), $coursecolumns);
 
         // Buttons.
         $this->add_action_buttons(true, get_string('add'));
     }
+
 }

@@ -15,26 +15,24 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Configurable Reports
- * A Moodle block for creating customizable reports
- * @package blocks
- * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date: 2009
+ * Configurable Reports a Moodle block for creating customizable reports
+ *
+ * @copyright  2020 Juan Leyva <juan@moodle.com>
+ * @package    block_configurable_reports
+ * @author     Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-if (!defined('MOODLE_INTERNAL')) {
-    //  It must be included from a Moodle page.
-    die('Direct access to this script is forbidden.');
-}
+defined('MOODLE_INTERNAL') || die;
 
-$top = array();
+$top = [];
 
-$url = new \moodle_url('/blocks/configurable_reports/viewreport.php', ['id' => $report->id, 'courseid' => $COURSE->id]);
-$top[] = new \tabobject('viewreport', $url, get_string('viewreport', 'block_configurable_reports'));
+$url = new moodle_url('/blocks/configurable_reports/viewreport.php', ['id' => $report->id, 'courseid' => $COURSE->id]);
+$top[] = new tabobject('viewreport', $url, get_string('viewreport', 'block_configurable_reports'));
 
 foreach ($reportclass->components as $comptab) {
     $urlattrs = ['id' => $report->id, 'comp' => $comptab, 'courseid' => $COURSE->id];
-    $url = new \moodle_url('/blocks/configurable_reports/editcomp.php', $urlattrs);
+    $url = new moodle_url('/blocks/configurable_reports/editcomp.php', $urlattrs);
     $top[] = new tabobject($comptab, $url, get_string($comptab, 'block_configurable_reports'));
 }
 

@@ -15,43 +15,70 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Configurable Reports
- * A Moodle block for creating customizable reports
- * @package blocks
- * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date: 2009
+ * Configurable Reports a Moodle block for creating customizable reports
+ *
+ * @copyright  2020 Juan Leyva <juan@moodle.com>
+ * @package    block_configurable_reports
+ * @author     Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-require_once($CFG->dirroot.'/blocks/configurable_reports/plugin.class.php');
+defined('MOODLE_INTERNAL') || die;
+require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
 
-class plugin_courseparent extends plugin_base{
+/**
+ * Class plugin_courseparent
+ *
+ * @package   block_configurable_reports
+ * @author    Juan leyva <http://www.twitter.com/jleyvadelgado>
+ */
+class plugin_courseparent extends plugin_base {
 
-    public function init() {
+    /**
+     * Init
+     *
+     * @return void
+     */
+    public function init(): void {
         $this->fullname = get_string('courseparent', 'block_configurable_reports');
         $this->form = true;
-        $this->reporttypes = array('courses');
+        $this->reporttypes = ['courses'];
     }
 
-    public function summary($data) {
+    /**
+     * Summary
+     *
+     * @param object $data
+     * @return string
+     */
+    public function summary(object $data): string {
         global $DB;
 
-        $course = $DB->get_record('course', array('id' => $data->courseid));
+        $course = $DB->get_record('course', ['id' => $data->courseid]);
         if ($course) {
-            return get_string('courseparent', 'block_configurable_reports').' '.(format_string($course->fullname));
+            return get_string('courseparent', 'block_configurable_reports') . ' ' . (format_string($course->fullname));
         }
+
         return '';
     }
 
-    // Data -> Plugin configuration data.
-    public function execute($data, $user, $courseid) {
+    /**
+     * Execute
+     *
+     * @param object $data
+     * @return array
+     */
+    public function execute($data) {
         global $DB;
-
-        $finalcourses = array();
-        if ($courses = $DB->get_records('course_meta', array('parent_course' => $data->courseid))) {
+        // Data -> Plugin configuration data.
+        $finalcourses = [];
+        if ($courses = $DB->get_records('course_meta', ['parent_course' => $data->courseid])) {
             foreach ($courses as $c) {
                 $finalcourses[] = $c->child_course;
             }
         }
+
         return $finalcourses;
     }
+
 }

@@ -15,29 +15,53 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Configurable Reports
- * A Moodle block for creating customizable reports
- * @package blocks
- * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date: 2009
+ * Configurable Reports a Moodle block for creating customizable reports
+ *
+ * @copyright  2020 Juan Leyva <juan@moodle.com>
+ * @package    block_configurable_reports
+ * @author     Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+defined('MOODLE_INTERNAL') || die;
+require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
 
-require_once($CFG->dirroot.'/blocks/configurable_reports/plugin.class.php');
-
+/**
+ * Class plugin_coursecategories
+ *
+ * @package   block_configurable_reports
+ * @author    Juan leyva <http://www.twitter.com/jleyvadelgado>
+ */
 class plugin_coursecategories extends plugin_base {
 
-    public function init() {
+    /**
+     * Init
+     *
+     * @return void
+     */
+    public function init(): void {
         $this->form = false;
         $this->unique = true;
         $this->fullname = get_string('filtercoursecategories', 'block_configurable_reports');
-        $this->reporttypes = array('courses');
+        $this->reporttypes = ['courses'];
     }
 
-    public function summary($data) {
+    /**
+     * Summary
+     *
+     * @param object $data
+     * @return string
+     */
+    public function summary(object $data): string {
         return get_string('filtercoursecategories_summary', 'block_configurable_reports');
     }
 
-    public function execute($finalelements, $data) {
+    /**
+     * Execute
+     *
+     * @param string $finalelements
+     * @return mixed
+     */
+    public function execute($finalelements) {
         global $remotedb, $CFG;
         require_once($CFG->dirroot . "/course/lib.php");
 
@@ -46,17 +70,17 @@ class plugin_coursecategories extends plugin_base {
             return $finalelements;
         }
 
-        $displaylist = array();
-        $parents = array();
+        $displaylist = [];
+        $parents = [];
         cr_make_categories_list($displaylist, $parents);
 
-        $coursecache = array();
+        $coursecache = [];
         foreach ($finalelements as $key => $course) {
             if (empty($coursecache[$course])) {
-                $coursecache[$course] = $remotedb->get_record('course', array('id' => $course));
+                $coursecache[$course] = $remotedb->get_record('course', ['id' => $course]);
             }
             $course = $coursecache[$course];
-            if ($category != $course->category and (empty($parents[$course->id]) || !in_array($category, $parents[$course->id]))) {
+            if ($category != $course->category && (empty($parents[$course->id]) || !in_array($category, $parents[$course->id]))) {
                 unset($finalelements[$key]);
             }
         }
@@ -64,14 +88,22 @@ class plugin_coursecategories extends plugin_base {
         return $finalelements;
     }
 
-    public function print_filter(&$mform) {
-        global $remotedb, $CFG;
+    /**
+     * Print filter
+     *
+     * @param MoodleQuickForm $mform
+     * @param bool|object $formdata
+     * @return void
+     */
+    public function print_filter(MoodleQuickForm $mform, $formdata = false): void {
+
+        global $CFG;
         require_once($CFG->dirroot . "/course/lib.php");
 
         $filtercategories = optional_param('filter_coursecategories', 0, PARAM_INT);
 
-        $displaylist = array();
-        $notused = array();
+        $displaylist = [];
+        $notused = [];
         cr_make_categories_list($displaylist, $notused);
 
         $displaylist[0] = get_string("all");
@@ -79,4 +111,5 @@ class plugin_coursecategories extends plugin_base {
         $mform->setDefault('filter_coursecategories', 0);
         $mform->setType('filter_coursecategories', PARAM_INT);
     }
+
 }
