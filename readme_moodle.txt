@@ -119,5 +119,5 @@ https://github.com/bozhinov/pChart2.0-for-PHP7 using the following command:
 
 git clone -b 7.x-compatible https://github.com/bozhinov/pChart2.0-for-PHP7.git pChart2
 
-   3.a. Remove the folders 'examples' and 'cache' and the file 'index.php'.
+   3.a. Remove the folders 'examples' and 'cache' and the files 'index.php', and 'composer.json'.
 
