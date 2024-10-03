@@ -216,11 +216,11 @@ class report_base {
     public function print_export_options($return = false) {
         global $CFG;
 
-        $wwwpath = $CFG->wwwroot;
+        $params = [];
         $request = array_merge($_POST, $_GET);
         if ($request) {
             $id = clean_param($request['id'], PARAM_INT);
-            $wwwpath = 'viewreport.php?id='.$id;
+            $params['id'] = $id;
             unset($request['id']);
             foreach ($request as $key => $val) {
                 $key = clean_param($key, PARAM_CLEANHTML);
@@ -228,11 +228,11 @@ class report_base {
                     foreach ($val as $k => $v) {
                         $k = clean_param($k, PARAM_CLEANHTML);
                         $v = clean_param($v, PARAM_CLEANHTML);
-                        $wwwpath .= "&amp;{$key}[$k]=".$v;
+                        $params[$key[$k]] = $v;
                     }
                 } else {
                     $val = clean_param($val, PARAM_CLEANHTML);
-                    $wwwpath .= "&amp;$key=".$val;
+                    $params[$key] = $val;
                 }
             }
         }
@@ -244,7 +244,15 @@ class report_base {
             $output .= get_string('downloadreport', 'block_configurable_reports').': ';
             foreach ($export as $e) {
                 if ($e) {
-                    $output .= '<a href="'.$wwwpath.'&amp;download=1&amp;format='.$e.'"><img src="'.$CFG->wwwroot.'/blocks/configurable_reports/export/'.$e.'/pix.gif" alt="'.$e.'">&nbsp;'.(strtoupper($e)).'</a>&nbsp;';
+                    $context = \context_system::instance();
+                    $cid = $context->id;
+                    $imageurl = moodle_url::make_pluginfile_url($cid, 'block_configurable_reports', 'export', null, '/', $e);
+                    $image = html_writer::img($imageurl, $e, array('alt' => $e));
+                    $params['download'] = 1;
+                    $params['format'] = $e;
+                    $downloadurl = new moodle_url('/blocks/configurable_reports/viewreport.php', $params);
+                    $output .= html_writer::link($downloadurl, $image . '&nbsp;' . (strtoupper($e)));
+                    $output .= '&nbsp;';
                 }
             }
             $output .= '</div>';
