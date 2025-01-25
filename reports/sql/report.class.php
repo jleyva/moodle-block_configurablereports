@@ -41,7 +41,7 @@ class report_sql extends report_base {
     }
 
     public function prepare_sql($sql) {
-        global $DB, $USER, $CFG, $COURSE;
+        global $DB, $USER, $CFG, $COURSE, $_SESSION;
 
         // Enable debug mode from SQL query.
         $this->config->debug = (strpos($sql, '%%DEBUG%%') !== false) ? true : false;
@@ -55,6 +55,7 @@ class report_sql extends report_base {
         }
 
         $sql = str_replace('%%USERID%%', $USER->id, $sql);
+        $sql = str_replace('%%SESSKEY%%', $_SESSION['USER']->sesskey, $sql);
         $sql = str_replace('%%COURSEID%%', $COURSE->id, $sql);
         $sql = str_replace('%%CATEGORYID%%', $COURSE->category, $sql);
 
