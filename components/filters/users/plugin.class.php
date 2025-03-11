@@ -118,10 +118,10 @@ class plugin_users extends plugin_base {
                 $nameformat = get_string('fullnamedisplay');
             }
 
-            $sort = implode(',', order_in_string(get_all_user_name_fields(), $nameformat));
+            $sort = implode(',', order_in_string(\core_user\fields::get_name_fields(), $nameformat));
 
             [$usql, $params] = $remotedb->get_in_or_equal($userslist);
-            $users = $remotedb->get_records_select('user', "id " . $usql, $params, $sort, 'id,' . get_all_user_name_fields(true));
+            $users = $remotedb->get_records_select('user', "id " . $usql, $params, $sort, 'id' . \core_user\fields::for_name()->get_sql()->selects);
 
             foreach ($users as $c) {
                 $usersoptions[$c->id] = fullname($c);
