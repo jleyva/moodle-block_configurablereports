@@ -47,7 +47,7 @@ class coursessql_form extends moodleform {
         $mform->addElement('textarea', 'sql', get_string('coursessql_sql', 'block_configurable_reports'));
         $mform->setType('sql', PARAM_RAW);
         $mform->addHelpButton('sql', 'coursessql_sql', 'block_configurable_reports');
-        $mform->setDefault('sql', 'SELECT * FROM prefix_course WHERE category = 1');
+        $mform->setDefault('sql', 'SELECT * FROM {course} WHERE category = 1');
 
         // Buttons.
         $this->add_action_buttons(true, get_string('add', 'block_configurable_reports'));
