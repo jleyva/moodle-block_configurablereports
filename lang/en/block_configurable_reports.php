@@ -113,6 +113,7 @@ $string['value'] = "Value";
 $string['filter'] = "Filter";
 $string['nofilteryet'] = "No filters yet";
 $string['courses'] = "Courses";
+$string['coursessql'] = "Courses (SQL)";
 $string['nofiltersyet'] = "No filters yet";
 $string['filter_all'] = 'All';
 $string['filter_apply'] = 'Apply';
@@ -185,6 +186,8 @@ $string['roleusersn'] = "Number of users with role...";
 $string['coursecategory'] = "Course in category";
 $string['filtercourses'] = "Courses";
 $string['filtercourses_summary'] = "This filter shows a list of courses. Only one course can be selected at the same time";
+$string['filtercoursessql'] = "Courses (SQL)";
+$string['filtercoursessql_summary'] = "This filter shows a list of courses that can be customized via SQL. Only one course can be selected at the same time.";
 $string['roleincourse'] = "User with the selected role/s in the current report course";
 $string['reportscapabilities'] = "Report Capabilities";
 $string['reportscapabilities_summary'] = "Users with the capability moodle/site:viewreports enabled";
@@ -560,6 +563,8 @@ $string['label_help'] = 'Text describing the filter to be displayed on the repor
 $string['idnumber'] = 'ID Number';
 $string['idnumber_help'] = 'Used to differentiate between filters of the same type. Case-sensitive.
 Example usage: %%FILTER_SEARCHTEXT_username:u.username:~%%';
+$string['coursessql_sql'] = 'SQL';
+$string['coursessql_sql_help'] = 'SQL query to retrieve the courses, eg SELECT * FROM prefix_course WHERE category = 1';
 
 // Pie Chart Strings.
 $string['description'] = 'Description';
