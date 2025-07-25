@@ -39,7 +39,7 @@ class plugin_startendtime extends plugin_base {
      * @return void
      */
     public function init(): void {
-        $this->form = false;
+        $this->form = true;
         $this->unique = true;
         $this->fullname = get_string('startendtime', 'block_configurable_reports');
         $this->reporttypes = ['sql', 'timeline', 'users', 'courses'];
@@ -69,11 +69,11 @@ class plugin_startendtime extends plugin_base {
         }
 
         if ($CFG->version < 2011120100) {
-            $filterstarttime = optional_param('filter_starttime', 0, PARAM_RAW);
-            $filterendtime = optional_param('filter_endtime', 0, PARAM_RAW);
+            $filterstarttime = optional_param('filter_start_time', 0, PARAM_RAW);
+            $filterendtime = optional_param('filter_end_time', 0, PARAM_RAW);
         } else {
-            $filterstarttime = optional_param_array('filter_starttime', 0, PARAM_RAW);
-            $filterendtime = optional_param_array('filter_endtime', 0, PARAM_RAW);
+            $filterstarttime = optional_param_array('filter_start_time', 0, PARAM_RAW);
+            $filterendtime = optional_param_array('filter_end_time', 0, PARAM_RAW);
         }
 
         if (!$filterstarttime || !$filterendtime) {
@@ -130,10 +130,22 @@ class plugin_startendtime extends plugin_base {
      */
     public function print_filter(MoodleQuickForm $mform, $formdata = false): void {
 
-        $mform->addElement('date_time_selector', 'filter_starttime', get_string('starttime', 'block_configurable_reports'));
-        $mform->setDefault('filter_starttime', time() - 3600 * 24);
-        $mform->addElement('date_time_selector', 'filter_endtime', get_string('endtime', 'block_configurable_reports'));
-        $mform->setDefault('filter_endtime', time() + 3600 * 24);
+        // Get defaults from settings.
+        $defaultstarttime = time() - 3600 * 24;
+        $defaultendtime = time() + 3600 * 24;
+        if ($formdata) {
+            if ($formdata->set_startdate) {
+                $defaultstarttime = $formdata->startdate ?? $defaultstarttime;
+            }
+            if ($formdata->set_enddate) {
+                $defaultendtime = $formdata->enddate ?? $defaultendtime;
+            }
+        }
+
+        $mform->addElement('date_time_selector', 'filter_start_time', get_string('starttime', 'block_configurable_reports'));
+        $mform->setDefault('filter_start_time', $defaultstarttime);
+        $mform->addElement('date_time_selector', 'filter_end_time', get_string('endtime', 'block_configurable_reports'));
+        $mform->setDefault('filter_end_time', $defaultendtime);
     }
 
 }
