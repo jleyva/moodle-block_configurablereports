@@ -162,6 +162,11 @@ $string['cohorts'] = 'Cohorts';
 $string['filtercohorts'] = 'Cohorts';
 $string['filtercohorts_summary'] = 'Use: %%FILTER_COHORTS:prefix_cohort.id%%';
 $string['student'] = 'Student';
+$string['customdropdown'] = "Custom dropdown";
+$string['customdropdown_summary'] = "Custom dropdown filter that adds WHERE clauses according to your dropdown choices.";
+$string['customdropdown_name'] = "Custom dropdown name";
+$string['customdropdown_description'] = "<p>This filter allows you to create a custom dropdown with options that can be used to filter the report. Each option should be given in a single line, using text|sql.</p>
+<p>To use the filter, just add %%FILTER_DROPDOWN%% to your WHERE conditions.</p>";
 
 // Calcs.
 $string['nocalcsyet'] = "No calculations yet";
