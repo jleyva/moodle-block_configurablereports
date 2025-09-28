@@ -38,7 +38,7 @@
 #page-blocks-configurable_reports-viewreport .generaltable {
     border: 1px solid rgb(128, 128, 128);
     margin: 0 auto;
-    
+
 }
 
 #page-blocks-configurable_reports-viewreport #calcstable {
@@ -744,7 +744,7 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {
 
 .CodeMirror-gutters {
     position: absolute;
-    left: 0;
+    left: auto;
     top: 0;
     min-height: 100%;
     z-index: 3;
