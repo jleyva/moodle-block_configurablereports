@@ -128,19 +128,21 @@ class plugin_pie extends plugin_base {
         $i = 0;
         $unmappedindex = 0;
         $unmappedcolorcount = count($unmappedcolors);
-        foreach ($series[0] as $index => $serie) {
-            $serie = strip_tags($serie);
-            $serie0sorted[] = $serie;
-            $serie1sorted[] = $series[1][$index];
-            if (in_array($serie, $mappedcolorkeys)) {
-                $colors[$i] = $this->parse_color($mappedcolors[$serie]);
-            } else if ($unmappedindex < $unmappedcolorcount) {
-                $colors[$i] = $this->parse_color($unmappedcolors[$unmappedindex]);
-                $unmappedindex++;
-            } else {
-                $colors[$i] = '';
+        if (isset($series[0])) {
+            foreach ($series[0] as $index => $serie) {
+                $serie = strip_tags($serie);
+                $serie0sorted[] = $serie;
+                $serie1sorted[] = $series[1][$index];
+                if (in_array($serie, $mappedcolorkeys)) {
+                    $colors[$i] = $this->parse_color($mappedcolors[$serie]);
+                } else if ($unmappedindex < $unmappedcolorcount) {
+                    $colors[$i] = $this->parse_color($unmappedcolors[$unmappedindex]);
+                    $unmappedindex++;
+                } else {
+                    $colors[$i] = '';
+                }
+                $i++;
             }
-            $i++;
         }
 
         $serie0 = base64_encode(strip_tags(implode(',', $serie0sorted)));
