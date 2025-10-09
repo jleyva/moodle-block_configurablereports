@@ -185,6 +185,12 @@ class report_sql extends report_base {
             $filterform = isset($this->filterform);
             $formhasdata = $filterform && $this->filterform->get_data();
 
+            $page = optional_param('page', 0, PARAM_INT);
+            if ($page) {
+                // Pagination is being used, we assume the filter data is included.
+                $formhasdata = true;
+            }
+
             if (($formhasdata || !$filterform) && $rs = $this->execute_query($sql)) {
                 foreach ($rs as $row) {
                     if (empty($finaltable)) {
