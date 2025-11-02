@@ -50,6 +50,12 @@ class customsql_form extends moodleform {
         $mform->addRule('querysql', get_string('required'), 'required', null, 'client');
         $mform->setType('querysql', PARAM_RAW);
 
+        if (isset($this->_customdata['report']->global) && $this->_customdata['report']->global) {
+            // Add a course field so we can switch context to fetch fields from a valid course if required.
+            $mform->addElement('course', 'fieldscourseid', get_string('course'));
+            $mform->addElement('static', 'fieldscourseidhelp', '', nl2br(get_string('fieldscourseidhelp_help', 'block_configurable_reports')));
+        }
+
         $mform->addElement('hidden', 'courseid', $COURSE->id);
         $mform->setType('courseid', PARAM_INT);
 

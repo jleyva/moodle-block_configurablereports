@@ -574,6 +574,8 @@ $string['generalcolorpaletteheader'] = 'General color palette';
 $string['generalcolorpalette'] = 'Unmapped Palette';
 $string['generalcolorpalette_help'] = 'Hexadecimal color codes for general use in the pie chart. Codes should be separated
 by new lines in the order you wish them to be used in the pie chart.';
+$string['fieldscourseidhelp_help'] = 'Some configuration pages require the report to return results to extract availiable course fields.
+If your report requires a different course to return results, please select a course that will return them to populate the available course fields.';
 
 $string['checksql_execution'] = 'Block Configurable Reports SQL execution';
 $string['checksql_execution_ok'] = 'SQL execution is disabled.';

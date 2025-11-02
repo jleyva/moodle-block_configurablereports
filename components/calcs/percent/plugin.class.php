@@ -80,8 +80,9 @@ class plugin_percent extends plugin_base {
             $config = $components['customsql']['config'] ?? new stdclass;
 
             if (isset($config->querysql)) {
+                $courseid = isset($config->fieldscourseid) && !empty($config->fieldscourseid) ? $config->fieldscourseid : 0;
                 $sql = $config->querysql;
-                $sql = $reportclass->prepare_sql($sql);
+                $sql = $reportclass->prepare_sql($sql, $courseid);
                 if ($rs = $reportclass->execute_query($sql)) {
                     foreach ($rs as $row) {
                         $i = 0;
