@@ -80,8 +80,18 @@ class report_sql extends report_base {
      * @param string $sql
      * @return array|string|string[]
      */
-    public function prepare_sql(string $sql) {
-        global $USER, $CFG, $COURSE;
+    public function prepare_sql(string $sql, int $forcedcourseid = 0) {
+        global $USER, $CFG, $COURSE, $DB;
+
+        $course = $COURSE;
+
+        // If a forced course id has been passed, use the forced course instead of the current course.
+        if ($forcedcourseid) {
+            $forcedcourse = $DB->get_record('course', ['id' => $forcedcourseid]);
+            if ($forcedcourse) {
+                $course = $forcedcourse;
+            }
+        }
 
         // Enable debug mode from SQL query.
         $this->config->debug = strpos($sql, '%%DEBUG%%') !== false;
@@ -103,7 +113,7 @@ class report_sql extends report_base {
             '%%ENDTIME%%',
             '%%WWWROOT%%',
         ],
-            [$USER->id, $COURSE->id, $COURSE->category, '0', '2145938400', $CFG->wwwroot],
+            [$USER->id, $course->id, $course->category, '0', '2145938400', $CFG->wwwroot],
             $sql);
         $sql = preg_replace('/%{2}[^%]+%{2}/i', '', $sql);
 
