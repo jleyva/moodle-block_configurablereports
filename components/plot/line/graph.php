@@ -146,9 +146,9 @@ if (!empty($graphs)) {
 
         $test->setFontProperties($CFG->dirroot . "/blocks/configurable_reports/lib/Fonts/tahoma.ttf", 8);
         $test->setGraphArea(70, 30, 680, 200);
+        $test->drawFilledRoundedRectangle(5, 5, 695, 225, 5, 230, 230, 230);
         $test->drawFilledRoundedRectangle(7, 7, 693, 223, 5, 240, 240, 240);
-        $test->drawRoundedRectangle(5, 5, 695, 225, 5, 230, 230, 230);
-        $test->drawGraphArea(255, 255, 255, true);
+        $test->drawGraphArea(254, 254, 254, true);
 
         if (!empty($dataset->GetData())) {
             $test->drawScale($dataset->GetData(), $dataset->GetDataDescription(), SCALE_NORMAL, 150, 150, 150, true, 0, 2);
@@ -163,11 +163,11 @@ if (!empty($graphs)) {
         // Draw the line graph.
         if (!empty($dataset->GetData())) {
             $test->drawLineGraph($dataset->GetData(), $dataset->GetDataDescription());
-            $test->drawPlotGraph($dataset->GetData(), $dataset->GetDataDescription(), 3, 2, 255, 255, 255);
+            $test->drawPlotGraph($dataset->GetData(), $dataset->GetDataDescription(), 3, 2, 254, 254, 254);
 
             // Finish the graph.
             $test->setFontProperties($CFG->dirroot . "/blocks/configurable_reports/lib/Fonts/tahoma.ttf", 8);
-            $test->drawLegend(75, 35, $dataset->GetDataDescription(), 255, 255, 255);
+            $test->drawLegend(75, 35, $dataset->GetDataDescription(), 254, 254, 254);
         }
 
         ob_clean(); // Hack to clear output and send only IMAGE data to browser.

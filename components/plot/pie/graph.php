@@ -113,8 +113,8 @@ if (!empty($graphs)) {
 
         // Initialise the graph.
         $test = new pChart(450, 200 + (count($series[0]) * 10));
+        $test->drawFilledRoundedRectangle(5, 5, 295, 195, 5, 230, 230, 230);
         $test->drawFilledRoundedRectangle(7, 7, 293, 193, 5, 240, 240, 240);
-        $test->drawRoundedRectangle(5, 5, 295, 195, 5, 230, 230, 230);
         $test->createColorGradientPalette(195, 204, 56, 223, 110, 41, 5);
 
         // Custom colors.
