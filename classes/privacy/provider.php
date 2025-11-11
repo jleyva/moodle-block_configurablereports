@@ -48,7 +48,6 @@ class provider implements
 
     // This plugin currently implements the original plugin\provider interface.
     \core_privacy\local\request\plugin\provider {
-
     // This trait must be included to provide the relevant polyfill for the metadata provider.
     use \core_privacy\local\legacy_polyfill;
 
@@ -209,5 +208,4 @@ class provider implements
         $params['ownerid'] = $userid;
         $DB->set_field_select('block_configurable_reports', 'ownerid', 0, "ownerid = :ownerid", $params);
     }
-
 }

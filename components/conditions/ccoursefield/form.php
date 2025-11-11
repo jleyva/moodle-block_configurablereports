@@ -34,7 +34,6 @@ require_once($CFG->libdir . '/formslib.php');
  * @author    Juan leyva <http://www.twitter.com/jleyvadelgado>
  */
 class ccoursefield_form extends moodleform {
-
     /**
      * @var array|string[] allowed operators
      */
@@ -74,7 +73,6 @@ class ccoursefield_form extends moodleform {
         $mform->setType('value', PARAM_RAW);
         // Buttons.
         $this->add_action_buttons(true, get_string('add'));
-
     }
 
     /**
@@ -110,5 +108,4 @@ class ccoursefield_form extends moodleform {
 
         return $errors;
     }
-
 }

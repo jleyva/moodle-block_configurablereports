@@ -42,7 +42,6 @@ use external_value;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class external extends external_api {
-
     /**
      * get_report_data parameters.
      *
@@ -85,7 +84,6 @@ class external extends external_api {
         if (!$report = $DB->get_record('block_configurable_reports', ['id' => $reportid])) {
             $warnings = get_string('reportdoesnotexists', 'block_configurable_reports');
         } else {
-
             require_once($CFG->dirroot . '/blocks/configurable_reports/locallib.php');
             require_once($CFG->dirroot . '/blocks/configurable_reports/report.class.php');
             require_once($CFG->dirroot . '/blocks/configurable_reports/reports/' . $report->type . '/report.class.php');
@@ -127,5 +125,4 @@ class external extends external_api {
             ]
         );
     }
-
 }

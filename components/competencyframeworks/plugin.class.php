@@ -34,7 +34,6 @@ require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
  * @author    Juan leyva <http://www.twitter.com/jleyvadelgado>
  */
 class plugin_competencyframeworks extends plugin_base {
-
     /**
      * Init
      *
@@ -110,14 +109,12 @@ class plugin_competencyframeworks extends plugin_base {
             foreach ($studentlist as $student) {
                 $competencyframeworkslist[] = $student->userid;
             }
-
         }
 
         $competencyframeworksoptions = [];
         $competencyframeworksoptions[0] = get_string('filter_all', 'block_configurable_reports');
 
         if (!empty($competencyframeworkslist)) {
-
             $competencyframeworks = $remotedb->get_records_sql($sql);
 
             foreach ($competencyframeworks as $c) {
@@ -129,5 +126,4 @@ class plugin_competencyframeworks extends plugin_base {
         $mform->addElement('select', 'filter_competencyframeworks', $elestr, $competencyframeworksoptions);
         $mform->setType('filter_competencyframeworks', PARAM_INT);
     }
-
 }

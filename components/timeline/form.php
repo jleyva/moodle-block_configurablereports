@@ -37,7 +37,6 @@ require_once($CFG->libdir . '/formslib.php');
  * @author    Juan leyva <http://www.twitter.com/jleyvadelgado>
  */
 class timeline_form extends moodleform {
-
     /**
      * Form definition
      */
@@ -86,5 +85,4 @@ class timeline_form extends moodleform {
 
         $this->add_action_buttons();
     }
-
 }

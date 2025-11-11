@@ -30,7 +30,6 @@
  * @author    Juan leyva <http://www.twitter.com/jleyvadelgado>
  */
 class component_template extends component_base {
-
     /**
      * Init
      *
@@ -74,9 +73,8 @@ class component_template extends component_base {
     public function form_set_data(moodleform $cform) {
         if ($this->form) {
             $components = cr_unserialize($this->config->components);
-            $config = $components['template']['config'] ?? new stdclass;
+            $config = $components['template']['config'] ?? new stdclass();
             $cform->set_data($config);
         }
     }
-
 }

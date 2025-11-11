@@ -34,7 +34,6 @@ require_once($CFG->libdir . '/formslib.php');
  * @author    Juan leyva <http://www.twitter.com/jleyvadelgado>
  */
 class line_form extends moodleform {
-
     /**
      * Form definition
      */
@@ -58,7 +57,6 @@ class line_form extends moodleform {
                 $options[] = $c['summary'];
             }
         } else {
-
             require_once($CFG->dirroot . '/blocks/configurable_reports/report.class.php');
             require_once($CFG->dirroot . '/blocks/configurable_reports/reports/' . $report->type . '/report.class.php');
 
@@ -66,7 +64,7 @@ class line_form extends moodleform {
             $reportclass = new $reportclassname($report);
 
             $components = cr_unserialize($report->components);
-            $config = (isset($components['customsql']['config'])) ? $components['customsql']['config'] : new stdclass;
+            $config = (isset($components['customsql']['config'])) ? $components['customsql']['config'] : new stdclass();
 
             if (isset($config->querysql)) {
                 $courseid = isset($config->fieldscourseid) && !empty($config->fieldscourseid) ? $config->fieldscourseid : 0;
@@ -120,5 +118,4 @@ class line_form extends moodleform {
 
         return $errors;
     }
-
 }

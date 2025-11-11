@@ -32,7 +32,6 @@ require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
  * @author    Juan leyva <http://www.twitter.com/jleyvadelgado>
  */
 class plugin_max extends plugin_base {
-
     /**
      * Init
      *
@@ -69,7 +68,6 @@ class plugin_max extends plugin_base {
                 $i++;
             }
         } else {
-
             require_once($CFG->dirroot . '/blocks/configurable_reports/report.class.php');
             require_once($CFG->dirroot . '/blocks/configurable_reports/reports/' . $this->report->type . '/report.class.php');
 
@@ -77,10 +75,9 @@ class plugin_max extends plugin_base {
             $reportclass = new $reportclassname($this->report);
 
             $components = cr_unserialize($this->report->components);
-            $config = $components['customsql']['config'] ?? new stdclass;
+            $config = $components['customsql']['config'] ?? new stdclass();
 
             if (isset($config->querysql)) {
-
                 $courseid = isset($config->fieldscourseid) && !empty($config->fieldscourseid) ? $config->fieldscourseid : 0;
                 $sql = $config->querysql;
                 $sql = $reportclass->prepare_sql($sql, $courseid);
@@ -119,5 +116,4 @@ class plugin_max extends plugin_base {
 
         return $result;
     }
-
 }

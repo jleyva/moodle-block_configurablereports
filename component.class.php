@@ -32,7 +32,6 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 abstract class component_base {
-
     /**
      * @var bool
      */
@@ -82,7 +81,5 @@ abstract class component_base {
      * @return void
      */
     public function add_form_elements(MoodleQuickForm $mform, $components): void {
-
     }
-
 }

@@ -106,11 +106,10 @@ if (!empty($graphs)) {
         }
 
         // Dataset definition.
-        $dataset = new pData;
+        $dataset = new pData();
         $lastid = 0;
 
         foreach ($series as $key => $val) {
-
             try {
                 $dataset->AddPoint($val['serie'], "Serie$key");
                 $dataset->AddAllSeries();

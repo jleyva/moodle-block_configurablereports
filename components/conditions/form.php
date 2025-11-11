@@ -34,7 +34,6 @@ require_once($CFG->libdir . '/formslib.php');
  * @author    Juan leyva <http://www.twitter.com/jleyvadelgado>
  */
 class conditions_form extends moodleform {
-
     /**
      * Form definition
      */
@@ -49,7 +48,6 @@ class conditions_form extends moodleform {
 
         // Buttons.
         $this->add_action_buttons(true, get_string('update'));
-
     }
 
     /**
@@ -63,10 +61,12 @@ class conditions_form extends moodleform {
     public function validation($data, $files): array {
         $errors = parent::validation($data, $files);
         // TODO - this reg expr can be improved.
-        if (!preg_match(
-            "/(\(*\s*\bc\d{1,2}\b\s*\(*\)*\s*(\(|and|or|not)\s*)+\(*\s*\bc\d{1,2}\b\s*\(*\)*\s*$/i",
-            $data['conditionexpr']
-        )) {
+        if (
+            !preg_match(
+                "/(\(*\s*\bc\d{1,2}\b\s*\(*\)*\s*(\(|and|or|not)\s*)+\(*\s*\bc\d{1,2}\b\s*\(*\)*\s*$/i",
+                $data['conditionexpr']
+            )
+        ) {
             $errors['conditionexpr'] = get_string('badconditionexpr', 'block_configurable_reports');
         }
 
@@ -90,5 +90,4 @@ class conditions_form extends moodleform {
 
         return $errors;
     }
-
 }

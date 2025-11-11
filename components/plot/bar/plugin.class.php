@@ -32,7 +32,6 @@ require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
  * @author    Juan leyva <http://www.twitter.com/jleyvadelgado>
  */
 class plugin_bar extends plugin_base {
-
     /**
      * Init
      *
@@ -108,7 +107,7 @@ class plugin_bar extends plugin_base {
         $graphdata = urlencode(json_encode($series));
 
         return $CFG->wwwroot . '/blocks/configurable_reports/components/plot/bar/graph.php?reportid=' . $this->report->id . '&id=' .
-            $id . '&graphdata=' . $graphdata . '&courseid='.$this->report->courseid;
+            $id . '&graphdata=' . $graphdata . '&courseid=' . $this->report->courseid;
     }
 
     /**
@@ -122,5 +121,4 @@ class plugin_bar extends plugin_base {
 
         return (array) $graphdata;
     }
-
 }

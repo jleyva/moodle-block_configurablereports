@@ -30,7 +30,6 @@
  * @author    Juan leyva <http://www.twitter.com/jleyvadelgado>
  */
 class block_configurable_reports extends block_list {
-
     /**
      * Sets the block name and version number
      *
@@ -97,7 +96,7 @@ class block_configurable_reports extends block_list {
             return $this->content;
         }
 
-        $this->content = new stdClass;
+        $this->content = new stdClass();
         $this->content->footer = '';
         $this->content->icons = [];
 
@@ -139,9 +138,11 @@ class block_configurable_reports extends block_list {
         }
 
         // Course reports.
-        if (!property_exists($this, 'config')
+        if (
+            !property_exists($this, 'config')
             || !isset($this->config->displayreportslist)
-            || $this->config->displayreportslist) {
+            || $this->config->displayreportslist
+        ) {
             $reports = $DB->get_records('block_configurable_reports', ['courseid' => $course->id], 'name ASC');
 
             if ($reports) {
@@ -160,8 +161,10 @@ class block_configurable_reports extends block_list {
             }
         }
 
-        if (has_capability('block/configurable_reports:managereports', $context)
-            || has_capability('block/configurable_reports:manageownreports', $context)) {
+        if (
+            has_capability('block/configurable_reports:managereports', $context)
+            || has_capability('block/configurable_reports:manageownreports', $context)
+        ) {
             $url = new moodle_url('/blocks/configurable_reports/managereport.php', ['courseid' => $course->id]);
             $linktext = get_string('managereports', 'block_configurable_reports');
             $this->content->items[] = html_writer::link($url, $linktext);
@@ -235,5 +238,4 @@ class block_configurable_reports extends block_list {
 
         return true; // Finished OK.
     }
-
 }

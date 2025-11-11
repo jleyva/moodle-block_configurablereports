@@ -34,8 +34,10 @@ global $PAGE, $USER, $DB, $COURSE;
 $context = context_course::instance($COURSE->id);
 $PAGE->set_context($context);
 
-if (!has_capability('block/configurable_reports:managereports', $context) &&
-    !has_capability('block/configurable_reports:manageownreports', $context)) {
+if (
+    !has_capability('block/configurable_reports:managereports', $context) &&
+    !has_capability('block/configurable_reports:manageownreports', $context)
+) {
     throw new moodle_exception('badpermissions');
 }
 
@@ -46,7 +48,6 @@ if (!has_capability('block/configurable_reports:managereports', $context) &&
  * @author    Juan leyva <http://www.twitter.com/jleyvadelgado>
  */
 class sendemail_form extends moodleform {
-
     /**
      * Form definition
      */
@@ -77,7 +78,6 @@ class sendemail_form extends moodleform {
 
         $mform->addGroup($buttons, 'buttons', get_string('actions'), [' '], false);
     }
-
 }
 
 // TODO _POST?? not Moodle way.

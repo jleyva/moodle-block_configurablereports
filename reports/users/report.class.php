@@ -30,7 +30,6 @@
  * @author    Juan leyva <http://www.twitter.com/jleyvadelgado>
  */
 class report_users extends report_base {
-
     /**
      * Init
      *
@@ -85,5 +84,4 @@ class report_users extends report_base {
 
         return [];
     }
-
 }

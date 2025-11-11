@@ -30,7 +30,6 @@
  * @author    Juan leyva <http://www.twitter.com/jleyvadelgado>
  */
 class component_timeline extends component_base {
-
     /**
      * Init
      *
@@ -69,10 +68,8 @@ class component_timeline extends component_base {
     public function form_set_data(moodleform $cform) {
         if ($this->form) {
             $components = cr_unserialize($this->config->components);
-            $compconfig = $components['timeline']['config'] ?? new stdclass;
+            $compconfig = $components['timeline']['config'] ?? new stdclass();
             $cform->set_data($compconfig);
         }
     }
-
 }
-

@@ -30,7 +30,6 @@
  * @author    Juan leyva <http://www.twitter.com/jleyvadelgado>
  */
 class plugin_roleusersn extends plugin_base {
-
     /**
      * Init
      *
@@ -68,5 +67,4 @@ class plugin_roleusersn extends plugin_base {
 
         return count_role_users($data->roles, $context);
     }
-
 }

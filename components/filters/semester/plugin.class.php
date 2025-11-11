@@ -32,7 +32,6 @@ require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
  * @author    Juan leyva <http://www.twitter.com/jleyvadelgado>
  */
 class plugin_semester extends plugin_base {
-
     /**
      * Init
      *
@@ -121,5 +120,4 @@ class plugin_semester extends plugin_base {
         $mform->addElement('select', 'filter_semester', $elestr, $semesteroptions);
         $mform->setType('filter_semester', PARAM_RAW);
     }
-
 }

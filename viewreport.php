@@ -116,7 +116,6 @@ if (!$download) {
 
     // Print the report HTML.
     $reportclass->print_report_page($PAGE);
-
 } else {
     // Large exports are likely to take their time and memory.
     core_php_time_limit::raise();

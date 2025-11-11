@@ -34,7 +34,6 @@ require_once($CFG->libdir . '/formslib.php');
  * @author    Juan leyva <http://www.twitter.com/jleyvadelgado>
  */
 class customsql_form extends moodleform {
-
     // Based on Custom SQL Reports Plugin.
     // See http://moodle.org/mod/data/view.php?d=13&rid=2884.
 
@@ -64,8 +63,7 @@ class customsql_form extends moodleform {
         $mform->addElement('static', 'note', '', get_string('listofsqlreports', 'block_configurable_reports'));
 
         if ($userandrepo = get_config('block_configurable_reports', 'sharedsqlrepository')) {
-
-            $github = new \block_configurable_reports\github;
+            $github = new \block_configurable_reports\github();
             $github->set_repo($userandrepo);
             $res = $github->get('/contents');
             $res = json_decode($res);
@@ -134,15 +132,12 @@ class customsql_form extends moodleform {
         $regex = '/\b(ALTER|CREATE|DELETE|DROP|GRANT|INSERT|INTO|TRUNCATE|UPDATE|SET|VACUUM|REINDEX|DISCARD|LOCK)\b/i';
         if (preg_match($regex, $sql)) {
             $errors['querysql'] = get_string('notallowedwords', 'block_configurable_reports');
-
         } else if (strpos($sql, ';') !== false) {
             // Do not allow any semicolons.
             $errors['querysql'] = get_string('nosemicolon', 'block_configurable_reports');
-
         } else if ($CFG->prefix != '' && preg_match('/\b' . $CFG->prefix . '\w+/i', $sql)) {
             // Make sure prefix is prefix_, not explicit.
             $errors['querysql'] = get_string('noexplicitprefix', 'block_configurable_reports');
-
         } else {
             // Now try running the SQL, and ensure it runs without errors.
 
@@ -154,7 +149,6 @@ class customsql_form extends moodleform {
                 $errors['querysql'] = get_string('queryfailed', 'block_configurable_reports', $e->error);
             }
             if ($rs && !empty($data['singlerow'])) {
-
                 // TODO check where rs_EOF is defined.
                 if (rs_EOF($rs)) {
                     $errors['querysql'] = get_string('norowsreturned', 'block_configurable_reports');
@@ -187,9 +181,10 @@ class customsql_form extends moodleform {
         if (preg_match('/\b(ALTER|DELETE|DROP|GRANT|TRUNCATE|UPDATE|SET|VACUUM|REINDEX|DISCARD|LOCK)\b/i', $sql)) {
             // Only allow INSERT|INTO|CREATE in low security.
             $errors['querysql'] = get_string('notallowedwords', 'block_configurable_reports');
-
-        } else if (preg_match('/\b(INSERT|INTO|CREATE)\b/i', $sql) &&
-            empty($CFG->block_configurable_reports_enable_sql_execution)) {
+        } else if (
+            preg_match('/\b(INSERT|INTO|CREATE)\b/i', $sql) &&
+            empty($CFG->block_configurable_reports_enable_sql_execution)
+        ) {
             // Only allow INSERT|INTO|CREATE in low security when SQL execution is enabled in the server.
             $errors['querysql'] = get_string('notallowedwords', 'block_configurable_reports');
         } else {
@@ -211,5 +206,4 @@ class customsql_form extends moodleform {
 
         return $errors;
     }
-
 }

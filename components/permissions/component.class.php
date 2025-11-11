@@ -30,7 +30,6 @@
  * @author    Juan leyva <http://www.twitter.com/jleyvadelgado>
  */
 class component_permissions extends component_base {
-
     /**
      * Init
      *
@@ -102,7 +101,6 @@ class component_permissions extends component_base {
         }
 
         return $cond;
-
     }
 
     /**
@@ -115,7 +113,7 @@ class component_permissions extends component_base {
         global $DB;
 
         if ($this->form) {
-            $fdata = new stdclass;
+            $fdata = new stdclass();
             $components = cr_unserialize($this->config->components);
             $conditionsconfig = (object) ($components['permissions']['config'] ?? []);
 
@@ -132,7 +130,7 @@ class component_permissions extends component_base {
             }
 
             if (!array_key_exists('config', $components['permissions'])) {
-                $components['permissions']['config'] = new StdClass;
+                $components['permissions']['config'] = new StdClass();
             }
             $components['permissions']['config']->conditionexpr = $fdata->conditionexpr;
 
@@ -142,5 +140,4 @@ class component_permissions extends component_base {
             $cform->set_data($fdata);
         }
     }
-
 }

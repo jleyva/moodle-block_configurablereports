@@ -32,7 +32,6 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class component_conditions extends component_base {
-
     /**
      * Init
      *
@@ -81,7 +80,6 @@ class component_conditions extends component_base {
         $components = cr_unserialize($this->config->components);
 
         if (isset($components['conditions']['elements'])) {
-
             $elements = $components['conditions']['elements'];
             $count = count($elements);
             if ($count == 0 || $count == 1) {
@@ -116,9 +114,9 @@ class component_conditions extends component_base {
     public function form_set_data(moodleform $cform): void {
         global $DB;
         if ($this->form) {
-            $fdata = new stdclass;
+            $fdata = new stdclass();
             $components = cr_unserialize($this->config->components);
-            $conditionsconfig = (isset($components['conditions']['config'])) ? $components['conditions']['config'] : new stdclass;
+            $conditionsconfig = (isset($components['conditions']['config'])) ? $components['conditions']['config'] : new stdclass();
 
             if (!isset($conditionsconfig->conditionexpr)) {
                 $conditionsconfig->conditionexpr = '';
@@ -140,5 +138,4 @@ class component_conditions extends component_base {
             $cform->set_data($fdata);
         }
     }
-
 }

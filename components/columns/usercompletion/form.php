@@ -34,7 +34,6 @@ require_once($CFG->libdir . '/formslib.php');
  * @author    Juan leyva <http://www.twitter.com/jleyvadelgado>
  */
 class userstats_form extends moodleform {
-
     /**
      * Form definition
      */
@@ -77,5 +76,4 @@ class userstats_form extends moodleform {
 
         return $errors;
     }
-
 }

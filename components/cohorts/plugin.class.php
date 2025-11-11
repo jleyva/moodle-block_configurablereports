@@ -34,7 +34,6 @@ require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
  * @author    Juan leyva <http://www.twitter.com/jleyvadelgado>
  */
 class plugin_cohorts extends plugin_base {
-
     /**
      * Init
      *
@@ -117,7 +116,6 @@ class plugin_cohorts extends plugin_base {
         $cohortsoptions[0] = get_string('filter_all', 'block_configurable_reports');
 
         if (!empty($cohortslist)) {
-
             $cohorts = $remotedb->get_records_sql($sql);
 
             foreach ($cohorts as $c) {
@@ -129,5 +127,4 @@ class plugin_cohorts extends plugin_base {
         $mform->addElement('select', 'filter_cohorts', $elestr, $cohortsoptions);
         $mform->setType('filter_cohorts', PARAM_INT);
     }
-
 }

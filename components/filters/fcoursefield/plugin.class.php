@@ -32,7 +32,6 @@ require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
  * @author    Juan leyva <http://www.twitter.com/jleyvadelgado>
  */
 class plugin_fcoursefield extends plugin_base {
-
     /**
      * Init
      *
@@ -127,5 +126,4 @@ class plugin_fcoursefield extends plugin_base {
         $mform->addElement('select', 'filter_fcoursefield_' . $formdata->field, get_string($formdata->field), $filteroptions);
         $mform->setType('filter_courses', PARAM_BASE64);
     }
-
 }

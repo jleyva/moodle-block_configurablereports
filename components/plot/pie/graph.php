@@ -83,7 +83,6 @@ if (!empty($graphs)) {
     }
 
     if ($g['id'] == $id) {
-
         // Standard inclusions.
         include($CFG->dirroot . "/blocks/configurable_reports/lib/pChart/pData.class.php");
         include($CFG->dirroot . "/blocks/configurable_reports/lib/pChart/pChart.class.php");
@@ -98,7 +97,7 @@ if (!empty($graphs)) {
         }
 
         // Dataset definition.
-        $dataset = new pData;
+        $dataset = new pData();
 
         $dataset->AddPoint($series[1], "Serie1");
         // Invert/Reverse Hebrew labels so it can be rendered using PHP imagettftext().
@@ -135,5 +134,4 @@ if (!empty($graphs)) {
         ob_clean(); // Hack to clear output and send only IMAGE data to browser.
         $test->Stroke();
     }
-
 }

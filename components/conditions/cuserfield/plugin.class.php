@@ -32,7 +32,6 @@ require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
  * @author    Juan leyva <http://www.twitter.com/jleyvadelgado>
  */
 class plugin_cuserfield extends plugin_base {
-
     /**
      * Init
      *
@@ -60,7 +59,6 @@ class plugin_cuserfield extends plugin_base {
         }
 
         return get_string($data->field) . ' ' . $data->operator . ' ' . $data->value;
-
     }
 
     /**
@@ -77,7 +75,6 @@ class plugin_cuserfield extends plugin_base {
         $ilike = " LIKE ";
 
         if (strpos($data->field, 'profile_') === 0) {
-
             if ($data->value == "%%CURRENTUSER%%") {
                 $pfname = str_replace('profile_', '', $data->field);
                 $data->value = $user->profile[$pfname];
@@ -126,5 +123,4 @@ class plugin_cuserfield extends plugin_base {
 
         return [];
     }
-
 }

@@ -32,7 +32,6 @@ require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
  * @author    Juan leyva <http://www.twitter.com/jleyvadelgado>
  */
 class plugin_reportscapabilities extends plugin_base {
-
     /**
      * Init
      *
@@ -64,5 +63,4 @@ class plugin_reportscapabilities extends plugin_base {
     public function execute($userid): bool {
         return has_capability('moodle/site:viewreports', context_system::instance(), $userid);
     }
-
 }

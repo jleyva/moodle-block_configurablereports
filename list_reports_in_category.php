@@ -35,7 +35,7 @@ if (!$userandrepo = get_config('block_configurable_reports', 'sharedsqlrepositor
     die;
 }
 
-$github = new \block_configurable_reports\github;
+$github = new \block_configurable_reports\github();
 $github->set_repo($userandrepo);
 $res = $github->get('/contents/' . $category);
 

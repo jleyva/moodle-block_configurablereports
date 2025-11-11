@@ -32,7 +32,6 @@ namespace block_configurable_reports;
  * @author    Juan leyva <http://www.twitter.com/jleyvadelgado>
  */
 class github extends \curl {
-
     /**
      * @var string
      */
@@ -76,5 +75,4 @@ class github extends \curl {
 
         return parent::get($repolink, $params, $options);
     }
-
 }

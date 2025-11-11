@@ -429,7 +429,6 @@ function cr_print_table(object $table, bool $return = false) {
                             $keyouter .
                             $extraclass . '">' . $item . '</td>';
                     }
-
                 }
             }
             $output .= '</tr>' . "\n";
@@ -584,7 +583,7 @@ function cr_import_xml(string $xml, object $course) {
     $data = xmlize($xml, 1, 'UTF-8');
 
     if (isset($data['report']['@']['version'])) {
-        $newreport = new stdclass;
+        $newreport = new stdclass();
         foreach ($data['report']['#'] as $key => $val) {
             if ($key === 'components') {
                 $val[0]['#'] = base64_decode(trim($val[0]['#']));
@@ -592,7 +591,6 @@ function cr_import_xml(string $xml, object $course) {
                 $tempcomponents = cr_unserialize($val[0]['#']);
 
                 if (array_key_exists('customsql', $tempcomponents)) {
-
                     // Set current courseid.
                     $tempcomponents['customsql']['config']->courseid = $course->id;
                     $querysql = str_replace(["\'", '\"'], ["'", '"'], $tempcomponents['customsql']['config']->querysql);

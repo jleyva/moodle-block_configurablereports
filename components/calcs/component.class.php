@@ -30,7 +30,6 @@
  * @author    Juan leyva <http://www.twitter.com/jleyvadelgado>
  */
 class component_calcs extends component_base {
-
     /**
      * Init
      *
@@ -89,7 +88,6 @@ class component_calcs extends component_base {
             $config = $components['customsql']['config'] ?? (object) [];
 
             if (isset($config->querysql)) {
-
                 $courseid = isset($config->fieldscourseid) && !empty($config->fieldscourseid) ? $config->fieldscourseid : 0;
                 $sql = $config->querysql;
                 $sql = $reportclass->prepare_sql($sql, $courseid);
@@ -110,5 +108,4 @@ class component_calcs extends component_base {
         $mform->addElement('header', 'crformheader', get_string('coursefield', 'block_configurable_reports'), '');
         $mform->addElement('select', 'column', get_string('column', 'block_configurable_reports'), $options);
     }
-
 }

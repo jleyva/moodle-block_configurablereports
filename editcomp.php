@@ -148,12 +148,11 @@ $currenttab = $comp;
 require('tabs.php');
 
 if ($elements) {
-    $table = new stdclass;
+    $table = new stdclass();
     $table->head = [get_string('idnumber'), get_string('name'), get_string('summary'), get_string('edit')];
     $i = 0;
 
     foreach ($elements as $e) {
-
         if (empty($e)) {
             continue;
         }

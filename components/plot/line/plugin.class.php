@@ -32,7 +32,6 @@ require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
  * @author    Juan leyva <http://www.twitter.com/jleyvadelgado>
  */
 class plugin_line extends plugin_base {
-
     /**
      * Init
      *
@@ -93,7 +92,7 @@ class plugin_line extends plugin_base {
         }
 
         return $CFG->wwwroot . '/blocks/configurable_reports/components/plot/line/graph.php?reportid=' . $this->report->id .
-            '&id=' . $id . $params . '&amp;min=' . $minvalue . '&amp;max=' . $maxvalue  . '&courseid='.$this->report->courseid;
+            '&id=' . $id . $params . '&amp;min=' . $minvalue . '&amp;max=' . $maxvalue  . '&courseid=' . $this->report->courseid;
     }
 
     /**
@@ -115,5 +114,4 @@ class plugin_line extends plugin_base {
 
         return $series;
     }
-
 }
