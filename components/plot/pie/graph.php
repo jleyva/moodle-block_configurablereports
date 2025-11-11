@@ -88,6 +88,15 @@ if (!empty($graphs)) {
         include($CFG->dirroot . "/blocks/configurable_reports/lib/pChart/pData.class.php");
         include($CFG->dirroot . "/blocks/configurable_reports/lib/pChart/pChart.class.php");
 
+        if (count($series[1]) === 1 && reset($series[1]) === '') {
+            // This means there is no data, so we'll just print a 1x1 trasparent image to return a blank image,
+            // then kill the script.
+            $chart = new pChart(1, 1);
+            ob_clean();
+            $chart->Stroke();
+            die;
+        }
+
         // Dataset definition.
         $dataset = new pData;
 

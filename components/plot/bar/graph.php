@@ -85,6 +85,15 @@ if (!empty($graphs)) {
         require_once($CFG->dirroot . "/blocks/configurable_reports/lib/pChart2/class/pException.php");
         require_once($CFG->dirroot . "/blocks/configurable_reports/lib/pChart2/class/pCharts.php");
 
+        if (empty($series)) {
+            // This means there is no data, so we'll just print a 1x1 trasparent image to return a blank image,
+            // then kill the script.
+            $chart = new \pChart\pDraw(1, 1, true);
+            $chart->Stroke();
+            $chart->autoOutput();
+            die;
+        }
+
         // Dataset definition.
 
         $dataset = new \pChart\pData();
