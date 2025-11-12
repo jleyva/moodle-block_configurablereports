@@ -197,7 +197,13 @@ class plugin_fsearchuserfield extends plugin_base {
                 $columns = $remotedb->get_columns('user');
 
                 if (!array_key_exists($formdata->field, $columns)) {
-                    throw new moodle_exception('nosuchcolumn', 'error', '', null, "The column '{$formdata->field}' does not exist in the user table.");
+                    throw new moodle_exception(
+                        'nosuchcolumn',
+                        'error',
+                        '',
+                        null,
+                        "The column '{$formdata->field}' does not exist in the user table."
+                    );
                 }
 
                 $sql = "SELECT DISTINCT(" . $formdata->field . ") as ufield FROM {user} WHERE id $usql ORDER BY ufield ASC";

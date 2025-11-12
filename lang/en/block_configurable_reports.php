@@ -14,6 +14,9 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+// phpcs:ignoreFile moodle.Files.LangFilesOrdering.UnexpectedComment
+// phpcs:ignoreFile moodle.Files.LangFilesOrdering.IncorrectOrder
+
 /**
  * Configurable Reports a Moodle block for creating customizable reports
  *
@@ -26,7 +29,6 @@
 $string['addreport'] = "Add report";
 $string['blockname'] = "Configurable Reports";
 $string['calcs'] = "Calculations";
-$string['column'] = "Column";
 $string['columncalculations'] = "Column Calculations";
 $string['columns'] = "Columns";
 $string['conditions'] = "Conditions";

@@ -77,6 +77,7 @@ class report_sql extends report_base {
      * prepare_sql
      *
      * @param string $sql
+     * @param int $forcedcourseid the course id to use instead of the current course
      * @return array|string|string[]
      */
     public function prepare_sql(string $sql, int $forcedcourseid = 0) {

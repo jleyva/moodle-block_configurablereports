@@ -147,7 +147,7 @@ if ($ADMIN->fulltree) {
         '',
         PARAM_TEXT
     ));
-    // csv delimiters used in get_delimiter() of moodle lib/csvlib.class.php
+    // CSV delimiters used in get_delimiter() of moodle lib/csvlib.class.php.
     $csvdelimiteroptions = ['cfg' => 'cfg', 'colon' => 'colon', 'comma' => 'comma', 'semicolon' => 'semicolon', 'tab' => 'tab'];
     $settings->add(new admin_setting_configselect(
         'block_configurable_reports/csvdelimiter',

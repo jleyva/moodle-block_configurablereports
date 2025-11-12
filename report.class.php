@@ -265,7 +265,7 @@ abstract class report_base {
             }
 
             require_once('filter_form.php');
-            $filterform = new report_edit_form(null, $this);
+            $filterform = new report_edit_filter_form(null, $this);
 
             $filterform->set_data($formdata);
 
@@ -886,9 +886,10 @@ abstract class report_base {
 
         echo "</div>\n";
         if ($this->config->displayprintbutton) {
+            $string = get_string('printreport', 'block_configurable_reports');
             echo '<div class="centerpara"><br />';
-            echo $OUTPUT->pix_icon('print', get_string('printreport', 'block_configurable_reports'), 'block_configurable_reports');
-            echo "&nbsp;<a href=\"javascript: printDiv('printablediv')\">" . get_string('printreport', 'block_configurable_reports') . "</a>";
+            echo $OUTPUT->pix_icon('print', $string, 'block_configurable_reports');
+            echo "&nbsp;<a href=\"javascript: printDiv('printablediv')\">" . $string . "</a>";
             echo "</div>\n";
         }
     }
@@ -1006,9 +1007,10 @@ abstract class report_base {
         }
 
         if ($this->config->displayprintbutton) {
+            $string = get_string('printreport', 'block_configurable_reports');
             echo '<div class="centerpara"><br />';
-            echo $OUTPUT->pix_icon('print', get_string('printreport', 'block_configurable_reports'), 'block_configurable_reports');
-            echo "&nbsp;<a href=\"javascript: printDiv('printablediv')\">" . get_string('printreport', 'block_configurable_reports') . "</a>";
+            echo $OUTPUT->pix_icon('print', $string, 'block_configurable_reports');
+            echo "&nbsp;<a href=\"javascript: printDiv('printablediv')\">" . $string . "</a>";
             echo "</div>\n";
         }
     }

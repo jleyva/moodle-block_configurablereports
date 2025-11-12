@@ -96,10 +96,17 @@ class report_edit_form extends moodleform {
         $mform->addHelpButton('jsordering', 'jsordering', 'block_configurable_reports');
         $mform->setDefault('jsordering', 1);
 
-        $mform->addElement('checkbox', 'displaytotalrecords', get_string('displaytotalrecords', 'block_configurable_reports'), get_string('displaytotalrecordsdescription', 'block_configurable_reports'));
-        $mform->addElement('checkbox', 'displayprintbutton', get_string('displayprintbutton', 'block_configurable_reports'), get_string('displayprintbuttondescription', 'block_configurable_reports'));
+        $label = get_string('displaytotalrecords', 'block_configurable_reports');
+        $desc = get_string('displaytotalrecordsdescription', 'block_configurable_reports');
+        $mform->addElement('checkbox', 'displaytotalrecords', $label, $desc);
 
-        $mform->addElement('checkbox', 'cron', get_string('cron', 'block_configurable_reports'), get_string('crondescription', 'block_configurable_reports'));
+        $label = get_string('displayprintbutton', 'block_configurable_reports');
+        $desc = get_string('displayprintbuttondescription', 'block_configurable_reports');
+        $mform->addElement('checkbox', 'displayprintbutton', $label, $desc);
+
+        $label = get_string('cron', 'block_configurable_reports');
+        $desc = get_string('crondescription', 'block_configurable_reports');
+        $mform->addElement('checkbox', 'cron', $label, $desc);
         $mform->addHelpButton('cron', 'cron', 'block_configurable_reports');
         $mform->setDefault('cron', 0);
         $mform->disabledIf('cron', 'type', 'neq', 'sql');
