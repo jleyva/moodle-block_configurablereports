@@ -33,7 +33,6 @@ require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
  * @author    Juan leyva <http://www.twitter.com/jleyvadelgado>
  */
 class plugin_ccoursefield extends plugin_base {
-
     /**
      * Init
      *
@@ -53,7 +52,6 @@ class plugin_ccoursefield extends plugin_base {
      */
     public function summary(object $data): string {
         return get_string($data->field) . ' ' . $data->operator . ' ' . $data->value;
-
     }
 
     /**
@@ -86,5 +84,4 @@ class plugin_ccoursefield extends plugin_base {
 
         return [];
     }
-
 }

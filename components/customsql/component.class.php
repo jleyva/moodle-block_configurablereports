@@ -30,7 +30,6 @@
  * @author    Juan leyva <http://www.twitter.com/jleyvadelgado>
  */
 class component_customsql extends component_base {
-
     /**
      * Init
      *
@@ -76,9 +75,8 @@ class component_customsql extends component_base {
     public function form_set_data(moodleform $cform): void {
         if ($this->form) {
             $components = cr_unserialize($this->config->components);
-            $sqlconfig = $components['customsql']['config'] ?? new stdclass;
+            $sqlconfig = $components['customsql']['config'] ?? new stdclass();
             $cform->set_data($sqlconfig);
         }
     }
-
 }

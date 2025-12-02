@@ -34,7 +34,6 @@ require_once($CFG->libdir . '/formslib.php');
  * @author    Juan leyva <http://www.twitter.com/jleyvadelgado>
  */
 class cuserfield_form extends moodleform {
-
     /**
      * @var string[]
      */
@@ -80,7 +79,6 @@ class cuserfield_form extends moodleform {
         $mform->setType('value', PARAM_RAW);
         // Buttons.
         $this->add_action_buttons(true, get_string('add'));
-
     }
 
     /**
@@ -121,5 +119,4 @@ class cuserfield_form extends moodleform {
 
         return $errors;
     }
-
 }

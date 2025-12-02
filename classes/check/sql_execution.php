@@ -33,7 +33,6 @@ use core\check\result;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class sql_execution extends \core\check\check {
-
     /**
      * Return result
      *
@@ -53,6 +52,4 @@ class sql_execution extends \core\check\check {
 
         return new result($status, $summary, $details);
     }
-
 }
-

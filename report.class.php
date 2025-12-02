@@ -35,7 +35,6 @@ require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 abstract class report_base {
-
     /**
      * @var int
      */
@@ -122,15 +121,16 @@ abstract class report_base {
         $remotedbuser = get_config('block_configurable_reports', 'dbuser');
         $remotedbpass = get_config('block_configurable_reports', 'dbpass');
 
-        if (!empty($remotedbhost) && !empty($remotedbname) && !empty($remotedbuser) && !empty($remotedbpass) &&
-            $this->config->remote) {
+        if (
+            !empty($remotedbhost) && !empty($remotedbname) && !empty($remotedbuser) && !empty($remotedbpass) &&
+            $this->config->remote
+        ) {
             $dbclass = get_class($DB);
             $remotedb = new $dbclass();
             $remotedb->connect($remotedbhost, $remotedbuser, $remotedbpass, $remotedbname, $CFG->prefix);
         } else {
             $remotedb = $DB;
         }
-
     }
 
     /**
@@ -174,7 +174,6 @@ abstract class report_base {
         $i = 1;
         $cond = [];
         foreach ($permissions['elements'] as $p) {
-
             require_once($CFG->dirroot . '/blocks/configurable_reports/components/permissions/' . $p['pluginname'] .
                 '/plugin.class.php');
             $classname = 'plugin_' . $p['pluginname'];
@@ -187,7 +186,7 @@ abstract class report_base {
             return $cond[1];
         }
 
-        $m = new EvalMath;
+        $m = new EvalMath();
         $orig = $dest = [];
 
         if (isset($permissions['config']->conditionexpr)) {
@@ -225,7 +224,6 @@ abstract class report_base {
 
         require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
         foreach ($filters as $f) {
-
             if (is_array($f['pluginname'])) {
                 $f['pluginname'] = $f['pluginname'][0];
             }
@@ -236,7 +234,6 @@ abstract class report_base {
             $class = new $classname($this->config);
 
             $finalelements = $class->print_filter($mform, $f['formdata']);
-
         }
     }
 
@@ -251,8 +248,7 @@ abstract class report_base {
         $filters = $components['filters']['elements'] ?? [];
 
         if (!empty($filters)) {
-
-            $formdata = new stdclass;
+            $formdata = new stdclass();
             $request = array_merge($_POST, $_GET);
             if ($request) {
                 foreach ($request as $key => $val) {
@@ -269,7 +265,7 @@ abstract class report_base {
             }
 
             require_once('filter_form.php');
-            $filterform = new report_edit_form(null, $this);
+            $filterform = new report_edit_filter_form(null, $this);
 
             $filterform->set_data($formdata);
 
@@ -339,7 +335,6 @@ abstract class report_base {
             unset($request['id']);
 
             foreach ($request as $key => $val) {
-
                 $key = s(clean_param($key, PARAM_CLEANHTML));
 
                 if (is_array($val)) {
@@ -363,7 +358,6 @@ abstract class report_base {
             $output .= get_string('downloadreport', 'block_configurable_reports') . ': ';
 
             foreach ($export as $e) {
-
                 if (empty($e)) {
                     continue;
                 }
@@ -464,7 +458,6 @@ abstract class report_base {
         $finalcalcs = [];
         if (!empty($calcs)) {
             foreach ($calcs as $calc) {
-
                 if (!isset($calc['formdata']->column)) {
                     continue;
                 }
@@ -483,7 +476,6 @@ abstract class report_base {
             }
 
             foreach ($calcs as $calc) {
-
                 if (is_array($calc['pluginname'])) {
                     $calc['pluginname'] = $calc['pluginname'][0];
                 }
@@ -504,7 +496,6 @@ abstract class report_base {
             }
 
             ksort($finalcalcs);
-
         }
 
         return $finalcalcs;
@@ -618,7 +609,6 @@ abstract class report_base {
 
         if ($rows) {
             foreach ($rows as $r) {
-
                 $tempcols = [];
                 foreach ($columns as $c) {
                     if (empty($c)) {
@@ -652,7 +642,6 @@ abstract class report_base {
                         $tablesize[] = $size;
                         $tablewrap[] = $wrap;
                     }
-
                 }
                 $firstrow = false;
                 $reporttable[] = $tempcols;
@@ -698,7 +687,7 @@ abstract class report_base {
 
         // Make the table, head, columns, etc...
 
-        $table = new stdClass;
+        $table = new stdClass();
         $table->id = 'reporttable';
         $table->data = $finaltable;
         $table->head = $tablehead;
@@ -723,14 +712,13 @@ abstract class report_base {
             (isset($components['columns']['config'])) ? $components['columns']['config']->class : 'generaltable';
 
         if (!$this->finalreport) {
-            $this->finalreport = new stdClass;
+            $this->finalreport = new stdClass();
         }
         $this->finalreport->name = $this->config->name;
         $this->finalreport->table = $table;
         $this->finalreport->calcs = $calcs;
 
         return true;
-
     }
 
     /**
@@ -864,7 +852,7 @@ abstract class report_base {
         if ($this->config->displaytotalrecords) {
             $a = new \stdClass();
             $a->totalrecords = $this->totalrecords;
-            echo \html_writer::tag('div', get_string('totalrecords', 'block_configurable_reports', $a), array('id' => 'totalrecords'));
+            echo \html_writer::tag('div', get_string('totalrecords', 'block_configurable_reports', $a), ['id' => 'totalrecords']);
         }
 
         if ($recordtpl) {
@@ -898,9 +886,10 @@ abstract class report_base {
 
         echo "</div>\n";
         if ($this->config->displayprintbutton) {
+            $string = get_string('printreport', 'block_configurable_reports');
             echo '<div class="centerpara"><br />';
-            echo $OUTPUT->pix_icon('print', get_string('printreport', 'block_configurable_reports'), 'block_configurable_reports');
-            echo "&nbsp;<a href=\"javascript: printDiv('printablediv')\">".get_string('printreport', 'block_configurable_reports')."</a>";
+            echo $OUTPUT->pix_icon('print', $string, 'block_configurable_reports');
+            echo "&nbsp;<a href=\"javascript: printDiv('printablediv')\">" . $string . "</a>";
             echo "</div>\n";
         }
     }
@@ -942,7 +931,6 @@ abstract class report_base {
 
         $this->print_filters();
         if ($this->finalreport->table && !empty($this->finalreport->table->data[0])) {
-
             echo "<div id=\"printablediv\">\n";
             $this->print_graphs();
 
@@ -1012,16 +1000,17 @@ abstract class report_base {
             $this->print_export_options();
         } else {
             if (isset($this->filterform) && !$this->filterform->get_data()) {
-                echo '<div class="centerpara">'.get_string('applyfilters', 'block_configurable_reports').'</div>';
+                echo '<div class="centerpara">' . get_string('applyfilters', 'block_configurable_reports') . '</div>';
             } else {
-                echo '<div class="centerpara">'.get_string('norecordsfound', 'block_configurable_reports').'</div>';
+                echo '<div class="centerpara">' . get_string('norecordsfound', 'block_configurable_reports') . '</div>';
             }
         }
 
         if ($this->config->displayprintbutton) {
+            $string = get_string('printreport', 'block_configurable_reports');
             echo '<div class="centerpara"><br />';
-            echo $OUTPUT->pix_icon('print', get_string('printreport', 'block_configurable_reports'), 'block_configurable_reports');
-            echo "&nbsp;<a href=\"javascript: printDiv('printablediv')\">".get_string('printreport', 'block_configurable_reports')."</a>";
+            echo $OUTPUT->pix_icon('print', $string, 'block_configurable_reports');
+            echo "&nbsp;<a href=\"javascript: printDiv('printablediv')\">" . $string . "</a>";
             echo "</div>\n";
         }
     }
@@ -1037,5 +1026,4 @@ abstract class report_base {
 
         return implode('', array_reverse($ar[0]));
     }
-
 }

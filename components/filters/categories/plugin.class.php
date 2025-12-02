@@ -32,7 +32,6 @@ require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
  * @author    Juan leyva <http://www.twitter.com/jleyvadelgado>
  */
 class plugin_categories extends plugin_base {
-
     /**
      * Init
      *
@@ -119,5 +118,4 @@ class plugin_categories extends plugin_base {
         $mform->addElement('select', 'filter_categories', get_string('category'), $courseoptions);
         $mform->setType('filter_categories', PARAM_INT);
     }
-
 }

@@ -34,8 +34,7 @@ require_once($CFG->libdir . '/formslib.php');
  * @package   block_configurable_reports
  * @author    Juan leyva <http://www.twitter.com/jleyvadelgado>
  */
-class report_edit_form extends moodleform {
-
+class report_edit_filter_form extends moodleform {
     /**
      * Form definition
      */
@@ -56,5 +55,4 @@ class report_edit_form extends moodleform {
         // Buttons.
         $this->add_action_buttons(true, get_string('filter_apply', 'block_configurable_reports'));
     }
-
 }

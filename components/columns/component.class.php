@@ -30,7 +30,6 @@
  * @author    Juan leyva <http://www.twitter.com/jleyvadelgado>
  */
 class component_columns extends component_base {
-
     /**
      * Init
      *
@@ -132,12 +131,11 @@ class component_columns extends component_base {
      */
     public function form_set_data(moodleform $cform): void {
         if ($this->form) {
-            $fdata = new stdclass;
+            $fdata = new stdclass();
             $components = cr_unserialize($this->config->components);
 
             $fdata = $components['columns']['config'] ?? $fdata;
             $cform->set_data($fdata);
         }
     }
-
 }

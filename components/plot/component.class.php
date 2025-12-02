@@ -30,7 +30,6 @@
  * @author    Juan leyva <http://www.twitter.com/jleyvadelgado>
  */
 class component_plot extends component_base {
-
     /**
      * Init
      *
@@ -42,5 +41,4 @@ class component_plot extends component_base {
         $this->form = false;
         $this->help = true;
     }
-
 }

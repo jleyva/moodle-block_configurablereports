@@ -83,13 +83,21 @@ if (!empty($graphs)) {
     }
 
     if ($g['id'] == $id) {
-
         // Standard inclusions.
         include($CFG->dirroot . "/blocks/configurable_reports/lib/pChart/pData.class.php");
         include($CFG->dirroot . "/blocks/configurable_reports/lib/pChart/pChart.class.php");
 
+        if (count($series[1]) === 1 && reset($series[1]) === '') {
+            // This means there is no data, so we'll just print a 1x1 trasparent image to return a blank image,
+            // then kill the script.
+            $chart = new pChart(1, 1);
+            ob_clean();
+            $chart->Stroke();
+            die;
+        }
+
         // Dataset definition.
-        $dataset = new pData;
+        $dataset = new pData();
 
         $dataset->AddPoint($series[1], "Serie1");
         // Invert/Reverse Hebrew labels so it can be rendered using PHP imagettftext().
@@ -104,8 +112,8 @@ if (!empty($graphs)) {
 
         // Initialise the graph.
         $test = new pChart(450, 200 + (count($series[0]) * 10));
+        $test->drawFilledRoundedRectangle(5, 5, 295, 195, 5, 230, 230, 230);
         $test->drawFilledRoundedRectangle(7, 7, 293, 193, 5, 240, 240, 240);
-        $test->drawRoundedRectangle(5, 5, 295, 195, 5, 230, 230, 230);
         $test->createColorGradientPalette(195, 204, 56, 223, 110, 41, 5);
 
         // Custom colors.
@@ -126,5 +134,4 @@ if (!empty($graphs)) {
         ob_clean(); // Hack to clear output and send only IMAGE data to browser.
         $test->Stroke();
     }
-
 }

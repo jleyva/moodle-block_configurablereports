@@ -30,7 +30,6 @@
  * @author    Juan leyva <http://www.twitter.com/jleyvadelgado>
  */
 class block_configurable_reports_edit_form extends block_edit_form {
-
     /**
      * specific_definition
      *
@@ -59,5 +58,4 @@ class block_configurable_reports_edit_form extends block_edit_form {
         );
         $mform->setDefault('config_displayglobalreports', 1);
     }
-
 }

@@ -28,26 +28,42 @@ defined('MOODLE_INTERNAL') || die;
 if ($ADMIN->fulltree) {
     $settings->add(
         new admin_setting_configtext(
-            'block_configurable_reports/dbhost', get_string('dbhost', 'block_configurable_reports'),
-            get_string('dbhostinfo', 'block_configurable_reports'), '', PARAM_URL, 30
+            'block_configurable_reports/dbhost',
+            get_string('dbhost', 'block_configurable_reports'),
+            get_string('dbhostinfo', 'block_configurable_reports'),
+            '',
+            PARAM_URL,
+            30
         )
     );
     $settings->add(
         new admin_setting_configtext(
-            'block_configurable_reports/dbname', get_string('dbname', 'block_configurable_reports'),
-            get_string('dbnameinfo', 'block_configurable_reports'), '', PARAM_RAW, 30
+            'block_configurable_reports/dbname',
+            get_string('dbname', 'block_configurable_reports'),
+            get_string('dbnameinfo', 'block_configurable_reports'),
+            '',
+            PARAM_RAW,
+            30
         )
     );
     $settings->add(
         new admin_setting_configpasswordunmask(
-            'block_configurable_reports/dbuser', get_string('dbuser', 'block_configurable_reports'),
-            get_string('dbuserinfo', 'block_configurable_reports'), '', PARAM_RAW, 30
+            'block_configurable_reports/dbuser',
+            get_string('dbuser', 'block_configurable_reports'),
+            get_string('dbuserinfo', 'block_configurable_reports'),
+            '',
+            PARAM_RAW,
+            30
         )
     );
     $settings->add(
         new admin_setting_configpasswordunmask(
-            'block_configurable_reports/dbpass', get_string('dbpass', 'block_configurable_reports'),
-            get_string('dbpassinfo', 'block_configurable_reports'), '', PARAM_RAW, 30
+            'block_configurable_reports/dbpass',
+            get_string('dbpass', 'block_configurable_reports'),
+            get_string('dbpassinfo', 'block_configurable_reports'),
+            '',
+            PARAM_RAW,
+            30
         )
     );
 
@@ -63,8 +79,10 @@ if ($ADMIN->fulltree) {
 
     $settings->add(
         new admin_setting_configcheckbox(
-            'block_configurable_reports/sqlsecurity', get_string('sqlsecurity', 'block_configurable_reports'),
-            get_string('sqlsecurityinfo', 'block_configurable_reports'), 1
+            'block_configurable_reports/sqlsecurity',
+            get_string('sqlsecurity', 'block_configurable_reports'),
+            get_string('sqlsecurityinfo', 'block_configurable_reports'),
+            1
         )
     );
 
@@ -92,37 +110,59 @@ if ($ADMIN->fulltree) {
 
     $settings->add(
         new admin_setting_configcheckbox(
-            'block_configurable_reports/sqlsyntaxhighlight', get_string('sqlsyntaxhighlight', 'block_configurable_reports'),
-            get_string('sqlsyntaxhighlightinfo', 'block_configurable_reports'), 1
+            'block_configurable_reports/sqlsyntaxhighlight',
+            get_string('sqlsyntaxhighlight', 'block_configurable_reports'),
+            get_string('sqlsyntaxhighlightinfo', 'block_configurable_reports'),
+            1
         )
     );
 
     $reporttableoptions = ['html' => 'Simple', 'jquery' => 'jQuery', 'datatables' => 'DataTables JS'];
     $settings->add(
         new admin_setting_configselect(
-            'block_configurable_reports/reporttableui', get_string('reporttableui', 'block_configurable_reports'),
-            get_string('reporttableuiinfo', 'block_configurable_reports'), 'datatables', $reporttableoptions
+            'block_configurable_reports/reporttableui',
+            get_string('reporttableui', 'block_configurable_reports'),
+            get_string('reporttableuiinfo', 'block_configurable_reports'),
+            'datatables',
+            $reporttableoptions
         )
     );
 
     $settings->add(
         new admin_setting_configtext(
-            'block_configurable_reports/reportlimit', get_string('reportlimit', 'block_configurable_reports'),
-            get_string('reportlimitinfo', 'block_configurable_reports'), '5000', PARAM_INT, 6
+            'block_configurable_reports/reportlimit',
+            get_string('reportlimit', 'block_configurable_reports'),
+            get_string('reportlimitinfo', 'block_configurable_reports'),
+            '5000',
+            PARAM_INT,
+            6
         )
     );
 
 
-    $settings->add(new admin_setting_configtext('block_configurable_reports/allowedsqlusers', get_string('allowedsqlusers', 'block_configurable_reports'),
-        get_string('allowedsqlusersinfo', 'block_configurable_reports'), '', PARAM_TEXT));
-    // csv delimiters used in get_delimiter() of moodle lib/csvlib.class.php
-    $csvdelimiteroptions= array('cfg'=>'cfg','colon'=>'colon','comma'=>'comma','semicolon'=>'semicolon','tab'=>'tab');
-    $settings->add(new admin_setting_configselect('block_configurable_reports/csvdelimiter', get_string('csvdelimiter', 'block_configurable_reports'), 
-        get_string('csvdelimiterinfo', 'block_configurable_reports'), 'cfg', $csvdelimiteroptions));
+    $settings->add(new admin_setting_configtext(
+        'block_configurable_reports/allowedsqlusers',
+        get_string('allowedsqlusers', 'block_configurable_reports'),
+        get_string('allowedsqlusersinfo', 'block_configurable_reports'),
+        '',
+        PARAM_TEXT
+    ));
+    // CSV delimiters used in get_delimiter() of moodle lib/csvlib.class.php.
+    $csvdelimiteroptions = ['cfg' => 'cfg', 'colon' => 'colon', 'comma' => 'comma', 'semicolon' => 'semicolon', 'tab' => 'tab'];
+    $settings->add(new admin_setting_configselect(
+        'block_configurable_reports/csvdelimiter',
+        get_string('csvdelimiter', 'block_configurable_reports'),
+        get_string('csvdelimiterinfo', 'block_configurable_reports'),
+        'cfg',
+        $csvdelimiteroptions
+    ));
     $settings->add(
         new admin_setting_configtext(
-            'block_configurable_reports/allowedsqlusers', get_string('allowedsqlusers', 'block_configurable_reports'),
-            get_string('allowedsqlusersinfo', 'block_configurable_reports'), '', PARAM_TEXT
+            'block_configurable_reports/allowedsqlusers',
+            get_string('allowedsqlusers', 'block_configurable_reports'),
+            get_string('allowedsqlusersinfo', 'block_configurable_reports'),
+            '',
+            PARAM_TEXT
         )
     );
 }

@@ -34,7 +34,6 @@ require_once($CFG->libdir . '/formslib.php');
  * @author    Juan leyva <http://www.twitter.com/jleyvadelgado>
  */
 class bar_form extends moodleform {
-
     /**
      * Form definition
      */
@@ -69,7 +68,7 @@ class bar_form extends moodleform {
             $reportclass = new $reportclassname($report);
 
             $components = cr_unserialize($report->components);
-            $config = $components['customsql']['config'] ?? new stdclass;
+            $config = $components['customsql']['config'] ?? new stdclass();
 
             if (isset($config->querysql)) {
                 $courseid = isset($config->fieldscourseid) && !empty($config->fieldscourseid) ? $config->fieldscourseid : 0;
@@ -121,5 +120,4 @@ class bar_form extends moodleform {
         // Buttons.
         $this->add_action_buttons(true, get_string('add'));
     }
-
 }

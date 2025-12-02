@@ -14,6 +14,9 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+// phpcs:ignoreFile moodle.Files.LangFilesOrdering.UnexpectedComment
+// phpcs:ignoreFile moodle.Files.LangFilesOrdering.IncorrectOrder
+
 /**
  * Configurable Reports a Moodle block for creating customizable reports
  *
@@ -23,46 +26,45 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-$string['pluginname'] = "Configurable Reports";
+$string['addreport'] = "Add report";
 $string['blockname'] = "Configurable Reports";
-$string['report_courses'] = "Courses report";
-$string['report_users'] = "Users report";
-$string['report_sql'] = "SQL Report";
-$string['managereports'] = "Manage reports";
-
-$string['report'] = "Report";
-$string['reports'] = "Reports";
-
+$string['calcs'] = "Calculations";
+$string['columncalculations'] = "Column Calculations";
 $string['columns'] = "Columns";
 $string['conditions'] = "Conditions";
-$string['permissions'] = "Permissions";
-$string['plot'] = "Plot - Graphs";
-$string['filters'] = "Filters	";
-$string['calcs'] = "Calculations";
-$string['ordering'] = "Ordering";
-$string['customsql'] = "Custom SQL";
-$string['addreport'] = "Add report";
-$string['type'] = "Type of report";
-$string['columncalculations'] = "Column Calculations";
-$string['newreport'] = "New report";
-$string['column'] = "Column";
-$string['confirmdeletereport'] = "Are you sure you want to delete this report?";
-$string['noreportsavailable'] = "No reports available";
-$string['downloadreport'] = "Download report";
-$string['reportlimit'] = "Report row limit";
-$string['reportlimitinfo'] = "Limit the number of rows that are displayed in the report table
-    (Default is 5000 rows. Better to have some limit, so users will not over load the DB engine)";
-
 $string['configurable_reports:addinstance'] = 'Add a new configurable reports block';
-$string['configurable_reports:myaddinstance'] = 'Add a new configurable reports block to MY HOME page';
 $string['configurable_reports:manageownreports'] = "Manage own reports";
 $string['configurable_reports:managereports'] = "Manage reports";
 $string['configurable_reports:managesqlreports'] = "Manage SQL reports";
+$string['configurable_reports:myaddinstance'] = 'Add a new configurable reports block to MY HOME page';
 $string['configurable_reports:viewreports'] = "View reports";
-
-$string['exportoptions'] = "Export options";
+$string['confirmdeletereport'] = "Are you sure you want to delete this report?";
+$string['customsql'] = "Custom SQL";
+$string['downloadreport'] = "Download report";
 $string['embedoptions'] = "Embed options";
+$string['exportoptions'] = "Export options";
 $string['field'] = "Field";
+$string['filters'] = "Filters	";
+$string['managereports'] = "Manage reports";
+$string['newreport'] = "New report";
+$string['noreportsavailable'] = "No reports available";
+$string['ordering'] = "Ordering";
+$string['permissions'] = "Permissions";
+$string['plot'] = "Plot - Graphs";
+$string['pluginname'] = "Configurable Reports";
+$string['report'] = "Report";
+$string['report_courses'] = "Courses report";
+$string['report_sql'] = "SQL Report";
+$string['report_users'] = "Users report";
+
+$string['reportlimit'] = "Report row limit";
+$string['reportlimitinfo'] = "Limit the number of rows that are displayed in the report table
+    (Default is 5000 rows. Better to have some limit, so users will not over load the DB engine)";
+$string['reports'] = "Reports";
+
+$string['type'] = "Type of report";
+
+
 
 // Report form.
 $string['applyfilters'] = "Apply filters to run the report";
@@ -587,4 +589,3 @@ arbitrary code. SQL code execution should be disable to only allow SQL queries f
 be disabled in your config.php file by setting $CFG->block_configurable_reports_enable_sql_execution to 0';
 $string['csvdelimiter'] = 'CSV delimiter';
 $string['csvdelimiterinfo'] = 'CSV delimiter: "colon" for ":", "comma" for ",", semicolon for ";",  "tab" for "\t" and "cfg" for character configured in "CFG->CSV_DELIMITER" of the config.php file.';
-

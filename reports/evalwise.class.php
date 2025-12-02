@@ -30,7 +30,6 @@
  * @author    Juan leyva <http://www.twitter.com/jleyvadelgado>
  */
 class EvalWise extends EvalMath {
-
     /**
      * @var array
      */
@@ -65,13 +64,11 @@ class EvalWise extends EvalMath {
             return false;
         }
 
-        $stack = new EvalMathStack;
+        $stack = new EvalMathStack();
 
         foreach ($tokens as $token) {
-
             // If the token is a function, pop arguments off the stack, hand them to the function, and push the result back on.
             if (is_array($token)) {
-
                 // It's a function!
                 $fnn = $token['fnn'];
                 $count = $token['argcount'];
@@ -96,7 +93,6 @@ class EvalWise extends EvalMath {
                      */
                     eval('$stack->push(' . $fnn . '($op1));'); // Perfectly safe eval().
                     // @codingStandardsIgnoreEnd
-
                 } else if (array_key_exists($fnn, $this->fc)) { // Calc emulation function.
                     // Get args.
                     $args = [];
@@ -149,7 +145,6 @@ class EvalWise extends EvalMath {
                         $this->data[$this->index] = array_intersect($this->data[$op1], $this->data[$op2]);
                         break;
                 }
-
             } else if ($token === "_") {
                 // If the token is a unary operator, pop one value off the stack, do the operation, and push it back on.
                 $stack->push(-1 * $stack->pop());
@@ -175,5 +170,4 @@ class EvalWise extends EvalMath {
 
         return $this->data[$last] ?? false;
     }
-
 }

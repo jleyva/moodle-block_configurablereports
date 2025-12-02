@@ -43,8 +43,10 @@ if ($course->id == SITEID) {
     $context = context_course::instance($course->id);
 }
 
-if (!has_capability('block/configurable_reports:managereports', $context) &&
-    !has_capability('block/configurable_reports:manageownreports', $context)) {
+if (
+    !has_capability('block/configurable_reports:managereports', $context) &&
+    !has_capability('block/configurable_reports:manageownreports', $context)
+) {
     throw new moodle_exception('badpermissions');
 }
 
@@ -105,7 +107,7 @@ $PAGE->requires->js_init_call('M.block_configurable_reports.loadReportCategories
 echo $OUTPUT->header();
 
 if ($reports) {
-    $table = new stdclass;
+    $table = new stdclass();
     $table->width = "100%";
     $table->head = [
         get_string('name'),
@@ -170,7 +172,6 @@ if ($reports) {
             $editcell .= '<a title="' . $strexport . '" href="export.php?id=' . $r->id . '&amp;sesskey=' . $USER->sesskey . '">' .
                 $OUTPUT->pix_icon('t/backup', $strexport) .
                 '</a>&nbsp;&nbsp;';
-
         }
 
         $download = '';

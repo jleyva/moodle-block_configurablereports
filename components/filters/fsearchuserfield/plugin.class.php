@@ -32,7 +32,6 @@ require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
  * @author    Juan leyva <http://www.twitter.com/jleyvadelgado>
  */
 class plugin_fsearchuserfield extends plugin_base {
-
     /**
      * Init
      *
@@ -122,9 +121,7 @@ class plugin_fsearchuserfield extends plugin_base {
                         return $finalusersid;
                     }
                 }
-
             } else {
-
                 [$usql, $params] = $remotedb->get_in_or_equal($finalelements);
                 $sql = "$data->field LIKE ? AND id $usql";
                 $params = array_merge(["%$filter%"], $params);
@@ -178,7 +175,6 @@ class plugin_fsearchuserfield extends plugin_base {
         }
 
         if (!empty($userlist)) {
-
             if (strpos($formdata->field, 'profile_') === 0) {
                 $conditions = ['shortname' => str_replace('profile_', '', $formdata->field)];
                 if ($field = $remotedb->get_record('user_info_field', $conditions)) {
@@ -194,7 +190,6 @@ class plugin_fsearchuserfield extends plugin_base {
                         }
                     }
                 }
-
             } else {
                 $selectname = get_string($formdata->field);
 
@@ -202,7 +197,13 @@ class plugin_fsearchuserfield extends plugin_base {
                 $columns = $remotedb->get_columns('user');
 
                 if (!array_key_exists($formdata->field, $columns)) {
-                    throw new moodle_exception('nosuchcolumn', 'error', '', null, "The column '{$formdata->field}' does not exist in the user table.");
+                    throw new moodle_exception(
+                        'nosuchcolumn',
+                        'error',
+                        '',
+                        null,
+                        "The column '{$formdata->field}' does not exist in the user table."
+                    );
                 }
 
                 $sql = "SELECT DISTINCT(" . $formdata->field . ") as ufield FROM {user} WHERE id $usql ORDER BY ufield ASC";
@@ -218,5 +219,4 @@ class plugin_fsearchuserfield extends plugin_base {
         $mform->addElement('select', 'filter_fuserfield_' . $formdata->field, $selectname, $filteroptions);
         $mform->setType('filter_fuserfield_' . $formdata->field, PARAM_INT);
     }
-
 }

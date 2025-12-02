@@ -34,7 +34,6 @@ require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
  * @author    Juan leyva <http://www.twitter.com/jleyvadelgado>
  */
 class plugin_competencytemplates extends plugin_base {
-
     /**
      * Init
      *
@@ -116,7 +115,6 @@ class plugin_competencytemplates extends plugin_base {
         $competencytemplatesoptions[0] = get_string('filter_all', 'block_configurable_reports');
 
         if (!empty($competencytemplateslist)) {
-
             $competencytemplates = $remotedb->get_records_sql($sql);
 
             foreach ($competencytemplates as $c) {
@@ -128,5 +126,4 @@ class plugin_competencytemplates extends plugin_base {
         $mform->addElement('select', 'filter_competencytemplates', $elestr, $competencytemplatesoptions);
         $mform->setType('filter_competencytemplates', PARAM_INT);
     }
-
 }

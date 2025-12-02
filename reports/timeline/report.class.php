@@ -32,7 +32,6 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class report_timeline extends report_base {
-
     /**
      * @var mixed
      */
@@ -68,7 +67,6 @@ class report_timeline extends report_base {
         $config = $components['timeline']['config'] ?? new stdclass();
 
         if (isset($config->timemode)) {
-
             $daysecs = 60 * 60 * 24;
 
             if ($config->timemode === 'previous') {
@@ -130,7 +128,5 @@ class report_timeline extends report_base {
         }
 
         return [];
-
     }
-
 }

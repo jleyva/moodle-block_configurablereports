@@ -34,7 +34,6 @@ use core_user\fields;
  * @author    Juan leyva <http://www.twitter.com/jleyvadelgado>
  */
 class plugin_users extends plugin_base {
-
     /**
      * Init
      *
@@ -122,7 +121,7 @@ class plugin_users extends plugin_base {
 
             $sort = implode(',', order_in_string(fields::get_name_fields(), $nameformat));
 
-            list($usql, $params) = $remotedb->get_in_or_equal($userslist);
+            [$usql, $params] = $remotedb->get_in_or_equal($userslist);
             $users = $remotedb->get_records_select('user', "id " . $usql, $params, $sort, 'id,'
                 . implode(',', fields::get_name_fields()));
 
@@ -134,5 +133,4 @@ class plugin_users extends plugin_base {
         $mform->addElement('select', 'filter_users', get_string('users'), $usersoptions);
         $mform->setType('filter_users', PARAM_INT);
     }
-
 }

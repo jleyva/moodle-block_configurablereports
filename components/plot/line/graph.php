@@ -29,9 +29,6 @@ require_once($CFG->dirroot . "/blocks/configurable_reports/locallib.php");
 
 require_login();
 
-// error_reporting(E_ALL);
-// ini_set('display_erros', true);
-
 $id = required_param('id', PARAM_ALPHANUM);
 $reportid = required_param('reportid', PARAM_INT);
 $courseid = optional_param('courseid', null, PARAM_INT);
@@ -96,12 +93,20 @@ if (!empty($graphs)) {
         include($CFG->dirroot . "/blocks/configurable_reports/lib/pChart/pData.class.php");
         include($CFG->dirroot . "/blocks/configurable_reports/lib/pChart/pChart.class.php");
 
+        if (empty($series)) {
+            // This means there is no data, so we'll just print a 1x1 trasparent image to return a blank image,
+            // then kill the script.
+            $chart = new pChart(1, 1);
+            ob_clean();
+            $chart->Stroke();
+            die;
+        }
+
         // Dataset definition.
-        $dataset = new pData;
+        $dataset = new pData();
         $lastid = 0;
 
         foreach ($series as $key => $val) {
-
             try {
                 $dataset->AddPoint($val['serie'], "Serie$key");
                 $dataset->AddAllSeries();
@@ -137,9 +142,9 @@ if (!empty($graphs)) {
 
         $test->setFontProperties($CFG->dirroot . "/blocks/configurable_reports/lib/Fonts/tahoma.ttf", 8);
         $test->setGraphArea(70, 30, 680, 200);
+        $test->drawFilledRoundedRectangle(5, 5, 695, 225, 5, 230, 230, 230);
         $test->drawFilledRoundedRectangle(7, 7, 693, 223, 5, 240, 240, 240);
-        $test->drawRoundedRectangle(5, 5, 695, 225, 5, 230, 230, 230);
-        $test->drawGraphArea(255, 255, 255, true);
+        $test->drawGraphArea(254, 254, 254, true);
 
         if (!empty($dataset->GetData())) {
             $test->drawScale($dataset->GetData(), $dataset->GetDataDescription(), SCALE_NORMAL, 150, 150, 150, true, 0, 2);
@@ -154,11 +159,11 @@ if (!empty($graphs)) {
         // Draw the line graph.
         if (!empty($dataset->GetData())) {
             $test->drawLineGraph($dataset->GetData(), $dataset->GetDataDescription());
-            $test->drawPlotGraph($dataset->GetData(), $dataset->GetDataDescription(), 3, 2, 255, 255, 255);
+            $test->drawPlotGraph($dataset->GetData(), $dataset->GetDataDescription(), 3, 2, 254, 254, 254);
 
             // Finish the graph.
             $test->setFontProperties($CFG->dirroot . "/blocks/configurable_reports/lib/Fonts/tahoma.ttf", 8);
-            $test->drawLegend(75, 35, $dataset->GetDataDescription(), 255, 255, 255);
+            $test->drawLegend(75, 35, $dataset->GetDataDescription(), 254, 254, 254);
         }
 
         ob_clean(); // Hack to clear output and send only IMAGE data to browser.

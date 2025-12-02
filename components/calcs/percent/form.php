@@ -34,7 +34,6 @@ require_once($CFG->libdir . '/formslib.php');
  * @author  David Pesce <davidpesce@gmail.com>
  */
 class percent_form extends moodleform {
-
     /**
      * Form definition
      */
@@ -46,5 +45,4 @@ class percent_form extends moodleform {
         // Buttons.
         $this->add_action_buttons(true, get_string('add'));
     }
-
 }

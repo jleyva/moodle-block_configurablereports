@@ -33,7 +33,6 @@ defined('BLOCK_CONFIGURABLE_REPORTS_MAX_RECORDS') || define('BLOCK_CONFIGURABLE_
  * @author    Juan leyva <http://www.twitter.com/jleyvadelgado>
  */
 class report_sql extends report_base {
-
     /**
      * @var bool
      */
@@ -78,6 +77,7 @@ class report_sql extends report_base {
      * prepare_sql
      *
      * @param string $sql
+     * @param int $forcedcourseid the course id to use instead of the current course
      * @return array|string|string[]
      */
     public function prepare_sql(string $sql, int $forcedcourseid = 0) {
@@ -105,16 +105,18 @@ class report_sql extends report_base {
         }
 
         // See http://en.wikipedia.org/wiki/Year_2038_problem.
-        $sql = str_replace([
-            '%%USERID%%',
-            '%%COURSEID%%',
-            '%%CATEGORYID%%',
-            '%%STARTTIME%%',
-            '%%ENDTIME%%',
-            '%%WWWROOT%%',
-        ],
+        $sql = str_replace(
+            [
+                '%%USERID%%',
+                '%%COURSEID%%',
+                '%%CATEGORYID%%',
+                '%%STARTTIME%%',
+                '%%ENDTIME%%',
+                '%%WWWROOT%%',
+            ],
             [$USER->id, $course->id, $course->category, '0', '2145938400', $CFG->wwwroot],
-            $sql);
+            $sql
+        );
         $sql = preg_replace('/%{2}[^%]+%{2}/i', '', $sql);
 
         return str_replace('?', '[[QUESTIONMARK]]', $sql);
@@ -173,7 +175,7 @@ class report_sql extends report_base {
         $finaltable = [];
 
         $components = cr_unserialize($this->config->components);
-        $config = $components['customsql']['config'] ?? new stdClass;
+        $config = $components['customsql']['config'] ?? new stdClass();
         $totalrecords = 0;
 
         $sql = '';
@@ -227,7 +229,7 @@ class report_sql extends report_base {
 
         $finalcalcs = $this->get_calcs($finaltable, $tablehead);
 
-        $table = new stdClass;
+        $table = new stdClass();
         $table->id = 'reporttable';
         $table->data = $finaltable;
         $table->head = $tablehead;
@@ -238,7 +240,7 @@ class report_sql extends report_base {
         $calcs->head = $tablehead;
 
         if (!$this->finalreport) {
-            $this->finalreport = new stdClass;
+            $this->finalreport = new stdClass();
         }
         $this->finalreport->name = $this->config->name;
         $this->finalreport->table = $table;
@@ -246,5 +248,4 @@ class report_sql extends report_base {
 
         return true;
     }
-
 }

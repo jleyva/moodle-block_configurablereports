@@ -32,7 +32,6 @@ require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
  * @author    Juan leyva <http://www.twitter.com/jleyvadelgado>
  */
 class plugin_userstats extends plugin_base {
-
     /**
      * Init
      *
@@ -99,7 +98,6 @@ class plugin_userstats extends plugin_base {
 
             $logs = [];
             if ($uselegacyreader) {
-
                 if ($courseid != 1) {
                     $sql .= " AND course = ?";
                     $params = array_merge($params, [$courseid]);
@@ -113,9 +111,7 @@ class plugin_userstats extends plugin_base {
                 }
 
                 $logs = $DB->get_records_select("log", $sql, $params, "time ASC", "id,time");
-
             } else if ($useinternalreader) {
-
                 if ($courseid != 1) {
                     $sql .= " AND courseid = ?";
                     $params = array_merge($params, [$courseid]);
@@ -133,7 +129,6 @@ class plugin_userstats extends plugin_base {
 
             // Code from Course Dedication Block.
             if ($logs) {
-
                 // This should be a config value in some where.
                 $limitinseconds = (!empty($data->sessionlimittime)) ? $data->sessionlimittime : 30 * 60;
 
@@ -204,5 +199,4 @@ class plugin_userstats extends plugin_base {
 
         return $stat;
     }
-
 }

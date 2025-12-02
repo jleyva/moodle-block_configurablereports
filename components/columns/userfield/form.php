@@ -33,7 +33,6 @@ require_once($CFG->libdir . '/formslib.php');
  * @author    Juan leyva <http://www.twitter.com/jleyvadelgado>
  */
 class userfield_form extends moodleform {
-
     /**
      * Form definition
      */
@@ -60,7 +59,6 @@ class userfield_form extends moodleform {
         $this->_customdata['compclass']->add_form_elements($mform, $this);
         // Buttons.
         $this->add_action_buttons(true, get_string('add'));
-
     }
 
     /**
@@ -76,5 +74,4 @@ class userfield_form extends moodleform {
 
         return $this->_customdata['compclass']->validate_form_elements($data, $errors);
     }
-
 }

@@ -30,7 +30,6 @@
  * @author    Juan leyva <http://www.twitter.com/jleyvadelgado>
  */
 class plugin_sum extends plugin_base {
-
     /**
      * init
      *
@@ -74,10 +73,9 @@ class plugin_sum extends plugin_base {
             $reportclass = new $reportclassname($this->report);
 
             $components = cr_unserialize($this->report->components);
-            $config = (isset($components['customsql']['config'])) ? $components['customsql']['config'] : new stdclass;
+            $config = (isset($components['customsql']['config'])) ? $components['customsql']['config'] : new stdclass();
 
             if (isset($config->querysql)) {
-
                 $courseid = isset($config->fieldscourseid) && !empty($config->fieldscourseid) ? $config->fieldscourseid : 0;
                 $sql = $config->querysql;
                 $sql = $reportclass->prepare_sql($sql, $courseid);
@@ -114,5 +112,4 @@ class plugin_sum extends plugin_base {
 
         return $result;
     }
-
 }

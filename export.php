@@ -48,8 +48,10 @@ if ((int) $course->id === SITEID) {
 
 $PAGE->set_context($context);
 
-if (!has_capability('block/configurable_reports:managereports', $context) &&
-    !(has_capability('block/configurable_reports:manageownreports', $context) && $report->ownerid == $USER->id)) {
+if (
+    !has_capability('block/configurable_reports:managereports', $context) &&
+    !(has_capability('block/configurable_reports:manageownreports', $context) && $report->ownerid == $USER->id)
+) {
     throw new moodle_exception('badpermissions', 'block_configurable_reports');
 }
 

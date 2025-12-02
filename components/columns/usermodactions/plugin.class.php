@@ -32,7 +32,6 @@ require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
  * @author    Juan leyva <http://www.twitter.com/jleyvadelgado>
  */
 class plugin_usermodactions extends plugin_base {
-
     /**
      * Init
      *
@@ -105,5 +104,4 @@ class plugin_usermodactions extends plugin_base {
 
         return 0;
     }
-
 }

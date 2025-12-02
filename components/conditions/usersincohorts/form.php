@@ -34,7 +34,6 @@ require_once($CFG->libdir . '/formslib.php');
  * @author    Juan leyva
  */
 class usersincohorts_form extends moodleform {
-
     /**
      * Form definition
      */
@@ -56,5 +55,4 @@ class usersincohorts_form extends moodleform {
         // Buttons.
         $this->add_action_buttons(true, get_string('add'));
     }
-
 }

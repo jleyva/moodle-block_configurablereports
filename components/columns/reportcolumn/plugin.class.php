@@ -32,7 +32,6 @@ require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
  * @author    Juan leyva <http://www.twitter.com/jleyvadelgado>
  */
 class plugin_reportcolumn extends plugin_base {
-
     /**
      * @var array
      */
@@ -182,7 +181,6 @@ class plugin_reportcolumn extends plugin_base {
         require_once($CFG->dirroot . '/blocks/configurable_reports/reports/' . $report->type . '/report.class.php');
 
         if (!isset($this->reportcache[$row->id])) {
-
             $reportclassname = 'report_' . $report->type;
             $reportclass = new $reportclassname($report);
 
@@ -200,7 +198,7 @@ class plugin_reportcolumn extends plugin_base {
                     $newplugin = [
                         'pluginname' => 'currentusercourses',
                         'fullname' => 'currentusercourses',
-                        'formdata' => new stdclass,
+                        'formdata' => new stdclass(),
                     ];
 
                     $components['conditions']['elements'][] = $newplugin;
@@ -225,7 +223,7 @@ class plugin_reportcolumn extends plugin_base {
                     $roles = $DB->get_records('role');
                     $rolesid = array_keys($roles);
 
-                    $formdata = new stdclass;
+                    $formdata = new stdclass();
                     $formdata->roles = $rolesid;
                     $newplugin = [
                         'pluginname' => 'usersincurrentcourse',
@@ -252,7 +250,7 @@ class plugin_reportcolumn extends plugin_base {
                 if ($report->type === 'courses') {
                     $components = cr_unserialize($reportclass->config->components);
 
-                    $formdata = new stdclass;
+                    $formdata = new stdclass();
                     $formdata->categoryid = $row->id;
                     $newplugin = ['pluginname' => 'coursecategory', 'fullname' => 'coursecategory', 'formdata' => $formdata];
 
@@ -280,5 +278,4 @@ class plugin_reportcolumn extends plugin_base {
 
         return '';
     }
-
 }

@@ -181,7 +181,6 @@ if ($editform->is_cancelled()) {
     }
 
     redirect($CFG->wwwroot . '/blocks/configurable_reports/editreport.php');
-
 } else if ($data = $editform->get_data()) {
     require_once($CFG->dirroot . '/blocks/configurable_reports/report.class.php');
     require_once($CFG->dirroot . '/blocks/configurable_reports/reports/' . $data->type . '/report.class.php');
@@ -243,7 +242,6 @@ if ($editform->is_cancelled()) {
             $CFG->wwwroot . '/blocks/configurable_reports/editcomp.php?id=' . $lastid . '&comp=' . $reportclass->components[0]
         );
     } else {
-
         $reportclass = new $reportclassname($data->id);
         $data->type = $report->type;
 

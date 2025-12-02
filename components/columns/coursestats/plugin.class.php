@@ -32,7 +32,6 @@ require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
  * @author    Juan leyva <http://www.twitter.com/jleyvadelgado>
  */
 class plugin_coursestats extends plugin_base {
-
     /**
      * Init
      *
@@ -98,12 +97,12 @@ class plugin_coursestats extends plugin_base {
             case 'activityview':
                 $total = 'SUM(stat1)';
                 $stattype = 'activity';
-                $extrasql = !empty($numericroles) ? " AND roleid IN (" . implode(',', $numericroles). ")" : '';
+                $extrasql = !empty($numericroles) ? " AND roleid IN (" . implode(',', $numericroles) . ")" : '';
                 break;
             case 'activitypost':
                 $total = 'SUM(stat2)';
                 $stattype = 'activity';
-                $extrasql = !empty($numericroles) ? " AND roleid IN (" . implode(',', $numericroles). ")" : '';
+                $extrasql = !empty($numericroles) ? " AND roleid IN (" . implode(',', $numericroles) . ")" : '';
                 break;
             case 'activeenrolments':
                 $total = 'stat2';
@@ -141,6 +140,4 @@ class plugin_coursestats extends plugin_base {
 
         return $stat;
     }
-
 }
-

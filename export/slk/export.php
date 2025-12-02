@@ -17,13 +17,22 @@
 /**
  * Configurable Reports
  * A Moodle block for creating customizable reports
- * @package blocks
- * @author: Juan leyva <http://www.twitter.com/jleyvadelgado>
- * @date: 2009
+ *
+ * @copyright 2009 Juan Leyva <juan@moodle.com>
+ * @package block_configurable_reports
+ * @author Juan leyva <http://www.twitter.com/jleyvadelgado>
+ * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-function export_report($report)
-{
+defined('MOODLE_INTERNAL') || die();
+
+/**
+ * Export report
+ *
+ * @param object $report
+ * @return void
+ */
+function export_report($report) {
     $filename = $report->name ?? 'report';
     $table = $report->table;
 
@@ -50,8 +59,13 @@ function export_report($report)
     exit;
 }
 
-function set_header($filename)
-{
+/**
+ * Set header
+ *
+ * @param string $filename
+ * @return void
+ */
+function set_header($filename) {
     global $CFG;
 
     require_once("$CFG->libdir/moodlelib.php");
@@ -62,7 +76,8 @@ function set_header($filename)
     if (strpos($CFG->wwwroot, 'https://') === 0) { // HTTPS sites - watch out for IE! KB812935 and KB316431.
         header('Cache-Control: max-age=10');
         header('Pragma: ');
-    } else { //normal http - prevent caching at all cost
+    } else {
+        // Normal http - prevent caching at all cost.
         header('Cache-Control: private, must-revalidate, pre-check=0, post-check=0, max-age=0');
         header('Pragma: no-cache');
     }
@@ -73,9 +88,14 @@ function set_header($filename)
 
 $row = 1;
 
-function dump_slk_row($data)
-{
-    // Refer to https://en.wikipedia.org/wiki/Symbolic_Link_(SYLK)
+/**
+ * Dump SYLK row
+ *
+ * @param array $data
+ * @return void
+ */
+function dump_slk_row($data) {
+    // Refer to https://en.wikipedia.org/wiki/Symbolic_Link_(SYLK).
 
     global $row;
     $col = 1;
@@ -91,7 +111,7 @@ function dump_slk_row($data)
             );
 
         if (preg_match('!!u', $datum)) {
-            // https://stackoverflow.com/questions/4407854/how-do-i-detect-if-have-to-apply-utf-8-decode-or-encode-on-a-string
+            // See https://stackoverflow.com/questions/4407854/how-do-i-detect-if-have-to-apply-utf-8-decode-or-encode-on-a-string.
 
             $datum = iconv("UTF-8", "ISO-8859-1//TRANSLIT", $datum);
         }

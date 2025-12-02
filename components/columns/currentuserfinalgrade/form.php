@@ -34,7 +34,6 @@ require_once($CFG->libdir . '/formslib.php');
  * @author    Juan leyva <http://www.twitter.com/jleyvadelgado>
  */
 class currentuserfinalgrade_form extends moodleform {
-
     /**
      * Form definition
      */
@@ -43,7 +42,6 @@ class currentuserfinalgrade_form extends moodleform {
         $this->_customdata['compclass']->add_form_elements($mform, $this);
         // Buttons.
         $this->add_action_buttons(true, get_string('add'));
-
     }
 
     /**
@@ -60,5 +58,4 @@ class currentuserfinalgrade_form extends moodleform {
 
         return $errors;
     }
-
 }

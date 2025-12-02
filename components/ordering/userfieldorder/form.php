@@ -34,7 +34,6 @@ require_once($CFG->libdir . '/formslib.php');
  * @author    Juan leyva <http://www.twitter.com/jleyvadelgado>
  */
 class userfieldorder_form extends moodleform {
-
     /**
      * Form definition
      */
@@ -57,5 +56,4 @@ class userfieldorder_form extends moodleform {
         // Buttons.
         $this->add_action_buttons(true, get_string('add'));
     }
-
 }

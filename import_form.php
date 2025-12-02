@@ -34,7 +34,6 @@ require_once($CFG->libdir . '/formslib.php');
  * @author    Juan leyva <http://www.twitter.com/jleyvadelgado>
  */
 class import_form extends moodleform {
-
     /**
      * Form definition
      */
@@ -54,5 +53,4 @@ class import_form extends moodleform {
         // Buttons.
         $this->add_action_buttons(false, get_string('importreport', 'block_configurable_reports'));
     }
-
 }

@@ -33,7 +33,6 @@ require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
  * @author    Juan leyva <http://www.twitter.com/jleyvadelgado>
  */
 class plugin_pie extends plugin_base {
-
     /**
      * Init
      *
@@ -79,7 +78,6 @@ class plugin_pie extends plugin_base {
                         $series[0][$hash] = str_replace(',', '', $r[$data->areaname]);
                         $series[1][$hash] = 1;
                     }
-
                 } else if (!isset($data->group) || !$data->group) {
                     $series[0][] = str_replace(',', '', $r[$data->areaname]);
                     $series[1][] = (isset($r[$data->areavalue]) && is_numeric($r[$data->areavalue])) ? $r[$data->areavalue] : 0;
@@ -149,8 +147,18 @@ class plugin_pie extends plugin_base {
         $serie1 = base64_encode(implode(',', $serie1sorted));
         $colorpalette = base64_encode(implode(',', $colors));
 
-        return $CFG->wwwroot . '/blocks/configurable_reports/components/plot/pie/graph.php?reportid=' . $this->report->id . '&id=' .
-            $id . '&serie0=' . $serie0 . '&serie1=' . $serie1 . '&colorpalette=' . $colorpalette . '&courseid='.$this->report->courseid;
+        $url = new \core\url(
+            '/blocks/configurable_reports/components/plot/pie/graph.php',
+            [
+                'reportid' => $this->report->id,
+                'id' => $id,
+                'serie0' => $serie0,
+                'serie1' => $serie1,
+                'colorpalette' => $colorpalette,
+                'courseid' => $this->report->courseid,
+            ]
+        );
+        return $url->out();
     }
 
     /**
@@ -204,5 +212,4 @@ class plugin_pie extends plugin_base {
             )
         );
     }
-
 }

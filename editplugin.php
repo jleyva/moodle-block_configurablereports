@@ -184,7 +184,6 @@ if (isset($pluginclass->form) && $pluginclass->form) {
 
             redirect(new moodle_url('/blocks/configurable_reports/editcomp.php', ['id' => $id, 'comp' => $comp]));
             exit;
-
         }
 
         $allelements = cr_unserialize($report->components);
@@ -221,10 +220,10 @@ if (isset($pluginclass->form) && $pluginclass->form) {
 
     $cdata = [
         'id' => $uniqueid,
-        'formdata' => new stdclass,
+        'formdata' => new stdclass(),
         'pluginname' => $pname,
         'pluginfullname' => $pluginclass->fullname,
-        'summary' => $pluginclass->summary(new stdclass),
+        'summary' => $pluginclass->summary(new stdclass()),
     ];
 
     $allelements[$comp]['elements'][] = $cdata;
@@ -261,4 +260,3 @@ if ($pluginclass->form) {
 }
 
 echo $OUTPUT->footer();
-

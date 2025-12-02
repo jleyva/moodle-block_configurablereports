@@ -33,7 +33,6 @@ require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
  * @author  David Pesce <davidpesce@gmail.com>
  */
 class plugin_percent extends plugin_base {
-
     /**
      * Init
      *
@@ -77,7 +76,7 @@ class plugin_percent extends plugin_base {
             $reportclass = new $reportclassname($this->report);
 
             $components = cr_unserialize($this->report->components);
-            $config = $components['customsql']['config'] ?? new stdclass;
+            $config = $components['customsql']['config'] ?? new stdclass();
 
             if (isset($config->querysql)) {
                 $courseid = isset($config->fieldscourseid) && !empty($config->fieldscourseid) ? $config->fieldscourseid : 0;
@@ -125,5 +124,4 @@ class plugin_percent extends plugin_base {
 
         return $result . ' %';
     }
-
 }

@@ -30,7 +30,6 @@
  * @author    Juan leyva <http://www.twitter.com/jleyvadelgado>
  */
 class report_categories extends report_base {
-
     /**
      * init
      *
@@ -87,5 +86,4 @@ class report_categories extends report_base {
 
         return $finalelements;
     }
-
 }

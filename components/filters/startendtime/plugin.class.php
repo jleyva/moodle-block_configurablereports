@@ -32,7 +32,6 @@ require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
  * @author    Juan leyva <http://www.twitter.com/jleyvadelgado>
  */
 class plugin_startendtime extends plugin_base {
-
     /**
      * Init
      *
@@ -135,5 +134,4 @@ class plugin_startendtime extends plugin_base {
         $mform->addElement('date_time_selector', 'filter_endtime', get_string('endtime', 'block_configurable_reports'));
         $mform->setDefault('filter_endtime', time() + 3600 * 24);
     }
-
 }

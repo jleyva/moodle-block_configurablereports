@@ -4114,17 +4114,17 @@ class pChart {
         $Step = 90 / ((3.1418 * $Radius) / 2);
 
         for ($i = 0; $i <= 90; $i = $i + $Step) {
-            $Xi1 = cos(($i + 180) * 3.1418 / 180) * $Radius + $X1 + $Radius;
-            $Yi1 = sin(($i + 180) * 3.1418 / 180) * $Radius + $Y1 + $Radius;
+            $Xi1 = round(cos(($i + 180) * 3.1418 / 180) * $Radius + $X1 + $Radius);
+            $Yi1 = round(sin(($i + 180) * 3.1418 / 180) * $Radius + $Y1 + $Radius);
 
-            $Xi2 = cos(($i - 90) * 3.1418 / 180) * $Radius + $X2 - $Radius;
-            $Yi2 = sin(($i - 90) * 3.1418 / 180) * $Radius + $Y1 + $Radius;
+            $Xi2 = round(cos(($i - 90) * 3.1418 / 180) * $Radius + $X2 - $Radius);
+            $Yi2 = round(sin(($i - 90) * 3.1418 / 180) * $Radius + $Y1 + $Radius);
 
-            $Xi3 = cos(($i) * 3.1418 / 180) * $Radius + $X2 - $Radius;
-            $Yi3 = sin(($i) * 3.1418 / 180) * $Radius + $Y2 - $Radius;
+            $Xi3 = round(cos(($i) * 3.1418 / 180) * $Radius + $X2 - $Radius);
+            $Yi3 = round(sin(($i) * 3.1418 / 180) * $Radius + $Y2 - $Radius);
 
-            $Xi4 = cos(($i + 90) * 3.1418 / 180) * $Radius + $X1 + $Radius;
-            $Yi4 = sin(($i + 90) * 3.1418 / 180) * $Radius + $Y2 - $Radius;
+            $Xi4 = round(cos(($i + 90) * 3.1418 / 180) * $Radius + $X1 + $Radius);
+            $Yi4 = round(sin(($i + 90) * 3.1418 / 180) * $Radius + $Y2 - $Radius);
 
             imageline($this->Picture, $Xi1, $Yi1, $X1 + $Radius, $Yi1, $C_Rectangle);
             imageline($this->Picture, $X2 - $Radius, $Yi2, $Xi2, $Yi2, $C_Rectangle);
@@ -4212,10 +4212,10 @@ class pChart {
         $Step = 360 / (2 * 3.1418 * max($Width, $Height));
 
         for ($i = 90; $i <= 270; $i = $i + $Step) {
-            $X1 = cos($i * 3.1418 / 180) * $Height + $Xc;
-            $Y1 = sin($i * 3.1418 / 180) * $Width + $Yc;
-            $X2 = cos((180 - $i) * 3.1418 / 180) * $Height + $Xc;
-            $Y2 = sin((180 - $i) * 3.1418 / 180) * $Width + $Yc;
+            $X1 = round(cos($i * 3.1418 / 180) * $Height + $Xc);
+            $Y1 = round(sin($i * 3.1418 / 180) * $Width + $Yc);
+            $X2 = round(cos((180 - $i) * 3.1418 / 180) * $Height + $Xc);
+            $Y2 = round(sin((180 - $i) * 3.1418 / 180) * $Width + $Yc);
 
             $this->drawAntialiasPixel($X1 - 1, $Y1 - 1, $R, $G, $B);
             $this->drawAntialiasPixel($X2 - 1, $Y2 - 1, $R, $G, $B);

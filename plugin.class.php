@@ -33,7 +33,6 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 abstract class plugin_base {
-
     /**
      * @var string
      */
@@ -133,5 +132,4 @@ abstract class plugin_base {
     public function print_filter(MoodleQuickForm $mform, $formdata = false): void {
         throw new coding_exception('print_filter method not implemented');
     }
-
 }

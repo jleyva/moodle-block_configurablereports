@@ -35,7 +35,6 @@ require_once($CFG->libdir . '/formslib.php');
  * @author     David Saylor <david@mylearningconsultants.com>
  */
 class searchtext_form extends moodleform {
-
     /**
      * Form definition
      */
@@ -55,5 +54,4 @@ class searchtext_form extends moodleform {
         // Buttons.
         $this->add_action_buttons(true, get_string('add', 'block_configurable_reports'));
     }
-
 }
