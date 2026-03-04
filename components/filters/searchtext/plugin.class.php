@@ -135,8 +135,12 @@ class plugin_searchtext extends plugin_base {
             }
 
             if ($operator === '~') {
+                global $CFG;
                 $searchitem = trim(str_replace("'", "''", $filtersearchtext));
                 $replace = " AND " . $field . " LIKE '%" . $searchitem . "%'";
+                if ($CFG->dbtype == 'pgsql') {
+                    $replace = " AND " . $field . " ILIKE '%" . $searchitem . "%'";
+                }
             } else if ($operator === 'in') {
                 $processeditems = [];
                 // Accept comma-separated values, allowing for '\,' as a literal comma.

@@ -235,9 +235,13 @@ class plugin_fuserfield extends plugin_base {
                 throw new moodle_exception('nosuchoperator');
             }
             if ($operator === '~') {
+                global $CFG;
                 // TODO can be improved by more native PDO approach.
                 $searchitem = trim(str_replace("'", "''", $filtersearchtext));
                 $replace = " AND " . $field . " LIKE '%" . $searchitem . "%'";
+                if ($CFG->dbtype == 'pgsql') {
+                    $replace = " AND " . $field . " ILIKE '%" . $searchitem . "%'";
+                }
             } else if ($operator === 'in') {
                 $processeditems = [];
 
