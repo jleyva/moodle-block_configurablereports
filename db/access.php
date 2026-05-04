@@ -54,6 +54,7 @@ $capabilities = [
     'block/configurable_reports:managereports' => [
 
         'captype' => 'write',
+        'riskbitmask' => RISK_SPAM | RISK_PERSONAL,
         'contextlevel' => CONTEXT_BLOCK,
         'archetypes' => [
             'manager' => CAP_ALLOW,
@@ -63,10 +64,9 @@ $capabilities = [
     'block/configurable_reports:managesqlreports' => [
 
         'captype' => 'write',
+        'riskbitmask' => RISK_SPAM | RISK_PERSONAL | RISK_XSS | RISK_CONFIG | RISK_DATALOSS,
         'contextlevel' => CONTEXT_BLOCK,
-        'archetypes' => [
-            'manager' => CAP_ALLOW,
-        ],
+        'archetypes' => [],
     ],
 
     'block/configurable_reports:manageownreports' => [
@@ -81,6 +81,7 @@ $capabilities = [
     'block/configurable_reports:viewreports' => [
 
         'captype' => 'read',
+        'riskbitmask' => RISK_PERSONAL,
         'contextlevel' => CONTEXT_BLOCK,
         'archetypes' => [
             'manager' => CAP_ALLOW,
