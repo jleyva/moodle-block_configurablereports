@@ -60,7 +60,6 @@ class EvalWise extends EvalMath {
      * @return array|false|mixed|null
      */
     public function pfx($tokens, array $vars = []) {
-
         if ($tokens === false) {
             return false;
         }
@@ -68,10 +67,8 @@ class EvalWise extends EvalMath {
         $stack = new EvalMathStack;
 
         foreach ($tokens as $token) {
-
             // If the token is a function, pop arguments off the stack, hand them to the function, and push the result back on.
             if (is_array($token)) {
-
                 // It's a function!
                 $fnn = $token['fnn'];
                 $count = $token['argcount'];
@@ -110,8 +107,8 @@ class EvalWise extends EvalMath {
                         return $this->trigger("internal error");
                     }
                     $stack->push($res);
-                } else if (array_key_exists($fnn, $this->f)) {
-                    // User function.
+
+                } else if (array_key_exists($fnn, $this->f)) { // User function.
                     // Get args.
                     $args = [];
                     for ($i = count($this->f[$fnn]['args']) - 1; $i >= 0; $i--) {
@@ -119,10 +116,10 @@ class EvalWise extends EvalMath {
                             return $this->trigger('internal error');
                         }
                     }
-
                     // Yay recursion!
                     $stack->push($this->pfx($this->f[$fnn]['func'], $args));
                 }
+
             } else if (in_array($token, ['+', '-', '*', '/', '^'], true)) {
                 // If the token is a binary operator, pop two values off the stack, do the operation, and push the result back on.
                 if (is_null($op2 = $stack->pop())) {
@@ -166,14 +163,13 @@ class EvalWise extends EvalMath {
                 }
             }
         }
+
         // When we're out of tokens, the stack should have a single element, the final result.
         if ($stack->count != 1) {
             return $this->trigger("internal error");
         }
 
         $last = $stack->pop();
-
         return $this->data[$last] ?? false;
     }
-
 }
