@@ -23,7 +23,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 defined('MOODLE_INTERNAL') || die;
-require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
+require_once($CFG->dirroot . '/blocks/configurable_reports/filter.class.php');
 
 /**
  * Class plugin_subcategories
@@ -31,7 +31,7 @@ require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
  * @package   block_configurable_reports
  * @author    Juan leyva <http://www.twitter.com/jleyvadelgado>
  */
-class plugin_subcategories extends plugin_base {
+class plugin_subcategories extends filter_base {
 
     /**
      * Init
@@ -67,17 +67,31 @@ class plugin_subcategories extends plugin_base {
             return $finalelements;
         }
 
-        if ($this->report->type !== 'sql') {
-            return [$filtersubcategories];
-        } else {
-            if (preg_match("/%%FILTER_SUBCATEGORIES:([^%]+)%%/i", $finalelements, $output)) {
-                $replace = ' AND ( ' . $output[1] . ' LIKE CONCAT( \'%/\', ' . $filtersubcategories . ', \'/%\' ) OR ' . $output[1] . ' LIKE CONCAT( \'%/\', ' . $filtersubcategories . ' ) )';
+        return [$filtersubcategories];
+    }
 
-                return str_replace('%%FILTER_SUBCATEGORIES:' . $output[1] . '%%', $replace, $finalelements);
-            }
+    /**
+     * Execute filter, return the modified sql and paramaters.
+     *
+     * @param string $sql
+     * @param ?\stdClass $data
+     * @return array
+     */
+    #[Override]
+    function execute_for_sql_report(string $sql, ?stdClass $data = null): array {
+        $filtersubcategories = optional_param('filter_subcategories', 0, PARAM_INT);
+
+        $params = [];
+
+        if ($filtersubcategories && preg_match("/%%FILTER_SUBCATEGORIES:([^%]+)%%/i", $sql, $output)) {
+            $replace = ' AND ( ' . $output[1] . ' LIKE CONCAT( \'%/\', ' . $filtersubcategories . ', \'/%\' ) OR ' . $output[1] . ' LIKE CONCAT( \'%/\', :filtersubcategories ) )';
+            $sql = str_replace('%%FILTER_SUBCATEGORIES:' . $output[1] . '%%', $replace, $sql);
+            $params['filtersubcategories'] = $filtersubcategories;
+        } else if (preg_match("/%%FILTER_SUBCATEGORIES:([^%]+)%%/i", $sql, $output)) {
+            $sql = preg_replace('/%%FILTER_SUBCATEGORIES:([^%]+)%%/i', '', $sql);
         }
 
-        return $finalelements;
+        return [$sql, $params];
     }
 
     /**

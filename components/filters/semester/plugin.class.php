@@ -23,7 +23,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 defined('MOODLE_INTERNAL') || die;
-require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
+require_once($CFG->dirroot . '/blocks/configurable_reports/filter.class.php');
 
 /**
  * Class plugin_semester
@@ -31,7 +31,7 @@ require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
  * @package   block_configurable_reports
  * @author    Juan leyva <http://www.twitter.com/jleyvadelgado>
  */
-class plugin_semester extends plugin_base {
+class plugin_semester extends filter_base {
 
     /**
      * Init
@@ -68,17 +68,34 @@ class plugin_semester extends plugin_base {
             return $finalelements;
         }
 
-        if ($this->report->type !== 'sql') {
-            return [$filtersemester];
+        return [$filtersemester];
+    }
+
+    /**
+     * Execute filter, return the modified sql and paramaters.
+     *
+     * @param string $sql
+     * @param ?\stdClass $data
+     * @return array
+     */
+    function execute_for_sql_report(string $sql, ?\stdClass $data = null): array {
+        global $DB;
+        $filtersemester = optional_param('filter_semester', '', PARAM_TEXT);
+
+        if (!$filtersemester) {
+            return [$sql, []];
         }
 
-        if (preg_match("/%%FILTER_SEMESTER:([^%]+)%%/i", $finalelements, $output)) {
-            $replace = ' AND ' . $output[1] . ' LIKE \'%' . $filtersemester . '%\'';
+        $params = [];
 
-            return str_replace('%%FILTER_SEMESTER:' . $output[1] . '%%', $replace, $finalelements);
+        if (preg_match("/%%FILTER_SEMESTER:([^%]+)%%/i", $sql, $output)) {
+            $likesql = $DB->sql_like($output[1], ':filtersemester', false);
+            $replace = ' AND ' . $likesql;
+            $sql = str_replace('%%FILTER_SEMESTER:' . $output[1] . '%%', $replace, $sql);
+            $params = ['filtersemester' => $filtersemester];
         }
 
-        return $finalelements;
+        return [$sql, $params];
     }
 
     /**

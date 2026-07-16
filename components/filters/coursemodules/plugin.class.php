@@ -23,7 +23,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 defined('MOODLE_INTERNAL') || die;
-require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
+require_once($CFG->dirroot . '/blocks/configurable_reports/filter.class.php');
 
 /**
  * Class plugin_coursemodules
@@ -31,7 +31,7 @@ require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
  * @package   block_configurable_reports
  * @author    Juan leyva <http://www.twitter.com/jleyvadelgado>
  */
-class plugin_coursemodules extends plugin_base {
+class plugin_coursemodules extends filter_base {
 
     /**
      * Init
@@ -90,6 +90,45 @@ class plugin_coursemodules extends plugin_base {
         }
 
         return $finalelements;
+    }
+
+    #[\Override]
+    function execute_for_sql_report(string $sql, ?\stdClass $data = null): array {
+        global $remotedb;
+
+        $filtercoursemoduleid = optional_param('filter_coursemodules', 0, PARAM_INT);
+        if (!$filtercoursemoduleid) {
+            return [$sql, []];
+        }
+
+        if ($this->report->type !== 'sql') {
+            return [$filtercoursemoduleid];
+        }
+
+        $params = [];
+
+        if (preg_match("/%%FILTER_COURSEMODULEID:([^%]+)%%/i", $sql, $output)) {
+            $replace = ' AND ' . $output[1] . ' = :cmfield';
+            $sql = str_replace('%%FILTER_COURSEMODULEID:' . $output[1] . '%%', $replace, $sql);
+            $params['cmfield'] = $filtercoursemoduleid;
+        }
+
+        if (preg_match("/%%FILTER_COURSEMODULEFIELDS:([^%]+)%%/i", $sql, $output)) {
+            $replace = ':cmfields';
+            $sql = str_replace('%%FILTER_COURSEMODULEFIELDS:' . $output[1] . '%%', $replace, $sql);
+            foreach (explode(',', $output[1]) as $key => $value) {
+                $params['cmfields' . $key] = $value;
+            }
+        }
+
+        if (preg_match("/%%FILTER_COURSEMODULE:([^%]+)%%/i", $sql, $output)) {
+            $module = $remotedb->get_record('modules', ['id' => $filtercoursemoduleid]);
+            $replace = ' JOIN {' . $module->name . '} AS m ON m.id = :moduleid';
+            $sql = str_replace('%%FILTER_COURSEMODULE:' . $output[1] . '%%', $replace, $sql);
+            $params['moduleid'] = $filtercoursemoduleid;
+        }
+
+        return [$sql, $params];
     }
 
     /**

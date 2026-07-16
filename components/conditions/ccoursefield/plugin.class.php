@@ -65,13 +65,10 @@ class plugin_ccoursefield extends plugin_base {
     public function execute($data) {
         global $DB;
 
-        // TODO - Use DB -> sql_like().
-        $ilike = " LIKE ";
-
         switch ($data->operator) {
             case 'LIKE % %':
-                $sql = "$data->field $ilike ?";
-                $params = ["%$data->value%"];
+                $sql = $DB->sql_like($data->field, '?', false);
+                $params = [$data->value];
                 break;
             default:
                 $sql = "$data->field $data->operator ?";

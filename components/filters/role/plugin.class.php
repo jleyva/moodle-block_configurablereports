@@ -23,7 +23,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 defined('MOODLE_INTERNAL') || die;
-require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
+require_once($CFG->dirroot . '/blocks/configurable_reports/filter.class.php');
 
 /**
  * Class plugin_role
@@ -31,7 +31,7 @@ require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
  * @package   block_configurable_reports
  * @author    Juan leyva <http://www.twitter.com/jleyvadelgado>
  */
-class plugin_role extends plugin_base {
+class plugin_role extends filter_base {
 
     /**
      * Init
@@ -79,6 +79,24 @@ class plugin_role extends plugin_base {
         }
 
         return $finalelements;
+    }
+
+    #[\Override]
+    function execute_for_sql_report(string $sql, ?\stdClass $data = null): array {
+        $filterrole = optional_param('filter_role', 0, PARAM_INT);
+        if (!$filterrole) {
+            return [$sql, []];
+        }
+
+        $params = [];
+
+        if (preg_match("/%%FILTER_ROLE:([^%]+)%%/i", $sql, $output)) {
+            $replace = ' AND ' . $output[1] . ' = :filterrole';
+            $sql = str_replace('%%FILTER_ROLE:' . $output[1] . '%%', $replace, $sql);
+            $params['filterrole'] = $filterrole;
+        }
+
+        return [$sql, $params];
     }
 
     /**

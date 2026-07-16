@@ -23,7 +23,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 defined('MOODLE_INTERNAL') || die;
-require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
+require_once($CFG->dirroot . '/blocks/configurable_reports/filter.class.php');
 
 /**
  * Class plugin_yearnumeric
@@ -31,7 +31,7 @@ require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
  * @package   block_configurable_reports
  * @author    Juan leyva <http://www.twitter.com/jleyvadelgado>
  */
-class plugin_yearnumeric extends plugin_base {
+class plugin_yearnumeric extends filter_base {
 
     /**
      * Init
@@ -68,17 +68,29 @@ class plugin_yearnumeric extends plugin_base {
             return $finalelements;
         }
 
-        if ($this->report->type !== 'sql') {
-            return [$filteryearnumeric];
+        return [$filteryearnumeric];
+    }
+
+    #[\Override]
+    function execute_for_sql_report(string $sql, ?\stdClass $data = null): array {
+        global $DB;
+
+        $filteryearnumeric = optional_param('filter_yearnumeric', 0, PARAM_INT);
+        $match = preg_match("/%%FILTER_YEARNUMERIC:([^%]+)%%/i", $sql, $output);
+        $params = [];
+
+        if ($filteryearnumeric && $match) {
+            $likesql = $DB->sql_like($output[1], ':filteryearnumeric');
+            $replace = ' AND ' . $likesql;
+            $sql = str_replace('%%FILTER_YEARNUMERIC:' . $output[1] . '%%', $replace, $sql);
+            $params['filteryearnumeric'] = $filteryearnumeric;
+        } else if ($match) {
+            // Remove SQL clause.
+            $pattern = '/%%FILTER_YEARNUMERIC:' . preg_quote($output[1], '/') . '%%/i';
+            $sql = preg_replace($pattern, '', $sql);
         }
 
-        if (preg_match("/%%FILTER_YEARNUMERIC:([^%]+)%%/i", $finalelements, $output)) {
-            $replace = ' AND ' . $output[1] . ' LIKE \'%' . $filteryearnumeric . '%\'';
-
-            return str_replace('%%FILTER_YEARNUMERIC:' . $output[1] . '%%', $replace, $finalelements);
-        }
-
-        return $finalelements;
+        return [$sql, $params];
     }
 
     /**

@@ -23,7 +23,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 defined('MOODLE_INTERNAL') || die;
-require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
+require_once($CFG->dirroot . '/blocks/configurable_reports/filter.class.php');
 
 /**
  * Class plugin_yearhebrew
@@ -31,7 +31,7 @@ require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
  * @package   block_configurable_reports
  * @author    Juan leyva <http://www.twitter.com/jleyvadelgado>
  */
-class plugin_yearhebrew extends plugin_base {
+class plugin_yearhebrew extends filter_base {
 
     /**
      * Init
@@ -62,23 +62,31 @@ class plugin_yearhebrew extends plugin_base {
      * @return array|string|string[]
      */
     public function execute($finalelements) {
-
         $filteryearhebrew = optional_param('filter_yearhebrew', '', PARAM_RAW);
         if (!$filteryearhebrew) {
             return $finalelements;
         }
 
-        if ($this->report->type !== 'sql') {
-            return [$filteryearhebrew];
-        }
+        return [$filteryearhebrew];
+    }
 
-        if (preg_match("/%%FILTER_YEARHEBREW:([^%]+)%%/i", $finalelements, $output)) {
+    #[\Override]
+    function execute_for_sql_report(string $sql, ?\stdClass $data = null): array {
+        $filteryearhebrew = optional_param('filter_yearhebrew', '', PARAM_RAW);
+        $match = preg_match("/%%FILTER_YEARHEBREW:([^%]+)%%/i", $sql, $output);
+        $params = [];
+
+        if ($filteryearhebrew && $match) {
             $replace = ' AND ' . $output[1] . ' LIKE \'%' . $filteryearhebrew . '%\'';
-
-            return str_replace('%%FILTER_YEARHEBREW:' . $output[1] . '%%', $replace, $finalelements);
+            $sql = str_replace('%%FILTER_YEARHEBREW:' . $output[1] . '%%', $replace, $sql);
+            $params[$data->field] = $filteryearhebrew;
+        } else if ($match) {
+            // Remove SQL clause.
+            $pattern = '/%%FILTER_YEARHEBREW:' . preg_quote($output[1], '/') . '%%/i';
+            $sql = preg_replace($pattern, '', $sql);
         }
 
-        return $finalelements;
+        return [$sql, $params];
     }
 
     /**

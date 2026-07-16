@@ -23,7 +23,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 defined('MOODLE_INTERNAL') || die;
-require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
+require_once($CFG->dirroot . '/blocks/configurable_reports/filter.class.php');
 
 /**
  * Class plugin_user
@@ -31,7 +31,7 @@ require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
  * @package   block_configurable_reports
  * @author    Juan leyva <http://www.twitter.com/jleyvadelgado>
  */
-class plugin_user extends plugin_base {
+class plugin_user extends filter_base {
 
     /**
      * Init
@@ -78,6 +78,23 @@ class plugin_user extends plugin_base {
         }
 
         return $finalelements;
+    }
+
+    #[\Override]
+    function execute_for_sql_report(string $sql, ?\stdClass $data = null): array {
+        $filteruser = optional_param('filter_user', 0, PARAM_INT);
+
+        $params = [];
+
+        if ($filteruser && preg_match("/%%FILTER_COURSEUSER:([^%]+)%%/i", $sql, $output)) {
+            $replace = ' AND ' . $output[1] . ' = :filteruser';
+            $sql = str_replace('%%FILTER_COURSEUSER:' . $output[1] . '%%', $replace, $sql);
+            $params['filteruser'] = $filteruser;
+        } else if (preg_match("/%%FILTER_COURSEUSER:([^%]+)%%/i", $sql, $output)) {
+            $sql = preg_replace('/%%FILTER_COURSEUSER:([^%]+)%%/i', '', $sql);
+        }
+
+        return [$sql, $params];
     }
 
     /**
