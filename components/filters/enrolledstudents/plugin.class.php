@@ -23,7 +23,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 defined('MOODLE_INTERNAL') || die;
-require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
+require_once($CFG->dirroot . '/blocks/configurable_reports/filter.class.php');
 
 /**
  * Class plugin_enrolledstudents
@@ -31,7 +31,7 @@ require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
  * @package   block_configurable_reports
  * @author    Juan leyva <http://www.twitter.com/jleyvadelgado>
  */
-class plugin_enrolledstudents extends plugin_base {
+class plugin_enrolledstudents extends filter_base {
 
     /**
      * Init
@@ -78,6 +78,28 @@ class plugin_enrolledstudents extends plugin_base {
         }
 
         return $finalelements;
+    }
+
+    #[\Override]
+    function execute_for_sql_report(string $sql, ?\stdClass $data = null): array {
+        $filterenrolledstudents = optional_param('filter_enrolledstudents', 0, PARAM_INT);
+        if (!$filterenrolledstudents) {
+            return [$sql, []];
+        }
+
+        if ($this->report->type !== 'sql') {
+            return [$filterenrolledstudents];
+        }
+
+        $params = [];
+
+        if (preg_match("/%%FILTER_COURSEENROLLEDSTUDENTS:([^%]+)%%/i", $sql, $output)) {
+            $replace = ' AND ' . $output[1] . ' = :filterenrolledstudents';
+            $sql = str_replace('%%FILTER_COURSEENROLLEDSTUDENTS:' . $output[1] . '%%', $replace, $sql);
+            $params['filterenrolledstudents'] = $filterenrolledstudents;
+        }
+
+        return [$sql, $params];
     }
 
     /**

@@ -78,20 +78,54 @@ class report_sql extends report_base {
      * prepare_sql
      *
      * @param string $sql
-     * @return array|string|string[]
+     * @return array
      */
-    public function prepare_sql(string $sql) {
+    public function prepare_sql(string $sql): array {
         global $USER, $CFG, $COURSE;
+
+        $components = cr_unserialize($this->config->components);
+        $filters = $components['filters']['elements'] ?? [];
+
+        $params = [];
+
+        if (!empty($filters)) {;
+            foreach ($filters as $f) {
+                require_once($CFG->dirroot . '/blocks/configurable_reports/components/filters/' . $f['pluginname'] .
+                    '/plugin.class.php');
+                $classname = 'plugin_' . $f['pluginname'];
+                $class = new $classname($this->config);
+                [$filtersql, $filterparams] = $class->execute_for_sql_report($sql, $f['formdata']);
+                $sql = $filtersql;
+                $params = array_merge($params, $filterparams);
+            }
+        }
 
         // Enable debug mode from SQL query.
         $this->config->debug = strpos($sql, '%%DEBUG%%') !== false;
 
         // Pass special custom undefined variable as filter.
-        // Security warning !!! can be used for sql injection.
-        // Use %%FILTER_VAR%% in your sql code with caution.
-        $filtervar = optional_param('filter_var', '', PARAM_RAW);
-        if (!empty($filtervar)) {
-            $sql = str_replace('%%FILTER_VAR%%', $filtervar, $sql);
+        // E.g. "AND id = 20"
+        $filtervar = optional_param('filter_var', '', PARAM_TEXT);
+        if (strpos($sql, '%%FILTER_VAR%%') !== false) {
+            // Make sure the filtervar is a valid sql clause, otherwise remove from sql.
+            $clause = '';
+            if (
+                !empty($filtervar)
+                && preg_match(
+                    '/^\s*(?<clause>(?:AND|OR)\s+(?:.*?)(?:=|<|>|<=|>=|<>|!=|LIKE|IN|BETWEEN)\s*)\s*(?<param>\S+(?:.*\S)?)\s*$/is',
+                    $filtervar,
+                    $output,
+                )
+            ) {
+                // Add clause to sql and param to params array.
+                $clause = $output['clause'] . ':filtervar';
+                $params['filtervar'] = $output['param'];
+                // if filtervar param has surrounding speechmarks, remove them.
+                if (preg_match('/^["\'](.*)["\']$/', $params['filtervar'], $matches)) {
+                    $params['filtervar'] = $matches[1];
+                }
+            }
+            $sql = str_replace('%%FILTER_VAR%%', $clause, $sql);
         }
 
         // See http://en.wikipedia.org/wiki/Year_2038_problem.
@@ -105,19 +139,21 @@ class report_sql extends report_base {
         ],
             [$USER->id, $COURSE->id, $COURSE->category, '0', '2145938400', $CFG->wwwroot],
             $sql);
-        $sql = preg_replace('/%{2}[^%]+%{2}/i', '', $sql);
 
-        return str_replace('?', '[[QUESTIONMARK]]', $sql);
+        $sql = preg_replace('/%{2}[^%]+%{2}/i', '', $sql);
+        $sql = str_replace('?', '[[QUESTIONMARK]]', $sql);
+        return [$sql, $params];
     }
 
     /**
      * execute_query
      *
      * @param string $sql
+     * @param array $params
      * @return mixed
      */
-    public function execute_query($sql) {
-        global $remotedb, $DB, $CFG;
+    public function execute_query($sql, $params = []) {
+        global $DB, $CFG;
 
         $sql = preg_replace('/\bprefix_(?=\w+)/i', $CFG->prefix, $sql);
 
@@ -130,9 +166,9 @@ class report_sql extends report_base {
 
         if (preg_match('/\b(INSERT|INTO|CREATE)\b/i', $sql) && !empty($CFG->block_configurable_reports_enable_sql_execution)) {
             // Run special (dangerous) queries directly.
-            $results = $remotedb->execute($sql);
+            $results = $DB->execute($sql, $params);
         } else {
-            $results = $remotedb->get_recordset_sql($sql, null, 0, $reportlimit);
+            $results = $DB->get_recordset_sql($sql, $params, 0, $reportlimit);
         }
 
         // Update the execution time in the DB.
@@ -151,38 +187,23 @@ class report_sql extends report_base {
      * @return bool
      */
     public function create_report(): bool {
-        global $CFG;
-
         $components = cr_unserialize($this->config->components);
 
-        $filters = $components['filters']['elements'] ?? [];
         $calcs = $components['calcs']['elements'] ?? [];
 
         $tablehead = [];
         $finalcalcs = [];
         $finaltable = [];
 
-        $components = cr_unserialize($this->config->components);
         $config = $components['customsql']['config'] ?? new stdClass;
         $totalrecords = 0;
 
         $sql = '';
+        $params = [];
         if (isset($config->querysql)) {
-            // Filters.
-            $sql = $config->querysql;
-            if (!empty($filters)) {
-                foreach ($filters as $f) {
-                    require_once($CFG->dirroot . '/blocks/configurable_reports/components/filters/' . $f['pluginname'] .
-                        '/plugin.class.php');
-                    $classname = 'plugin_' . $f['pluginname'];
-                    $class = new $classname($this->config);
-                    $sql = $class->execute($sql, $f['formdata']);
-                }
-            }
+            [$sql, $params] = $this->prepare_sql($config->querysql);
 
-            $sql = $this->prepare_sql($sql);
-
-            if ($rs = $this->execute_query($sql)) {
+            if ($rs = $this->execute_query($sql, $params)) {
                 foreach ($rs as $row) {
                     if (empty($finaltable)) {
                         foreach ($row as $colname => $value) {
@@ -227,5 +248,4 @@ class report_sql extends report_base {
 
         return true;
     }
-
 }

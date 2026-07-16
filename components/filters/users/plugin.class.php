@@ -23,7 +23,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 defined('MOODLE_INTERNAL') || die;
-require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
+require_once($CFG->dirroot . '/blocks/configurable_reports/filter.class.php');
 
 /**
  * Class plugin_users
@@ -31,7 +31,7 @@ require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
  * @package   block_configurable_reports
  * @author    Juan leyva <http://www.twitter.com/jleyvadelgado>
  */
-class plugin_users extends plugin_base {
+class plugin_users extends filter_base {
 
     /**
      * Init
@@ -79,6 +79,24 @@ class plugin_users extends plugin_base {
         }
 
         return $finalelements;
+    }
+
+    #[\Override]
+    function execute_for_sql_report(string $sql, ?\stdClass $data = null): array {
+        $filterusers = optional_param('filter_users', 0, PARAM_INT);
+        $match = preg_match("/%%FILTER_SYSTEMUSER:([^%]+)%%/i", $sql, $output);
+
+        $params = [];
+
+        if ($filterusers && $match) {
+            $replace = ' AND ' . $output[1] . ' = :filterusers';
+            $sql = str_replace('%%FILTER_SYSTEMUSER:' . $output[1] . '%%', $replace, $sql);
+            $params = ['filterusers' => $filterusers];
+        } else if ($match) {
+            $sql = preg_replace('/%%FILTER_SYSTEMUSER:([^%]+)%%/i', '', $sql);
+        }
+
+        return [$sql, $params];
     }
 
     /**
