@@ -23,7 +23,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 defined('MOODLE_INTERNAL') || die;
-require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
+require_once($CFG->dirroot . '/blocks/configurable_reports/filter.class.php');
 
 /**
  * Class plugin_categories
@@ -31,7 +31,7 @@ require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
  * @package   block_configurable_reports
  * @author    Juan leyva <http://www.twitter.com/jleyvadelgado>
  */
-class plugin_categories extends plugin_base {
+class plugin_categories extends filter_base {
 
     /**
      * Init
@@ -79,6 +79,35 @@ class plugin_categories extends plugin_base {
         }
 
         return $finalelements;
+    }
+
+    /**
+     * Execute filter, return the modified sql and paramaters.
+     *
+     * @param string $sql
+     * @param ?\stdClass $data
+     * @return array
+     */
+    function execute_for_sql_report(string $sql, ?\stdClass $data = null): array {
+
+        $filtercategories = optional_param('filter_categories', 0, PARAM_INT);
+        if (!$filtercategories) {
+            return [$sql, []];
+        }
+
+        if ($this->report->type !== 'sql') {
+            return [$filtercategories];
+        }
+
+        $params = [];
+
+        if (preg_match("/%%FILTER_CATEGORIES:([^%]+)%%/i", $sql, $output)) {
+            $replace = ' AND ' . $output[1] . ' = :filtercategories';
+            $sql = str_replace('%%FILTER_CATEGORIES:' . $output[1] . '%%', $replace, $sql);
+            $params['filtercategories'] = $filtercategories;
+        }
+
+        return [$sql, $params];
     }
 
     /**

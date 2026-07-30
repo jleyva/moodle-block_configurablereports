@@ -23,7 +23,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 defined('MOODLE_INTERNAL') || die;
-require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
+require_once($CFG->dirroot . '/blocks/configurable_reports/filter.class.php');
 
 /**
  * Class plugin_startendtime
@@ -31,7 +31,7 @@ require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
  * @package   block_configurable_reports
  * @author    Juan leyva <http://www.twitter.com/jleyvadelgado>
  */
-class plugin_startendtime extends plugin_base {
+class plugin_startendtime extends filter_base {
 
     /**
      * Init
@@ -62,11 +62,12 @@ class plugin_startendtime extends plugin_base {
      * @return array|string|string[]
      */
     public function execute($finalelements) {
-        global $CFG;
+        return $finalelements;
+    }
 
-        if ($this->report->type !== 'sql') {
-            return $finalelements;
-        }
+    #[\Override]
+    function execute_for_sql_report(string $sql, ?\stdClass $data = null): array {
+        global $CFG;
 
         if ($CFG->version < 2011120100) {
             $filterstarttime = optional_param('filter_starttime', 0, PARAM_RAW);
@@ -77,7 +78,7 @@ class plugin_startendtime extends plugin_base {
         }
 
         if (!$filterstarttime || !$filterendtime) {
-            return $finalelements;
+            return [$sql, []];
         }
 
         $filterstarttime = make_timestamp(
@@ -97,28 +98,32 @@ class plugin_startendtime extends plugin_base {
 
         $operators = ['<', '>', '<=', '>='];
 
-        if (preg_match("/%%FILTER_STARTTIME:([^%]+)%%/i", $finalelements, $output)) {
+        $params = [];
+
+        if (preg_match("/%%FILTER_STARTTIME:([^%]+)%%/i", $sql, $output)) {
             [$field, $operator] = preg_split('/:/', $output[1]);
             if (!in_array($operator, $operators)) {
                 throw new moodle_exception('nosuchoperator');
             }
-            $replace = ' AND ' . $field . ' ' . $operator . ' ' . $filterstarttime;
-            $finalelements = str_replace('%%FILTER_STARTTIME:' . $output[1] . '%%', $replace, $finalelements);
+            $replace = ' AND ' . $field . ' ' . $operator . ' :filterstarttime';
+            $sql = str_replace('%%FILTER_STARTTIME:' . $output[1] . '%%', $replace, $sql);
+            $params['filterstarttime'] = $filterstarttime;
         }
 
-        if (preg_match("/%%FILTER_ENDTIME:([^%]+)%%/i", $finalelements, $output)) {
+        if (preg_match("/%%FILTER_ENDTIME:([^%]+)%%/i", $sql, $output)) {
             [$field, $operator] = preg_split('/:/', $output[1]);
             if (!in_array($operator, $operators)) {
                 throw new moodle_exception('nosuchoperator');
             }
-            $replace = ' AND ' . $field . ' ' . $operator . ' ' . $filterendtime;
-            $finalelements = str_replace('%%FILTER_ENDTIME:' . $output[1] . '%%', $replace, $finalelements);
+            $replace = ' AND ' . $field . ' ' . $operator . ' :filterendtime';
+            $sql = str_replace('%%FILTER_ENDTIME:' . $output[1] . '%%', $replace, $sql);
+            $params['filterendtime'] = $filterendtime;
         }
 
-        $finalelements = str_replace('%%STARTTIME%%', $filterstarttime, $finalelements);
-        $finalelements = str_replace('%%ENDTIME%%', $filterendtime, $finalelements);
+        $sql = str_replace('%%STARTTIME%%', $filterstarttime, $sql);
+        $sql = str_replace('%%ENDTIME%%', $filterendtime, $sql);
 
-        return $finalelements;
+        return [$sql, $params];
     }
 
     /**
