@@ -560,6 +560,8 @@ $string['label_help'] = 'Text describing the filter to be displayed on the repor
 $string['idnumber'] = 'ID Number';
 $string['idnumber_help'] = 'Used to differentiate between filters of the same type. Case-sensitive.
 Example usage: %%FILTER_SEARCHTEXT_username:u.username:~%%';
+$string['starttime_default'] = 'Set a default value for start time';
+$string['endtime_default'] = 'Set a default value for end time';
 
 // Pie Chart Strings.
 $string['description'] = 'Description';
