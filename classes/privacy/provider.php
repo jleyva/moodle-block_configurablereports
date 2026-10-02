@@ -70,7 +70,18 @@ class provider implements
             'type' => 'privacy:metadata:block_configurable_reports:type',
             'components' => 'privacy:metadata:block_configurable_reports:components',
             'lastexecutiontime' => 'privacy:metadata:block_configurable_reports:lastexecutiontime',
+            'emailto' => 'privacy:metadata:block_configurable_reports:emailto',
         ], 'privacy:metadata:block_configurable_reports');
+
+        $collection->add_database_table('block_configurable_reports_bundles', [
+            'courseid' => 'privacy:metadata:block_configurable_reports_bundles:courseid',
+            'ownerid' => 'privacy:metadata:block_configurable_reports_bundles:ownerid',
+            'name' => 'privacy:metadata:block_configurable_reports_bundles:name',
+            'reportids' => 'privacy:metadata:block_configurable_reports_bundles:reportids',
+            'emailto' => 'privacy:metadata:block_configurable_reports_bundles:emailto',
+            'subject' => 'privacy:metadata:block_configurable_reports_bundles:subject',
+            'message' => 'privacy:metadata:block_configurable_reports_bundles:message',
+        ], 'privacy:metadata:block_configurable_reports_bundles');
 
         return $collection;
     }
@@ -92,6 +103,15 @@ class provider implements
                 WHERE bcr.ownerid = :ownerid";
 
         $params = ['ownerid' => $userid, 'contextlevel' => CONTEXT_USER];
+
+        $contextlist->add_from_sql($sql, $params);
+
+        // Find the recurring email bundles created by the userid.
+        $sql = "SELECT ctx.id
+                FROM {block_configurable_reports_bundles} bcrb
+                JOIN {context} ctx
+                  ON ctx.instanceid = bcrb.ownerid AND ctx.contextlevel = :contextlevel
+                WHERE bcrb.ownerid = :ownerid";
 
         $contextlist->add_from_sql($sql, $params);
 
@@ -119,6 +139,15 @@ class provider implements
                   FROM {block_configurable_reports} bcr
                   JOIN {context} ctx
                        ON ctx.instanceid = bcr.ownerid
+                       AND ctx.contextlevel = :contextuser
+                 WHERE ctx.id = :contextid";
+
+        $userlist->add_from_sql('ownerid', $sql, $params);
+
+        $sql = "SELECT bcrb.ownerid as ownerid
+                  FROM {block_configurable_reports_bundles} bcrb
+                  JOIN {context} ctx
+                       ON ctx.instanceid = bcrb.ownerid
                        AND ctx.contextlevel = :contextuser
                  WHERE ctx.id = :contextid";
 
@@ -155,6 +184,31 @@ class provider implements
         if (!empty($reportsdata)) {
             $data = (object) [
                 'reports' => $reportsdata,
+            ];
+            writer::with_context($contextlist->current())->export_data([
+                get_string('pluginname', 'block_configurable_reports'),
+            ], $data);
+        }
+
+        $bundlesdata = [];
+        $sql = "SELECT bcrb.*, c.fullname as coursename
+                  FROM {block_configurable_reports_bundles} bcrb
+                  JOIN {course} c ON c.id = bcrb.courseid
+                 WHERE bcrb.ownerid = :ownerid";
+        $results = $DB->get_records_sql($sql, $params);
+        foreach ($results as $result) {
+            $bundlesdata[] = (object) [
+                'coursename' => format_string($result->coursename, true),
+                'name' => $result->name,
+                'reportids' => $result->reportids,
+                'emailto' => $result->emailto,
+                'subject' => $result->subject,
+                'message' => $result->message,
+            ];
+        }
+        if (!empty($bundlesdata)) {
+            $data = (object) [
+                'reportbundles' => $bundlesdata,
             ];
             writer::with_context($contextlist->current())->export_data([
                 get_string('pluginname', 'block_configurable_reports'),
@@ -208,6 +262,7 @@ class provider implements
         // The ownerid is instead anonymised.
         $params['ownerid'] = $userid;
         $DB->set_field_select('block_configurable_reports', 'ownerid', 0, "ownerid = :ownerid", $params);
+        $DB->set_field_select('block_configurable_reports_bundles', 'ownerid', 0, "ownerid = :ownerid", $params);
     }
 
 }

@@ -114,6 +114,30 @@ class report_edit_form extends moodleform {
         $mform->addHelpButton('remote', 'remote', 'block_configurable_reports');
         $mform->setDefault('remote', 0);
 
+        $mform->addElement('header', 'emailoptions', get_string('emailoptions', 'block_configurable_reports'));
+
+        $mform->addElement(
+            'select',
+            'emailschedule',
+            get_string('emailschedule', 'block_configurable_reports'),
+            cr_get_email_schedule_options()
+        );
+        $mform->addHelpButton('emailschedule', 'emailschedule', 'block_configurable_reports');
+        $mform->setDefault('emailschedule', 0);
+
+        $mform->addElement(
+            'textarea',
+            'emailto',
+            get_string('emailto', 'block_configurable_reports'),
+            ['rows' => 4, 'cols' => 50]
+        );
+        $mform->setType('emailto', PARAM_RAW_TRIMMED);
+        $mform->addHelpButton('emailto', 'emailto', 'block_configurable_reports');
+        $mform->disabledIf('emailto', 'emailschedule', 'eq', 0);
+
+        global $PAGE;
+        $PAGE->requires->js_init_code(cr_email_chip_input_js('id_emailto'), true);
+
         // Adds an embed link for easy copy/paste once the report is saved.
         if (isset($this->_customdata['report']->id) && $this->_customdata['report']->id) {
 
@@ -164,6 +188,32 @@ class report_edit_form extends moodleform {
 
         // Buttons.
         $this->add_action_buttons(true, $submitstring);
+    }
+
+    /**
+     * Validate the email schedule / recipients fields.
+     *
+     * @param array $data
+     * @param array $files
+     * @return array Errors, keyed by element name.
+     */
+    public function validation($data, $files): array {
+        $errors = parent::validation($data, $files);
+
+        $emailto = trim((string) ($data['emailto'] ?? ''));
+
+        if (!empty($data['emailschedule'])) {
+            if ($emailto === '') {
+                $errors['emailto'] = get_string('emailtorequired', 'block_configurable_reports');
+            } else {
+                $invalid = cr_get_invalid_email_recipients($emailto);
+                if (!empty($invalid)) {
+                    $errors['emailto'] = get_string('invalidemail', 'block_configurable_reports', implode(', ', $invalid));
+                }
+            }
+        }
+
+        return $errors;
     }
 
     /**

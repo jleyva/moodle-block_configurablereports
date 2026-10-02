@@ -3,15 +3,34 @@ name: ci
 on: [push, pull_request]
 
 jobs:
+  check-publish-token:
+    runs-on: ubuntu-latest
+    outputs:
+      has_token: ${{ steps.check.outputs.has_token }}
+    steps:
+      - name: Check for moodle.org publish token
+        id: check
+        env:
+          MOODLE_ORG_TOKEN: ${{ secrets.MOODLE_ORG_TOKEN }}
+        run: |
+          if [ -n "$MOODLE_ORG_TOKEN" ]; then
+            echo "has_token=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "has_token=false" >> "$GITHUB_OUTPUT"
+            echo "::notice title=moodle.org publishing skipped::MOODLE_ORG_TOKEN is not configured on this repository, so release publishing to moodle.org will be skipped for this run. That secret only exists on the canonical upstream repo; forks and contributor branches can ignore this notice, the rest of CI still runs normally."
+          fi
+
   test:
+    needs: check-publish-token
     uses: catalyst/catalyst-moodle-workflows/.github/workflows/ci.yml@main
     secrets:
-      # Required if you plan to publish (uncomment the below)
       moodle_org_token: ${{ secrets.MOODLE_ORG_TOKEN }}
     with:
       disable_grunt: true
       disable_phpunit: true
-      disable_phpcpd: true # Old code we don't going to rewrite everything for now.
-      disable_release : true
+      # Only attempt to publish to moodle.org when this repo actually has the token
+      # configured (the canonical upstream repo). Forks/contributors never have it,
+      # and must never fail CI because of it (see check-publish-token above).
+      disable_release: ${{ needs.check-publish-token.outputs.has_token != 'true' }}
       release_branches: main
-      min_php : 7.4
+      min_php: 7.4

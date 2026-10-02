@@ -164,5 +164,50 @@ function xmldb_block_configurable_reports_upgrade($oldversion) {
         upgrade_plugin_savepoint(true, 2024051300, 'block', 'configurable_reports');
     }
 
+    if ($oldversion < 2027050402) {
+        $table = new xmldb_table('block_configurable_reports');
+
+        $field = new xmldb_field('emailschedule', XMLDB_TYPE_INTEGER, '4', XMLDB_UNSIGNED, XMLDB_NOTNULL, null, '0', null);
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        $field = new xmldb_field('emailto', XMLDB_TYPE_TEXT, null, null, null, null, null, null);
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        $field = new xmldb_field('lastemailtime', XMLDB_TYPE_INTEGER, '10', XMLDB_UNSIGNED, XMLDB_NOTNULL, null, '0', null);
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        upgrade_plugin_savepoint(true, 2027050402, 'block', 'configurable_reports');
+    }
+
+    if ($oldversion < 2027050403) {
+        $table = new xmldb_table('block_configurable_reports_bundles');
+
+        if (!$dbman->table_exists($table)) {
+            $table->add_field('id', XMLDB_TYPE_INTEGER, '10', XMLDB_UNSIGNED, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
+            $table->add_field('courseid', XMLDB_TYPE_INTEGER, '11', XMLDB_UNSIGNED, XMLDB_NOTNULL, null, null);
+            $table->add_field('ownerid', XMLDB_TYPE_INTEGER, '11', XMLDB_UNSIGNED, XMLDB_NOTNULL, null, null);
+            $table->add_field('name', XMLDB_TYPE_CHAR, '255', null, XMLDB_NOTNULL, null, null);
+            $table->add_field('reportids', XMLDB_TYPE_TEXT, null, null, null, null, null);
+            $table->add_field('emailto', XMLDB_TYPE_TEXT, null, null, null, null, null);
+            $table->add_field('subject', XMLDB_TYPE_CHAR, '255', null, null, null, null);
+            $table->add_field('message', XMLDB_TYPE_TEXT, null, null, null, null, null);
+            $table->add_field('messageformat', XMLDB_TYPE_INTEGER, '4', XMLDB_UNSIGNED, XMLDB_NOTNULL, null, '1');
+            $table->add_field('emailschedule', XMLDB_TYPE_INTEGER, '4', XMLDB_UNSIGNED, XMLDB_NOTNULL, null, '0');
+            $table->add_field('lastemailtime', XMLDB_TYPE_INTEGER, '10', XMLDB_UNSIGNED, XMLDB_NOTNULL, null, '0');
+            $table->add_field('timecreated', XMLDB_TYPE_INTEGER, '10', XMLDB_UNSIGNED, XMLDB_NOTNULL, null, '0');
+            $table->add_key('primary', XMLDB_KEY_PRIMARY, ['id']);
+
+            $dbman->create_table($table);
+        }
+
+        upgrade_plugin_savepoint(true, 2027050403, 'block', 'configurable_reports');
+    }
+
     return true;
 }

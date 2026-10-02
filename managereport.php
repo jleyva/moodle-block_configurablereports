@@ -112,11 +112,13 @@ if ($reports) {
         get_string('reportsmanage', 'admin') . ' ' . get_string('course'),
         get_string('type', 'block_configurable_reports'),
         get_string('username'),
+        get_string('emailschedule', 'block_configurable_reports'),
         get_string('edit'),
         get_string('download', 'block_configurable_reports'),
     ];
-    $table->align = ['left', 'left', 'left', 'left', 'center', 'center'];
-    $table->size = ['30%', '10%', '10%', '10%', '20%', '20%'];
+    $table->align = ['left', 'left', 'left', 'left', 'left', 'center', 'center'];
+    $table->size = ['25%', '10%', '10%', '10%', '15%', '15%', '15%'];
+    $emailscheduleoptions = cr_get_email_schedule_options();
     $stredit = get_string('edit');
     $strdelete = get_string('delete');
     $strhide = get_string('hide');
@@ -185,11 +187,23 @@ if ($reports) {
             }
         }
 
+        if (!empty($r->emailschedule)) {
+            $recipientcount = count(cr_parse_email_recipients((string) $r->emailto));
+            $emailstatus = '<a href="editreport.php?id=' . $r->id . '" title="' .
+                s($emailscheduleoptions[$r->emailschedule]) . '">' .
+                $OUTPUT->pix_icon('t/email', $emailscheduleoptions[$r->emailschedule]) . '&nbsp;' .
+                $emailscheduleoptions[$r->emailschedule] . ' (' . $recipientcount . ')</a>';
+        } else {
+            $emailstatus = '<a href="editreport.php?id=' . $r->id . '" class="text-muted">' .
+                $emailscheduleoptions[0] . '</a>';
+        }
+
         $table->data[] = [
             '<a href="viewreport.php?id=' . $r->id . '">' . format_string($r->name) . '</a>',
             $coursename,
             get_string('report_' . $r->type, 'block_configurable_reports'),
             $owner,
+            $emailstatus,
             $editcell,
             $download,
         ];
@@ -198,9 +212,114 @@ if ($reports) {
     $table->id = 'reportslist';
     cr_add_jsordering("#reportslist", $PAGE);
     cr_print_table($table);
+
+    echo html_writer::start_tag('form', [
+        'action' => 'sendreportsemail.php',
+        'method' => 'post',
+        'class' => 'mform mt-3',
+        'id' => 'cr_sendreportsemail_form',
+    ]);
+    echo html_writer::tag('legend', get_string('sendreportsbyemail', 'block_configurable_reports'));
+    echo html_writer::tag('p', get_string('sendreportsbyemailintro', 'block_configurable_reports'), ['class' => 'text-muted']);
+    echo html_writer::empty_tag('input', ['type' => 'hidden', 'name' => 'courseid', 'value' => $course->id]);
+    echo html_writer::empty_tag('input', ['type' => 'hidden', 'name' => 'sesskey', 'value' => sesskey()]);
+
+    echo html_writer::start_tag('div', ['class' => 'mb-2']);
+    echo html_writer::link('#', get_string('selectall'), [
+        'onclick' => 'document.querySelectorAll("#cr_sendreportsemail_form input[type=checkbox]")' .
+            '.forEach(function(c){c.checked=true;}); return false;',
+    ]);
+    echo ' / ';
+    echo html_writer::link('#', get_string('deselectall'), [
+        'onclick' => 'document.querySelectorAll("#cr_sendreportsemail_form input[type=checkbox]")' .
+            '.forEach(function(c){c.checked=false;}); return false;',
+    ]);
+    echo html_writer::end_tag('div');
+
+    foreach ($reports as $r) {
+        echo html_writer::start_tag('div', ['class' => 'form-check']);
+        echo html_writer::checkbox(
+            'ids[]',
+            $r->id,
+            false,
+            format_string($r->name),
+            ['id' => 'cr_sendreport_' . $r->id, 'class' => 'form-check-input']
+        );
+        echo html_writer::end_tag('div');
+    }
+
+    echo html_writer::empty_tag('input', [
+        'type' => 'submit',
+        'value' => get_string('sendreportsbyemail', 'block_configurable_reports'),
+        'class' => 'btn btn-secondary mt-2',
+    ]);
+    echo html_writer::end_tag('form');
 } else {
     echo $OUTPUT->heading(get_string('noreportsavailable', 'block_configurable_reports'));
 }
+
+// Recurring combined email schedules (bundle several reports into one recurring email).
+$bundles = cr_get_my_bundles($course->id, $USER->id);
+$bundleschedules = cr_get_recurring_schedule_options();
+$strbundleedit = get_string('editbundle', 'block_configurable_reports');
+$strbundledelete = get_string('deletebundle', 'block_configurable_reports');
+
+echo html_writer::start_tag('div', ['class' => 'mt-4']);
+echo $OUTPUT->heading(get_string('recurringemailbundles', 'block_configurable_reports'), 4);
+echo html_writer::tag('p', get_string('recurringemailbundlesdesc', 'block_configurable_reports'), ['class' => 'text-muted']);
+
+if ($bundles) {
+    $bundletable = new stdclass;
+    $bundletable->width = '100%';
+    $bundletable->id = 'bundleslist';
+    $bundletable->head = [
+        get_string('name'),
+        get_string('bundlereports', 'block_configurable_reports'),
+        get_string('emailschedule', 'block_configurable_reports'),
+        get_string('emailto', 'block_configurable_reports'),
+        get_string('edit'),
+    ];
+    $bundletable->align = ['left', 'left', 'left', 'left', 'center'];
+    $bundletable->size = ['20%', '35%', '15%', '15%', '15%'];
+
+    foreach ($bundles as $bundle) {
+        $bundlereportids = array_filter(array_map('intval', explode(',', (string) $bundle->reportids)));
+        $bundlereportnames = [];
+        foreach ($bundlereportids as $brid) {
+            if (isset($reports[$brid])) {
+                $bundlereportnames[] = format_string($reports[$brid]->name);
+            }
+        }
+
+        $editurl = 'editbundle.php?id=' . $bundle->id;
+        $deleteurl = 'editbundle.php?id=' . $bundle->id . '&amp;delete=1&amp;sesskey=' . $USER->sesskey;
+
+        $bundleeditcell = '<a title="' . $strbundleedit . '" href="' . $editurl . '">' .
+            $OUTPUT->pix_icon('t/edit', $strbundleedit) . '</a>&nbsp;&nbsp;';
+        $bundleeditcell .= '<a title="' . $strbundledelete . '" href="' . $deleteurl . '">' .
+            $OUTPUT->pix_icon('t/delete', $strbundledelete) . '</a>';
+
+        $bundletable->data[] = [
+            '<a href="' . $editurl . '">' . format_string($bundle->name) . '</a>',
+            implode(', ', $bundlereportnames),
+            $bundleschedules[$bundle->emailschedule] ?? '',
+            (string) count(cr_parse_email_recipients((string) $bundle->emailto)),
+            $bundleeditcell,
+        ];
+    }
+
+    cr_print_table($bundletable);
+} else {
+    echo html_writer::tag('p', get_string('nobundlesyet', 'block_configurable_reports'));
+}
+
+$addbundleurl = $CFG->wwwroot . '/blocks/configurable_reports/editbundle.php?courseid=' . $course->id;
+echo html_writer::tag(
+    'a',
+    get_string('addbundle', 'block_configurable_reports'),
+    ['href' => $addbundleurl, 'class' => 'btn btn-secondary']
+);
+echo html_writer::end_tag('div');
 
 $addreporturl = $CFG->wwwroot . '/blocks/configurable_reports/editreport.php?courseid=' . $course->id;
 echo $OUTPUT->heading(

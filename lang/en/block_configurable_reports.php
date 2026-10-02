@@ -90,6 +90,51 @@ $string['remotedescription'] = 'Do you want to run this query on the remote db';
 $string['remote_help'] = 'Do you want to run this query on the remote db';
 $string['setcourseid'] = 'Set courseid';
 
+// Scheduled report emails.
+$string['emailoptions'] = 'Email options';
+$string['emailschedule'] = 'Automatically email this report';
+$string['emailschedule_help'] = 'Automatically generate this report and email it to the recipients below, on the chosen frequency.';
+$string['emailschedule_disabled'] = 'Do not send';
+$string['emailschedule_daily'] = 'Daily';
+$string['emailschedule_weekly'] = 'Weekly';
+$string['emailschedule_monthly'] = 'Monthly';
+$string['emailto'] = 'Recipient email addresses';
+$string['emailto_help'] = 'Enter one email address per line (or separate them with commas/semicolons). Each recipient will receive this report by email according to the selected frequency.';
+$string['emailtorequired'] = 'Please enter at least one recipient email address, or set the frequency to "Do not send".';
+$string['invalidemail'] = 'Invalid email address: {$a}';
+$string['sendscheduledreports'] = 'Send scheduled configurable reports by email';
+$string['reportemailsubject'] = 'Report: {$a}';
+$string['reportemailintro'] = 'Please find below the automatically generated report "{$a}".';
+
+// Ad-hoc "send reports by email" (multiple reports, custom content).
+$string['sendreportsbyemail'] = 'Send reports by email';
+$string['sendreportsbyemailintro'] = 'Send a one-off email with the selected reports to any list of recipients, with a custom subject and message. To have a report emailed automatically on a recurring basis instead, enable "Automatically email this report" in that report\'s own settings (the edit icon above).';
+$string['sendreportsbyemaildesc'] = 'You are about to send the following reports by email: {$a}';
+$string['noreportsselected'] = 'Please select at least one report to send by email';
+$string['reportsemailsent'] = 'Report(s) emailed to {$a} recipient(s)';
+$string['sendmode'] = 'How to send';
+$string['sendmode_help'] = 'Choose whether to send all selected reports together in one email (each attached separately, not zipped), or as a separate, independent email per report.';
+$string['sendmode_combined'] = 'Combined: one email with all reports attached separately';
+$string['sendmode_separate'] = 'Separate: one independent email per report';
+$string['email_message_for'] = 'Message for "{$a}"';
+
+// Recurring combined email bundles (schedule several reports together).
+$string['recurringemailbundles'] = 'Recurring combined email schedules';
+$string['recurringemailbundlesdesc'] = 'Each schedule below bundles a fixed set of reports into one recurring email, sent to a fixed list of recipients with a custom subject and message. Use this when you want a "combined" send (see above) to repeat automatically instead of being one-off.';
+$string['nobundlesyet'] = 'No recurring email schedules yet';
+$string['addbundle'] = 'Add recurring email';
+$string['editbundle'] = 'Edit recurring email';
+$string['deletebundle'] = 'Delete recurring email';
+$string['confirmdeletebundle'] = 'Are you sure you want to delete the recurring email "{$a}"?';
+$string['bundledeleted'] = 'Recurring email deleted';
+$string['bundlesaved'] = 'Recurring email saved';
+$string['bundledoesnotexist'] = 'This recurring email schedule does not exist';
+$string['bundlename'] = 'Name';
+$string['bundlename_help'] = 'A label to identify this recurring email in the management list, e.g. "Weekly manager digest".';
+$string['bundlereports'] = 'Reports to include';
+$string['bundlereports_help'] = 'The reports that will be generated and attached together every time this recurring email is sent.';
+$string['bundlereportsrequired'] = 'Please select at least one report to include';
+
 // Columns.
 $string['column'] = "Column";
 $string['nocolumnsyet'] = "No columns yet";
@@ -477,6 +522,7 @@ DataTables JS library (Column sort, fixed header, search, paging...)';
 
 $string['email_subject'] = 'Subject';
 $string['email_message'] = 'Message';
+$string['email_message_for'] = 'Message for "{$a}"';
 $string['email_send'] = 'Send';
 
 $string['sqlsecurity'] = 'SQL Security';
@@ -551,6 +597,16 @@ $string['privacy:metadata:block_configurable_reports:components'] = 'The configu
  the filters...';
 $string['privacy:metadata:block_configurable_reports:lastexecutiontime'] = 'Time this report took to run last time it was executed,
  in milliseconds.';
+$string['privacy:metadata:block_configurable_reports:emailto'] = 'The recipient email addresses this report is automatically emailed to';
+$string['privacy:metadata:block_configurable_reports_bundles'] = 'Recurring combined email schedules, each bundling several reports into one scheduled email.';
+$string['privacy:metadata:block_configurable_reports_bundles:courseid'] = 'Course ID';
+$string['privacy:metadata:block_configurable_reports_bundles:ownerid'] = 'The ID of the user who created this recurring email';
+$string['privacy:metadata:block_configurable_reports_bundles:name'] = 'The name of this recurring email';
+$string['privacy:metadata:block_configurable_reports_bundles:reportids'] = 'The reports included in this recurring email';
+$string['privacy:metadata:block_configurable_reports_bundles:emailto'] = 'The recipient email addresses this recurring email is sent to';
+$string['privacy:metadata:block_configurable_reports_bundles:subject'] = 'The email subject';
+$string['privacy:metadata:block_configurable_reports_bundles:message'] = 'The custom email message';
+
 // Filter forms.
 $string['add'] = 'Add';
 $string['description'] = 'Description';

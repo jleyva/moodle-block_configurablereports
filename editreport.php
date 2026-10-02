@@ -223,6 +223,14 @@ if ($editform->is_cancelled()) {
         $data->displayprintbutton = 0;
     }
 
+    if (!isset($data->emailschedule)) {
+        $data->emailschedule = 0;
+    }
+
+    if (!isset($data->emailto)) {
+        $data->emailto = '';
+    }
+
     if (empty($report)) {
         $data->ownerid = $USER->id;
         $data->courseid = $courseid;
