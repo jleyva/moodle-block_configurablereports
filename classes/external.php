@@ -34,6 +34,7 @@ use external_api;
 use external_function_parameters;
 use external_single_structure;
 use external_value;
+use moodle_exception;
 
 /**
  * This is the external API for this component.
@@ -93,7 +94,7 @@ class external extends external_api {
             $reportclassname = 'report_' . $report->type;
             $reportclass = new $reportclassname($report);
             if (!$reportclass->check_permissions($USER->id, $context)) {
-                $warnings = get_string('badpermissions', 'block_configurable_reports');
+                throw new moodle_exception('badpermissions', 'block_configurable_reports');
             }
 
             $reportclass->create_report();
