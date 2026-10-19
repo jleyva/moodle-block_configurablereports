@@ -674,6 +674,19 @@ function cr_import_xml(string $xml, object $course) {
             throw new moodle_exception('nosqlpermissions', 'block_configurable_reports');
         }
 
+        // Only keep known export formats.
+        $exportformats = array_keys(cr_get_export_plugins());
+        $export = array_intersect(explode(',', $newreport->export ?? ''), $exportformats);
+        $newreport->export = $export ? implode(',', $export) . ',' : '';
+
+        foreach (['visible', 'summaryformat', 'pagination', 'jsordering', 'global', 'cron', 'remote', 'displaytotalrecords',
+                'displayprintbutton'] as $field) {
+            if (isset($newreport->{$field})) {
+                $newreport->{$field} = (int) $newreport->{$field};
+            }
+        }
+        $newreport->name = clean_param($newreport->name ?? '', PARAM_TEXT);
+
         $newreport->courseid = $course->id;
         $newreport->ownerid = $USER->id;
         $newreport->name .= " (" . userdate(time()) . ")";

@@ -132,6 +132,7 @@ if ($reports) {
     $strshow = get_string('show');
     $strcopy = get_string('duplicate');
     $strexport = get_string('exportreport', 'block_configurable_reports');
+    $exportformats = cr_get_export_plugins();
 
     foreach ($reports as $r) {
         if ($r->courseid == 1) {
@@ -186,10 +187,13 @@ if ($reports) {
         $export = explode(',', $r->export);
         if (!empty($export)) {
             foreach ($export as $e) {
-                if ($e) {
-                    $download .= '<a href="viewreport.php?id=' . $r->id . '&amp;download=1&amp;format=' . $e . '">' .
-                        '<img src="' . $CFG->wwwroot . '/blocks/configurable_reports/export/' . $e . '/pix.gif" alt="' . $e . '">' .
-                        '&nbsp;' . (strtoupper($e)) . '</a>&nbsp;&nbsp;';
+                // Only known formats, the value may come from an imported report.
+                if ($e && isset($exportformats[$e])) {
+                    $url = new moodle_url('/blocks/configurable_reports/viewreport.php',
+                        ['id' => $r->id, 'download' => 1, 'format' => $e]);
+                    $icon = html_writer::empty_tag('img',
+                        ['src' => new moodle_url('/blocks/configurable_reports/export/' . $e . '/pix.gif'), 'alt' => $e]);
+                    $download .= html_writer::link($url, $icon . '&nbsp;' . s(strtoupper($e))) . '&nbsp;&nbsp;';
                 }
             }
         }
