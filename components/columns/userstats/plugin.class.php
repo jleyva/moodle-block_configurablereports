@@ -189,7 +189,7 @@ class plugin_userstats extends plugin_base {
         if ($starttime && $endtime) {
             $starttime = usergetmidnight($starttime) + 24 * 60 * 60;
             $endtime = usergetmidnight($endtime) + 24 * 60 * 60;
-            $sql .= " AND timeend >= $starttime AND timeend <= $endtime";
+            $sql .= " AND timeend >= ? AND timeend <= ?";
             $params = array_merge($params, [$starttime, $endtime]);
         }
 
