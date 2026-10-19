@@ -164,8 +164,6 @@ final class security_test extends advanced_testcase {
         } catch (\moodle_exception $e) {
             $this->assertSame('nosqlpermissions', $e->errorcode);
         }
-        // Ignore xmlize() deprecation notices.
-        $this->resetDebugging();
     }
 
     /**
@@ -179,8 +177,6 @@ final class security_test extends advanced_testcase {
 
         $xml = $this->build_import_xml('sql', ['ownerid' => 12345, 'courseid' => $course->id, 'id' => 999]);
         $this->assertTrue(cr_import_xml($xml, $SITE));
-        // Ignore xmlize() deprecation notices.
-        $this->resetDebugging();
 
         $report = $DB->get_record('block_configurable_reports', []);
         $this->assertEquals($USER->id, $report->ownerid);
@@ -251,7 +247,6 @@ final class security_test extends advanced_testcase {
             $components);
 
         $this->assertTrue(cr_import_xml($xml, $SITE));
-        $this->resetDebugging();
 
         $report = $DB->get_record('block_configurable_reports', []);
         $this->assertSame('xls,', $report->export);
@@ -307,5 +302,50 @@ final class security_test extends advanced_testcase {
         $plugin = new \plugin_userfield($this->create_sql_report('SELECT 1'));
 
         $this->assertSame('', $plugin->execute((object) ['column' => 'password'], clone $row));
+    }
+
+    /**
+     * The SQL security keyword check also applies when the query runs, not only in the form.
+     */
+    public function test_execute_query_checks_keywords(): void {
+        $this->setAdminUser();
+        set_config('sqlsecurity', 1, 'block_configurable_reports');
+
+        $report = new \report_sql($this->create_sql_report('SELECT 1'));
+
+        try {
+            $report->execute_query('DELETE FROM {user} WHERE id = 0');
+            $this->fail('Exception expected');
+        } catch (\moodle_exception $e) {
+            $this->assertSame('notallowedwords', $e->errorcode);
+        }
+
+        $this->expectException(\moodle_exception::class);
+        $report->execute_query('SELECT id FROM {user}; SELECT 1');
+    }
+
+    /**
+     * The scheduled task runs the SQL reports flagged to run daily, once a day after the configured time.
+     */
+    public function test_run_cron_reports_task(): void {
+        global $DB;
+
+        $this->setAdminUser();
+        $report = $this->create_sql_report('SELECT id FROM {user}');
+        $DB->set_field('block_configurable_reports', 'cron', 1, ['id' => $report->id]);
+        set_config('cron_hour', 0, 'block_configurable_reports');
+        set_config('cron_minute', 0, 'block_configurable_reports');
+
+        $task = new \block_configurable_reports\task\run_cron_reports();
+        ob_start();
+        $task->execute();
+        $output = ob_get_clean();
+        $this->assertStringContainsString("Executing query 'SQL test report'", $output);
+        $this->assertStringContainsString('...OK', $output);
+
+        // It does not run again the same day.
+        ob_start();
+        $task->execute();
+        $this->assertSame('', ob_get_clean());
     }
 }
