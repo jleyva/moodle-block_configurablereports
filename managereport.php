@@ -53,6 +53,15 @@ $PAGE->set_context($context);
 $PAGE->set_pagelayout('incourse');
 
 if ($importurl) {
+    require_sesskey();
+
+    // Only allow importing from the configured GitHub repository.
+    $repository = get_config('block_configurable_reports', 'crrepository');
+    $allowedprefix = 'https://api.github.com/repos/' . $repository . '/';
+    if (empty($repository) || strpos($importurl, $allowedprefix) !== 0 || strpos($importurl, '..') !== false) {
+        throw new moodle_exception('errorimporting', 'block_configurable_reports');
+    }
+
     $c = new curl();
     if ($data = $c->get($importurl)) {
         $data = json_decode($data);

@@ -94,7 +94,7 @@ M.block_configurable_reports = {
         var Y = this.Y;
 
         var path = select_element[select_element.selectedIndex].value;
-        location.href = location.href + "&importurl=" + encodeURIComponent(path);
+        location.href = location.href + "&importurl=" + encodeURIComponent(path) + "&sesskey=" + M.cfg.sesskey;
     },
 
     onchange_reportcategories: function(select_element) {
