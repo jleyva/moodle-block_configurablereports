@@ -68,7 +68,8 @@ class plugin_ccoursefield extends plugin_base {
         switch ($data->operator) {
             case 'LIKE % %':
                 $sql = $DB->sql_like($data->field, '?', false);
-                $params = [$data->value];
+                // "Contains": wrap in wildcards like 5.2 did, otherwise LIKE behaves as "=".
+                $params = ['%' . $data->value . '%'];
                 break;
             default:
                 $sql = "$data->field $data->operator ?";

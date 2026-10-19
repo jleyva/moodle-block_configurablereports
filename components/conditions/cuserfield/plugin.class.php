@@ -82,15 +82,18 @@ class plugin_cuserfield extends plugin_base {
             }
 
             if ($fieldid = $DB->get_field('user_info_field', 'id', ['shortname' => str_replace('profile_', '', $data->field)])) {
+                $value = $data->value;
                 switch ($data->operator) {
                     case 'LIKE % %':
                         $sqllike = $DB->sql_like('data', ':cuserdata', false);
                         $sql = "fieldid = :cuserfield AND {$sqllike}";
+                        // "Contains": wrap in wildcards like 5.2 did, otherwise LIKE behaves as "=".
+                        $value = '%' . $value . '%';
                         break;
                     default:
                         $sql = "fieldid = :cuserfield AND data $data->operator :cuserdata";
                 }
-                $params = ['cuserfield' => $fieldid, 'cuserdata' => $data->value];
+                $params = ['cuserfield' => $fieldid, 'cuserdata' => $value];
 
                 if ($infodata = $DB->get_records_select('user_info_data', $sql, $params)) {
                     $finalusersid = [];
@@ -109,7 +112,8 @@ class plugin_cuserfield extends plugin_base {
             switch ($data->operator) {
                 case 'LIKE % %':
                     $sql = $DB->sql_like($data->field, '?', false);
-                    $params = [$data->value];
+                    // "Contains": wrap in wildcards like 5.2 did, otherwise LIKE behaves as "=".
+                    $params = ['%' . $data->value . '%'];
                     break;
                 default:
                     $sql = "$data->field $data->operator ?";
