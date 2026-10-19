@@ -74,6 +74,9 @@ class github extends \curl {
         $repolink .= $this->repo;
         $repolink .= $url;
 
+        // Always verify the GitHub certificate, core curl does not do it by default.
+        $options['CURLOPT_SSL_VERIFYPEER'] = true;
+
         return parent::get($repolink, $params, $options);
     }
 

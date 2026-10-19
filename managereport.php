@@ -63,7 +63,7 @@ if ($importurl) {
     }
 
     $c = new curl();
-    if ($data = $c->get($importurl)) {
+    if ($data = $c->get($importurl, [], ['CURLOPT_SSL_VERIFYPEER' => true])) {
         $data = json_decode($data);
         $xml = base64_decode($data->content);
     } else {
