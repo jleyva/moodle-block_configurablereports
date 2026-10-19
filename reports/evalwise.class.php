@@ -82,17 +82,8 @@ class EvalWise extends EvalMath {
                         $fnn = 'log';
                     }
 
-                    // TODO Use the PHP internal function if possible
-                    // @codingStandardsIgnoreStart
-                    /*
-                        evaluate postfix notation
-                        modified to perform bitwise-like operations in arrays
-                        * => & => array_intersect
-                        + => | => array_merge
-                        - => ^ => array_diff
-                     */
-                    eval('$stack->push(' . $fnn . '($op1));'); // Perfectly safe eval()
-                    // @codingStandardsIgnoreEnd
+                    // Evaluate postfix notation, the function is one of the whitelisted math built-ins.
+                    $stack->push(call_user_func($fnn, $op1));
 
                 } else if (array_key_exists($fnn, $this->fc)) { // Calc emulation function
                     // Get args
