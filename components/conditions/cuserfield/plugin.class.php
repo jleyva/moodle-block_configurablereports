@@ -56,10 +56,10 @@ class plugin_cuserfield extends plugin_base {
         if (strpos($data->field, 'profile_') === 0) {
             $name = $DB->get_field('user_info_field', 'name', ['shortname' => str_replace('profile_', '', $data->field)]);
 
-            return $name . ' ' . $data->operator . ' ' . $data->value;
+            return format_string($name . ' ' . $data->operator . ' ' . $data->value);
         }
 
-        return get_string($data->field) . ' ' . $data->operator . ' ' . $data->value;
+        return format_string(get_string($data->field) . ' ' . $data->operator . ' ' . $data->value);
 
     }
 

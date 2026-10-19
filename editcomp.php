@@ -188,7 +188,7 @@ if ($elements) {
                 '</a>';
         }
 
-        $table->data[] = ['c' . ($i + 1), $e['pluginfullname'], $e['summary'], $editcell];
+        $table->data[] = ['c' . ($i + 1), format_string($e['pluginfullname']), format_string($e['summary']), $editcell];
         $i++;
     }
     cr_print_table($table);

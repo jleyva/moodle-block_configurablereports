@@ -57,11 +57,11 @@ class plugin_usermodactions extends plugin_base {
         if ($cm = $DB->get_record('course_modules', ['id' => $data->cmid])) {
             $modname = $DB->get_field('modules', 'name', ['id' => $cm->module]);
             if ($name = $DB->get_field("$modname", 'name', ['id' => $cm->instance])) {
-                return $data->columname . ' (' . $name . ')';
+                return format_string($data->columname . ' (' . $name . ')');
             }
         }
 
-        return $data->columname;
+        return format_string($data->columname);
     }
 
     /**

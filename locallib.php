@@ -345,14 +345,14 @@ function cr_print_table(object $table, bool $return = false) {
         $table->class = 'generaltable';
     }
 
-    $tableid = empty($table->id) ? '' : 'id="' . $table->id . '"';
     $output .= '<form action="send_emails.php" method="post" id="sendemail">';
-    $output .= '<table width="' . $table->width . '" ';
-    if (!empty($table->summary)) {
-        $output .= " summary=\"$table->summary\"";
-    }
-    $output .= " cellpadding=\"$table->cellpadding\" cellspacing=\"$table->cellspacing\"
-                class=\"$table->class boxalign$table->tablealign\" $tableid>\n";
+    $output .= html_writer::start_tag('table', [
+        'width' => $table->width,
+        'cellpadding' => $table->cellpadding,
+        'cellspacing' => $table->cellspacing,
+        'class' => $table->class . ' boxalign' . $table->tablealign,
+        'id' => empty($table->id) ? null : $table->id,
+    ]) . "\n";
 
     $countcols = 0;
     $isuserid = -1;
