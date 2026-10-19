@@ -105,24 +105,43 @@ class report_sql extends report_base {
 
         // Pass special custom undefined variable as filter.
         // E.g. "AND id = 20"
-        $filtervar = optional_param('filter_var', '', PARAM_TEXT);
+        // PARAM_RAW like 5.2: PARAM_TEXT strips "<..." as if it were an HTML tag, breaking "<", "<=" and "<>".
+        // The value is bound as a parameter below.
+        $filtervar = optional_param('filter_var', '', PARAM_RAW);
         if (strpos($sql, '%%FILTER_VAR%%') !== false) {
             // Make sure the filtervar is a valid sql clause, otherwise remove from sql.
             $clause = '';
+            // Multi-character operators first ("<=" must not match as "<"), and word operators need
+            // word boundaries ("AND institution = x" must not match "in").
             if (
                 !empty($filtervar)
                 && preg_match(
-                    '/^\s*(?<clause>(?:AND|OR)\s+(?:.*?)(?:=|<|>|<=|>=|<>|!=|LIKE|IN|BETWEEN)\s*)\s*(?<param>\S+(?:.*\S)?)\s*$/is',
+                    '/^\s*(?<clause>(?:AND|OR)\s+.*?)\s*(?<op><=|>=|<>|!=|=|<|>|\bNOT\s+LIKE\b|\bLIKE\b|\bNOT\s+IN\b|\bIN\b|\bBETWEEN\b)\s*(?<param>\S(?:.*\S)?)\s*$/is',
                     $filtervar,
                     $output,
                 )
             ) {
-                // Add clause to sql and param to params array.
-                $clause = $output['clause'] . ':filtervar';
-                $params['filtervar'] = $output['param'];
-                // if filtervar param has surrounding speechmarks, remove them.
-                if (preg_match('/^["\'](.*)["\']$/', $params['filtervar'], $matches)) {
-                    $params['filtervar'] = $matches[1];
+                global $DB;
+                $operator = strtoupper(preg_replace('/\s+/', ' ', $output['op']));
+                // If a value has surrounding speechmarks, remove them.
+                $unquote = function(string $value): string {
+                    $value = trim($value);
+                    return preg_match('/^["\'](.*)["\']$/s', $value, $matches) ? $matches[1] : $value;
+                };
+                if (in_array($operator, ['IN', 'NOT IN'], true) && preg_match('/^\((.*)\)$/s', $output['param'], $list)) {
+                    // "AND id IN (2,3)": one bound param per value.
+                    $values = array_map($unquote, str_getcsv($list[1], ',', "'"));
+                    [$insql, $inparams] = $DB->get_in_or_equal($values, SQL_PARAMS_NAMED, 'filtervar', $operator === 'IN');
+                    $clause = $output['clause'] . ' ' . $insql;
+                    $params = array_merge($params, $inparams);
+                } else if ($operator === 'BETWEEN' && preg_match('/^(.+?)\s+AND\s+(.+)$/is', $output['param'], $range)) {
+                    $clause = $output['clause'] . ' BETWEEN :filtervarfrom AND :filtervarto';
+                    $params['filtervarfrom'] = $unquote($range[1]);
+                    $params['filtervarto'] = $unquote($range[2]);
+                } else {
+                    // Add clause to sql and param to params array.
+                    $clause = $output['clause'] . " {$operator} :filtervar";
+                    $params['filtervar'] = $unquote($output['param']);
                 }
             }
             $sql = str_replace('%%FILTER_VAR%%', $clause, $sql);
