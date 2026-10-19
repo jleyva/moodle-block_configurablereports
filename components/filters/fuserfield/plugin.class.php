@@ -72,15 +72,28 @@ class plugin_fuserfield extends filter_base {
 
         $filterfuserfield = optional_param('filter_fuserfield_' . $data->field, 0, PARAM_BASE64);
         $filter = base64_decode($filterfuserfield);
-        $columns = $remotedb->get_columns('user');
 
-        $column = $columns[$data->field] ?? null;
-        if (!$column) {
-            throw new moodle_exception('nosuchcolumn');
+        if (strpos($data->field, 'profile_') === 0) {
+            // Custom profile fields are stored as text in user_info_data.
+            $shortname = substr($data->field, strlen('profile_'));
+            if (!$remotedb->record_exists('user_info_field', ['shortname' => $shortname])) {
+                throw new moodle_exception('nosuchcolumn');
+            }
+            $type = 'text';
+        } else {
+            $columns = $remotedb->get_columns('user');
+            $column = $columns[$data->field] ?? null;
+            if (!$column) {
+                throw new moodle_exception('nosuchcolumn');
+            }
+            $type = $column->__get('type');
         }
 
         if ($filterfuserfield) {
-            switch ($column->__get('type')) {
+            switch ($type) {
+                case 'tinyint':
+                case 'smallint':
+                case 'mediumint':
                 case 'int':
                 case 'bigint':
                     if (!is_numeric($filter)) {
@@ -259,7 +272,9 @@ class plugin_fuserfield extends filter_base {
         $params = [];
         if (preg_match("/%%$filterstrmatch:([^%]+)%%/i", $finalelements, $output)) {
             $idoperator = $output[count($output) - 1];
-            [$field, $operator] = preg_split('/:/', $idoperator);
+            [$field, $operator] = array_pad(preg_split('/:/', $idoperator), 2, '');
+            // Field may be "alias.column", which is not a valid named param.
+            $paramname = 'fuserfield_' . strtolower(preg_replace('/[^a-z0-9_]/i', '_', $field));
 
             if (empty($operator)) {
                 $operator = '~';
@@ -268,15 +283,15 @@ class plugin_fuserfield extends filter_base {
             }
 
             if ($operator === '~') {
-                $replace = ' AND ' . $DB->sql_like($field, ":{$field}", false, false);
-                $params[$field] = $filtersearchtext;
+                $replace = ' AND ' . $DB->sql_like($field, ":{$paramname}", false, false);
+                $params[$paramname] = $filtersearchtext;
             } else if ($operator === 'in') {
                 [$insql, $inparams] = $DB->get_in_or_equal(explode(',', $filtersearchtext), SQL_PARAMS_NAMED);
                 $replace = " AND {$field} {$insql}";
                 $params = array_merge($params, $inparams);
             } else {
-                $replace = " AND {$field} {$operator} :{$field}";
-                $params[$field] = $filtersearchtext;
+                $replace = " AND {$field} {$operator} :{$paramname}";
+                $params[$paramname] = $filtersearchtext;
             }
             $sql = str_replace($output[0], $replace, $finalelements);
         }
