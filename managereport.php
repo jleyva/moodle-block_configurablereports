@@ -58,7 +58,7 @@ if ($importurl) {
         $data = json_decode($data);
         $xml = base64_decode($data->content);
     } else {
-        throw new moodle_exception('errorimporting');
+        throw new moodle_exception('errorimporting', 'block_configurable_reports');
     }
 
     if (cr_import_xml($xml, $course)) {
@@ -67,7 +67,7 @@ if ($importurl) {
             get_string('reportcreated', 'block_configurable_reports')
         );
     } else {
-        throw new moodle_exception('errorimporting');
+        throw new moodle_exception('errorimporting', 'block_configurable_reports');
     }
 }
 
@@ -81,7 +81,7 @@ if ($data = $mform->get_data()) {
                 get_string('reportcreated', 'block_configurable_reports')
             );
         } else {
-            throw new moodle_exception('errorimporting');
+            throw new moodle_exception('errorimporting', 'block_configurable_reports');
         }
     }
 }

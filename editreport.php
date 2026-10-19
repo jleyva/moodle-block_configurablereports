@@ -72,7 +72,7 @@ if ($id) {
     }
     // Extra check.
     if ($report->type == 'sql' && !block_configurable_reports_can_managesqlreports($context)) {
-        throw new moodle_exception('nosqlpermissions');
+        throw new moodle_exception('nosqlpermissions', 'block_configurable_reports');
     }
 
     $title = format_string($report->name);
@@ -231,7 +231,7 @@ if ($editform->is_cancelled()) {
 
         // Extra check.
         if ($data->type === 'sql' && !block_configurable_reports_can_managesqlreports($context)) {
-            throw new moodle_exception('nosqlpermissions');
+            throw new moodle_exception('nosqlpermissions', 'block_configurable_reports');
         }
 
         if (!$lastid = $DB->insert_record('block_configurable_reports', $data)) {

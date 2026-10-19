@@ -73,7 +73,7 @@ if (!$hasreportscap && $report->ownerid != $USER->id) {
 }
 
 if ($report->type === 'sql' && !block_configurable_reports_can_managesqlreports($context)) {
-    throw new moodle_exception('nosqlpermissions');
+    throw new moodle_exception('nosqlpermissions', 'block_configurable_reports');
 }
 
 require_once($CFG->dirroot . '/blocks/configurable_reports/reports/' . $report->type . '/report.class.php');
