@@ -917,9 +917,9 @@ abstract class report_base {
 
         // Debug.
         $debug = optional_param('debug', false, PARAM_BOOL);
-        if ($debug || !empty($this->config->debug)) {
+        if (($debug || !empty($this->config->debug)) && block_configurable_reports_can_managesqlreports($moodlepage->context)) {
             echo html_writer::empty_tag('hr');
-            echo html_writer::tag('div', $this->sql, ['id' => 'debug', 'style' => 'direction:ltr;text-align:left;']);
+            echo html_writer::tag('pre', s($this->sql), ['id' => 'debug', 'style' => 'direction:ltr;text-align:left;']);
             echo html_writer::empty_tag('hr');
         }
 
