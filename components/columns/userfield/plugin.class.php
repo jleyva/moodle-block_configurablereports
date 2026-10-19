@@ -68,6 +68,9 @@ class plugin_userfield extends plugin_base {
         // Data -> Plugin configuration data.
         // Row -> Complet user row c->id, c->fullname, etc...
 
+        $usercontext = context_user::instance($row->id, IGNORE_MISSING) ?: context_system::instance();
+        $formatted = false;
+
         if (strpos($data->column, 'profile_') === 0) {
             $sql = "SELECT d.*, f.shortname, f.datatype
                       FROM {user_info_data} d ,{user_info_field} f
@@ -79,6 +82,12 @@ class plugin_userfield extends plugin_base {
                     }
                     if ($p->datatype == 'datetime') {
                         $p->data = userdate($p->data);
+                    }
+                    if ($p->datatype == 'textarea') {
+                        $p->data = format_text($p->data, $p->dataformat, ['context' => $usercontext]);
+                        if ('profile_' . $p->shortname === $data->column) {
+                            $formatted = true;
+                        }
                     }
                     $row->{'profile_' . $p->shortname} = $p->data;
                 }
@@ -106,10 +115,19 @@ class plugin_userfield extends plugin_base {
                 case 'emailstop':
                     $row->{$data->column} = ($row->{$data->column}) ? get_string('yes') : get_string('no');
                     break;
+                case 'description':
+                    $row->description = format_text($row->description, $row->descriptionformat ?? FORMAT_HTML,
+                        ['context' => $usercontext]);
+                    $formatted = true;
+                    break;
             }
         }
 
-        return $row->{$data->column} ?? '';
+        if ($formatted) {
+            return $row->{$data->column};
+        }
+
+        return s($row->{$data->column} ?? '');
     }
 
 }

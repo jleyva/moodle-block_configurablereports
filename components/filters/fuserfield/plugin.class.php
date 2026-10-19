@@ -246,7 +246,7 @@ class plugin_fuserfield extends filter_base {
                 $sql = "SELECT DISTINCT({$formdata->field}) as ufield FROM {user} WHERE id $usql ORDER BY ufield ASC";
                 if ($rs = $remotedb->get_recordset_sql($sql, $params)) {
                     foreach ($rs as $u) {
-                        $filteroptions[base64_encode($u->ufield)] = $u->ufield;
+                        $filteroptions[base64_encode($u->ufield)] = s($u->ufield);
                     }
                     $rs->close();
                 }

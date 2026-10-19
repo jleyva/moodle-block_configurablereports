@@ -191,7 +191,7 @@ class plugin_fsearchuserfield extends filter_base {
 
                     if ($infodata = $remotedb->get_records_sql($sql, $params)) {
                         foreach ($infodata as $d) {
-                            $filteroptions[base64_encode($d->data)] = $d->data;
+                            $filteroptions[base64_encode($d->data)] = s($d->data);
                         }
                     }
                 }
@@ -209,7 +209,7 @@ class plugin_fsearchuserfield extends filter_base {
                 $sql = "SELECT DISTINCT({$formdata->field}) as ufield FROM {user} WHERE id $insql ORDER BY ufield ASC";
                 if ($rs = $remotedb->get_recordset_sql($sql, $inparams)) {
                     foreach ($rs as $u) {
-                        $filteroptions[base64_encode($u->ufield)] = $u->ufield;
+                        $filteroptions[base64_encode($u->ufield)] = s($u->ufield);
                     }
                     $rs->close();
                 }

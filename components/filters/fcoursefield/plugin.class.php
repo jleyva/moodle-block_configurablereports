@@ -118,7 +118,7 @@ class plugin_fcoursefield extends filter_base {
                 " <> '' ORDER BY ufield ASC";
             if ($rs = $remotedb->get_recordset_sql($sql, null)) {
                 foreach ($rs as $u) {
-                    $filteroptions[base64_encode($u->ufield)] = $u->ufield;
+                    $filteroptions[base64_encode($u->ufield)] = s($u->ufield);
                 }
                 $rs->close();
             }

@@ -231,6 +231,8 @@ class report_sql extends report_base {
             [$sql, $params] = $this->prepare_sql($config->querysql);
 
             if ($rs = $this->execute_query($sql, $params)) {
+                $cellcontext = ($this->config->courseid == SITEID) ? context_system::instance() :
+                    context_course::instance($this->config->courseid, IGNORE_MISSING);
                 foreach ($rs as $row) {
                     if (empty($finaltable)) {
                         foreach ($row as $colname => $value) {
@@ -240,7 +242,7 @@ class report_sql extends report_base {
                     $arrayrow = array_values((array) $row);
                     foreach ($arrayrow as $ii => $cell) {
                         if (!$this->is_forexport()) {
-                            $cell = format_text($cell, FORMAT_HTML, ['trusted' => true, 'noclean' => true, 'para' => false]);
+                            $cell = format_text($cell, FORMAT_HTML, ['para' => false, 'context' => $cellcontext ?: context_system::instance()]);
                         }
                         $arrayrow[$ii] = str_replace('[[QUESTIONMARK]]', '?', $cell);
                     }

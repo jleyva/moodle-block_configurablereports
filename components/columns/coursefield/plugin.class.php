@@ -77,10 +77,13 @@ class plugin_coursefield extends plugin_base {
                 case 'enrollable':
                     $row->{$data->column} = ($row->{$data->column}) ? get_string('yes') : get_string('no');
                     break;
+                case 'summary':
+                    $context = context_course::instance($row->id, IGNORE_MISSING) ?: context_system::instance();
+                    return format_text($row->summary, $row->summaryformat ?? FORMAT_HTML, ['context' => $context]);
             }
         }
 
-        return $row->{$data->column} ?? '';
+        return s($row->{$data->column} ?? '');
     }
 
 }
