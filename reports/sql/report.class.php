@@ -50,6 +50,30 @@ class report_sql extends report_base {
     }
 
     /**
+     * Check whether viewers can filter on a column using %%FILTER_VAR%%.
+     *
+     * @param string $field The left side of the clause, a column optionally wrapped in a function.
+     * @param string[] $allowedcolumns Columns declared by the report author, empty if none.
+     * @return bool
+     */
+    protected function is_filter_var_column_allowed(string $field, array $allowedcolumns): bool {
+        preg_match('/([a-z_][a-z0-9_]*(?:\.[a-z_][a-z0-9_]*)?)\s*\)?\s*$/i', $field, $matches);
+        $column = strtolower($matches[1] ?? '');
+        $name = substr(strrchr('.' . $column, '.'), 1);
+
+        // Never allow filtering on credentials, even if the author did not declare the columns.
+        if ($name === '' || in_array($name, ['password', 'secret', 'sesskey', 'sid', 'token', 'privatetoken'], true)) {
+            return false;
+        }
+
+        if (empty($allowedcolumns)) {
+            return true;
+        }
+
+        return in_array($column, $allowedcolumns, true);
+    }
+
+    /**
      * is_forexport
      *
      * @return bool
@@ -106,7 +130,9 @@ class report_sql extends report_base {
         // PARAM_RAW like 5.2: PARAM_TEXT strips "<..." as if it were an HTML tag, breaking "<", "<=" and "<>".
         // The value is bound as a parameter below.
         $filtervar = optional_param('filter_var', '', PARAM_RAW);
-        if (strpos($sql, '%%FILTER_VAR%%') !== false) {
+        // Authors can limit the columns viewers may filter on with "%%FILTER_VAR:u.city,u.department%%".
+        if (preg_match('/%%FILTER_VAR(?::([^%]*))?%%/', $sql, $placeholder)) {
+            $allowedcolumns = isset($placeholder[1]) ? array_filter(array_map('trim', explode(',', strtolower($placeholder[1])))) : [];
             // Make sure the filtervar is a valid sql clause, otherwise remove from sql.
             $clause = '';
             // The left side comes from the URL and is inserted as SQL, so it must be a plain column
@@ -125,6 +151,7 @@ class report_sql extends report_base {
                     $filtervar,
                     $output,
                 )
+                && $this->is_filter_var_column_allowed($output['field'], $allowedcolumns)
             ) {
                 global $DB;
                 $output['clause'] = strtoupper($output['conj']) . ' ' . $output['field'];
@@ -150,7 +177,7 @@ class report_sql extends report_base {
                     $params['filtervar'] = $unquote($output['param']);
                 }
             }
-            $sql = str_replace('%%FILTER_VAR%%', $clause, $sql);
+            $sql = preg_replace('/%%FILTER_VAR(?::[^%]*)?%%/', $clause, $sql);
         }
 
         // See http://en.wikipedia.org/wiki/Year_2038_problem.
