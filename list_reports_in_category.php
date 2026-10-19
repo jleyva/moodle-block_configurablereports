@@ -26,9 +26,13 @@
 define('AJAX_SCRIPT', true);
 require(dirname(__FILE__, 3) . '/config.php');
 require_once($CFG->libdir . '/filelib.php');
+require_once($CFG->dirroot . '/blocks/configurable_reports/locallib.php');
 
-require_login();
-$category = required_param('category', PARAM_RAW);
+$context = block_configurable_reports_require_course_login();
+if (!block_configurable_reports_can_managesqlreports($context)) {
+    throw new moodle_exception('nosqlpermissions', 'block_configurable_reports');
+}
+$category = required_param('category', PARAM_PATH);
 
 if (!$userandrepo = get_config('block_configurable_reports', 'sharedsqlrepository')) {
     echo json_encode([]);

@@ -788,6 +788,22 @@ function cr_logging_info(): array {
 }
 
 /**
+ * Login and get the context of the course given in the courseid parameter, for AJAX endpoints.
+ *
+ * @return context
+ */
+function block_configurable_reports_require_course_login(): context {
+    $courseid = optional_param('courseid', SITEID, PARAM_INT);
+    if ($courseid == SITEID) {
+        require_login();
+        return context_system::instance();
+    }
+    require_login($courseid);
+
+    return context_course::instance($courseid);
+}
+
+/**
  * Check if the current user is allowed to manage sql reports.
  *
  * @param context $context

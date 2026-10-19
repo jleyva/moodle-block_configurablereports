@@ -36,7 +36,7 @@ M.block_configurable_reports = {
 
         select_reportcategories = Y.one('#id_crreportcategories');
         Y.io(M.cfg.wwwroot + '/blocks/configurable_reports/repository.php', {
-            data: 'action=listreports&sesskey=' + M.cfg.sesskey,
+            data: 'action=listreports&courseid=' + M.cfg.courseId + '&sesskey=' + M.cfg.sesskey,
             context: this,
             method: "GET",
             on: {
@@ -45,8 +45,7 @@ M.block_configurable_reports = {
 
                     for (var prop in response) {
                         if (response.hasOwnProperty(prop)) {
-                            option = Y.Node.create('<option value=' + response[prop]["path"] + '>' + response[prop]["name"] + '</option>');
-                            select_reportcategories.appendChild(option);
+                            select_reportcategories.appendChild(create_option(response[prop]["path"], response[prop]["name"]));
                         }
                     }
 
@@ -66,7 +65,8 @@ M.block_configurable_reports = {
         select_reportnames = Y.one('#id_crreportnames');
 
         Y.io(M.cfg.wwwroot + '/blocks/configurable_reports/repository.php', {
-            data: 'action=listcategory&category=' + select_element[select_element.selectedIndex].value + '&sesskey=' + M.cfg.sesskey,
+            data: 'action=listcategory&category=' + encodeURIComponent(select_element[select_element.selectedIndex].value) +
+                '&courseid=' + M.cfg.courseId + '&sesskey=' + M.cfg.sesskey,
             context: this,
             method: "GET",
             on: {
@@ -78,8 +78,7 @@ M.block_configurable_reports = {
 
                     for (var prop in response) {
                         if (response.hasOwnProperty(prop)) {
-                            option = Y.Node.create('<option value=' + response[prop]["git_url"] + '>' + response[prop]["name"] + '</option>');
-                            select_reportnames.appendChild(option);
+                            select_reportnames.appendChild(create_option(response[prop]["git_url"], response[prop]["name"]));
                         }
                     }
                 },
@@ -103,7 +102,8 @@ M.block_configurable_reports = {
         select_reportsincategory = Y.one('#id_reportsincategory');
         select_reportsincategory.setStyle('visibility', 'hidden');
         Y.io(M.cfg.wwwroot + '/blocks/configurable_reports/list_reports_in_category.php', {
-            data: 'category=' + select_element[select_element.selectedIndex].value + '&sesskey=' + M.cfg.sesskey,
+            data: 'category=' + encodeURIComponent(select_element[select_element.selectedIndex].value) +
+                '&courseid=' + M.cfg.courseId + '&sesskey=' + M.cfg.sesskey,
             context: this,
             method: "GET",
             on: {
@@ -115,8 +115,7 @@ M.block_configurable_reports = {
 
                     for (var prop in response) {
                         if (response.hasOwnProperty(prop)) {
-                            option = Y.Node.create('<option value=' + response[prop]["fullname"] + '>' + response[prop]["name"] + '</option>');
-                            list.appendChild(option);
+                            list.appendChild(create_option(response[prop]["fullname"], response[prop]["name"]));
                         }
                     }
                     select_reportsincategory.setStyle('visibility', 'visible');
@@ -139,7 +138,8 @@ M.block_configurable_reports = {
 
         textarea_reportsincategory = Y.one('#id_remotequerysql');
         Y.io(M.cfg.wwwroot + '/blocks/configurable_reports/get_remote_report.php', {
-            data: 'reportname=' + select_element[select_element.selectedIndex].value + '&sesskey=' + M.cfg.sesskey,
+            data: 'reportname=' + encodeURIComponent(select_element[select_element.selectedIndex].value) +
+                '&courseid=' + M.cfg.courseId + '&sesskey=' + M.cfg.sesskey,
             context: this,
             method: "GET",
             on: {
@@ -160,6 +160,20 @@ M.block_configurable_reports = {
             }
         });
     }
+}
+
+/**
+ * Create an option element, the value and text come from the repository so they are not parsed as HTML.
+ *
+ * @param {String} value
+ * @param {String} text
+ * @return {HTMLElement}
+ */
+function create_option(value, text) {
+    var option = document.createElement('option');
+    option.value = value;
+    option.textContent = text;
+    return option;
 }
 
 function menuplugin(event, args) {
