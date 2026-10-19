@@ -22,6 +22,8 @@
  * @date: 2009
  */
 
+defined('MOODLE_INTERNAL') || die();
+
 function export_report($report)
 {
     $filename = $report->name ?? 'report';
