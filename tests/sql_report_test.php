@@ -115,7 +115,8 @@ final class sql_report_test extends advanced_testcase {
     }
 
     /**
-     * Issue #294: two search text filters on aliased columns failed with 'missing param "u"'.
+     * Issues #294 and #295: two search text filters on aliased columns failed with 'missing param "u"',
+     * and a value in the second filter was ignored when the first one was empty.
      */
     public function test_searchtext_filters_on_aliased_columns(): void {
         $this->getDataGenerator()->create_user(['username' => 'crtest4', 'firstname' => 'Cheese', 'lastname' => 'Maker']);
@@ -137,8 +138,14 @@ final class sql_report_test extends advanced_testcase {
         $this->assertTrue($report->create_report());
         $this->assertSame(['crtest4', 'crtest5'], array_column($report->finalreport->table->data, 0));
 
-        // Both filters.
+        // Issue #295: only the second filter, the first one is empty.
+        unset($_GET['filter_searchtext_FIRSTNAME']);
         $_GET['filter_searchtext_LASTNAME'] = 'maker';
+        $this->assertTrue($report->create_report());
+        $this->assertSame(['crtest4', 'crtest6'], array_column($report->finalreport->table->data, 0));
+
+        // Both filters.
+        $_GET['filter_searchtext_FIRSTNAME'] = 'cheese';
         try {
             $this->assertTrue($report->create_report());
         } finally {

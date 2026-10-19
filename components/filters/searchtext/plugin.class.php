@@ -82,18 +82,18 @@ class plugin_searchtext extends filter_base {
             $filtersearchtext = optional_param('filter_searchtext', '', PARAM_RAW);
         }
 
-        if ($filtersearchtext) {
-            if (!empty($data->idnumber)) {
-                $filtermatch = "FILTER_SEARCHTEXT_{$data->idnumber}";
-            } else {
-                $filtermatch = "FILTER_SEARCHTEXT";
-            }
+        if (!empty($data->idnumber)) {
+            $filtermatch = "FILTER_SEARCHTEXT_{$data->idnumber}";
+        } else {
+            $filtermatch = "FILTER_SEARCHTEXT";
+        }
 
+        if ($filtersearchtext) {
             return $this->sql_replace($filtersearchtext, $filtermatch, $sql);
         }
 
-        // If nothing, remove this SQL component.
-        $sql = preg_replace('/%%FILTER_SEARCHTEXT_[^%]+%%/i', '', $sql);
+        // If nothing, remove only this filter's SQL component: other search text filters may have a value.
+        $sql = preg_replace('/%%' . preg_quote($filtermatch, '/') . ':[^%]+%%/i', '', $sql);
 
         return [$sql, []];
     }

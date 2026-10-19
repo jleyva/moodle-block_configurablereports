@@ -161,6 +161,24 @@ final class searchtext_filter_test extends advanced_testcase {
     }
 
     /**
+     * Issue #295: an empty filter only removes its own placeholder, not those of other search text filters.
+     */
+    public function test_empty_filter_keeps_other_placeholders(): void {
+        $sql = 'SELECT id FROM {user} WHERE 1 = 1 %%FILTER_SEARCHTEXT_FIRSTNAME:u.firstname:~%%'
+            . ' %%FILTER_SEARCHTEXT_FIRST:u.idnumber:=%% %%FILTER_SEARCHTEXT:u.city:~%%';
+
+        [$result, $params] = $this->filter->execute_for_sql_report($sql, (object) ['idnumber' => 'FIRST']);
+        $this->assertSame('SELECT id FROM {user} WHERE 1 = 1 %%FILTER_SEARCHTEXT_FIRSTNAME:u.firstname:~%%'
+            . '  %%FILTER_SEARCHTEXT:u.city:~%%', $result);
+        $this->assertSame([], $params);
+
+        // Filters without idnumber only remove the placeholder without idnumber.
+        [$result] = $this->filter->execute_for_sql_report($sql, (object) []);
+        $this->assertSame('SELECT id FROM {user} WHERE 1 = 1 %%FILTER_SEARCHTEXT_FIRSTNAME:u.firstname:~%%'
+            . ' %%FILTER_SEARCHTEXT_FIRST:u.idnumber:=%% ', $result);
+    }
+
+    /**
      * Unknown operators are rejected.
      */
     public function test_invalid_operator(): void {
