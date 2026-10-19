@@ -37,6 +37,8 @@ require_once($CFG->dirroot . '/blocks/configurable_reports/report.class.php');
 require_once($CFG->dirroot . '/blocks/configurable_reports/reports/sql/report.class.php');
 require_once($CFG->dirroot . '/blocks/configurable_reports/components/filters/yearhebrew/plugin.class.php');
 require_once($CFG->dirroot . '/blocks/configurable_reports/components/columns/userfield/plugin.class.php');
+require_once($CFG->dirroot . '/blocks/configurable_reports/components/conditions/cuserfield/plugin.class.php');
+require_once($CFG->dirroot . '/blocks/configurable_reports/components/conditions/ccoursefield/plugin.class.php');
 
 /**
  * Regression tests for the security review findings
@@ -93,8 +95,8 @@ final class security_test extends advanced_testcase {
      * @param array $extra Extra report fields.
      * @return string
      */
-    private function build_import_xml(string $type, array $extra = []): string {
-        $components = cr_serialize([
+    private function build_import_xml(string $type, array $extra = [], ?array $components = null): string {
+        $components = cr_serialize($components ?? [
             'customsql' => ['config' => (object) ['querysql' => 'SELECT id, username FROM {user}']],
         ]);
         $fields = array_merge([
@@ -229,5 +231,81 @@ final class security_test extends advanced_testcase {
 
         $this->assertStringNotContainsString('<script>', $plugin->execute((object) ['column' => 'city'], clone $row));
         $this->assertStringNotContainsString('onerror', $plugin->execute((object) ['column' => 'description'], clone $row));
+    }
+
+    /**
+     * Imports drop unknown plugins and export formats, and cast numeric flags.
+     */
+    public function test_import_cleans_components(): void {
+        global $DB, $SITE;
+
+        $this->setAdminUser();
+        $components = [
+            'columns' => ['elements' => [
+                ['id' => 'a', 'pluginname' => 'userfield', 'formdata' => (object) ['column' => 'username']],
+                ['id' => 'b', 'pluginname' => '../../../evil', 'formdata' => new \stdClass()],
+            ]],
+            'unknown' => ['elements' => []],
+        ];
+        $xml = $this->build_import_xml('users', ['export' => 'csv"><img src=x onerror=alert(1)>,xls,', 'visible' => '1x'],
+            $components);
+
+        $this->assertTrue(cr_import_xml($xml, $SITE));
+        $this->resetDebugging();
+
+        $report = $DB->get_record('block_configurable_reports', []);
+        $this->assertSame('xls,', $report->export);
+        $this->assertEquals(1, $report->visible);
+        $stored = cr_unserialize($report->components);
+        $this->assertSame(['columns'], array_keys($stored));
+        $this->assertSame(['userfield'], array_column($stored['columns']['elements'], 'pluginname'));
+    }
+
+    /**
+     * Unknown plugin names cannot be used to build include paths.
+     */
+    public function test_require_component_plugin_rejects_unknown(): void {
+        $this->assertSame('plugin_userfield', cr_require_component_plugin('columns', 'userfield'));
+
+        $this->expectException(\moodle_exception::class);
+        cr_require_component_plugin('columns', '../conditions/cuserfield');
+    }
+
+    /**
+     * Field conditions ignore fields and operators that the form would not allow.
+     */
+    public function test_field_conditions_validate_formdata(): void {
+        global $DB, $USER;
+
+        $this->setAdminUser();
+        $report = $this->create_sql_report('SELECT 1');
+        $user = $DB->get_record('user', ['id' => $USER->id]);
+
+        $cuserfield = new \plugin_cuserfield($report);
+        $injected = (object) ['field' => 'id > 0 OR 1 = 1 OR id', 'operator' => '=', 'value' => 1];
+        $this->assertSame([], $cuserfield->execute($injected, $user));
+        $badoperator = (object) ['field' => 'id', 'operator' => '= 1 OR id =', 'value' => 1];
+        $this->assertSame([], $cuserfield->execute($badoperator, $user));
+        $password = (object) ['field' => 'password', 'operator' => 'LIKE', 'value' => '%'];
+        $this->assertSame([], $cuserfield->execute($password, $user));
+        $valid = (object) ['field' => 'id', 'operator' => '=', 'value' => $USER->id];
+        $this->assertEquals([$USER->id], $cuserfield->execute($valid, $user));
+
+        $ccoursefield = new \plugin_ccoursefield($report);
+        $injected = (object) ['field' => 'id > 0 OR 1 = 1 OR id', 'operator' => '=', 'value' => 1];
+        $this->assertSame([], $ccoursefield->execute($injected));
+    }
+
+    /**
+     * The user field column never shows credentials.
+     */
+    public function test_userfield_column_hides_password(): void {
+        global $DB, $USER;
+
+        $this->setAdminUser();
+        $row = $DB->get_record('user', ['id' => $USER->id]);
+        $plugin = new \plugin_userfield($this->create_sql_report('SELECT 1'));
+
+        $this->assertSame('', $plugin->execute((object) ['column' => 'password'], clone $row));
     }
 }

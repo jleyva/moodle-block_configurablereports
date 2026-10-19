@@ -53,7 +53,7 @@ final class sql_filter_var_test extends advanced_testcase {
      * @param string $filtervar
      * @return array [$sql, $params]
      */
-    private function prepare(string $filtervar): array {
+    private function prepare(string $filtervar, string $query = self::QUERY): array {
         global $SITE;
 
         $_GET['filter_var'] = $filtervar;
@@ -68,7 +68,7 @@ final class sql_filter_var_test extends advanced_testcase {
         $report = new \report_sql($config);
 
         try {
-            return $report->prepare_sql(self::QUERY);
+            return $report->prepare_sql($query);
         } finally {
             unset($_GET['filter_var']);
         }
@@ -155,6 +155,25 @@ final class sql_filter_var_test extends advanced_testcase {
             'braces' => ['AND {user}.id = 2'],
             'no conjunction' => ['id = 2'],
             'no operator' => ['AND id 2'],
+            'password' => ["AND password LIKE '$2y%'"],
+            'password with alias and function' => ["AND LOWER(u.password) LIKE 'a%'"],
+            'secret' => ["AND u.secret = 'x'"],
         ];
+    }
+
+    /**
+     * Authors can limit the columns viewers may filter on.
+     */
+    public function test_allowed_columns(): void {
+        $this->resetAfterTest();
+        $query = 'SELECT u.id FROM {user} u WHERE u.deleted = 0 %%FILTER_VAR:u.city, u.institution%% ORDER BY u.id';
+
+        [$sql, $params] = $this->prepare("AND u.city = 'Madrid'", $query);
+        $this->assertStringContainsString('AND u.city = :filtervar', $sql);
+        $this->assertSame(['Madrid'], array_values($params));
+
+        [$sql, $params] = $this->prepare("AND u.email LIKE 'a%'", $query);
+        $this->assertSame('SELECT u.id FROM {user} u WHERE u.deleted = 0  ORDER BY u.id', $sql);
+        $this->assertSame([], $params);
     }
 }
