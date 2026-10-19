@@ -97,7 +97,11 @@ if ($ADMIN->fulltree) {
         )
     );
 
-    $reporttableoptions = ['html' => 'Simple', 'jquery' => 'jQuery', 'datatables' => 'DataTables JS'];
+    $reporttableoptions = [
+        'html' => get_string('reporttableui_html', 'block_configurable_reports'),
+        'jquery' => get_string('reporttableui_jquery', 'block_configurable_reports'),
+        'datatables' => get_string('reporttableui_datatables', 'block_configurable_reports'),
+    ];
     $settings->add(
         new admin_setting_configselect(
             'block_configurable_reports/reporttableui', get_string('reporttableui', 'block_configurable_reports'),
@@ -112,13 +116,17 @@ if ($ADMIN->fulltree) {
         )
     );
 
-
-    $settings->add(new admin_setting_configtext('block_configurable_reports/allowedsqlusers', get_string('allowedsqlusers', 'block_configurable_reports'),
-        get_string('allowedsqlusersinfo', 'block_configurable_reports'), '', PARAM_TEXT));
-    // csv delimiters used in get_delimiter() of moodle lib/csvlib.class.php
-    $csvdelimiteroptions= array('cfg'=>'cfg','colon'=>'colon','comma'=>'comma','semicolon'=>'semicolon','tab'=>'tab');
-    $settings->add(new admin_setting_configselect('block_configurable_reports/csvdelimiter', get_string('csvdelimiter', 'block_configurable_reports'), 
-        get_string('csvdelimiterinfo', 'block_configurable_reports'), 'cfg', $csvdelimiteroptions));
+    // CSV delimiters used in get_delimiter() of moodle lib/csvlib.class.php.
+    $csvdelimiteroptions = [];
+    foreach (['cfg', 'colon', 'comma', 'semicolon', 'tab'] as $delimiter) {
+        $csvdelimiteroptions[$delimiter] = get_string('csvdelimiter_' . $delimiter, 'block_configurable_reports');
+    }
+    $settings->add(
+        new admin_setting_configselect(
+            'block_configurable_reports/csvdelimiter', get_string('csvdelimiter', 'block_configurable_reports'),
+            get_string('csvdelimiterinfo', 'block_configurable_reports'), 'cfg', $csvdelimiteroptions
+        )
+    );
     $settings->add(
         new admin_setting_configtext(
             'block_configurable_reports/allowedsqlusers', get_string('allowedsqlusers', 'block_configurable_reports'),

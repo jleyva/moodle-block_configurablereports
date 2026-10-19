@@ -477,6 +477,9 @@ $string['sqlsyntaxhighlightinfo'] = 'Highlight SQL syntax in code editor (CodeMi
 $string['datatables'] = 'Enable DataTables JS library';
 $string['datatablesinfo'] = 'DataTables JS library (Column sort, fixed header, search, paging...)';
 $string['reporttableui'] = 'Report table UI';
+$string['reporttableui_datatables'] = 'DataTables JS';
+$string['reporttableui_html'] = 'Simple';
+$string['reporttableui_jquery'] = 'jQuery';
 $string['reporttableuiinfo'] = 'Display the report table as: Simple scrollable HTML table, jQuery with column sorting Or
 DataTables JS library (Column sort, fixed header, search, paging...)';
 
@@ -590,5 +593,10 @@ $string['checksql_execution_details'] = 'By allowing SQL code execution there is
 arbitrary code. SQL code execution should be disable to only allow SQL queries for reading/retreaving data. SQL execution can
 be disabled in your config.php file by setting $CFG->block_configurable_reports_enable_sql_execution to 0';
 $string['csvdelimiter'] = 'CSV delimiter';
+$string['csvdelimiter_cfg'] = 'cfg';
+$string['csvdelimiter_colon'] = 'colon';
+$string['csvdelimiter_comma'] = 'comma';
+$string['csvdelimiter_semicolon'] = 'semicolon';
+$string['csvdelimiter_tab'] = 'tab';
 $string['csvdelimiterinfo'] = 'CSV delimiter: "colon" for ":", "comma" for ",", semicolon for ";",  "tab" for "\t" and "cfg" for character configured in "CFG->CSV_DELIMITER" of the config.php file.';
 
