@@ -169,7 +169,7 @@ class customsql_form extends moodleform {
      * @return array
      */
     public function validation_low_security($data, $files) {
-        global $CFG, $db;
+        global $CFG;
 
         $errors = parent::validation($data, $files);
 
@@ -187,10 +187,13 @@ class customsql_form extends moodleform {
         } else {
             // Now try running the SQL, and ensure it runs without errors.
             [$sql, $params] = $this->_customdata['reportclass']->prepare_sql($sql);
-            $rs = $this->_customdata['reportclass']->execute_query($sql, $params);
-            if (!$rs) {
-                $errors['querysql'] = get_string('queryfailed', 'block_configurable_reports', $db->ErrorMsg());
-            } else if (!empty($data['singlerow'])) {
+            $rs = null;
+            try {
+                $rs = $this->_customdata['reportclass']->execute_query($sql, $params);
+            } catch (dml_exception $e) {
+                $errors['querysql'] = get_string('queryfailed', 'block_configurable_reports', $e->error ?? $e->getMessage());
+            }
+            if ($rs && !empty($data['singlerow'])) {
                 if (iterator_count($rs) === 0) {
                     $errors['querysql'] = get_string('norowsreturned', 'block_configurable_reports');
                 }

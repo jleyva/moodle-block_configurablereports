@@ -70,18 +70,22 @@ final class sql_report_test extends advanced_testcase {
     }
 
     /**
-     * Create a SQL report with a search text filter.
+     * Create a SQL report with search text filters.
      *
+     * @param string $query
+     * @param string[] $searchtextids Idnumbers of the search text filters.
      * @return \stdClass The report record.
      */
-    private function create_report(): \stdClass {
+    private function create_report(string $query = self::QUERY, array $searchtextids = ['city']): \stdClass {
         global $DB, $SITE, $USER;
 
+        $filters = [];
+        foreach ($searchtextids as $idnumber) {
+            $filters[] = ['pluginname' => 'searchtext', 'formdata' => (object) ['idnumber' => $idnumber, 'label' => $idnumber]];
+        }
         $components = [
-            'customsql' => ['config' => (object) ['querysql' => self::QUERY]],
-            'filters' => ['elements' => [
-                ['pluginname' => 'searchtext', 'formdata' => (object) ['idnumber' => 'city', 'label' => 'City']],
-            ]],
+            'customsql' => ['config' => (object) ['querysql' => $query]],
+            'filters' => ['elements' => $filters],
         ];
         $report = (object) [
             'courseid' => $SITE->id,
@@ -108,6 +112,70 @@ final class sql_report_test extends advanced_testcase {
 
         $this->assertSame(['username', 'userid'], $report->finalreport->table->head);
         $this->assertSame(['crtest1'], array_column($report->finalreport->table->data, 0));
+    }
+
+    /**
+     * Issue #294: two search text filters on aliased columns failed with 'missing param "u"'.
+     */
+    public function test_searchtext_filters_on_aliased_columns(): void {
+        $this->getDataGenerator()->create_user(['username' => 'crtest4', 'firstname' => 'Cheese', 'lastname' => 'Maker']);
+        $this->getDataGenerator()->create_user(['username' => 'crtest5', 'firstname' => 'Cheesecake', 'lastname' => 'Baker']);
+        $this->getDataGenerator()->create_user(['username' => 'crtest6', 'firstname' => 'Bread', 'lastname' => 'Maker']);
+        $query = "SELECT u.username FROM {user} u WHERE u.username LIKE 'crtest%'
+                  %%FILTER_SEARCHTEXT_FIRSTNAME:u.firstname:~%%
+                  %%FILTER_SEARCHTEXT_LASTNAME:u.lastname:~%%
+                  ORDER BY u.username";
+        $report = new \report_sql($this->create_report($query, ['FIRSTNAME', 'LASTNAME']));
+
+        // No filter values: all rows.
+        unset($_GET['filter_searchtext_city']);
+        $this->assertTrue($report->create_report());
+        $this->assertCount(6, $report->finalreport->table->data);
+
+        // One filter.
+        $_GET['filter_searchtext_FIRSTNAME'] = 'cheese';
+        $this->assertTrue($report->create_report());
+        $this->assertSame(['crtest4', 'crtest5'], array_column($report->finalreport->table->data, 0));
+
+        // Both filters.
+        $_GET['filter_searchtext_LASTNAME'] = 'maker';
+        try {
+            $this->assertTrue($report->create_report());
+        } finally {
+            unset($_GET['filter_searchtext_FIRSTNAME'], $_GET['filter_searchtext_LASTNAME']);
+        }
+        $this->assertSame(['crtest4'], array_column($report->finalreport->table->data, 0));
+    }
+
+    /**
+     * Issue #294: saving the custom SQL failed with a preg_match() TypeError, in both SQL security modes.
+     *
+     * @dataProvider security_provider
+     * @param bool $highsecurity
+     */
+    #[DataProvider('security_provider')]
+    public function test_customsql_form_validation(bool $highsecurity): void {
+        global $CFG;
+        require_once($CFG->dirroot . '/blocks/configurable_reports/components/customsql/form.php');
+
+        set_config('sqlsecurity', (int) $highsecurity, 'block_configurable_reports');
+        $reportclass = new \report_sql($this->create_report());
+        $form = new \customsql_form(null, ['reportclass' => $reportclass]);
+
+        $this->assertSame([], $form->validation(['querysql' => self::QUERY, 'singlerow' => 1], []));
+
+        // Invalid SQL is reported as a form error, not thrown.
+        $errors = $form->validation(['querysql' => 'SELECT nosuchcolumn FROM {user}'], []);
+        $this->assertArrayHasKey('querysql', $errors);
+    }
+
+    /**
+     * Data provider for test_customsql_form_validation.
+     *
+     * @return array
+     */
+    public static function security_provider(): array {
+        return ['high security' => [true], 'low security' => [false]];
     }
 
     /**
