@@ -244,8 +244,23 @@ if ($editform->is_cancelled()) {
         );
     } else {
 
+        $data->id = $report->id;
         $reportclass = new $reportclassname($data->id);
         $data->type = $report->type;
+
+        // Moving a report to a different course requires managing reports in the target course.
+        if (!isset($data->courseid) || (int) $data->courseid !== (int) $report->courseid) {
+            $targetcourseid = (int) ($data->courseid ?? 0);
+            $data->courseid = $report->courseid;
+            if ($targetcourseid && $DB->record_exists('course', ['id' => $targetcourseid])) {
+                $targetcontext = ($targetcourseid == SITEID) ? context_system::instance() :
+                    context_course::instance($targetcourseid);
+                if (has_capability('block/configurable_reports:managereports', $targetcontext) &&
+                        ($report->type !== 'sql' || block_configurable_reports_can_managesqlreports($targetcontext))) {
+                    $data->courseid = $targetcourseid;
+                }
+            }
+        }
 
         if (!$DB->update_record('block_configurable_reports', $data)) {
             throw new moodle_exception('errorsavingreport', 'block_configurable_reports');
