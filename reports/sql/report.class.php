@@ -124,13 +124,13 @@ class report_sql extends report_base {
                 global $DB;
                 $operator = strtoupper(preg_replace('/\s+/', ' ', $output['op']));
                 // If a value has surrounding speechmarks, remove them.
-                $unquote = function(string $value): string {
-                    $value = trim($value);
+                $unquote = function(?string $value): string {
+                    $value = trim((string) $value);
                     return preg_match('/^["\'](.*)["\']$/s', $value, $matches) ? $matches[1] : $value;
                 };
                 if (in_array($operator, ['IN', 'NOT IN'], true) && preg_match('/^\((.*)\)$/s', $output['param'], $list)) {
                     // "AND id IN (2,3)": one bound param per value.
-                    $values = array_map($unquote, str_getcsv($list[1], ',', "'"));
+                    $values = array_map($unquote, str_getcsv($list[1], ',', "'", '\\'));
                     [$insql, $inparams] = $DB->get_in_or_equal($values, SQL_PARAMS_NAMED, 'filtervar', $operator === 'IN');
                     $clause = $output['clause'] . ' ' . $insql;
                     $params = array_merge($params, $inparams);
