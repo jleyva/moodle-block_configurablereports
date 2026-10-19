@@ -220,7 +220,7 @@ function cr_unserialize(string $data): array {
     $data = preg_replace('/%60/', '+++', $data);
 
     // TODO remove unserialize.
-    $data = unserialize($data);
+    $data = unserialize($data, ['allowed_classes' => ['stdClass']]);
 
     return (array) urldecode_recursive($data);
 }
