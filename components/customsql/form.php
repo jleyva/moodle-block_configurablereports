@@ -186,8 +186,8 @@ class customsql_form extends moodleform {
             $errors['querysql'] = get_string('notallowedwords', 'block_configurable_reports');
         } else {
             // Now try running the SQL, and ensure it runs without errors.
-            $sql = $this->_customdata['reportclass']->prepare_sql($sql);
-            $rs = $this->_customdata['reportclass']->execute_query($sql, 2);
+            [$sql, $params] = $this->_customdata['reportclass']->prepare_sql($sql);
+            $rs = $this->_customdata['reportclass']->execute_query($sql, $params);
             if (!$rs) {
                 $errors['querysql'] = get_string('queryfailed', 'block_configurable_reports', $db->ErrorMsg());
             } else if (!empty($data['singlerow'])) {

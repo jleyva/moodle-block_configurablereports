@@ -82,8 +82,8 @@ class plugin_max extends plugin_base {
             if (isset($config->querysql)) {
 
                 $sql = $config->querysql;
-                $sql = $reportclass->prepare_sql($sql);
-                if ($rs = $reportclass->execute_query($sql)) {
+                [$sql, $params] = $reportclass->prepare_sql($sql);
+                if ($rs = $reportclass->execute_query($sql, $params)) {
                     foreach ($rs as $row) {
                         $i = 0;
                         foreach ($row as $colname => $value) {
