@@ -33,8 +33,6 @@ require_once($CFG->dirroot . '/blocks/configurable_reports/filter.class.php');
 require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
 require_once($CFG->dirroot . '/blocks/configurable_reports/components/filters/user/plugin.class.php');
 
-$remotedb = $DB;
-
 /**
  * Tests for plugin_user filter
  *
@@ -57,6 +55,11 @@ class user_filter_test extends advanced_testcase {
     protected function setUp(): void {
         parent::setUp();
         $this->resetAfterTest();
+
+        // Filters read the report database from the $remotedb global. A file-level assignment does not
+        // work here because PHPUnit includes test files from inside a function, so set it per test.
+        global $DB, $remotedb;
+        $remotedb = $DB;
 
         // Create a mock report object
         $this->report = new \stdClass();
