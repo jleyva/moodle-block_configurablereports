@@ -588,7 +588,7 @@ function cr_get_context(int $context, ?int $id = null, $strictness = null) {
         return context_user::instance($id, $strictness);
     }
 
-    return get_context_instance($context, $id, $strictness);
+    throw new coding_exception('Unsupported context level: ' . $context);
 }
 
 /**
@@ -638,8 +638,13 @@ function cr_make_categories_list(&$list, &$parents, $requiredcapability = '', $e
 function cr_import_xml(string $xml, object $course) {
     global $CFG, $DB, $USER;
 
-    require_once($CFG->dirroot . '/lib/xmlize.php');
-    $data = xmlize($xml, 1, 'UTF-8');
+    if (class_exists('\core\xml_parser')) {
+        $data = (new \core\xml_parser())->parse($xml, 1, 'UTF-8');
+    } else {
+        // Moodle versions before 5.1.
+        require_once($CFG->dirroot . '/lib/xmlize.php');
+        $data = xmlize($xml, 1, 'UTF-8');
+    }
 
     if (isset($data['report']['@']['version'])) {
         // Only these fields can be imported, the rest are set by the current context.
