@@ -73,19 +73,26 @@ class external extends external_api {
             ['reportid' => $reportid, 'courseid' => $courseid]
         );
 
-        if ($courseid === SITEID) {
-            $context = context_system::instance();
-        } else {
-            $context = context_course::instance($courseid);
-        }
-
-        self::validate_context($context);
-
         $json = [];
         $warnings = '';
-        if (!$report = $DB->get_record('block_configurable_reports', ['id' => $reportid])) {
+        if (!$report = $DB->get_record('block_configurable_reports', ['id' => $params['reportid']])) {
+            self::validate_context(context_system::instance());
             $warnings = get_string('reportdoesnotexists', 'block_configurable_reports');
         } else {
+            // Permissions are always checked in the report's own course, only global reports can run in another course.
+            $courseid = (int) $params['courseid'];
+            if ($courseid && $report->global) {
+                $report->courseid = $courseid;
+            } else {
+                $courseid = (int) $report->courseid;
+            }
+
+            if ($courseid == SITEID) {
+                $context = context_system::instance();
+            } else {
+                $context = context_course::instance($courseid);
+            }
+            self::validate_context($context);
 
             require_once($CFG->dirroot . '/blocks/configurable_reports/locallib.php');
             require_once($CFG->dirroot . '/blocks/configurable_reports/report.class.php');
