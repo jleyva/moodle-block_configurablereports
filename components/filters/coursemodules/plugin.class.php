@@ -121,7 +121,7 @@ class plugin_coursemodules extends filter_base {
         }
 
         if (preg_match("/%%FILTER_COURSEMODULE:([^%]+)%%/i", $sql, $output)) {
-            $module = $remotedb->get_record('modules', ['id' => $filtercoursemoduleid]);
+            $module = $remotedb->get_record('modules', ['id' => $filtercoursemoduleid], '*', MUST_EXIST);
             $replace = ' JOIN {' . $module->name . '} AS m ON m.id = ' . $output[1] . ' ';
             $sql = str_replace('%%FILTER_COURSEMODULE:' . $output[1] . '%%', $replace, $sql);
         }

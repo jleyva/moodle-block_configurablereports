@@ -92,7 +92,7 @@ function cr_add_jsdatatables(string $cssid, moodle_page $page) {
  * @param string $cssid
  * @param moodle_page|null $page
  */
-function cr_add_jsordering(string $cssid, moodle_page $page = null) {
+function cr_add_jsordering(string $cssid, ?moodle_page $page = null) {
     global $OUTPUT;
 
     if (!empty($page)) {

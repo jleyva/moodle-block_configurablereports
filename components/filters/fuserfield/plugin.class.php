@@ -274,8 +274,9 @@ class plugin_fuserfield extends filter_base {
         if (preg_match("/%%$filterstrmatch:([^%]+)%%/i", $finalelements, $output)) {
             $idoperator = $output[count($output) - 1];
             [$field, $operator] = array_pad(preg_split('/:/', $idoperator), 2, '');
-            // Field may be "alias.column", which is not a valid named param.
-            $paramname = 'fuserfield_' . strtolower(preg_replace('/[^a-z0-9_]/i', '_', $field));
+            // Field may be "alias.column", which is not a valid named param. Include the placeholder so
+            // two filters using the same column (e.g. "uid.data" for profile fields) don't share a param.
+            $paramname = 'fuserfield_' . strtolower(preg_replace('/[^a-z0-9_]/i', '_', trim($output[0], '%')));
 
             if (empty($operator)) {
                 $operator = '~';
