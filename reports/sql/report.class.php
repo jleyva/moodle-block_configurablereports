@@ -50,6 +50,37 @@ class report_sql extends report_base {
     }
 
     /**
+     * Check the query against the keywords allowed by the SQL security setting.
+     *
+     * @param string $sql
+     * @return string|null The error string identifier, or null if the query is allowed.
+     */
+    public static function get_query_security_error(string $sql): ?string {
+        global $CFG;
+
+        if (get_config('block_configurable_reports', 'sqlsecurity')) {
+            if (preg_match('/\b(ALTER|CREATE|DELETE|DROP|GRANT|INSERT|INTO|TRUNCATE|UPDATE|SET|VACUUM|REINDEX|DISCARD|LOCK)\b/i', $sql)) {
+                return 'notallowedwords';
+            }
+            if (strpos($sql, ';') !== false) {
+                return 'nosemicolon';
+            }
+
+            return null;
+        }
+
+        if (preg_match('/\b(ALTER|DELETE|DROP|GRANT|TRUNCATE|UPDATE|SET|VACUUM|REINDEX|DISCARD|LOCK)\b/i', $sql)) {
+            return 'notallowedwords';
+        }
+        // Only allow INSERT|INTO|CREATE in low security when SQL execution is enabled in the server.
+        if (preg_match('/\b(INSERT|INTO|CREATE)\b/i', $sql) && empty($CFG->block_configurable_reports_enable_sql_execution)) {
+            return 'notallowedwords';
+        }
+
+        return null;
+    }
+
+    /**
      * Check whether viewers can filter on a column using %%FILTER_VAR%%.
      *
      * @param string $field The left side of the clause, a column optionally wrapped in a function.
@@ -206,6 +237,11 @@ class report_sql extends report_base {
      */
     public function execute_query($sql, $params = []) {
         global $DB, $CFG;
+
+        // Imported reports do not go through the form validation, so check the query every time it runs.
+        if ($error = self::get_query_security_error($sql)) {
+            throw new moodle_exception($error, 'block_configurable_reports');
+        }
 
         $sql = preg_replace('/\bprefix_(?=\w+)/i', $CFG->prefix, $sql);
 
