@@ -32,17 +32,13 @@ require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
 
 $id = required_param('id', PARAM_INT);
 $comp = required_param('comp', PARAM_ALPHA);
-$courseid = optional_param('courseid', null, PARAM_INT);
 
 if (!$report = $DB->get_record('block_configurable_reports', ['id' => $id])) {
     throw new moodle_exception('reportdoesnotexists');
 }
 
-// Ignore report's courseid, If we are running this report on a specific courseid
-// (For permission checks).
-if (empty($courseid)) {
-    $courseid = $report->courseid;
-}
+// Permissions must always be checked in the report's own course.
+$courseid = $report->courseid;
 
 if (!$course = $DB->get_record("course", ['id' => $courseid])) {
     throw new moodle_exception("No such course id");
