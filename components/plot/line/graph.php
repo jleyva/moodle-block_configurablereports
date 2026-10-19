@@ -134,7 +134,7 @@ if (!empty($graphs)) {
         $test = new pChart(700, 230);
         $test->setFixedScale($min, $max);
 
-        $test->setFontProperties($CFG->dirroot . "/blocks/configurable_reports/lib/Fonts/tahoma.ttf", 8);
+        $test->setFontProperties($CFG->dirroot . "/blocks/configurable_reports/lib/pChart2/fonts/Cairo-Regular.ttf", 8);
         $test->setGraphArea(70, 30, 680, 200);
         $test->drawFilledRoundedRectangle(7, 7, 693, 223, 5, 240, 240, 240);
         $test->drawRoundedRectangle(5, 5, 695, 225, 5, 230, 230, 230);
@@ -147,7 +147,7 @@ if (!empty($graphs)) {
         $test->drawGrid(4, true, 230, 230, 230, 50);
 
         // Draw the 0 line.
-        $test->setFontProperties($CFG->dirroot . "/blocks/configurable_reports/lib/Fonts/tahoma.ttf", 10);
+        $test->setFontProperties($CFG->dirroot . "/blocks/configurable_reports/lib/pChart2/fonts/Cairo-Regular.ttf", 10);
         $test->drawTreshold(0, 143, 55, 72, true, true);
 
         // Draw the line graph.
@@ -156,7 +156,7 @@ if (!empty($graphs)) {
             $test->drawPlotGraph($dataset->GetData(), $dataset->GetDataDescription(), 3, 2, 255, 255, 255);
 
             // Finish the graph.
-            $test->setFontProperties($CFG->dirroot . "/blocks/configurable_reports/lib/Fonts/tahoma.ttf", 8);
+            $test->setFontProperties($CFG->dirroot . "/blocks/configurable_reports/lib/pChart2/fonts/Cairo-Regular.ttf", 8);
             $test->drawLegend(75, 35, $dataset->GetDataDescription(), 255, 255, 255);
         }
 

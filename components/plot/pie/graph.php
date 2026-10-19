@@ -115,7 +115,7 @@ if (!empty($graphs)) {
         }
 
         // Draw the pie chart.
-        $test->setFontProperties($CFG->dirroot . "/blocks/configurable_reports/lib/Fonts/tahoma.ttf", 8);
+        $test->setFontProperties($CFG->dirroot . "/blocks/configurable_reports/lib/pChart2/fonts/Cairo-Regular.ttf", 8);
         $test->AntialiasQuality = 0;
         $test->drawPieGraph($dataset->GetData(), $dataset->GetDataDescription(), 150, 90, 110, PIE_PERCENTAGE, true, 50, 20, 5);
         $test->drawPieLegend(300, 15, $dataset->GetData(), $dataset->GetDataDescription(), 250, 250, 250);
