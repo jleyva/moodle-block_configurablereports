@@ -67,6 +67,10 @@ if (!$hasmanagereportcap && $report->ownerid != $USER->id) {
     throw new moodle_exception('badpermissions');
 }
 
+if ($report->type === 'sql' && !block_configurable_reports_can_managesqlreports($context)) {
+    throw new moodle_exception('nosqlpermissions', 'block_configurable_reports');
+}
+
 require_once($CFG->dirroot . '/blocks/configurable_reports/report.class.php');
 require_once($CFG->dirroot . '/blocks/configurable_reports/reports/' . $report->type . '/report.class.php');
 
@@ -212,6 +216,8 @@ if (isset($pluginclass->form) && $pluginclass->form) {
         exit;
     }
 } else {
+    require_sesskey();
+
     $allelements = cr_unserialize($report->components);
 
     $uniqueid = random_string(15);

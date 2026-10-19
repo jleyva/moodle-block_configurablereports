@@ -210,7 +210,7 @@ if ($compclass->plugins) {
 
     echo html_writer::select($optionsplugins, 'plugin', '', ['' => get_string('choose')], $attributes);
     $OUTPUT->add_action_handler(
-        new component_action('change', 'menuplugin', ['url' => "editplugin.php?id=" . $id . "&comp=" . $comp . "&pname="]),
+        new component_action('change', 'menuplugin', ['url' => "editplugin.php?id=" . $id . "&comp=" . $comp . "&sesskey=" . sesskey() . "&pname="]),
         'menuplugin'
     );
     echo '</p>';
