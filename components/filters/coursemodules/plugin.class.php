@@ -113,19 +113,17 @@ class plugin_coursemodules extends filter_base {
             $params['cmfield'] = $filtercoursemoduleid;
         }
 
+        // The field list and the join column come from the report's SQL (written by the report author),
+        // not from user input: insert them as SQL like 5.2 did. Column names can't be bound params.
         if (preg_match("/%%FILTER_COURSEMODULEFIELDS:([^%]+)%%/i", $sql, $output)) {
-            $replace = ':cmfields';
+            $replace = ' ' . $output[1] . ' ';
             $sql = str_replace('%%FILTER_COURSEMODULEFIELDS:' . $output[1] . '%%', $replace, $sql);
-            foreach (explode(',', $output[1]) as $key => $value) {
-                $params['cmfields' . $key] = $value;
-            }
         }
 
         if (preg_match("/%%FILTER_COURSEMODULE:([^%]+)%%/i", $sql, $output)) {
             $module = $remotedb->get_record('modules', ['id' => $filtercoursemoduleid]);
-            $replace = ' JOIN {' . $module->name . '} AS m ON m.id = :moduleid';
+            $replace = ' JOIN {' . $module->name . '} AS m ON m.id = ' . $output[1] . ' ';
             $sql = str_replace('%%FILTER_COURSEMODULE:' . $output[1] . '%%', $replace, $sql);
-            $params['moduleid'] = $filtercoursemoduleid;
         }
 
         return [$sql, $params];
