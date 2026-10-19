@@ -483,6 +483,7 @@ DataTables JS library (Column sort, fixed header, search, paging...)';
 $string['email_subject'] = 'Subject';
 $string['email_message'] = 'Message';
 $string['email_send'] = 'Send';
+$string['sendemail'] = 'Send email';
 
 $string['sqlsecurity'] = 'SQL Security';
 $string['sqlsecurityinfo'] = 'Disable for executing SQL queries with statements for inserting data';
