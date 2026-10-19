@@ -79,38 +79,36 @@ class plugin_fuserfield extends filter_base {
             if (!$remotedb->record_exists('user_info_field', ['shortname' => $shortname])) {
                 throw new moodle_exception('nosuchcolumn');
             }
-            $type = 'text';
+            $metatype = 'X';
         } else {
             $columns = $remotedb->get_columns('user');
             $column = $columns[$data->field] ?? null;
             if (!$column) {
                 throw new moodle_exception('nosuchcolumn');
             }
-            $type = $column->__get('type');
+            // Use Moodle's DB-independent meta type: the native type differs per database
+            // (e.g. tinyint/longtext on MySQL are not "int"/"text").
+            $metatype = $column->__get('meta_type');
         }
 
         if ($filterfuserfield) {
-            switch ($type) {
-                case 'tinyint':
-                case 'smallint':
-                case 'mediumint':
-                case 'int':
-                case 'bigint':
+            switch ($metatype) {
+                case 'I':
+                case 'R':
                     if (!is_numeric($filter)) {
                         throw new moodle_exception('invalidfiltervalue');
                     }
                     $filter = clean_param($filter, PARAM_INT);
                     break;
-                case 'float':
-                case 'decimal':
+                case 'N':
+                case 'F':
                     if (!is_numeric($filter)) {
                         throw new moodle_exception('invalidfiltervalue');
                     }
                     $filter = clean_param($filter, PARAM_FLOAT);
                     break;
-                case 'char':
-                case 'varchar':
-                case 'text':
+                case 'C':
+                case 'X':
                     if (!is_string($filter)) {
                         throw new moodle_exception('invalidfiltervalue');
                     }
@@ -146,10 +144,11 @@ class plugin_fuserfield extends filter_base {
             if (strpos($data->field, 'profile_') === 0) {
                 $conditions = ['shortname' => str_replace('profile_', '', $data->field)];
                 if ($fieldid = $remotedb->get_field('user_info_field', 'id', $conditions)) {
-                    [$likesql, $likeparams] = $remotedb->sql_like('data', ':data', false);
+                    // sql_like() returns a string, not [sql, params]. "Contains" like 5.2.
+                    $likesql = $remotedb->sql_like('data', ':data', false);
                     [$insql, $inparams] = $remotedb->get_in_or_equal($finalelements, SQL_PARAMS_NAMED);
                     $sql = "fieldid = :fieldid AND {$likesql} AND userid $insql";
-                    $params = array_merge(['fieldid' => $fieldid], $likeparams, $inparams);
+                    $params = array_merge(['fieldid' => $fieldid, 'data' => '%' . $filter . '%'], $inparams);
 
                     if ($infodata = $remotedb->get_records_select('user_info_data', $sql, $params)) {
                         $finalusersid = [];
@@ -162,9 +161,10 @@ class plugin_fuserfield extends filter_base {
                 }
             } else {
                 [$insql, $inparams] = $remotedb->get_in_or_equal($finalelements, SQL_PARAMS_NAMED);
-                [$likesql, $likeparams] = $remotedb->sql_like($data->field, ':data', false);
+                // sql_like() returns a string, not [sql, params]. "Contains" like 5.2.
+                $likesql = $remotedb->sql_like($data->field, ':data', false);
                 $sql = "{$likesql} AND id {$insql}";
-                $params = array_merge($likeparams, $inparams);
+                $params = array_merge(['data' => '%' . $filter . '%'], $inparams);
                 if ($elements = $remotedb->get_records_select('user', $sql, $params)) {
                     $finalelements = array_keys($elements);
                 }
@@ -268,7 +268,8 @@ class plugin_fuserfield extends filter_base {
     private function sql_replace(string $filtersearchtext, $filterstrmatch, $finalelements) {
         global $DB;
 
-        $sql = '';
+        // Keep the SQL unchanged when the placeholder is not in the query (5.2 behaviour).
+        $sql = $finalelements;
         $params = [];
         if (preg_match("/%%$filterstrmatch:([^%]+)%%/i", $finalelements, $output)) {
             $idoperator = $output[count($output) - 1];
@@ -283,8 +284,9 @@ class plugin_fuserfield extends filter_base {
             }
 
             if ($operator === '~') {
+                // "Contains", like 5.2 (LIKE '%text%').
                 $replace = ' AND ' . $DB->sql_like($field, ":{$paramname}", false, false);
-                $params[$paramname] = $filtersearchtext;
+                $params[$paramname] = '%' . $filtersearchtext . '%';
             } else if ($operator === 'in') {
                 [$insql, $inparams] = $DB->get_in_or_equal(explode(',', $filtersearchtext), SQL_PARAMS_NAMED);
                 $replace = " AND {$field} {$insql}";
