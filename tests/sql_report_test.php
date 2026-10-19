@@ -1,0 +1,173 @@
+<?php
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
+/**
+ * Unit tests for SQL reports and the components that run their query (calcs, plots, template)
+ *
+ * @package    block_configurable_reports
+ * @copyright  2026 Juan Leyva
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
+namespace block_configurable_reports;
+
+use advanced_testcase;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
+
+defined('MOODLE_INTERNAL') || die();
+
+global $CFG;
+require_once($CFG->libdir . '/formslib.php');
+require_once($CFG->dirroot . '/blocks/configurable_reports/locallib.php');
+require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
+require_once($CFG->dirroot . '/blocks/configurable_reports/report.class.php');
+require_once($CFG->dirroot . '/blocks/configurable_reports/reports/sql/report.class.php');
+
+/**
+ * Tests for report_sql with filters, and for components that call prepare_sql()
+ *
+ * @package    block_configurable_reports
+ * @covers     \report_sql
+ */
+#[CoversClass(\report_sql::class)]
+final class sql_report_test extends advanced_testcase {
+
+    /** @var string Report query: one row per test user, filtered by city */
+    private const QUERY = "SELECT u.username, u.id AS userid FROM {user} u
+                            WHERE u.username LIKE 'crtest%' %%FILTER_SEARCHTEXT_city:u.city:~%%
+                         ORDER BY u.username";
+
+    protected function setUp(): void {
+        parent::setUp();
+        $this->resetAfterTest();
+        $this->setAdminUser();
+
+        $this->getDataGenerator()->create_user(['username' => 'crtest1', 'city' => 'Oberhausen']);
+        $this->getDataGenerator()->create_user(['username' => 'crtest2', 'city' => 'Coburg']);
+        $this->getDataGenerator()->create_user(['username' => 'crtest3', 'city' => 'Madrid']);
+
+        // The filter value is set so every component runs the query with bound params.
+        $_GET['filter_searchtext_city'] = 'obe';
+    }
+
+    protected function tearDown(): void {
+        unset($_GET['filter_searchtext_city']);
+        parent::tearDown();
+    }
+
+    /**
+     * Create a SQL report with a search text filter.
+     *
+     * @return \stdClass The report record.
+     */
+    private function create_report(): \stdClass {
+        global $DB, $SITE, $USER;
+
+        $components = [
+            'customsql' => ['config' => (object) ['querysql' => self::QUERY]],
+            'filters' => ['elements' => [
+                ['pluginname' => 'searchtext', 'formdata' => (object) ['idnumber' => 'city', 'label' => 'City']],
+            ]],
+        ];
+        $report = (object) [
+            'courseid' => $SITE->id,
+            'ownerid' => $USER->id,
+            'visible' => 1,
+            'name' => 'SQL test report',
+            'summary' => '',
+            'type' => 'sql',
+            'components' => cr_serialize($components),
+            'remote' => 0,
+        ];
+        $report->id = $DB->insert_record('block_configurable_reports', $report);
+
+        return $DB->get_record('block_configurable_reports', ['id' => $report->id]);
+    }
+
+    /**
+     * The report applies the filter with bound params and returns the matching rows.
+     */
+    public function test_create_report_with_filter(): void {
+        $report = new \report_sql($this->create_report());
+
+        $this->assertTrue($report->create_report());
+
+        $this->assertSame(['username', 'userid'], $report->finalreport->table->head);
+        $this->assertSame(['crtest1'], array_column($report->finalreport->table->data, 0));
+    }
+
+    /**
+     * Calcs plugins run the report query to name the column.
+     *
+     * @dataProvider calcs_provider
+     * @param string $plugin
+     */
+    #[DataProvider('calcs_provider')]
+    public function test_calcs_summary(string $plugin): void {
+        global $CFG;
+        require_once($CFG->dirroot . "/blocks/configurable_reports/components/calcs/{$plugin}/plugin.class.php");
+
+        $classname = "plugin_{$plugin}";
+        $calc = new $classname($this->create_report());
+
+        $this->assertSame('userid', $calc->summary((object) ['column' => 1]));
+    }
+
+    /**
+     * Data provider for test_calcs_summary.
+     *
+     * @return array
+     */
+    public static function calcs_provider(): array {
+        return [['sum'], ['average'], ['max'], ['min'], ['percent']];
+    }
+
+    /**
+     * Plot and template forms run the report query to list the columns.
+     *
+     * @dataProvider forms_provider
+     * @param string $path Form file, relative to the components folder.
+     * @param string $classname
+     */
+    #[DataProvider('forms_provider')]
+    public function test_forms_list_columns(string $path, string $classname): void {
+        global $CFG, $PAGE;
+        require_once($CFG->dirroot . "/blocks/configurable_reports/components/{$path}");
+
+        $PAGE->set_url('/blocks/configurable_reports/editcomp.php');
+        $report = $this->create_report();
+        $form = new $classname(null, ['report' => $report, 'compclass' => null]);
+
+        $html = $form->render();
+        $this->assertStringContainsString('username', $html);
+        $this->assertStringContainsString('userid', $html);
+    }
+
+    /**
+     * Data provider for test_forms_list_columns.
+     *
+     * @return array
+     */
+    public static function forms_provider(): array {
+        return [
+            'pie' => ['plot/pie/form.php', 'pie_form'],
+            'bar' => ['plot/bar/form.php', 'bar_form'],
+            'line' => ['plot/line/form.php', 'line_form'],
+            'template' => ['template/form.php', 'template_form'],
+        ];
+    }
+}

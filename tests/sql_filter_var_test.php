@@ -25,6 +25,8 @@
 namespace block_configurable_reports;
 
 use advanced_testcase;
+use PHPUnit\Framework\Attributes\CoversMethod;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -39,6 +41,7 @@ require_once($CFG->dirroot . '/blocks/configurable_reports/reports/sql/report.cl
  * @package    block_configurable_reports
  * @covers     \report_sql::prepare_sql
  */
+#[CoversMethod(\report_sql::class, 'prepare_sql')]
 final class sql_filter_var_test extends advanced_testcase {
 
     /** @var string Report query used by all tests */
@@ -79,6 +82,7 @@ final class sql_filter_var_test extends advanced_testcase {
      * @param string $expectedclause Expected SQL fragment (before parameter placeholders).
      * @param array $expectedvalues Expected bound values, in order.
      */
+    #[DataProvider('valid_provider')]
     public function test_valid_clauses(string $filtervar, string $expectedclause, array $expectedvalues): void {
         global $DB;
         $this->resetAfterTest();
@@ -123,6 +127,7 @@ final class sql_filter_var_test extends advanced_testcase {
      * @dataProvider injection_provider
      * @param string $filtervar
      */
+    #[DataProvider('injection_provider')]
     public function test_injection_rejected(string $filtervar): void {
         $this->resetAfterTest();
 
