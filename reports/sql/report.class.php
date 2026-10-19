@@ -111,17 +111,25 @@ class report_sql extends report_base {
         if (strpos($sql, '%%FILTER_VAR%%') !== false) {
             // Make sure the filtervar is a valid sql clause, otherwise remove from sql.
             $clause = '';
+            // The left side comes from the URL and is inserted as SQL, so it must be a plain column
+            // ("id", "u.city"), optionally wrapped in one whitelisted function ("LOWER(u.city)").
+            // Only the value is free text, and it is always bound as a parameter.
+            $identifier = '[a-z_][a-z0-9_]*(?:\.[a-z_][a-z0-9_]*)?';
+            $field = "(?:(?:LOWER|UPPER|TRIM|LENGTH)\s*\(\s*{$identifier}\s*\)|{$identifier})";
             // Multi-character operators first ("<=" must not match as "<"), and word operators need
             // word boundaries ("AND institution = x" must not match "in").
             if (
                 !empty($filtervar)
                 && preg_match(
-                    '/^\s*(?<clause>(?:AND|OR)\s+.*?)\s*(?<op><=|>=|<>|!=|=|<|>|\bNOT\s+LIKE\b|\bLIKE\b|\bNOT\s+IN\b|\bIN\b|\bBETWEEN\b)\s*(?<param>\S(?:.*\S)?)\s*$/is',
+                    '/^\s*(?<conj>AND|OR)\s+(?<field>' . $field . ')\s*' .
+                    '(?<op><=|>=|<>|!=|=|<|>|\bNOT\s+LIKE\b|\bLIKE\b|\bNOT\s+IN\b|\bIN\b|\bBETWEEN\b)\s*' .
+                    '(?<param>\S(?:.*\S)?)\s*$/is',
                     $filtervar,
                     $output,
                 )
             ) {
                 global $DB;
+                $output['clause'] = strtoupper($output['conj']) . ' ' . $output['field'];
                 $operator = strtoupper(preg_replace('/\s+/', ' ', $output['op']));
                 // If a value has surrounding speechmarks, remove them.
                 $unquote = function(?string $value): string {
