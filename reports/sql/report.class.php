@@ -90,9 +90,7 @@ class report_sql extends report_base {
 
         if (!empty($filters)) {;
             foreach ($filters as $f) {
-                require_once($CFG->dirroot . '/blocks/configurable_reports/components/filters/' . $f['pluginname'] .
-                    '/plugin.class.php');
-                $classname = 'plugin_' . $f['pluginname'];
+                $classname = cr_require_component_plugin('filters', $f['pluginname']);
                 $class = new $classname($this->config);
                 [$filtersql, $filterparams] = $class->execute_for_sql_report($sql, $f['formdata']);
                 $sql = $filtersql;

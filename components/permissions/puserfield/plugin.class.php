@@ -74,7 +74,8 @@ class plugin_puserfield extends plugin_base {
     public function execute($userid, $context, $data): bool {
         global $DB;
 
-        if (!$user = $DB->get_record('user', ['id' => $userid])) {
+        if (in_array($data->field, cr_get_sensitive_user_columns(), true) ||
+                !$user = $DB->get_record('user', ['id' => $userid])) {
             return false;
         }
 

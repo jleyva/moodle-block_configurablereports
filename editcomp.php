@@ -154,9 +154,7 @@ if ($elements) {
             continue;
         }
 
-        require_once($CFG->dirroot . '/blocks/configurable_reports/components/' . $comp . '/' . $e['pluginname'] .
-            '/plugin.class.php');
-        $pluginclassname = 'plugin_' . $e['pluginname'];
+        $pluginclassname = cr_require_component_plugin($comp, $e['pluginname']);
         $pluginclass = new $pluginclassname($report);
 
         $editcell = '';

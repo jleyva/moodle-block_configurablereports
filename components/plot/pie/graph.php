@@ -72,9 +72,8 @@ $graphs = $components['plot']['elements'];
 if (!empty($graphs)) {
     $series = [];
     foreach ($graphs as $g) {
-        require_once($CFG->dirroot . '/blocks/configurable_reports/components/plot/' . $g['pluginname'] . '/plugin.class.php');
+        $classname = cr_require_component_plugin('plot', $g['pluginname']);
         if ($g['id'] == $id) {
-            $classname = 'plugin_' . $g['pluginname'];
             $class = new $classname($report);
             $series = $class->get_series($g['formdata']);
             $colors = $class->get_color_palette($g['formdata']);

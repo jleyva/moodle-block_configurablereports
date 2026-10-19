@@ -74,6 +74,13 @@ class plugin_cuserfield extends plugin_base {
         global $DB;
         // Data -> Plugin configuration data.
 
+        // Imported reports do not go through the form, so validate the field and operator again.
+        if (!in_array($data->operator, cr_get_condition_operators(), true) ||
+                in_array($data->field, cr_get_sensitive_user_columns(), true) ||
+                (strpos($data->field, 'profile_') !== 0 && !array_key_exists($data->field, $DB->get_columns('user')))) {
+            return [];
+        }
+
         if (strpos($data->field, 'profile_') === 0) {
 
             if ($data->value == "%%CURRENTUSER%%") {

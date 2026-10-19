@@ -68,6 +68,11 @@ class plugin_userfield extends plugin_base {
         // Data -> Plugin configuration data.
         // Row -> Complet user row c->id, c->fullname, etc...
 
+        // Imported reports do not go through the form, so check the column again.
+        if (in_array($data->column, cr_get_sensitive_user_columns(), true)) {
+            return '';
+        }
+
         $usercontext = context_user::instance($row->id, IGNORE_MISSING) ?: context_system::instance();
         $formatted = false;
 

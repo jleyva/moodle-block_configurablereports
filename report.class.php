@@ -26,6 +26,7 @@
 defined('MOODLE_INTERNAL') || die;
 require_once($CFG->dirroot . '/lib/evalmath/evalmath.class.php');
 require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
+require_once($CFG->dirroot . '/blocks/configurable_reports/locallib.php');
 
 /**
  * Class report_base
@@ -175,9 +176,7 @@ abstract class report_base {
         $cond = [];
         foreach ($permissions['elements'] as $p) {
 
-            require_once($CFG->dirroot . '/blocks/configurable_reports/components/permissions/' . $p['pluginname'] .
-                '/plugin.class.php');
-            $classname = 'plugin_' . $p['pluginname'];
+            $classname = cr_require_component_plugin('permissions', $p['pluginname']);
             $class = new $classname($this->config);
             $cond[$i] = $class->execute($userid, $context, $p['formdata']);
             $i++;
@@ -231,8 +230,7 @@ abstract class report_base {
             }
 
             $filename = clean_filename($f['pluginname']);
-            require_once($CFG->dirroot . '/blocks/configurable_reports/components/filters/' . $filename . '/plugin.class.php');
-            $classname = 'plugin_' . $filename;
+            $classname = cr_require_component_plugin('filters', $filename);
             $class = new $classname($this->config);
 
             $finalelements = $class->print_filter($mform, $f['formdata']);
@@ -435,9 +433,7 @@ abstract class report_base {
             $series = [];
 
             foreach ($graphs as $g) {
-                require_once($CFG->dirroot . '/blocks/configurable_reports/components/plot/' . $g['pluginname'] .
-                    '/plugin.class.php');
-                $classname = 'plugin_' . $g['pluginname'];
+                $classname = cr_require_component_plugin('plot', $g['pluginname']);
                 $class = new $classname($this->config);
                 $reportgraphs[] = $class->execute($g['id'], $g['formdata'], $finalreport);
             }
@@ -489,8 +485,7 @@ abstract class report_base {
                 }
 
                 $filename = clean_filename($calc['pluginname']);
-                require_once($CFG->dirroot . '/blocks/configurable_reports/components/calcs/' . $filename . '/plugin.class.php');
-                $classname = 'plugin_' . $filename;
+                $classname = cr_require_component_plugin('calcs', $filename);
 
                 $class = new $classname($this->config);
                 $result = $class->execute($columnscalcs[$calc['formdata']->column]);
@@ -526,9 +521,7 @@ abstract class report_base {
         $finalelements = [];
         $i = 1;
         foreach ($conditions['elements'] as $c) {
-            require_once($CFG->dirroot . '/blocks/configurable_reports/components/conditions/' . $c['pluginname'] .
-                '/plugin.class.php');
-            $classname = 'plugin_' . $c['pluginname'];
+            $classname = cr_require_component_plugin('conditions', $c['pluginname']);
             $class = new $classname($this->config);
             $elements[$i] = $class->execute($c['formdata'], $this->currentuser, $this->currentcourseid);
             $i++;
@@ -573,9 +566,7 @@ abstract class report_base {
         // Filters.
         if (!empty($filters)) {
             foreach ($filters as $f) {
-                require_once($CFG->dirroot . '/blocks/configurable_reports/components/filters/' . $f['pluginname'] .
-                    '/plugin.class.php');
-                $classname = 'plugin_' . $f['pluginname'];
+                $classname = cr_require_component_plugin('filters', $f['pluginname']);
                 $class = new $classname($this->config);
                 $finalelements = $class->execute($finalelements, $f['formdata']);
             }
@@ -588,9 +579,7 @@ abstract class report_base {
         $orderingdata = [];
         if (!empty($ordering)) {
             foreach ($ordering as $o) {
-                require_once($CFG->dirroot . '/blocks/configurable_reports/components/ordering/' . $o['pluginname'] .
-                    '/plugin.class.php');
-                $classname = 'plugin_' . $o['pluginname'];
+                $classname = cr_require_component_plugin('ordering', $o['pluginname']);
                 $classorder = new $classname($this->config);
                 $orderingdata = $o['formdata'];
                 if ($classorder->sql) {
@@ -625,9 +614,7 @@ abstract class report_base {
                         continue;
                     }
 
-                    require_once($CFG->dirroot . '/blocks/configurable_reports/components/columns/' . $c['pluginname'] .
-                        '/plugin.class.php');
-                    $classname = 'plugin_' . $c['pluginname'];
+                    $classname = cr_require_component_plugin('columns', $c['pluginname']);
 
                     if (!isset($pluginscache[$classname])) {
                         $class = new $classname($this->config, $c);
