@@ -82,18 +82,18 @@ class plugin_searchtext extends filter_base {
             $filtersearchtext = optional_param('filter_searchtext', '', PARAM_RAW);
         }
 
-        if ($filtersearchtext) {
-            if (!empty($data->idnumber)) {
-                $filtermatch = "FILTER_SEARCHTEXT_{$data->idnumber}";
-            } else {
-                $filtermatch = "FILTER_SEARCHTEXT";
-            }
+        if (!empty($data->idnumber)) {
+            $filtermatch = "FILTER_SEARCHTEXT_{$data->idnumber}";
+        } else {
+            $filtermatch = "FILTER_SEARCHTEXT";
+        }
 
+        if ($filtersearchtext) {
             return $this->sql_replace($filtersearchtext, $filtermatch, $sql);
         }
 
-        // If nothing, remove this SQL component.
-        $sql = preg_replace('/%%FILTER_SEARCHTEXT_[^%]+%%/i', '', $sql);
+        // If nothing, remove only this filter's SQL component: other search text filters may have a value.
+        $sql = preg_replace('/%%' . preg_quote($filtermatch, '/') . ':[^%]+%%/i', '', $sql);
 
         return [$sql, []];
     }
@@ -136,31 +136,38 @@ class plugin_searchtext extends filter_base {
         global $DB;
 
         // TODO Check if this is a duplicate of the same function in plugin_fuserfield.
-        $sql = '';
+        // Keep the SQL unchanged when the placeholder is not in the query (5.2 behaviour).
+        $sql = $finalelements;
         $params = [];
         if (preg_match("/%%$filterstrmatch:([^%]+)%%/i", $finalelements, $output)) {
-            [$field, $operator] = preg_split('/:/', $output[1]);
+            [$field, $operator] = array_pad(preg_split('/:/', $output[1]), 2, '');
 
             if (!in_array($operator, ['=', '<', '>', '<=', '>=', '~', 'in'], true)) {
                 throw new moodle_exception('nosuchoperator');
             }
 
+            // The field may be "alias.column", which is not a valid named param.
+            $paramname = 'searchtext_' . strtolower(preg_replace('/[^a-z0-9_]/i', '_', $filterstrmatch . '_' . $field));
+
             if ($operator === '~') {
-                $replace = ' AND ' . $DB->sql_like($field, ":{$field}");
-                $params[$field] = $filtersearchtext;
+                // "Contains", case-insensitive, like 5.2 (LIKE '%text%' / ILIKE on PostgreSQL).
+                $replace = ' AND ' . $DB->sql_like($field, ":{$paramname}", false);
+                $params[$paramname] = '%' . trim($filtersearchtext) . '%';
             } else if ($operator === 'in') {
                 $processeditems = [];
                 // Accept comma-separated values, allowing for '\,' as a literal comma.
                 foreach (preg_split("/(?<!\\\\),/", $filtersearchtext) as $key => $searchitem) {
-                    $paramkey = "{$field}" . $key;
-                    $processeditems[] = 'AND ' . $DB->sql_like($field, ":{$paramkey}");
+                    // Same cleanup as 5.2: trim spaces and quotes, unescape commas.
+                    $searchitem = str_replace('\\,', ',', trim(trim($searchitem), '"\''));
+                    $paramkey = $paramname . '_' . $key;
+                    $processeditems[] = $DB->sql_like($field, ":{$paramkey}", false);
                     $params[$paramkey] = $searchitem;
                 }
                 // Despite the name, by not actually using in() we can support wildcards, and maybe be more portable as well.
                 $replace = " AND (" . implode(" OR ", $processeditems) . ")";
             } else {
-                $replace = " AND {$field} {$operator} :{$field}";
-                $params[$field] = $filtersearchtext;
+                $replace = " AND {$field} {$operator} :{$paramname}";
+                $params[$paramname] = $filtersearchtext;
             }
             $sql = str_replace("%%$filterstrmatch:" . $output[1] . '%%', $replace, $finalelements);
         }

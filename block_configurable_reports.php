@@ -220,7 +220,7 @@ class block_configurable_reports extends block_list {
 
                     $components = cr_unserialize($reportclass->config->components);
                     $config = $components['customsql']['config'] ?? (object) [];
-                    $sql = $reportclass->prepare_sql($config->querysql);
+                    [$sql] = $reportclass->prepare_sql($config->querysql);
 
                     $sqlqueries = explode(';', $sql);
 
