@@ -11,7 +11,4 @@ jobs:
     with:
       # The code uses the nullsafe operator and the Override attribute, so it does not parse on 7.4.
       min_php: '8.0'
-      # Re-enable once the committed amd/build artifacts are rebuilt with the current toolchain,
-      # otherwise the check fails on the artifacts rather than on the change under test.
-      disable_grunt: true
       disable_release: true
