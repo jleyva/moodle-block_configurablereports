@@ -78,3 +78,14 @@ Feature: Manage the reports of a course
     And I set the field "Display global reports" to "1"
     And I press "Save changes"
     Then I should see "People list" in the "Configurable Reports" "block"
+
+  @javascript
+  Scenario: A report offers a download link for each enabled export format
+    When I click on "Edit" "link" in the "People list" "table_row"
+    And I set the field "Export in XLS format" to "1"
+    And I press "Update"
+    And I follow "Manage reports"
+    Then I should see "CSV" in the "People list" "table_row"
+    And I should see "XLS" in the "People list" "table_row"
+    And I should not see "ODS" in the "People list" "table_row"
+    And following "XLS" should download between "10" and "50000" bytes

@@ -96,3 +96,31 @@ Feature: Embed one report inside another
     And I follow "View report"
     Then I should see "Humanities"
     And "C2" "text" should exist in the "Humanities" "table_row"
+
+  @javascript
+  Scenario: An embedded report stays empty for a viewer who may not see it
+    When I follow "Add report"
+    And I set the following fields to these values:
+      | Name           | Courses and people |
+      | Type of report | Courses report     |
+    And I press "Add"
+    And I set the field "plugin" to "Course field"
+    And I set the following fields to these values:
+      | Column | fullname    |
+      | Name   | Course name |
+    And I press "Add"
+    And I set the field "plugin" to "Other report column"
+    And I set the field "Report" to "Course people"
+    And I set the following fields to these values:
+      | Column | Full name |
+      | Name   | People    |
+    And I press "Add"
+    And I click on "Permissions" "link" in the "#region-main" "css_element"
+    And I set the field "plugin" to "Anyone"
+    And I follow "View report"
+    Then "Alice Archer" "text" should exist in the "Reporting 101" "table_row"
+    When I log in as "student1"
+    And I am on "Reporting 101" course homepage
+    And I follow "Courses and people"
+    Then I should see "Reporting 101"
+    And "Alice Archer" "text" should not exist in the "#reporttable" "css_element"
