@@ -54,9 +54,10 @@ final class external_test extends advanced_testcase {
      *
      * @param int $courseid The course the report belongs to.
      * @param int $global Whether the report may run in any course.
+     * @param string $type The report type.
      * @return stdClass The report record.
      */
-    private function create_users_report(int $courseid, int $global = 0): stdClass {
+    private function create_users_report(int $courseid, int $global = 0, string $type = 'users'): stdClass {
         global $DB;
 
         $components = [
@@ -80,7 +81,7 @@ final class external_test extends advanced_testcase {
             'global' => $global,
             'name' => 'People',
             'summary' => '',
-            'type' => 'users',
+            'type' => $type,
             'components' => cr_serialize($components),
             'remote' => 0,
         ];
@@ -170,5 +171,19 @@ final class external_test extends advanced_testcase {
 
         $this->assertSame(get_string('reportdoesnotexists', 'block_configurable_reports'), $result['warnings']);
         $this->assertSame('[]', $result['data']);
+    }
+
+    /**
+     * The report type names a directory, so a report carrying anything else is refused.
+     */
+    public function test_a_report_of_an_unknown_type_is_refused(): void {
+        $course = $this->getDataGenerator()->create_course();
+        $report = $this->create_users_report($course->id, 0, '../../../../config');
+
+        $this->setAdminUser();
+
+        $this->expectException(moodle_exception::class);
+        $this->expectExceptionMessage(get_string('reportdoesnotexists', 'block_configurable_reports'));
+        external::get_report_data($report->id, $course->id);
     }
 }

@@ -92,6 +92,11 @@ class external extends external_api {
             }
             self::validate_context($context);
 
+            // The type is part of the path required below, so it must be one of the report plugins.
+            if (!in_array($report->type, get_list_of_plugins('blocks/configurable_reports/reports'), true)) {
+                throw new moodle_exception('reportdoesnotexists', 'block_configurable_reports');
+            }
+
             require_once($CFG->dirroot . '/blocks/configurable_reports/locallib.php');
             require_once($CFG->dirroot . '/blocks/configurable_reports/report.class.php');
             require_once($CFG->dirroot . '/blocks/configurable_reports/reports/' . $report->type . '/report.class.php');
