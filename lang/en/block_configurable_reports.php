@@ -449,6 +449,11 @@ $string['comp_columns_help'] = '<p>Here you can choose the different columns of 
 
 <p>More help: <a href="http://docs.moodle.org/en/blocks/configurable_reports/" target="_blank">Plugin documentation</a></p>';
 
+$string['comp_timeline'] = 'Timeline';
+$string['comp_timeline_help'] = '<p>Here you can choose the period of time covered by the report and the length of the interval each row represents</p>
+
+<p>More help: <a href="http://docs.moodle.org/en/blocks/configurable_reports/" target="_blank">Plugin documentation</a></p>';
+
 $string['coursecategories'] = 'Category course filter';
 $string['filtercoursecategories'] = 'Category course filter';
 $string['filtercoursecategories_summary'] = 'Filter courses by their any parent category';
