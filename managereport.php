@@ -45,7 +45,7 @@ if ($course->id == SITEID) {
 
 if (!has_capability('block/configurable_reports:managereports', $context) &&
     !has_capability('block/configurable_reports:manageownreports', $context)) {
-    throw new moodle_exception('badpermissions');
+    throw new moodle_exception('badpermissions', 'block_configurable_reports');
 }
 
 $PAGE->set_url('/blocks/configurable_reports/managereport.php', ['courseid' => $course->id]);

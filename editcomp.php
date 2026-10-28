@@ -61,11 +61,11 @@ $PAGE->requires->js('/blocks/configurable_reports/js/configurable_reports.js');
 
 $hasreportscap = has_capability('block/configurable_reports:managereports', $context);
 if (!$hasreportscap && !has_capability('block/configurable_reports:manageownreports', $context)) {
-    throw new moodle_exception('badpermissions');
+    throw new moodle_exception('badpermissions', 'block_configurable_reports');
 }
 
 if (!$hasreportscap && $report->ownerid != $USER->id) {
-    throw new moodle_exception('badpermissions');
+    throw new moodle_exception('badpermissions', 'block_configurable_reports');
 }
 
 if ($report->type === 'sql' && !block_configurable_reports_can_managesqlreports($context)) {
