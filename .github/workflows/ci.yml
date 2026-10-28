@@ -9,6 +9,6 @@ jobs:
       # Required to publish to the plugins directory, which disable_release below turns off.
       moodle_org_token: ${{ secrets.MOODLE_ORG_TOKEN }}
     with:
-      # The code uses the nullsafe operator and the Override attribute, so it does not parse on 7.4.
-      min_php: '8.0'
+      # The code uses the nullsafe operator, so it does not parse on 7.4, and 8.0 is out of support.
+      min_php: '8.1'
       disable_release: true
