@@ -6,12 +6,12 @@ jobs:
   test:
     uses: catalyst/catalyst-moodle-workflows/.github/workflows/ci.yml@main
     secrets:
-      # Required if you plan to publish (uncomment the below)
+      # Required to publish to the plugins directory, which disable_release below turns off.
       moodle_org_token: ${{ secrets.MOODLE_ORG_TOKEN }}
     with:
+      # The code uses the nullsafe operator and the Override attribute, so it does not parse on 7.4.
+      min_php: '8.0'
+      # Re-enable once the committed amd/build artifacts are rebuilt with the current toolchain,
+      # otherwise the check fails on the artifacts rather than on the change under test.
       disable_grunt: true
-      disable_phpunit: true
-      disable_phpcpd: true # Old code we don't going to rewrite everything for now.
-      disable_release : true
-      release_branches: main
-      min_php : 7.4
+      disable_release: true
