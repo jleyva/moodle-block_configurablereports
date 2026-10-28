@@ -121,3 +121,15 @@ git clone -b 7.x-compatible https://github.com/bozhinov/pChart2.0-for-PHP7.git p
 
    3.a. Remove the folders 'examples' and 'cache' and the file 'index.php'.
 
+4. The charts use a font shipped with pChart2, not one of our own. The Tahoma,
+GeosansLight and MankSans fonts that used to live in 'lib/Fonts/' were removed
+because they are not redistributable, so do not restore them: keep
+components/plot/line/graph.php and components/plot/pie/graph.php pointing at
+'lib/pChart2/fonts/Cairo-Regular.ttf' (OFL licensed).
+
+
+=======================
+After importing any of them
+=======================
+
+Update 'thirdpartylibs.xml' with the new version and licence of the library.
