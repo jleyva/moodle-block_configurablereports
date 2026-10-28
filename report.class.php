@@ -90,7 +90,7 @@ abstract class report_base {
     /**
      * @var int
      */
-    private int $currentcourseid = 0;
+    public int $currentcourseid = 0;
 
     /**
      * @var false|mixed|stdClass

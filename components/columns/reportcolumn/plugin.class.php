@@ -255,12 +255,14 @@ class plugin_reportcolumn extends plugin_base {
                     ];
 
                     $components['conditions']['elements'][] = $newplugin;
-                    if (!empty($components['conditions']['config'])) {
-                        $components['conditions']['config']->conditionexpr = $this->fix_condition_expr(
-                            $components['conditions']['config']->conditionexpr,
-                            count($components['conditions']['elements'])
-                        );
+                    if (empty($components['conditions']['config'])) {
+                        $components['conditions']['config'] = new stdclass();
+                        $components['conditions']['config']->conditionexpr = '';
                     }
+                    $components['conditions']['config']->conditionexpr = $this->fix_condition_expr(
+                        $components['conditions']['config']->conditionexpr,
+                        count($components['conditions']['elements'])
+                    );
                     $reportclass->config->components = cr_serialize($components);
                 }
             } else if ($this->report->type === 'timeline') {
@@ -278,6 +280,10 @@ class plugin_reportcolumn extends plugin_base {
                     $newplugin = ['pluginname' => 'coursecategory', 'fullname' => 'coursecategory', 'formdata' => $formdata];
 
                     $components['conditions']['elements'][] = $newplugin;
+                    if (empty($components['conditions']['config'])) {
+                        $components['conditions']['config'] = new stdclass();
+                        $components['conditions']['config']->conditionexpr = '';
+                    }
                     $components['conditions']['config']->conditionexpr = $this->fix_condition_expr(
                         $components['conditions']['config']->conditionexpr,
                         count($components['conditions']['elements'])

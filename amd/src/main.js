@@ -56,23 +56,30 @@ define(
             },
             cmirror: function() {
                 // Documentation can be found @ http://codemirror.net/
-                CodeMirror.fromTextArea(document.getElementById('id_querysql'), {
-                    mode: "text/x-mysql",
-                    rtlMoveVisually: true,
-                    indentWithTabs: true,
-                    smartIndent: true,
-                    lineNumbers: true,
-                    autofocus: true,
-                });
+                var query = document.getElementById('id_querysql');
+                if (query) {
+                    CodeMirror.fromTextArea(query, {
+                        mode: "text/x-mysql",
+                        rtlMoveVisually: true,
+                        indentWithTabs: true,
+                        smartIndent: true,
+                        lineNumbers: true,
+                        autofocus: true,
+                    });
+                }
 
-                CodeMirror.fromTextArea(document.getElementById('id_remotequerysql'), {
-                    mode: "text/x-mysql",
-                    rtlMoveVisually: true,
-                    indentWithTabs: true,
-                    smartIndent: true,
-                    lineNumbers: true,
-                    //    autofocus: true
-                });
+                // Only on the page when a remote report repository is configured.
+                var remotequery = document.getElementById('id_remotequerysql');
+                if (remotequery) {
+                    CodeMirror.fromTextArea(remotequery, {
+                        mode: "text/x-mysql",
+                        rtlMoveVisually: true,
+                        indentWithTabs: true,
+                        smartIndent: true,
+                        lineNumbers: true,
+                        //    autofocus: true
+                    });
+                }
             }
         };
     });
