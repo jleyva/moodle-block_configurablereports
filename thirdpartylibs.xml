@@ -29,13 +29,6 @@
         <licenseversion></licenseversion>
     </library>
     <library>
-        <location>lib/pChart</location>
-        <name>pChart - a PHP Charting library</name>
-        <version>1.27d</version>
-        <license>GPL</license>
-        <licenseversion>2.0+</licenseversion>
-    </library>
-    <library>
         <location>lib/pChart2</location>
         <name>Fork of pChart 2.0 compatible with PHP 7</name>
         <version>2.4.0-dev</version>

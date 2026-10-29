@@ -91,19 +91,21 @@ if (!empty($graphs)) {
             unset($series[$abcise]);
         }
 
-        // Standard inclusions.
-        include($CFG->dirroot . "/blocks/configurable_reports/lib/pChart/pData.class.php");
-        include($CFG->dirroot . "/blocks/configurable_reports/lib/pChart/pChart.class.php");
+        require_once($CFG->dirroot . "/blocks/configurable_reports/lib/pChart2/class/pDraw.php");
+        require_once($CFG->dirroot . "/blocks/configurable_reports/lib/pChart2/class/pData.php");
+        require_once($CFG->dirroot . "/blocks/configurable_reports/lib/pChart2/class/pColor.php");
+        require_once($CFG->dirroot . "/blocks/configurable_reports/lib/pChart2/class/pException.php");
+        require_once($CFG->dirroot . "/blocks/configurable_reports/lib/pChart2/class/pCharts.php");
 
         // Dataset definition.
-        $dataset = new pData;
+        $dataset = new \pChart\pData();
         $lastid = 0;
+        $added = [];
 
         foreach ($series as $key => $val) {
-
             try {
-                $dataset->AddPoint($val['serie'], "Serie$key");
-                $dataset->AddAllSeries();
+                $dataset->addPoints($val['serie'], "Serie$key");
+                $added[] = $key;
                 $lastid = $key;
             } catch (Throwable $e) {
                 continue;
@@ -112,55 +114,54 @@ if (!empty($graphs)) {
 
         if (!empty($abciselabel)) {
             $nk = $lastid + 1;
-            $dataset->AddPoint($abciselabel, "Serie$nk");
-            $dataset->SetAbsciseLabelSerie("Serie$nk");
-        } else {
-            $dataset->SetAbsciseLabelSerie();
+            $dataset->addPoints($abciselabel, "Serie$nk");
+            $dataset->setAbscissa("Serie$nk");
         }
 
-        foreach ($series as $key => $val) {
-            $value = $val['name'];
+        // Name the series that made it in, so the legend reads as the report's own column names.
+        foreach ($added as $key) {
+            $name = (string) $series[$key]['name'];
+            $ishebrew = preg_match("/[\xE0-\xFA]/", iconv("UTF-8", "ISO-8859-8", $name));
+            $dataset->setSerieDescription("Serie$key", ($ishebrew === 1) ? $reportclass->utf8_strrev($name) : $name);
+        }
 
-            if (!is_countable($value)) {
-                continue;
+        $fontpath = $CFG->dirroot . "/blocks/configurable_reports/lib/pChart2/fonts";
+        $width = 700;
+        $height = 230;
+
+        $mypicture = new \pChart\pDraw($width, $height);
+        $mypicture->myData = $dataset;
+        $mypicture->drawFilledRectangle(0, 0, $width, $height, ["Color" => new \pChart\pColor(255, 255, 255)]);
+        $mypicture->setFontProperties([
+            "FontName" => "$fontpath/Cairo-Regular.ttf",
+            "FontSize" => 8,
+            "Color" => new \pChart\pColor(0, 0, 0),
+        ]);
+        $mypicture->setGraphArea(70, 30, $width - 20, $height - 30);
+
+        if (!empty($added)) {
+            $scalesettings = [
+                "DrawSubTicks" => true,
+                "GridColor" => new \pChart\pColor(230, 230, 230, 50),
+                "AxisColor" => new \pChart\pColor(150, 150, 150),
+                "TickColor" => new \pChart\pColor(150, 150, 150),
+            ];
+            if ($min || $max) {
+                $scalesettings["Mode"] = SCALE_MODE_MANUAL;
+                $scalesettings["ManualScale"] = [0 => ["Min" => $min, "Max" => $max]];
             }
+            $mypicture->drawScale($scalesettings);
 
-            $ishebrew = preg_match("/[\xE0-\xFA]/", iconv("UTF-8", "ISO-8859-8", $value));
-            $fixedvalue = ($ishebrew == 1) ? $reportclass->utf8_strrev($value) : $value;
-            $dataset->SetSerieName($fixedvalue, "Serie$key");
+            // The zero line, as the old chart drew it.
+            $mypicture->drawThreshold([0], ["Color" => new \pChart\pColor(143, 55, 72), "Ticks" => 0]);
+
+            $pcharts = new \pChart\pCharts($mypicture);
+            $pcharts->drawLineChart();
+            $pcharts->drawPlotChart(["PlotSize" => 2, "PlotBorder" => true, "BorderSize" => 1]);
+
+            $mypicture->drawLegend(75, 35, ["Style" => LEGEND_BOX, "Mode" => LEGEND_HORIZONTAL]);
         }
 
-        // Initialise the graph.
-        $test = new pChart(700, 230);
-        $test->setFixedScale($min, $max);
-
-        $test->setFontProperties($CFG->dirroot . "/blocks/configurable_reports/lib/pChart2/fonts/Cairo-Regular.ttf", 8);
-        $test->setGraphArea(70, 30, 680, 200);
-        $test->drawFilledRoundedRectangle(7, 7, 693, 223, 5, 240, 240, 240);
-        $test->drawRoundedRectangle(5, 5, 695, 225, 5, 230, 230, 230);
-        $test->drawGraphArea(255, 255, 255, true);
-
-        if (!empty($dataset->GetData())) {
-            $test->drawScale($dataset->GetData(), $dataset->GetDataDescription(), SCALE_NORMAL, 150, 150, 150, true, 0, 2);
-        }
-
-        $test->drawGrid(4, true, 230, 230, 230, 50);
-
-        // Draw the 0 line.
-        $test->setFontProperties($CFG->dirroot . "/blocks/configurable_reports/lib/pChart2/fonts/Cairo-Regular.ttf", 10);
-        $test->drawTreshold(0, 143, 55, 72, true, true);
-
-        // Draw the line graph.
-        if (!empty($dataset->GetData())) {
-            $test->drawLineGraph($dataset->GetData(), $dataset->GetDataDescription());
-            $test->drawPlotGraph($dataset->GetData(), $dataset->GetDataDescription(), 3, 2, 255, 255, 255);
-
-            // Finish the graph.
-            $test->setFontProperties($CFG->dirroot . "/blocks/configurable_reports/lib/pChart2/fonts/Cairo-Regular.ttf", 8);
-            $test->drawLegend(75, 35, $dataset->GetDataDescription(), 255, 255, 255);
-        }
-
-        ob_clean(); // Hack to clear output and send only IMAGE data to browser.
-        $test->Stroke();
+        $mypicture->autoOutput();
     }
 }

@@ -55,6 +55,9 @@ A security review of the whole plugin thanks to MDL Shield, and the first accept
   GD cannot draw the text on the graphs (#233).
 - The charts no longer carry a PHP 8.1 deprecation notice drawn into the image,
   which affected the bar charts as well (#259).
+- The pie and line charts are drawn with pChart2, as the bar chart already was, so
+  the unmaintained pChart 1.x is gone from the plugin (#259).
+- The line chart legend names its series again, rather than showing Serie0 and Serie1.
 
 ## 5.3.1 (2027050403) for Moodle 4.0 and later
 

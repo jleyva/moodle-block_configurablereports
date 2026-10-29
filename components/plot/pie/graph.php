@@ -81,47 +81,62 @@ if (!empty($graphs)) {
 
     if ($g['id'] == $id) {
 
-        // Standard inclusions.
-        include($CFG->dirroot . "/blocks/configurable_reports/lib/pChart/pData.class.php");
-        include($CFG->dirroot . "/blocks/configurable_reports/lib/pChart/pChart.class.php");
+        require_once($CFG->dirroot . "/blocks/configurable_reports/lib/pChart2/class/pDraw.php");
+        require_once($CFG->dirroot . "/blocks/configurable_reports/lib/pChart2/class/pData.php");
+        require_once($CFG->dirroot . "/blocks/configurable_reports/lib/pChart2/class/pColor.php");
+        require_once($CFG->dirroot . "/blocks/configurable_reports/lib/pChart2/class/pException.php");
+        require_once($CFG->dirroot . "/blocks/configurable_reports/lib/pChart2/class/pPie.php");
 
-        // Dataset definition.
-        $dataset = new pData;
-
-        $dataset->AddPoint($series[1], "Serie1");
         // Invert/Reverse Hebrew labels so it can be rendered using PHP imagettftext().
+        $invertedlabels = [];
         foreach ($series[0] as $key => $value) {
             $invertedlabels[$key] = strip_tags(
                 (preg_match("/[\xE0-\xFA]/", iconv("UTF-8", "ISO-8859-8", $value))) ? $reportclass->utf8_strrev($value) : $value
             );
         }
-        $dataset->AddPoint($invertedlabels, "Serie2");
-        $dataset->AddAllSeries();
-        $dataset->SetAbsciseLabelSerie("Serie2");
 
-        // Initialise the graph.
-        $test = new pChart(450, 200 + (count($series[0]) * 10));
-        $test->drawFilledRoundedRectangle(7, 7, 293, 193, 5, 240, 240, 240);
-        $test->drawRoundedRectangle(5, 5, 295, 195, 5, 230, 230, 230);
-        $test->createColorGradientPalette(195, 204, 56, 223, 110, 41, 5);
+        // The values are added first, because getPieParams() plots the first serie that is not the abscissa.
+        $dataset = new \pChart\pData();
+        $dataset->addPoints($series[1], "Values");
+        $dataset->addPoints($invertedlabels, "Labels");
+        $dataset->setAbscissa("Labels");
 
-        // Custom colors.
+        // Custom colors, one per slice. savePalette() merges, so only the ones set here are replaced.
         if ($colors) {
+            $palette = [];
             foreach ($colors as $index => $color) {
                 if (!empty($color)) {
-                    $test->Palette[$index] = ["R" => $color[0], "G" => $color[1], "B" => $color[2]];
+                    $palette[$index] = new \pChart\pColor((int) $color[0], (int) $color[1], (int) $color[2]);
                 }
             }
+            $dataset->savePalette($palette);
         }
 
-        // Draw the pie chart.
-        $test->setFontProperties($CFG->dirroot . "/blocks/configurable_reports/lib/pChart2/fonts/Cairo-Regular.ttf", 8);
-        $test->AntialiasQuality = 0;
-        $test->drawPieGraph($dataset->GetData(), $dataset->GetDataDescription(), 150, 90, 110, PIE_PERCENTAGE, true, 50, 20, 5);
-        $test->drawPieLegend(300, 15, $dataset->GetData(), $dataset->GetDataDescription(), 250, 250, 250);
+        $fontpath = $CFG->dirroot . "/blocks/configurable_reports/lib/pChart2/fonts";
+        $width = 450;
+        $height = 200 + (count($series[0]) * 10);
+        $radius = 90;
 
-        ob_clean(); // Hack to clear output and send only IMAGE data to browser.
-        $test->Stroke();
+        $mypicture = new \pChart\pDraw($width, $height);
+        $mypicture->myData = $dataset;
+        $mypicture->setFontProperties([
+            "FontName" => "$fontpath/Cairo-Regular.ttf",
+            "FontSize" => 8,
+            "Color" => new \pChart\pColor(0, 0, 0),
+        ]);
+
+        $pie = new \pChart\pPie($mypicture);
+        $pie->draw2DPie($radius + 20, intdiv($height, 2), [
+            "Radius" => $radius,
+            // The names are in the legend: labels drawn outside the pie throw when a long one runs off the canvas.
+            "DrawLabels" => false,
+            "WriteValues" => PIE_VALUE_PERCENTAGE,
+            "ValuePosition" => PIE_VALUE_INSIDE,
+            "Border" => true,
+        ]);
+        $pie->drawPieLegend($width - 120, 15, ["Alpha" => 0]);
+
+        $mypicture->autoOutput();
     }
 
 }
