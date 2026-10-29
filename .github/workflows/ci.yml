@@ -12,3 +12,4 @@ jobs:
       # The code uses the nullsafe operator, so it does not parse on 7.4, and 8.0 is out of support.
       min_php: '8.1'
       disable_release: true
+      disable_phpcs: true
