@@ -125,7 +125,7 @@ class plugin_fcoursefield extends filter_base {
         }
 
         $mform->addElement('select', 'filter_fcoursefield_' . $formdata->field, get_string($formdata->field), $filteroptions);
-        $mform->setType('filter_courses', PARAM_BASE64);
+        $mform->setType('filter_courses', PARAM_RAW);
     }
 
 }

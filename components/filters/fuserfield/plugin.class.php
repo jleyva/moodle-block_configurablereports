@@ -66,12 +66,28 @@ class plugin_fuserfield extends filter_base {
         return $this->execute_users($finalelements, $data);
     }
 
+    /**
+     * Read the value the viewer picked from the filter.
+     *
+     * The options are base64 encoded so that any field value can serve as an option value, but PARAM_BASE64 is
+     * meant for PEM data and rejects a single line of more than 64 characters, which is any value over 48 bytes.
+     * Decode strictly instead, which is the check that actually matters here.
+     *
+     * @param string $field The user field the filter is on.
+     * @return string The value picked, or '' when nothing valid was submitted.
+     */
+    private function get_submitted_value(string $field): string {
+        $submitted = optional_param('filter_fuserfield_' . $field, '', PARAM_RAW);
+        $decoded = $submitted === '' ? false : base64_decode($submitted, true);
+
+        return $decoded === false ? '' : $decoded;
+    }
+
     #[\Override]
     function execute_for_sql_report(string $sql, ?\stdClass $data = null): array {
         global $remotedb;
 
-        $filterfuserfield = optional_param('filter_fuserfield_' . $data->field, 0, PARAM_BASE64);
-        $filter = base64_decode($filterfuserfield);
+        $filter = $this->get_submitted_value($data->field);
 
         if (strpos($data->field, 'profile_') === 0) {
             // Custom profile fields are stored as text in user_info_data.
@@ -91,7 +107,7 @@ class plugin_fuserfield extends filter_base {
             $metatype = $column->__get('meta_type');
         }
 
-        if ($filterfuserfield) {
+        if ($filter !== '') {
             switch ($metatype) {
                 case 'I':
                 case 'R':
@@ -137,9 +153,8 @@ class plugin_fuserfield extends filter_base {
     private function execute_users($finalelements, $data) {
         global $remotedb;
 
-        $filterfuserfield = optional_param('filter_fuserfield_' . $data->field, 0, PARAM_BASE64);
-        if ($filterfuserfield) {
-            $filter = base64_decode($filterfuserfield);
+        $filter = $this->get_submitted_value($data->field);
+        if ($filter !== '') {
 
             if (strpos($data->field, 'profile_') === 0) {
                 $conditions = ['shortname' => str_replace('profile_', '', $data->field)];
@@ -258,7 +273,7 @@ class plugin_fuserfield extends filter_base {
         }
 
         $mform->addElement('select', 'filter_fuserfield_' . $formdata->field, $selectname, $filteroptions);
-        $mform->setType('filter_fuserfield_' . $formdata->field, PARAM_BASE64);
+        $mform->setType('filter_fuserfield_' . $formdata->field, PARAM_RAW);
     }
 
     /**
