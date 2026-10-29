@@ -66,6 +66,9 @@ A security review of the whole plugin thanks to MDL Shield, and the first accept
   silence, which left the report showing every row it was meant to narrow
   (CONTRIB-10669).
 - Fixed the spelling of "accessible" on the report settings page (CONTRIB-8676).
+- The user field filter on a SQL report no longer loads every user to build its
+  options, which hung large sites and exceeded the database parameter limit
+  (CONTRIB-4937).
 
 ## 5.3.1 (2027050403) for Moodle 4.0 and later
 

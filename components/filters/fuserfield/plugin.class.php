@@ -223,31 +223,34 @@ class plugin_fuserfield extends filter_base {
             throw new moodle_exception('nosuchcolumn');
         }
 
-        $reportclassname = 'report_' . $this->report->type;
-        $reportclass = new $reportclassname($this->report);
-
-        if ($this->report->type === 'sql') {
-            $conditions = [];
-            if ($formdata->excludedeletedusers) {
-                $conditions['deleted'] = 0;
-            }
-            $userlist = array_keys($remotedb->get_records('user', $conditions));
-        } else {
+        // A SQL report covers every user, so there is no list to narrow the values by. Asking for one
+        // loads the whole user table and then binds a parameter per row, which hangs a large site and
+        // can pass the database's own limit on parameters, so only the other report types build it.
+        $userlist = null;
+        if ($this->report->type !== 'sql') {
+            $reportclassname = 'report_' . $this->report->type;
+            $reportclass = new $reportclassname($this->report);
             $components = cr_unserialize($this->report->components);
-            $conditions = $components['conditions'] ?? null;
-            $userlist = $reportclass->elements_by_conditions($conditions);
+            $userlist = $reportclass->elements_by_conditions($components['conditions'] ?? null);
         }
-        if (!empty($userlist)) {
+        $excludedeleted = $this->report->type === 'sql' && !empty($formdata->excludedeletedusers);
+
+        if ($userlist === null || !empty($userlist)) {
             if (strpos($formdata->field, 'profile_') === 0) {
                 $conditions = ['shortname' => str_replace('profile_', '', $formdata->field)];
                 if ($field = $remotedb->get_record('user_info_field', $conditions)) {
                     $selectname = format_string($field->name);
-                    [$usql, $params] = $remotedb->get_in_or_equal($userlist);
-                    $sql = "SELECT DISTINCT(data) as data FROM {user_info_data} WHERE fieldid = ? AND userid $usql";
-                    $params = array_merge([$field->id], $params);
+                    $sql = "SELECT DISTINCT(data) as data FROM {user_info_data} WHERE fieldid = ?";
+                    $params = [$field->id];
+                    if ($userlist !== null) {
+                        [$usql, $userparams] = $remotedb->get_in_or_equal($userlist);
+                        $sql .= " AND userid $usql";
+                        $params = array_merge($params, $userparams);
+                    } else if ($excludedeleted) {
+                        $sql .= " AND userid IN (SELECT id FROM {user} WHERE deleted = 0)";
+                    }
 
                     if ($infodata = $remotedb->get_records_sql($sql, $params)) {
-                        $finalusersid = [];
                         foreach ($infodata as $d) {
                             $filteroptions[base64_encode(format_string($d->data))] = format_string($d->data);
                         }
@@ -261,8 +264,16 @@ class plugin_fuserfield extends filter_base {
                     $selectname = s($formdata->field);
                 }
 
-                [$usql, $params] = $remotedb->get_in_or_equal($userlist);
-                $sql = "SELECT DISTINCT({$formdata->field}) as ufield FROM {user} WHERE id $usql ORDER BY ufield ASC";
+                $sql = "SELECT DISTINCT({$formdata->field}) as ufield FROM {user}";
+                $params = [];
+                if ($userlist !== null) {
+                    [$usql, $params] = $remotedb->get_in_or_equal($userlist);
+                    $sql .= " WHERE id $usql";
+                } else if ($excludedeleted) {
+                    $sql .= " WHERE deleted = 0";
+                }
+                $sql .= " ORDER BY ufield ASC";
+
                 if ($rs = $remotedb->get_recordset_sql($sql, $params)) {
                     foreach ($rs as $u) {
                         $filteroptions[base64_encode($u->ufield)] = s($u->ufield);
