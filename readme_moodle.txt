@@ -132,6 +132,22 @@ because they are not redistributable, so do not restore them: keep
 components/plot/line/graph.php and components/plot/pie/graph.php pointing at
 'lib/pChart2/fonts/Cairo-Regular.ttf' (OFL licensed).
 
+5. In 'class/pDraw.php', drop the $num_points argument from every
+imagefilledpolygon() call, keeping the three argument form:
+
+   ------------------
+    imagefilledpolygon($this->Picture, $Points, $PointCount / 2, $color);
+   ------------------
+
+   to
+   ------------------
+    imagefilledpolygon($this->Picture, $Points, $color);
+   ------------------
+
+   PHP 8.1 deprecated that argument, so the released library writes a
+   deprecation notice into the middle of every image it draws. Check whether
+   the release has fixed this before patching it again.
+
 
 =======================
 After importing any of them
