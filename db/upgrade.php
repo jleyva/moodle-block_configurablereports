@@ -164,5 +164,16 @@ function xmldb_block_configurable_reports_upgrade($oldversion) {
         upgrade_plugin_savepoint(true, 2024051300, 'block', 'configurable_reports');
     }
 
+    if ($oldversion < 2027050406) {
+        // The step above that adds this field saved at 2011040115, a version some sites had already passed
+        // by the time it was written, so they skipped it and have been missing the column ever since.
+        $table = new xmldb_table('block_configurable_reports');
+        $field = new xmldb_field('remote', XMLDB_TYPE_INTEGER, '1', XMLDB_UNSIGNED, null, null, '0', null);
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+        upgrade_plugin_savepoint(true, 2027050406, 'block', 'configurable_reports');
+    }
+
     return true;
 }

@@ -3,7 +3,7 @@
 All notable changes to the Configurable Reports block, newest first. Entries up to
 4.5.0 were kept in `README.txt`, which this file replaces.
 
-## Unreleased (2027050405)
+## Unreleased (2027050406)
 
 A security review of the whole plugin thanks to MDL Shield, and the first acceptance tests.
 
@@ -49,6 +49,8 @@ A security review of the whole plugin thanks to MDL Shield, and the first accept
   query, where Moodle counted the column inside it as a named parameter (#299).
 - Reports are deleted together with their course, instead of lingering in the
   list with no way to open or remove them (#232).
+- The remote column is added to the sites that skipped the original upgrade step,
+  so the database schema check passes on them again (#228).
 
 ## 5.3.1 (2027050403) for Moodle 4.0 and later
 
