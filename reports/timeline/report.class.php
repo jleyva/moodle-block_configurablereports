@@ -80,13 +80,11 @@ class report_timeline extends report_base {
                 }
             }
 
-            $filterstarttime = optional_param('filter_starttime', 0, PARAM_RAW);
-            $filterendtime = optional_param('filter_endtime', 0, PARAM_RAW);
+            // The date filter posts its parts as an array, which optional_param() refuses to clean.
+            $filterstarttime = cr_filter_date_to_timestamp(optional_param_array('filter_starttime', [], PARAM_INT));
+            $filterendtime = cr_filter_date_to_timestamp(optional_param_array('filter_endtime', [], PARAM_INT));
 
             if ($filterstarttime && $filterendtime) {
-                $filterstarttime = make_timestamp($filterstarttime['year'], $filterstarttime['month'], $filterstarttime['day']);
-                $filterendtime = make_timestamp($filterendtime['year'], $filterendtime['month'], $filterendtime['day']);
-
                 $config->starttime = usergetmidnight($filterstarttime);
                 $config->endtime = usergetmidnight($filterendtime) + 24 * 60 * 60;
             }

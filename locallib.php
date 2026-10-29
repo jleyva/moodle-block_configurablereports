@@ -344,6 +344,23 @@ function cr_get_export_plugins(): array {
 }
 
 /**
+ * Turn the parts a date filter posts into a timestamp.
+ *
+ * The date and date/time selectors post day, month and year as separate members of an array, so the value has
+ * to be read with optional_param_array() and assembled here.
+ *
+ * @param array $date The posted parts: day, month and year, and optionally hour and minute.
+ * @return int The timestamp, or 0 when the parts do not make up a date.
+ */
+function cr_filter_date_to_timestamp(array $date): int {
+    if (!isset($date['year'], $date['month'], $date['day'])) {
+        return 0;
+    }
+
+    return make_timestamp($date['year'], $date['month'], $date['day'], $date['hour'] ?? 0, $date['minute'] ?? 0);
+}
+
+/**
  * cr_print_table
  *
  * @param object $table

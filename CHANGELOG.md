@@ -36,6 +36,9 @@ A security review of the whole plugin thanks to MDL Shield, and the first accept
   arrows for the ones after it (#220).
 - The user field ordering summary falls back to the column name for fields core
   has no string for, such as id and auth (#191).
+- The date filters are read with optional_param_array(), so the user and course
+  statistics columns and the timeline report no longer throw on Moodle 4.5 and
+  later (#278).
 
 ## 5.3.1 (2027050403) for Moodle 4.0 and later
 
