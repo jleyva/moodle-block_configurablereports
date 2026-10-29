@@ -38,6 +38,11 @@ require_once($CFG->dirroot . '/blocks/configurable_reports/locallib.php');
 abstract class report_base {
 
     /**
+     * @var int How many ids to bind in one query before reading the table instead.
+     */
+    const MAX_BOUND_IDS = 30000;
+
+    /**
      * @var int
      */
     public int $id = 0;
@@ -306,6 +311,38 @@ abstract class report_base {
             get_string('reporttruncated', 'block_configurable_reports', $this->rowlimit),
             \core\output\notification::NOTIFY_WARNING,
             false
+        );
+    }
+
+    /**
+     * The rows of a table for the elements this report ended up with.
+     *
+     * Databases cap how many parameters one query may bind, and a report with no conditions ends up
+     * holding every id in the table, so binding one parameter each fails outright on a large site.
+     * Past that size, read the table once in the order asked for and keep the rows wanted:
+     * array_intersect_key goes by the first argument, so the ordering survives.
+     *
+     * @param string $table
+     * @param array $elements Ids of the rows to return.
+     * @param string $sqlorder
+     * @return array
+     */
+    protected function get_rows_by_ids(string $table, array $elements, string $sqlorder = ''): array {
+        global $DB;
+
+        if (empty($elements)) {
+            return [];
+        }
+
+        if (count($elements) <= static::MAX_BOUND_IDS) {
+            [$usql, $params] = $DB->get_in_or_equal($elements);
+
+            return $DB->get_records_select($table, "id $usql", $params, $sqlorder);
+        }
+
+        return array_intersect_key(
+            $DB->get_records_select($table, '', [], $sqlorder),
+            array_flip($elements)
         );
     }
 

@@ -71,6 +71,9 @@ A security review of the whole plugin thanks to MDL Shield, and the first accept
   (CONTRIB-4937).
 - Columns that core has no name for are shown as themselves in the filters,
   conditions and ordering, rather than as [[sortorder]] and a debugging message.
+- The users, courses and categories reports no longer bind one database parameter
+  per row, which stopped them running at all on sites with more rows than the
+  database allows parameters (CONTRIB-8780).
 
 ## 5.3.1 (2027050403) for Moodle 4.0 and later
 
