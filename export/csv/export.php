@@ -56,6 +56,14 @@ function export_report($report) {
     $csvexport = new csv_export_writer("$csvdelimiter", '"', 'application/download', true);
     $csvexport->set_filename($filename);
 
+    if (empty($matrix)) {
+        // An SQL report that returned no rows has no columns either, so there is nothing to write.
+        // csv_export_writer only opens its file on the first row it is given, and then reads and
+        // closes that handle unconditionally, so handing it nothing fails on a null handle. Give it
+        // the empty row, which writes the empty file the other export formats produce.
+        $matrix[] = [];
+    }
+
     foreach ($matrix as $ri => $col) {
         $csvexport->add_data($col);
     }

@@ -78,6 +78,8 @@ A security review of the whole plugin thanks to MDL Shield, and the first accept
   category lists its reports, and choosing one loads its query. The selectors ran
   on YUI code that was never initialised there, and the query was fetched from a
   URL that only ever answered 404 (CONTRIB-9932).
+- A report that returns no rows downloads as an empty CSV rather than failing,
+  which is what the other export formats already did (CONTRIB-9739).
 
 ## 5.3.1 (2027050403) for Moodle 4.0 and later
 

@@ -95,3 +95,15 @@ Feature: Create an SQL report
     And I set the field "SQL Query" to "SELECT nosuchcolumn FROM prefix_user"
     And I press "Save changes"
     Then I should see "Query failed"
+
+  Scenario: A report that returns no rows still downloads as CSV
+    When I follow "Add report"
+    And I set the following fields to these values:
+      | Name                 | Nobody at all |
+      | Type of report       | SQL Report    |
+      | Export in CSV format | 1             |
+    And I press "Add"
+    And I set the field "SQL Query" to "SELECT id, username FROM prefix_user WHERE deleted = 2"
+    And I press "Save changes"
+    And I follow "Manage reports"
+    Then following "CSV" should download between "0" and "5" bytes
