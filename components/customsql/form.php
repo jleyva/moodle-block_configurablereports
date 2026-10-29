@@ -74,14 +74,11 @@ class customsql_form extends moodleform {
                 }
 
                 $reportcatstr = get_string('reportcategories', 'block_configurable_reports');
-                $reportcatattrs =
-                    ['onchange' => 'M.block_configurable_reports.onchange_reportcategories(this,"' . sesskey() . '")'];
-                $mform->addElement('select', 'reportcategories', $reportcatstr, $reportcategories, $reportcatattrs);
+                $mform->addElement('select', 'reportcategories', $reportcatstr, $reportcategories);
 
+                // The reports are the ones in the chosen category, so the list starts out empty.
                 $reportsincatstr = get_string('reportsincategory', 'block_configurable_reports');
-                $reportsincatattrs =
-                    ['onchange' => 'M.block_configurable_reports.onchange_reportsincategory(this,"' . sesskey() . '")'];
-                $mform->addElement('select', 'reportsincategory', $reportsincatstr, $reportcategories, $reportsincatattrs);
+                $mform->addElement('select', 'reportsincategory', $reportsincatstr, [get_string('choose')]);
 
                 $mform->addElement(
                     'textarea',

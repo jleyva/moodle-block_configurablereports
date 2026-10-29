@@ -87,6 +87,7 @@ $string['displayprintbuttondescription'] = 'Displays the print button at the bot
 $string['embedlink'] = 'Embed Link';
 $string['embedlinkdescription'] = 'You can copy this link to embed the report in an HTML block';
 $string['cron_help'] = 'Schedule this query to run each day (At night)';
+$string['errorremotereport'] = 'The repository did not return a report for that name.';
 $string['remote'] = 'Run on remote db';
 $string['remotedescription'] = 'Do you want to run this query on the remote db';
 $string['remote_help'] = 'Do you want to run this query on the remote db';

@@ -3,7 +3,7 @@
 All notable changes to the Configurable Reports block, newest first. Entries up to
 4.5.0 were kept in `README.txt`, which this file replaces.
 
-## 5.3.2 (2027050404) for Moodle 4.0 and later
+## 5.3.2 (2027050405) for Moodle 4.0 and later
 
 _Release date: ..2026_
 
@@ -74,6 +74,10 @@ A security review of the whole plugin thanks to MDL Shield, and the first accept
 - The users, courses and categories reports no longer bind one database parameter
   per row, which stopped them running at all on sites with more rows than the
   database allows parameters (CONTRIB-8780).
+- The remote report repository works again on the custom SQL form: choosing a
+  category lists its reports, and choosing one loads its query. The selectors ran
+  on YUI code that was never initialised there, and the query was fetched from a
+  URL that only ever answered 404 (CONTRIB-9932).
 
 ## 5.3.1 (2027050403) for Moodle 4.0 and later
 

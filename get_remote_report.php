@@ -41,7 +41,13 @@ if (!$userandrepo = get_config('block_configurable_reports', 'sharedsqlrepositor
 
 $github = new \block_configurable_reports\github;
 $github->set_repo($userandrepo);
-$content = $github->get('/master/' . $reportname);
-[$subject, $description, $sql] = explode('###', $content);
+$content = $github->get_file('/master/' . $reportname);
 
-echo json_encode($sql);
+// A report file is a subject, a description and the query, in that order. Anything else is not one:
+// the repository answers a request for a file it does not have with a page of its own.
+$parts = explode('###', (string) $content);
+if (count($parts) < 3) {
+    throw new moodle_exception('errorremotereport', 'block_configurable_reports');
+}
+
+echo json_encode(trim($parts[2]));
