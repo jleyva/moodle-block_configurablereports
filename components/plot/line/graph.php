@@ -121,25 +121,46 @@ if (!empty($graphs)) {
         // Name the series that made it in, so the legend reads as the report's own column names.
         foreach ($added as $key) {
             $name = (string) $series[$key]['name'];
+            if ($name === '') {
+                // Nothing to show, so leave the serie the name pChart gives it rather than an empty legend.
+                continue;
+            }
             $ishebrew = preg_match("/[\xE0-\xFA]/", iconv("UTF-8", "ISO-8859-8", $name));
             $dataset->setSerieDescription("Serie$key", ($ishebrew === 1) ? $reportclass->utf8_strrev($name) : $name);
         }
 
         $fontpath = $CFG->dirroot . "/blocks/configurable_reports/lib/pChart2/fonts";
+        $fontsettings = [
+            "FontName" => "$fontpath/Cairo-Regular.ttf",
+            "FontSize" => 8,
+            "Color" => new \pChart\pColor(0, 0, 0),
+        ];
+        $legendsettings = ["Style" => LEGEND_BOX, "Mode" => LEGEND_VERTICAL];
+        $padding = 20;
         $width = 700;
         $height = 230;
+        $legendwidth = 0;
+
+        if (!empty($added)) {
+            // Measure the legend before sizing the image. pChart2 throws rather than clipping when anything
+            // lands outside the canvas, and a report with a series per row needs far more room than 700x230.
+            $measure = new \pChart\pDraw($width, $height);
+            $measure->myData = $dataset;
+            $measure->setFontProperties($fontsettings);
+            [$legendwidth, $legendheight] = array_values($measure->getLegendSize($legendsettings));
+            $width = max($width, $legendwidth + 300);
+            $height = max($height, $legendheight + 2 * $padding);
+        }
 
         $mypicture = new \pChart\pDraw($width, $height);
         $mypicture->myData = $dataset;
         $mypicture->drawFilledRectangle(0, 0, $width, $height, ["Color" => new \pChart\pColor(255, 255, 255)]);
-        $mypicture->setFontProperties([
-            "FontName" => "$fontpath/Cairo-Regular.ttf",
-            "FontSize" => 8,
-            "Color" => new \pChart\pColor(0, 0, 0),
-        ]);
-        $mypicture->setGraphArea(70, 30, $width - 20, $height - 30);
+        $mypicture->setFontProperties($fontsettings);
 
         if (!empty($added)) {
+            $legendx = $width - $legendwidth - $padding;
+            $mypicture->setGraphArea(70, $padding + 10, $legendx - $padding, $height - $padding - 20);
+
             $scalesettings = [
                 "DrawSubTicks" => true,
                 "GridColor" => new \pChart\pColor(230, 230, 230, 50),
@@ -159,7 +180,7 @@ if (!empty($graphs)) {
             $pcharts->drawLineChart();
             $pcharts->drawPlotChart(["PlotSize" => 2, "PlotBorder" => true, "BorderSize" => 1]);
 
-            $mypicture->drawLegend(75, 35, ["Style" => LEGEND_BOX, "Mode" => LEGEND_HORIZONTAL]);
+            $mypicture->drawLegend($legendx, $padding, $legendsettings);
         }
 
         $mypicture->autoOutput();
