@@ -51,6 +51,8 @@ A security review of the whole plugin thanks to MDL Shield, and the first accept
   list with no way to open or remove them (#232).
 - The remote column is added to the sites that skipped the original upgrade step,
   so the database schema check passes on them again (#228).
+- environment.xml declares the PHP version the code actually needs, and warns when
+  GD cannot draw the text on the graphs (#233).
 
 ## 5.3.1 (2027050403) for Moodle 4.0 and later
 

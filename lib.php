@@ -32,3 +32,24 @@ function block_configurable_reports_security_checks(): array {
     return [new block_configurable_reports\check\sql_execution()];
 }
 
+/**
+ * Check that GD was built with freetype support.
+ *
+ * The graphs label themselves with imagettftext(), which GD only provides when it was built with freetype.
+ * Moodle core checks that GD is there, but not that it can draw text, so check that here.
+ *
+ * @param environment_results $result
+ * @return environment_results|null Null when freetype is available, which is what a passing check returns.
+ */
+function block_configurable_reports_check_freetype(environment_results $result): ?environment_results {
+    if (function_exists('imagettftext') && function_exists('imagettfbbox')) {
+        return null;
+    }
+
+    $result->setStatus(false);
+    // An array is passed so that the string is looked up in this plugin: a plain one would be read from admin.
+    $result->setFeedbackStr(['freetypenotfound', 'block_configurable_reports']);
+
+    return $result;
+}
+
