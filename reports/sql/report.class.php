@@ -40,6 +40,11 @@ class report_sql extends report_base {
     private bool $forexport = false;
 
     /**
+     * @var int The row limit the last query ran under, or 0 if it ran unlimited.
+     */
+    private int $reportlimit = 0;
+
+    /**
      * set_forexport
      *
      * @param bool $isforexport
@@ -254,9 +259,12 @@ class report_sql extends report_base {
 
         if (preg_match('/\b(INSERT|INTO|CREATE)\b/i', $sql) && !empty($CFG->block_configurable_reports_enable_sql_execution)) {
             // Run special (dangerous) queries directly.
+            $this->reportlimit = 0;
             $results = $DB->execute($sql, $params);
         } else {
-            $results = $DB->get_recordset_sql($sql, $params, 0, $reportlimit);
+            // Ask for one row more than we will show: if it comes back, the limit cut the result set short.
+            $this->reportlimit = $reportlimit;
+            $results = $DB->get_recordset_sql($sql, $params, 0, $reportlimit + 1);
         }
 
         // Update the execution time in the DB.
@@ -312,6 +320,15 @@ class report_sql extends report_base {
                 }
             }
         }
+
+        // The query asked for one row past the limit, so an extra row here means the rest were never fetched.
+        $this->truncated = $this->reportlimit && $totalrecords > $this->reportlimit;
+        if ($this->truncated) {
+            array_pop($finaltable);
+            $totalrecords--;
+            $this->rowlimit = $this->reportlimit;
+        }
+
         $this->sql = $sql;
         $this->totalrecords = $totalrecords;
 

@@ -28,6 +28,8 @@ A security review of the whole plugin, and the first acceptance tests.
 - Added Behat tests covering every report type, the advanced components and the
   security checks, plus PHPUnit tests for the filters, the import path and the
   web service.
+- SQL reports cut short by the report row limit now say so, instead of leaving
+  rows out silently (#121).
 
 ## 5.3.1 (2027050403) for Moodle 4.0 and later
 

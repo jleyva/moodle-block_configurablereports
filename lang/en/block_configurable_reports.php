@@ -468,6 +468,7 @@ $string['dbpass'] = "DB Password";
 $string['dbpassinfo'] = "Remote Database password (for above username)";
 
 $string['totalrecords'] = 'Total record count = {$a->totalrecords}';
+$string['reporttruncated'] = 'This report is incomplete. The query returned more than {$a} rows, which is the report row limit, so the rest were left out. Narrow the query so that it returns fewer rows, or ask an administrator to raise the report row limit.';
 $string['lastexecutiontime'] = 'Execution time = {$a} (Sec)';
 
 $string['reportcategories'] = '1) Choose a remote report categories';

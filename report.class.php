@@ -58,6 +58,16 @@ abstract class report_base {
     public int $totalrecords = 0;
 
     /**
+     * @var bool Whether the report row limit stopped the report short of the full result set.
+     */
+    public bool $truncated = false;
+
+    /**
+     * @var int The row limit that was applied, when the report was truncated.
+     */
+    public int $rowlimit = 0;
+
+    /**
      * @var object|null
      */
     public ?object $currentuser;
@@ -278,6 +288,25 @@ abstract class report_base {
             }
             $this->filterform = $filterform;
         }
+    }
+
+    /**
+     * Warn that the report row limit stopped the report short of the full result set.
+     *
+     * @return void
+     */
+    public function print_truncation_warning(): void {
+        global $OUTPUT;
+
+        if (!$this->truncated) {
+            return;
+        }
+
+        echo $OUTPUT->notification(
+            get_string('reporttruncated', 'block_configurable_reports', $this->rowlimit),
+            \core\output\notification::NOTIFY_WARNING,
+            false
+        );
     }
 
     /**
@@ -854,6 +883,8 @@ abstract class report_base {
             echo \html_writer::tag('div', get_string('totalrecords', 'block_configurable_reports', $a), array('id' => 'totalrecords'));
         }
 
+        $this->print_truncation_warning();
+
         if ($recordtpl) {
             if ($this->config->pagination) {
                 $page = optional_param('page', 0, PARAM_INT);
@@ -944,6 +975,8 @@ abstract class report_base {
                 $this->finalreport->table->data =
                     array_slice($this->finalreport->table->data, $page * $this->config->pagination, $this->config->pagination);
             }
+
+            $this->print_truncation_warning();
 
             cr_print_table($this->finalreport->table);
 

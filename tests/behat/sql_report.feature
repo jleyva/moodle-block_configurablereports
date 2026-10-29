@@ -36,6 +36,23 @@ Feature: Create an SQL report
     And I should see "Bob"
     And I should see "student2"
     And I should see "Total record count = 4"
+    And I should not see "This report is incomplete"
+
+  Scenario: A report cut short by the report row limit says so
+    Given the following config values are set as admin:
+      | reportlimit | 2 | block_configurable_reports |
+    When I follow "Add report"
+    And I set the following fields to these values:
+      | Name           | Usernames   |
+      | Type of report | SQL Report  |
+      | Total Records  | 1           |
+    And I press "Add"
+    And I set the field "SQL Query" to "SELECT firstname, lastname, username FROM prefix_user WHERE deleted = 0 ORDER BY username"
+    And I press "Save changes"
+    And I follow "View report"
+    Then I should see "This report is incomplete"
+    And I should see "more than 2 rows"
+    And I should see "Total record count = 2"
 
   Scenario: An SQL report built around the current course
     When I follow "Add report"
