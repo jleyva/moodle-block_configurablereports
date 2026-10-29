@@ -257,12 +257,7 @@ class plugin_fuserfield extends filter_base {
                     }
                 }
             } else {
-                // If lang string does not exist, use the sanitised field name as a fallback.
-                try {
-                    $selectname = get_string($formdata->field);
-                } catch (Exception $e) {
-                    $selectname = s($formdata->field);
-                }
+                $selectname = cr_get_field_name($formdata->field);
 
                 $sql = "SELECT DISTINCT({$formdata->field}) as ufield FROM {user}";
                 $params = [];

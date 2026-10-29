@@ -59,7 +59,7 @@ class plugin_cuserfield extends plugin_base {
             return format_string($name . ' ' . $data->operator . ' ' . $data->value);
         }
 
-        return format_string(get_string($data->field) . ' ' . $data->operator . ' ' . $data->value);
+        return format_string(cr_get_field_name($data->field) . ' ' . $data->operator . ' ' . $data->value);
 
     }
 

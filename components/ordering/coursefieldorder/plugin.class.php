@@ -58,7 +58,7 @@ class plugin_coursefieldorder extends plugin_base {
      * @return string
      */
     public function summary(object $data): string {
-        return get_string($data->column) . ' ' . (strtoupper($data->direction));
+        return cr_get_field_name($data->column) . ' ' . (strtoupper($data->direction));
     }
 
     /**

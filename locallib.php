@@ -344,6 +344,20 @@ function cr_get_export_plugins(): array {
 }
 
 /**
+ * The name to show for a table column.
+ *
+ * Core names some columns and not others, and get_string() does not throw for the ones it does not
+ * know: it reports a debugging message and returns the identifier wrapped in brackets. Ask first, and
+ * fall back to the column itself, which is what the forms offering these columns already display.
+ *
+ * @param string $field A column of the user or course table.
+ * @return string
+ */
+function cr_get_field_name(string $field): string {
+    return get_string_manager()->string_exists($field, 'moodle') ? get_string($field) : $field;
+}
+
+/**
  * Turn the parts a date filter posts into a timestamp.
  *
  * The date and date/time selectors post day, month and year as separate members of an array, so the value has

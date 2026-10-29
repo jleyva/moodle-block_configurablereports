@@ -52,7 +52,7 @@ class plugin_ccoursefield extends plugin_base {
      * @return string
      */
     public function summary(object $data): string {
-        return format_string(get_string($data->field) . ' ' . $data->operator . ' ' . $data->value);
+        return format_string(cr_get_field_name($data->field) . ' ' . $data->operator . ' ' . $data->value);
 
     }
 

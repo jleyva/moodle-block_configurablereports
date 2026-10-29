@@ -40,7 +40,19 @@ require_once($CFG->dirroot . '/blocks/configurable_reports/locallib.php');
  * @covers     ::cr_filter_date_to_timestamp
  */
 #[CoversFunction('cr_filter_date_to_timestamp')]
+#[CoversFunction('cr_get_field_name')]
 final class locallib_test extends advanced_testcase {
+
+    /**
+     * Core names some table columns and not others. The ones it does not name fall back to the column
+     * itself, rather than reporting a debugging message and showing a bracketed identifier.
+     */
+    public function test_a_field_name_falls_back_to_the_column(): void {
+        $this->assertSame(get_string('firstname'), cr_get_field_name('firstname'));
+        $this->assertSame('id', cr_get_field_name('id'));
+        $this->assertSame('sortorder', cr_get_field_name('sortorder'));
+        $this->assertDebuggingNotCalled();
+    }
 
     /**
      * A date selector posts day, month and year, and a date/time selector adds hour and minute.

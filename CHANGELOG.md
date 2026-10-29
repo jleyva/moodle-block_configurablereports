@@ -69,6 +69,8 @@ A security review of the whole plugin thanks to MDL Shield, and the first accept
 - The user field filter on a SQL report no longer loads every user to build its
   options, which hung large sites and exceeded the database parameter limit
   (CONTRIB-4937).
+- Columns that core has no name for are shown as themselves in the filters,
+  conditions and ordering, rather than as [[sortorder]] and a debugging message.
 
 ## 5.3.1 (2027050403) for Moodle 4.0 and later
 

@@ -58,10 +58,7 @@ class plugin_userfieldorder extends plugin_base {
      * @return string
      */
     public function summary(object $data): string {
-        // Core names some user fields and not others, so fall back to the column itself, as the form does.
-        $column = get_string_manager()->string_exists($data->column, 'moodle') ? get_string($data->column) : $data->column;
-
-        return $column . ' ' . (strtoupper($data->direction));
+        return cr_get_field_name($data->column) . ' ' . (strtoupper($data->direction));
     }
 
     /**
