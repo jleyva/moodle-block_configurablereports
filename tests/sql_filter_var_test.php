@@ -122,7 +122,7 @@ final class sql_filter_var_test extends advanced_testcase {
     }
 
     /**
-     * Anything other than a plain column (or whitelisted function of one) on the left side is dropped.
+     * Anything other than a plain column (or whitelisted function of one) on the left side is refused.
      *
      * @dataProvider injection_provider
      * @param string $filtervar
@@ -131,10 +131,8 @@ final class sql_filter_var_test extends advanced_testcase {
     public function test_injection_rejected(string $filtervar): void {
         $this->resetAfterTest();
 
-        [$sql, $params] = $this->prepare($filtervar);
-
-        $this->assertSame('SELECT u.id FROM {user} u WHERE u.deleted = 0  ORDER BY u.id', $sql);
-        $this->assertSame([], $params);
+        $this->expectException(\moodle_exception::class);
+        $this->prepare($filtervar);
     }
 
     /**
@@ -172,7 +170,18 @@ final class sql_filter_var_test extends advanced_testcase {
         $this->assertStringContainsString('AND u.city = :filtervar', $sql);
         $this->assertSame(['Madrid'], array_values($params));
 
-        [$sql, $params] = $this->prepare("AND u.email LIKE 'a%'", $query);
+        $this->expectException(\moodle_exception::class);
+        $this->prepare("AND u.email LIKE 'a%'", $query);
+    }
+
+    /**
+     * CONTRIB-10669: no filter_var at all is not an error, it just leaves the placeholder empty.
+     */
+    public function test_no_value_is_not_an_error(): void {
+        $this->resetAfterTest();
+
+        [$sql, $params] = $this->prepare('');
+
         $this->assertSame('SELECT u.id FROM {user} u WHERE u.deleted = 0  ORDER BY u.id', $sql);
         $this->assertSame([], $params);
     }

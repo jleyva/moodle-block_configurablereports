@@ -49,6 +49,7 @@ $string['column'] = "Column";
 $string['confirmdeletereport'] = "Are you sure you want to delete this report?";
 $string['noreportsavailable'] = "No reports available";
 $string['downloadreport'] = "Download report";
+$string['invalidfiltervar'] = 'The filter_var parameter has to be a condition that starts with AND or OR, such as "AND u.city = Madrid", and it is only replaced inside the WHERE clause of the query.';
 $string['freetypenotfound'] = 'The GD extension was built without freetype support, so the graphs will be drawn without any text on them. Rebuild GD with freetype to label them.';
 $string['reportlimit'] = "Report row limit";
 $string['reportlimitinfo'] = "Limit the number of rows that are displayed in the report table

@@ -243,6 +243,10 @@ class report_sql extends report_base {
                     $clause = $output['clause'] . " {$operator} :filtervar";
                     $params['filtervar'] = $unquote($output['param']);
                 }
+            } else if (!empty($filtervar)) {
+                // A value was passed but could not be used. Say so rather than drop the filter in silence,
+                // which left the report showing every row it was meant to narrow.
+                throw new moodle_exception('invalidfiltervar', 'block_configurable_reports');
             }
             $sql = preg_replace('/%%FILTER_VAR(?::[^%]*)?%%/', $clause, $sql);
         }

@@ -60,6 +60,9 @@ A security review of the whole plugin thanks to MDL Shield, and the first accept
 - The line chart legend names its series again, rather than showing Serie0 and Serie1.
 - A query is only refused for naming a table explicitly when it really does, rather
   than whenever a word happens to begin with the database prefix (#145).
+- A filter_var that cannot be used raises an error instead of being dropped in
+  silence, which left the report showing every row it was meant to narrow
+  (CONTRIB-10669).
 
 ## 5.3.1 (2027050403) for Moodle 4.0 and later
 
