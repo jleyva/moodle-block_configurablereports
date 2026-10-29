@@ -3,7 +3,9 @@
 All notable changes to the Configurable Reports block, newest first. Entries up to
 4.5.0 were kept in `README.txt`, which this file replaces.
 
-## Unreleased (2027050406)
+## 5.3.2 (2027050404) for Moodle 4.0 and later
+
+_Release date: ..2026_
 
 A security review of the whole plugin thanks to MDL Shield, and the first acceptance tests.
 
