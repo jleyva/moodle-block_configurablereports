@@ -57,10 +57,10 @@ class plugin_puserfield extends plugin_base {
         if (strpos($data->field, 'profile_') === 0) {
             $name = $DB->get_field('user_info_field', 'name', ['shortname' => str_replace('profile_', '', $data->field)]);
 
-            return $name . ' = ' . $data->value;
+            return format_string($name . ' = ' . $data->value);
         }
 
-        return $data->field . ' = ' . $data->value;
+        return format_string($data->field . ' = ' . $data->value);
     }
 
     /**
@@ -74,7 +74,8 @@ class plugin_puserfield extends plugin_base {
     public function execute($userid, $context, $data): bool {
         global $DB;
 
-        if (!$user = $DB->get_record('user', ['id' => $userid])) {
+        if (in_array($data->field, cr_get_sensitive_user_columns(), true) ||
+                !$user = $DB->get_record('user', ['id' => $userid])) {
             return false;
         }
 

@@ -53,7 +53,7 @@ final class sql_filter_var_test extends advanced_testcase {
      * @param string $filtervar
      * @return array [$sql, $params]
      */
-    private function prepare(string $filtervar): array {
+    private function prepare(string $filtervar, string $query = self::QUERY): array {
         global $SITE;
 
         $_GET['filter_var'] = $filtervar;
@@ -68,7 +68,7 @@ final class sql_filter_var_test extends advanced_testcase {
         $report = new \report_sql($config);
 
         try {
-            return $report->prepare_sql(self::QUERY);
+            return $report->prepare_sql($query);
         } finally {
             unset($_GET['filter_var']);
         }
@@ -122,7 +122,7 @@ final class sql_filter_var_test extends advanced_testcase {
     }
 
     /**
-     * Anything other than a plain column (or whitelisted function of one) on the left side is dropped.
+     * Anything other than a plain column (or whitelisted function of one) on the left side is refused.
      *
      * @dataProvider injection_provider
      * @param string $filtervar
@@ -131,10 +131,8 @@ final class sql_filter_var_test extends advanced_testcase {
     public function test_injection_rejected(string $filtervar): void {
         $this->resetAfterTest();
 
-        [$sql, $params] = $this->prepare($filtervar);
-
-        $this->assertSame('SELECT u.id FROM {user} u WHERE u.deleted = 0  ORDER BY u.id', $sql);
-        $this->assertSame([], $params);
+        $this->expectException(\moodle_exception::class);
+        $this->prepare($filtervar);
     }
 
     /**
@@ -155,6 +153,36 @@ final class sql_filter_var_test extends advanced_testcase {
             'braces' => ['AND {user}.id = 2'],
             'no conjunction' => ['id = 2'],
             'no operator' => ['AND id 2'],
+            'password' => ["AND password LIKE '$2y%'"],
+            'password with alias and function' => ["AND LOWER(u.password) LIKE 'a%'"],
+            'secret' => ["AND u.secret = 'x'"],
         ];
+    }
+
+    /**
+     * Authors can limit the columns viewers may filter on.
+     */
+    public function test_allowed_columns(): void {
+        $this->resetAfterTest();
+        $query = 'SELECT u.id FROM {user} u WHERE u.deleted = 0 %%FILTER_VAR:u.city, u.institution%% ORDER BY u.id';
+
+        [$sql, $params] = $this->prepare("AND u.city = 'Madrid'", $query);
+        $this->assertStringContainsString('AND u.city = :filtervar', $sql);
+        $this->assertSame(['Madrid'], array_values($params));
+
+        $this->expectException(\moodle_exception::class);
+        $this->prepare("AND u.email LIKE 'a%'", $query);
+    }
+
+    /**
+     * CONTRIB-10669: no filter_var at all is not an error, it just leaves the placeholder empty.
+     */
+    public function test_no_value_is_not_an_error(): void {
+        $this->resetAfterTest();
+
+        [$sql, $params] = $this->prepare('');
+
+        $this->assertSame('SELECT u.id FROM {user} u WHERE u.deleted = 0  ORDER BY u.id', $sql);
+        $this->assertSame([], $params);
     }
 }

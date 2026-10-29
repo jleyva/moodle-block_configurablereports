@@ -55,6 +55,10 @@ if ((int) $course->id === SITEID) {
     $context = context_course::instance($course->id);
 }
 
+if (!in_array($report->type, get_list_of_plugins('blocks/configurable_reports/reports'), true)) {
+    throw new moodle_exception('reportdoesnotexists', 'block_configurable_reports');
+}
+
 require_once($CFG->dirroot . '/blocks/configurable_reports/report.class.php');
 require_once($CFG->dirroot . '/blocks/configurable_reports/reports/' . $report->type . '/report.class.php');
 

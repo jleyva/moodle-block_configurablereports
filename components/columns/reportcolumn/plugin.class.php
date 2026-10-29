@@ -39,6 +39,11 @@ class plugin_reportcolumn extends plugin_base {
     public array $reportcache = [];
 
     /**
+     * @var bool[] Whether the current user can view each sub-report, keyed by report id.
+     */
+    protected array $permissioncache = [];
+
+    /**
      * Init
      *
      * @return void
@@ -169,7 +174,7 @@ class plugin_reportcolumn extends plugin_base {
      * @return array|string
      */
     public function execute($data, $row, $user, $courseid, $starttime = 0, $endtime = 0) {
-        global $DB, $CFG;
+        global $DB, $CFG, $USER;
 
         // Data -> Plugin configuration data.
         // Row -> Complet course/user row c->id, c->fullname, etc...
@@ -178,8 +183,24 @@ class plugin_reportcolumn extends plugin_base {
             throw new moodle_exception('reportdoesnotexists', 'block_configurable_reports');
         }
 
+        if (!in_array($report->type, get_list_of_plugins('blocks/configurable_reports/reports'), true)) {
+            throw new moodle_exception('reportdoesnotexists', 'block_configurable_reports');
+        }
+
         require_once($CFG->dirroot . '/blocks/configurable_reports/report.class.php');
         require_once($CFG->dirroot . '/blocks/configurable_reports/reports/' . $report->type . '/report.class.php');
+
+        // The sub-report is only shown to users allowed to view it.
+        if (!isset($this->permissioncache[$report->id])) {
+            $context = ($report->courseid == SITEID) ? context_system::instance() :
+                context_course::instance($report->courseid, IGNORE_MISSING);
+            $reportclassname = 'report_' . $report->type;
+            $this->permissioncache[$report->id] = $context &&
+                (new $reportclassname($report))->check_permissions($USER->id, $context);
+        }
+        if (!$this->permissioncache[$report->id]) {
+            return '';
+        }
 
         if (!isset($this->reportcache[$row->id])) {
 
@@ -234,12 +255,14 @@ class plugin_reportcolumn extends plugin_base {
                     ];
 
                     $components['conditions']['elements'][] = $newplugin;
-                    if (!empty($components['conditions']['config'])) {
-                        $components['conditions']['config']->conditionexpr = $this->fix_condition_expr(
-                            $components['conditions']['config']->conditionexpr,
-                            count($components['conditions']['elements'])
-                        );
+                    if (empty($components['conditions']['config'])) {
+                        $components['conditions']['config'] = new stdclass();
+                        $components['conditions']['config']->conditionexpr = '';
                     }
+                    $components['conditions']['config']->conditionexpr = $this->fix_condition_expr(
+                        $components['conditions']['config']->conditionexpr,
+                        count($components['conditions']['elements'])
+                    );
                     $reportclass->config->components = cr_serialize($components);
                 }
             } else if ($this->report->type === 'timeline') {
@@ -257,6 +280,10 @@ class plugin_reportcolumn extends plugin_base {
                     $newplugin = ['pluginname' => 'coursecategory', 'fullname' => 'coursecategory', 'formdata' => $formdata];
 
                     $components['conditions']['elements'][] = $newplugin;
+                    if (empty($components['conditions']['config'])) {
+                        $components['conditions']['config'] = new stdclass();
+                        $components['conditions']['config']->conditionexpr = '';
+                    }
                     $components['conditions']['config']->conditionexpr = $this->fix_condition_expr(
                         $components['conditions']['config']->conditionexpr,
                         count($components['conditions']['elements'])

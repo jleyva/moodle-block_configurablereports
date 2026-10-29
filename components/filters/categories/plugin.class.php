@@ -119,33 +119,26 @@ class plugin_categories extends filter_base {
      */
     public function print_filter(MoodleQuickForm $mform, $formdata = false): void {
 
-        global $remotedb;
+        $categoryoptions = [0 => get_string('filter_all', 'block_configurable_reports')];
 
-        $reportclassname = 'report_' . $this->report->type;
-        $reportclass = new $reportclassname($this->report);
+        // Core's list is in the order the categories are arranged in, names each one under its
+        // parent, and leaves out the ones this user is not allowed to see.
+        $categories = \core_course_category::make_categories_list();
 
         if ($this->report->type !== 'sql') {
+            $reportclassname = 'report_' . $this->report->type;
+            $reportclass = new $reportclassname($this->report);
+
             $components = cr_unserialize($this->report->components);
-            $conditions = $components['conditions'];
+            $categorieslist = $reportclass->elements_by_conditions($components['conditions'] ?? null);
 
-            $categorieslist = $reportclass->elements_by_conditions($conditions);
-        } else {
-            $categorieslist = array_keys($remotedb->get_records('course_categories'));
+            // Keep core's order rather than the order the conditions happened to return.
+            $categories = array_intersect_key($categories, array_flip($categorieslist));
         }
 
-        $courseoptions = [];
-        $courseoptions[0] = get_string('filter_all', 'block_configurable_reports');
+        $categoryoptions += $categories;
 
-        if (!empty($categorieslist)) {
-            [$usql, $params] = $remotedb->get_in_or_equal($categorieslist);
-            $categories = $remotedb->get_records_select('course_categories', "id $usql", $params);
-
-            foreach ($categories as $c) {
-                $courseoptions[$c->id] = format_string($c->name);
-            }
-        }
-
-        $mform->addElement('select', 'filter_categories', get_string('category'), $courseoptions);
+        $mform->addElement('select', 'filter_categories', get_string('category'), $categoryoptions);
         $mform->setType('filter_categories', PARAM_INT);
     }
 

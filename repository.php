@@ -26,7 +26,12 @@
 define('AJAX_SCRIPT', true);
 require(dirname(__FILE__, 3) . '/config.php');
 require_once($CFG->libdir . '/filelib.php');
-require_login();
+require_once($CFG->dirroot . '/blocks/configurable_reports/locallib.php');
+
+$context = block_configurable_reports_require_course_login();
+if (!has_any_capability(['block/configurable_reports:managereports', 'block/configurable_reports:manageownreports'], $context)) {
+    throw new moodle_exception('badpermissions', 'block_configurable_reports');
+}
 
 $action = required_param('action', PARAM_ALPHA);
 
@@ -54,7 +59,7 @@ if ($action === 'listreports') {
         die;
     }
 } else if ($action === 'listcategory') {
-    $category = required_param('category', PARAM_RAW);
+    $category = required_param('category', PARAM_PATH);
     if ($res = $github->get('/contents/' . $category)) {
         $data = json_decode($res);
         foreach ($data as $key => $d) {

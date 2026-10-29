@@ -118,14 +118,14 @@ class plugin_fcoursefield extends filter_base {
                 " <> '' ORDER BY ufield ASC";
             if ($rs = $remotedb->get_recordset_sql($sql, null)) {
                 foreach ($rs as $u) {
-                    $filteroptions[base64_encode($u->ufield)] = $u->ufield;
+                    $filteroptions[base64_encode($u->ufield)] = s($u->ufield);
                 }
                 $rs->close();
             }
         }
 
-        $mform->addElement('select', 'filter_fcoursefield_' . $formdata->field, get_string($formdata->field), $filteroptions);
-        $mform->setType('filter_courses', PARAM_BASE64);
+        $mform->addElement('select', 'filter_fcoursefield_' . $formdata->field, cr_get_field_name($formdata->field), $filteroptions);
+        $mform->setType('filter_courses', PARAM_RAW);
     }
 
 }

@@ -32,17 +32,13 @@ require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
 
 $id = required_param('id', PARAM_INT);
 $comp = required_param('comp', PARAM_ALPHA);
-$courseid = optional_param('courseid', null, PARAM_INT);
 
 if (!$report = $DB->get_record('block_configurable_reports', ['id' => $id])) {
     throw new moodle_exception('reportdoesnotexists');
 }
 
-// Ignore report's courseid, If we are running this report on a specific courseid
-// (For permission checks).
-if (empty($courseid)) {
-    $courseid = $report->courseid;
-}
+// Permissions must always be checked in the report's own course.
+$courseid = $report->courseid;
 
 if (!$course = $DB->get_record("course", ['id' => $courseid])) {
     throw new moodle_exception("No such course id");
@@ -65,15 +61,15 @@ $PAGE->requires->js('/blocks/configurable_reports/js/configurable_reports.js');
 
 $hasreportscap = has_capability('block/configurable_reports:managereports', $context);
 if (!$hasreportscap && !has_capability('block/configurable_reports:manageownreports', $context)) {
-    throw new moodle_exception('badpermissions');
+    throw new moodle_exception('badpermissions', 'block_configurable_reports');
 }
 
 if (!$hasreportscap && $report->ownerid != $USER->id) {
-    throw new moodle_exception('badpermissions');
+    throw new moodle_exception('badpermissions', 'block_configurable_reports');
 }
 
 if ($report->type === 'sql' && !block_configurable_reports_can_managesqlreports($context)) {
-    throw new moodle_exception('nosqlpermissions');
+    throw new moodle_exception('nosqlpermissions', 'block_configurable_reports');
 }
 
 require_once($CFG->dirroot . '/blocks/configurable_reports/reports/' . $report->type . '/report.class.php');
@@ -158,9 +154,7 @@ if ($elements) {
             continue;
         }
 
-        require_once($CFG->dirroot . '/blocks/configurable_reports/components/' . $comp . '/' . $e['pluginname'] .
-            '/plugin.class.php');
-        $pluginclassname = 'plugin_' . $e['pluginname'];
+        $pluginclassname = cr_require_component_plugin($comp, $e['pluginname']);
         $pluginclass = new $pluginclassname($report);
 
         $editcell = '';
@@ -192,7 +186,7 @@ if ($elements) {
                 '</a>';
         }
 
-        $table->data[] = ['c' . ($i + 1), $e['pluginfullname'], $e['summary'], $editcell];
+        $table->data[] = ['c' . ($i + 1), format_string($e['pluginfullname']), format_string($e['summary']), $editcell];
         $i++;
     }
     cr_print_table($table);
@@ -210,7 +204,7 @@ if ($compclass->plugins) {
 
     echo html_writer::select($optionsplugins, 'plugin', '', ['' => get_string('choose')], $attributes);
     $OUTPUT->add_action_handler(
-        new component_action('change', 'menuplugin', ['url' => "editplugin.php?id=" . $id . "&comp=" . $comp . "&pname="]),
+        new component_action('change', 'menuplugin', ['url' => "editplugin.php?id=" . $id . "&comp=" . $comp . "&sesskey=" . sesskey() . "&pname="]),
         'menuplugin'
     );
     echo '</p>';

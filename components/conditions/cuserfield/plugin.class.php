@@ -56,10 +56,10 @@ class plugin_cuserfield extends plugin_base {
         if (strpos($data->field, 'profile_') === 0) {
             $name = $DB->get_field('user_info_field', 'name', ['shortname' => str_replace('profile_', '', $data->field)]);
 
-            return $name . ' ' . $data->operator . ' ' . $data->value;
+            return format_string($name . ' ' . $data->operator . ' ' . $data->value);
         }
 
-        return get_string($data->field) . ' ' . $data->operator . ' ' . $data->value;
+        return format_string(cr_get_field_name($data->field) . ' ' . $data->operator . ' ' . $data->value);
 
     }
 
@@ -73,6 +73,13 @@ class plugin_cuserfield extends plugin_base {
     public function execute($data, $user) {
         global $DB;
         // Data -> Plugin configuration data.
+
+        // Imported reports do not go through the form, so validate the field and operator again.
+        if (!in_array($data->operator, cr_get_condition_operators(), true) ||
+                in_array($data->field, cr_get_sensitive_user_columns(), true) ||
+                (strpos($data->field, 'profile_') !== 0 && !array_key_exists($data->field, $DB->get_columns('user')))) {
+            return [];
+        }
 
         if (strpos($data->field, 'profile_') === 0) {
 

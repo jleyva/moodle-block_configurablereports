@@ -60,11 +60,15 @@ if ($course->id == SITEID) {
 
 $hasmanagereportcap = has_capability('block/configurable_reports:managereports', $context);
 if (!$hasmanagereportcap && !has_capability('block/configurable_reports:manageownreports', $context)) {
-    throw new moodle_exception('badpermissions');
+    throw new moodle_exception('badpermissions', 'block_configurable_reports');
 }
 
 if (!$hasmanagereportcap && $report->ownerid != $USER->id) {
-    throw new moodle_exception('badpermissions');
+    throw new moodle_exception('badpermissions', 'block_configurable_reports');
+}
+
+if ($report->type === 'sql' && !block_configurable_reports_can_managesqlreports($context)) {
+    throw new moodle_exception('nosqlpermissions', 'block_configurable_reports');
 }
 
 require_once($CFG->dirroot . '/blocks/configurable_reports/report.class.php');
@@ -106,9 +110,15 @@ if (!$cid) {
             if ($e['id'] == $cid) {
                 if ($delete) {
                     unset($elements[$index]);
+                    // Close the gap, so the positions the move arrows work with stay contiguous.
+                    $elements = array_values($elements);
                     break;
                 }
                 $newindex = ($moveup) ? $index - 1 : $index + 1;
+                if (!isset($elements[$newindex])) {
+                    // Already at one end of the list, so there is nothing to swap with.
+                    break;
+                }
                 $tmp = $elements[$newindex];
                 $elements[$newindex] = $e;
                 $elements[$index] = $tmp;
@@ -212,6 +222,8 @@ if (isset($pluginclass->form) && $pluginclass->form) {
         exit;
     }
 } else {
+    require_sesskey();
+
     $allelements = cr_unserialize($report->components);
 
     $uniqueid = random_string(15);

@@ -39,7 +39,7 @@ class plugin_bar extends plugin_base {
      * @return void
      */
     public function init(): void {
-        $this->fullname = "Bar chart";
+        $this->fullname = get_string('bar', 'block_configurable_reports');
         $this->form = true;
         $this->ordering = true;
         $this->reporttypes = ['courses', 'sql', 'users', 'timeline', 'categories'];
@@ -52,7 +52,7 @@ class plugin_bar extends plugin_base {
      * @return string
      */
     public function summary(object $data): string {
-        return "Bar chart summary";
+        return get_string('barsummary', 'block_configurable_reports');
     }
 
     /**

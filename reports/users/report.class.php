@@ -75,15 +75,7 @@ class report_users extends report_base {
      * @return array
      */
     public function get_rows(array $elements, string $sqlorder = ''): array {
-        global $DB;
-
-        if (!empty($elements)) {
-            [$usql, $params] = $DB->get_in_or_equal($elements);
-
-            return $DB->get_records_select('user', "id $usql", $params, $sqlorder);
-        }
-
-        return [];
+        return $this->get_rows_by_ids('user', $elements, $sqlorder);
     }
 
 }

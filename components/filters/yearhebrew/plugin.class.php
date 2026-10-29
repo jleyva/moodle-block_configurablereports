@@ -62,7 +62,7 @@ class plugin_yearhebrew extends filter_base {
      * @return array|string|string[]
      */
     public function execute($finalelements) {
-        $filteryearhebrew = optional_param('filter_yearhebrew', '', PARAM_RAW);
+        $filteryearhebrew = optional_param('filter_yearhebrew', '', PARAM_TEXT);
         if (!$filteryearhebrew) {
             return $finalelements;
         }
@@ -72,14 +72,16 @@ class plugin_yearhebrew extends filter_base {
 
     #[\Override]
     function execute_for_sql_report(string $sql, ?\stdClass $data = null): array {
-        $filteryearhebrew = optional_param('filter_yearhebrew', '', PARAM_RAW);
+        global $DB;
+
+        $filteryearhebrew = optional_param('filter_yearhebrew', '', PARAM_TEXT);
         $match = preg_match("/%%FILTER_YEARHEBREW:([^%]+)%%/i", $sql, $output);
         $params = [];
 
         if ($filteryearhebrew && $match) {
-            $replace = ' AND ' . $output[1] . ' LIKE \'%' . $filteryearhebrew . '%\'';
+            $replace = ' AND ' . $DB->sql_like($output[1], ':filteryearhebrew');
             $sql = str_replace('%%FILTER_YEARHEBREW:' . $output[1] . '%%', $replace, $sql);
-            $params[$data->field] = $filteryearhebrew;
+            $params['filteryearhebrew'] = '%' . $DB->sql_like_escape($filteryearhebrew) . '%';
         } else if ($match) {
             // Remove SQL clause.
             $pattern = '/%%FILTER_YEARHEBREW:' . preg_quote($output[1], '/') . '%%/i';
@@ -125,7 +127,7 @@ class plugin_yearhebrew extends filter_base {
 
         $elestr = get_string('filteryearhebrew', 'block_configurable_reports');
         $mform->addElement('select', 'filter_yearhebrew', $elestr, $yearhebrewoptions);
-        $mform->setType('filter_yearhebrew', PARAM_RAW);
+        $mform->setType('filter_yearhebrew', PARAM_TEXT);
     }
 
 }

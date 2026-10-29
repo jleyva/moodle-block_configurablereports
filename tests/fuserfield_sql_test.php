@@ -120,6 +120,39 @@ final class fuserfield_sql_test extends advanced_testcase {
     }
 
     /**
+     * Issue #299: a filter with no value left the underscore form of its placeholder in the query, and the
+     * ":column" inside what was left behind was then counted as a named parameter.
+     */
+    public function test_an_empty_filter_removes_the_underscore_placeholder(): void {
+        global $DB;
+
+        $sql = "SELECT u.id FROM {user} u WHERE u.deleted = 0 %%FILTER_USERS_city:u.city:~%%";
+        [$sql, $params] = $this->filter->execute_for_sql_report($sql, (object) ['field' => 'city']);
+
+        $this->assertStringNotContainsString('%%', $sql);
+        $this->assertSame([], $params);
+        $this->assertNotEmpty($DB->get_records_sql($sql, $params));
+    }
+
+    /**
+     * Issue #190: PARAM_BASE64 rejects a single line of over 64 characters, which is any value over 48 bytes.
+     */
+    public function test_a_value_longer_than_48_characters_still_filters(): void {
+        $long = 'Oberhausen, in the Ruhr, and then some more town name to pass forty-eight';
+        $this->users['carla'] = $this->getDataGenerator()->create_user(['city' => $long]);
+
+        // The test only means anything while the encoded value is past what PARAM_BASE64 accepts.
+        $this->assertGreaterThan(48, strlen($long));
+        $this->assertGreaterThan(64, strlen(base64_encode($long)));
+
+        $sql = "SELECT u.id FROM {user} u WHERE u.deleted = 0 %%FILTER_USERS_city:u.city:~%%";
+        [, $params, $names] = $this->run_filters($sql, ['city' => $long]);
+
+        $this->assertSame(['carla'], $names);
+        $this->assertSame(['%' . $long . '%'], array_values($params));
+    }
+
+    /**
      * Custom profile fields are accepted and filter with "contains" on an aliased column.
      */
     public function test_profile_field_contains(): void {

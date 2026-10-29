@@ -26,6 +26,7 @@
 defined('MOODLE_INTERNAL') || die;
 require_once($CFG->dirroot . '/lib/evalmath/evalmath.class.php');
 require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
+require_once($CFG->dirroot . '/blocks/configurable_reports/locallib.php');
 
 /**
  * Class report_base
@@ -35,6 +36,11 @@ require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 abstract class report_base {
+
+    /**
+     * @var int How many ids to bind in one query before reading the table instead.
+     */
+    const MAX_BOUND_IDS = 30000;
 
     /**
      * @var int
@@ -55,6 +61,16 @@ abstract class report_base {
      * @var int
      */
     public int $totalrecords = 0;
+
+    /**
+     * @var bool Whether the report row limit stopped the report short of the full result set.
+     */
+    public bool $truncated = false;
+
+    /**
+     * @var int The row limit that was applied, when the report was truncated.
+     */
+    public int $rowlimit = 0;
 
     /**
      * @var object|null
@@ -89,7 +105,7 @@ abstract class report_base {
     /**
      * @var int
      */
-    private int $currentcourseid = 0;
+    public int $currentcourseid = 0;
 
     /**
      * @var false|mixed|stdClass
@@ -175,9 +191,7 @@ abstract class report_base {
         $cond = [];
         foreach ($permissions['elements'] as $p) {
 
-            require_once($CFG->dirroot . '/blocks/configurable_reports/components/permissions/' . $p['pluginname'] .
-                '/plugin.class.php');
-            $classname = 'plugin_' . $p['pluginname'];
+            $classname = cr_require_component_plugin('permissions', $p['pluginname']);
             $class = new $classname($this->config);
             $cond[$i] = $class->execute($userid, $context, $p['formdata']);
             $i++;
@@ -231,8 +245,7 @@ abstract class report_base {
             }
 
             $filename = clean_filename($f['pluginname']);
-            require_once($CFG->dirroot . '/blocks/configurable_reports/components/filters/' . $filename . '/plugin.class.php');
-            $classname = 'plugin_' . $filename;
+            $classname = cr_require_component_plugin('filters', $filename);
             $class = new $classname($this->config);
 
             $finalelements = $class->print_filter($mform, $f['formdata']);
@@ -280,6 +293,57 @@ abstract class report_base {
             }
             $this->filterform = $filterform;
         }
+    }
+
+    /**
+     * Warn that the report row limit stopped the report short of the full result set.
+     *
+     * @return void
+     */
+    public function print_truncation_warning(): void {
+        global $OUTPUT;
+
+        if (!$this->truncated) {
+            return;
+        }
+
+        echo $OUTPUT->notification(
+            get_string('reporttruncated', 'block_configurable_reports', $this->rowlimit),
+            \core\output\notification::NOTIFY_WARNING,
+            false
+        );
+    }
+
+    /**
+     * The rows of a table for the elements this report ended up with.
+     *
+     * Databases cap how many parameters one query may bind, and a report with no conditions ends up
+     * holding every id in the table, so binding one parameter each fails outright on a large site.
+     * Past that size, read the table once in the order asked for and keep the rows wanted:
+     * array_intersect_key goes by the first argument, so the ordering survives.
+     *
+     * @param string $table
+     * @param array $elements Ids of the rows to return.
+     * @param string $sqlorder
+     * @return array
+     */
+    protected function get_rows_by_ids(string $table, array $elements, string $sqlorder = ''): array {
+        global $DB;
+
+        if (empty($elements)) {
+            return [];
+        }
+
+        if (count($elements) <= static::MAX_BOUND_IDS) {
+            [$usql, $params] = $DB->get_in_or_equal($elements);
+
+            return $DB->get_records_select($table, "id $usql", $params, $sqlorder);
+        }
+
+        return array_intersect_key(
+            $DB->get_records_select($table, '', [], $sqlorder),
+            array_flip($elements)
+        );
     }
 
     /**
@@ -435,9 +499,7 @@ abstract class report_base {
             $series = [];
 
             foreach ($graphs as $g) {
-                require_once($CFG->dirroot . '/blocks/configurable_reports/components/plot/' . $g['pluginname'] .
-                    '/plugin.class.php');
-                $classname = 'plugin_' . $g['pluginname'];
+                $classname = cr_require_component_plugin('plot', $g['pluginname']);
                 $class = new $classname($this->config);
                 $reportgraphs[] = $class->execute($g['id'], $g['formdata'], $finalreport);
             }
@@ -489,8 +551,7 @@ abstract class report_base {
                 }
 
                 $filename = clean_filename($calc['pluginname']);
-                require_once($CFG->dirroot . '/blocks/configurable_reports/components/calcs/' . $filename . '/plugin.class.php');
-                $classname = 'plugin_' . $filename;
+                $classname = cr_require_component_plugin('calcs', $filename);
 
                 $class = new $classname($this->config);
                 $result = $class->execute($columnscalcs[$calc['formdata']->column]);
@@ -526,9 +587,7 @@ abstract class report_base {
         $finalelements = [];
         $i = 1;
         foreach ($conditions['elements'] as $c) {
-            require_once($CFG->dirroot . '/blocks/configurable_reports/components/conditions/' . $c['pluginname'] .
-                '/plugin.class.php');
-            $classname = 'plugin_' . $c['pluginname'];
+            $classname = cr_require_component_plugin('conditions', $c['pluginname']);
             $class = new $classname($this->config);
             $elements[$i] = $class->execute($c['formdata'], $this->currentuser, $this->currentcourseid);
             $i++;
@@ -573,9 +632,7 @@ abstract class report_base {
         // Filters.
         if (!empty($filters)) {
             foreach ($filters as $f) {
-                require_once($CFG->dirroot . '/blocks/configurable_reports/components/filters/' . $f['pluginname'] .
-                    '/plugin.class.php');
-                $classname = 'plugin_' . $f['pluginname'];
+                $classname = cr_require_component_plugin('filters', $f['pluginname']);
                 $class = new $classname($this->config);
                 $finalelements = $class->execute($finalelements, $f['formdata']);
             }
@@ -588,9 +645,7 @@ abstract class report_base {
         $orderingdata = [];
         if (!empty($ordering)) {
             foreach ($ordering as $o) {
-                require_once($CFG->dirroot . '/blocks/configurable_reports/components/ordering/' . $o['pluginname'] .
-                    '/plugin.class.php');
-                $classname = 'plugin_' . $o['pluginname'];
+                $classname = cr_require_component_plugin('ordering', $o['pluginname']);
                 $classorder = new $classname($this->config);
                 $orderingdata = $o['formdata'];
                 if ($classorder->sql) {
@@ -625,9 +680,7 @@ abstract class report_base {
                         continue;
                     }
 
-                    require_once($CFG->dirroot . '/blocks/configurable_reports/components/columns/' . $c['pluginname'] .
-                        '/plugin.class.php');
-                    $classname = 'plugin_' . $c['pluginname'];
+                    $classname = cr_require_component_plugin('columns', $c['pluginname']);
 
                     if (!isset($pluginscache[$classname])) {
                         $class = new $classname($this->config, $c);
@@ -867,6 +920,8 @@ abstract class report_base {
             echo \html_writer::tag('div', get_string('totalrecords', 'block_configurable_reports', $a), array('id' => 'totalrecords'));
         }
 
+        $this->print_truncation_warning();
+
         if ($recordtpl) {
             if ($this->config->pagination) {
                 $page = optional_param('page', 0, PARAM_INT);
@@ -930,9 +985,9 @@ abstract class report_base {
 
         // Debug.
         $debug = optional_param('debug', false, PARAM_BOOL);
-        if ($debug || !empty($this->config->debug)) {
+        if (($debug || !empty($this->config->debug)) && block_configurable_reports_can_managesqlreports($moodlepage->context)) {
             echo html_writer::empty_tag('hr');
-            echo html_writer::tag('div', $this->sql, ['id' => 'debug', 'style' => 'direction:ltr;text-align:left;']);
+            echo html_writer::tag('pre', s($this->sql), ['id' => 'debug', 'style' => 'direction:ltr;text-align:left;']);
             echo html_writer::empty_tag('hr');
         }
 
@@ -957,6 +1012,8 @@ abstract class report_base {
                 $this->finalreport->table->data =
                     array_slice($this->finalreport->table->data, $page * $this->config->pagination, $this->config->pagination);
             }
+
+            $this->print_truncation_warning();
 
             cr_print_table($this->finalreport->table);
 

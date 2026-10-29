@@ -47,7 +47,7 @@ class coursechild_form extends moodleform {
         $options = [];
         $options[0] = get_string('choose');
 
-        $sql = 'SELECT c.id, fullname FROM {course} c, {course_meta} cm WHERE c.id = cm.child_course GROUP BY (child_course)';
+        $sql = 'SELECT DISTINCT c.id, c.fullname FROM {course} c JOIN {course_meta} cm ON cm.child_course = c.id';
         if ($courses = $DB->get_records_sql($sql)) {
             foreach ($courses as $c) {
                 $options[$c->id] = format_string($c->fullname);

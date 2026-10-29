@@ -49,6 +49,8 @@ $string['column'] = "Column";
 $string['confirmdeletereport'] = "Are you sure you want to delete this report?";
 $string['noreportsavailable'] = "No reports available";
 $string['downloadreport'] = "Download report";
+$string['invalidfiltervar'] = 'The filter_var parameter has to be a condition that starts with AND or OR, such as "AND u.city = Madrid", and it is only replaced inside the WHERE clause of the query.';
+$string['freetypenotfound'] = 'The GD extension was built without freetype support, so the graphs will be drawn without any text on them. Rebuild GD with freetype to label them.';
 $string['reportlimit'] = "Report row limit";
 $string['reportlimitinfo'] = "Limit the number of rows that are displayed in the report table
     (Default is 5000 rows. Better to have some limit, so users will not over load the DB engine)";
@@ -85,6 +87,7 @@ $string['displayprintbuttondescription'] = 'Displays the print button at the bot
 $string['embedlink'] = 'Embed Link';
 $string['embedlinkdescription'] = 'You can copy this link to embed the report in an HTML block';
 $string['cron_help'] = 'Schedule this query to run each day (At night)';
+$string['errorremotereport'] = 'The repository did not return a report for that name.';
 $string['remote'] = 'Run on remote db';
 $string['remotedescription'] = 'Do you want to run this query on the remote db';
 $string['remote_help'] = 'Do you want to run this query on the remote db';
@@ -301,6 +304,11 @@ $string['usersincoursereport_summary'] = "Any user in the current report course"
 $string['printreport'] = 'Print report';
 
 $string['importreport'] = "Import report";
+$string['errorimporting'] = 'Error importing the report';
+$string['nosqlpermissions'] = 'You do not have permission to manage SQL reports';
+$string['badpermissions'] = 'You do not have permission to perform this action';
+$string['reportdoesnotexists'] = 'The report does not exist';
+$string['badcomponent'] = 'Invalid report component';
 $string['exportreport'] = "Export report";
 
 $string['download'] = "Download";
@@ -444,6 +452,11 @@ $string['comp_columns_help'] = '<p>Here you can choose the different columns of 
 
 <p>More help: <a href="http://docs.moodle.org/en/blocks/configurable_reports/" target="_blank">Plugin documentation</a></p>';
 
+$string['comp_timeline'] = 'Timeline';
+$string['comp_timeline_help'] = '<p>Here you can choose the period of time covered by the report and the length of the interval each row represents</p>
+
+<p>More help: <a href="http://docs.moodle.org/en/blocks/configurable_reports/" target="_blank">Plugin documentation</a></p>';
+
 $string['coursecategories'] = 'Category course filter';
 $string['filtercoursecategories'] = 'Category course filter';
 $string['filtercoursecategories_summary'] = 'Filter courses by their any parent category';
@@ -458,6 +471,7 @@ $string['dbpass'] = "DB Password";
 $string['dbpassinfo'] = "Remote Database password (for above username)";
 
 $string['totalrecords'] = 'Total record count = {$a->totalrecords}';
+$string['reporttruncated'] = 'This report is incomplete. The query returned more than {$a} rows, which is the report row limit, so the rest were left out. Narrow the query so that it returns fewer rows, or ask an administrator to raise the report row limit.';
 $string['lastexecutiontime'] = 'Execution time = {$a} (Sec)';
 
 $string['reportcategories'] = '1) Choose a remote report categories';
@@ -472,12 +486,17 @@ $string['sqlsyntaxhighlightinfo'] = 'Highlight SQL syntax in code editor (CodeMi
 $string['datatables'] = 'Enable DataTables JS library';
 $string['datatablesinfo'] = 'DataTables JS library (Column sort, fixed header, search, paging...)';
 $string['reporttableui'] = 'Report table UI';
+$string['reporttableui_datatables'] = 'DataTables JS';
+$string['reporttableui_html'] = 'Simple';
+$string['reporttableui_jquery'] = 'jQuery';
 $string['reporttableuiinfo'] = 'Display the report table as: Simple scrollable HTML table, jQuery with column sorting Or
 DataTables JS library (Column sort, fixed header, search, paging...)';
 
 $string['email_subject'] = 'Subject';
 $string['email_message'] = 'Message';
 $string['email_send'] = 'Send';
+$string['sendemail'] = 'Send email';
+$string['taskruncronreports'] = 'Run the SQL reports scheduled to run daily';
 
 $string['sqlsecurity'] = 'SQL Security';
 $string['sqlsecurityinfo'] = 'Disable for executing SQL queries with statements for inserting data';
@@ -485,7 +504,7 @@ $string['allowedsqlusers'] = 'SQL report users';
 $string['allowedsqlusersinfo'] =
     'If you wish to only allow certain admin users to manage sql reports, add a list of usernames separated by commas. They must also have the block/configurable_reports:managesqlreports capability.';
 $string['global'] = 'Global report';
-$string['enableglobal'] = 'This is a global report (accesible from any course)';
+$string['enableglobal'] = 'This is a global report (accessible from any course)';
 $string['global_help'] =
     'Global report can be accessed from any course in the platform just appending &courseid=MY_COURSE_ID in the report URL';
 
@@ -583,5 +602,10 @@ $string['checksql_execution_details'] = 'By allowing SQL code execution there is
 arbitrary code. SQL code execution should be disable to only allow SQL queries for reading/retreaving data. SQL execution can
 be disabled in your config.php file by setting $CFG->block_configurable_reports_enable_sql_execution to 0';
 $string['csvdelimiter'] = 'CSV delimiter';
+$string['csvdelimiter_cfg'] = 'cfg';
+$string['csvdelimiter_colon'] = 'colon';
+$string['csvdelimiter_comma'] = 'comma';
+$string['csvdelimiter_semicolon'] = 'semicolon';
+$string['csvdelimiter_tab'] = 'tab';
 $string['csvdelimiterinfo'] = 'CSV delimiter: "colon" for ":", "comma" for ",", semicolon for ";",  "tab" for "\t" and "cfg" for character configured in "CFG->CSV_DELIMITER" of the config.php file.';
 

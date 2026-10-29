@@ -220,9 +220,67 @@ function cr_unserialize(string $data): array {
     $data = preg_replace('/%60/', '+++', $data);
 
     // TODO remove unserialize.
-    $data = unserialize($data);
+    $data = unserialize($data, ['allowed_classes' => ['stdClass']]);
 
     return (array) urldecode_recursive($data);
+}
+
+/**
+ * Get the plugins of a report component (columns, conditions, filters...).
+ *
+ * @param string $component
+ * @return string[]
+ */
+function cr_get_component_plugins(string $component): array {
+    static $cache = [];
+
+    if (!isset($cache[$component])) {
+        $cache[$component] = [];
+        if (in_array($component, get_list_of_plugins('blocks/configurable_reports/components'), true)) {
+            $cache[$component] = get_list_of_plugins('blocks/configurable_reports/components/' . $component);
+        }
+    }
+
+    return $cache[$component];
+}
+
+/**
+ * Include a component plugin class after checking that the plugin exists.
+ *
+ * @param string $component
+ * @param string $pluginname
+ * @return string The plugin class name.
+ */
+function cr_require_component_plugin(string $component, string $pluginname): string {
+    global $CFG;
+
+    if (!in_array($pluginname, cr_get_component_plugins($component), true)) {
+        throw new moodle_exception('badcomponent', 'block_configurable_reports');
+    }
+    require_once($CFG->dirroot . '/blocks/configurable_reports/components/' . $component . '/' . $pluginname .
+        '/plugin.class.php');
+
+    return 'plugin_' . $pluginname;
+}
+
+/**
+ * Operators allowed in the course and user field conditions.
+ *
+ * @return string[]
+ */
+function cr_get_condition_operators(): array {
+    $operators = ['=', '>', '<', '>=', '<=', '<>', 'LIKE', 'NOT LIKE', 'LIKE % %'];
+
+    return array_combine($operators, $operators);
+}
+
+/**
+ * User table columns that must never be displayed or used in report conditions.
+ *
+ * @return string[]
+ */
+function cr_get_sensitive_user_columns(): array {
+    return ['password', 'secret', 'sesskey'];
 }
 
 /**
@@ -286,6 +344,37 @@ function cr_get_export_plugins(): array {
 }
 
 /**
+ * The name to show for a table column.
+ *
+ * Core names some columns and not others, and get_string() does not throw for the ones it does not
+ * know: it reports a debugging message and returns the identifier wrapped in brackets. Ask first, and
+ * fall back to the column itself, which is what the forms offering these columns already display.
+ *
+ * @param string $field A column of the user or course table.
+ * @return string
+ */
+function cr_get_field_name(string $field): string {
+    return get_string_manager()->string_exists($field, 'moodle') ? get_string($field) : $field;
+}
+
+/**
+ * Turn the parts a date filter posts into a timestamp.
+ *
+ * The date and date/time selectors post day, month and year as separate members of an array, so the value has
+ * to be read with optional_param_array() and assembled here.
+ *
+ * @param array $date The posted parts: day, month and year, and optionally hour and minute.
+ * @return int The timestamp, or 0 when the parts do not make up a date.
+ */
+function cr_filter_date_to_timestamp(array $date): int {
+    if (!isset($date['year'], $date['month'], $date['day'])) {
+        return 0;
+    }
+
+    return make_timestamp($date['year'], $date['month'], $date['day'], $date['hour'] ?? 0, $date['minute'] ?? 0);
+}
+
+/**
  * cr_print_table
  *
  * @param object $table
@@ -345,14 +434,14 @@ function cr_print_table(object $table, bool $return = false) {
         $table->class = 'generaltable';
     }
 
-    $tableid = empty($table->id) ? '' : 'id="' . $table->id . '"';
     $output .= '<form action="send_emails.php" method="post" id="sendemail">';
-    $output .= '<table width="' . $table->width . '" ';
-    if (!empty($table->summary)) {
-        $output .= " summary=\"$table->summary\"";
-    }
-    $output .= " cellpadding=\"$table->cellpadding\" cellspacing=\"$table->cellspacing\"
-                class=\"$table->class boxalign$table->tablealign\" $tableid>\n";
+    $output .= html_writer::start_tag('table', [
+        'width' => $table->width,
+        'cellpadding' => $table->cellpadding,
+        'cellspacing' => $table->cellspacing,
+        'class' => $table->class . ' boxalign' . $table->tablealign,
+        'id' => empty($table->id) ? null : $table->id,
+    ]) . "\n";
 
     $countcols = 0;
     $isuserid = -1;
@@ -438,7 +527,8 @@ function cr_print_table(object $table, bool $return = false) {
     $output .= '</table>' . "\n";
     $output .= '<input type="hidden" name="courseid" value="' . $COURSE->id . '">';
     if ($isuserid != -1) {
-        $output .= '<input type="submit" value="send emails">';
+        $output .= html_writer::empty_tag('input', ['type' => 'submit', 'class' => 'btn btn-secondary',
+            'value' => get_string('sendemail', 'block_configurable_reports')]);
     }
     $output .= '</form>';
 
@@ -530,7 +620,7 @@ function cr_get_context(int $context, ?int $id = null, $strictness = null) {
         return context_user::instance($id, $strictness);
     }
 
-    return get_context_instance($context, $id, $strictness);
+    throw new coding_exception('Unsupported context level: ' . $context);
 }
 
 /**
@@ -580,12 +670,24 @@ function cr_make_categories_list(&$list, &$parents, $requiredcapability = '', $e
 function cr_import_xml(string $xml, object $course) {
     global $CFG, $DB, $USER;
 
-    require_once($CFG->dirroot . '/lib/xmlize.php');
-    $data = xmlize($xml, 1, 'UTF-8');
+    if (class_exists('\core\xml_parser')) {
+        $data = (new \core\xml_parser())->parse($xml, 1, 'UTF-8');
+    } else {
+        // Moodle versions before 5.1.
+        require_once($CFG->dirroot . '/lib/xmlize.php');
+        $data = xmlize($xml, 1, 'UTF-8');
+    }
 
     if (isset($data['report']['@']['version'])) {
+        // Only these fields can be imported, the rest are set by the current context.
+        $allowedfields = ['visible', 'name', 'summary', 'summaryformat', 'type', 'pagination', 'components', 'export',
+            'jsordering', 'global', 'cron', 'remote', 'displaytotalrecords', 'displayprintbutton'];
+
         $newreport = new stdclass;
         foreach ($data['report']['#'] as $key => $val) {
+            if (!in_array($key, $allowedfields, true)) {
+                continue;
+            }
             if ($key === 'components') {
                 $val[0]['#'] = base64_decode(trim($val[0]['#']));
                 // Fix url_encode " and ' when importing SQL queries.
@@ -599,10 +701,29 @@ function cr_import_xml(string $xml, object $course) {
                     $tempcomponents['customsql']['config']->querysql = $querysql;
                 }
 
-                $val[0]['#'] = cr_serialize($tempcomponents);
+                $val[0]['#'] = cr_serialize(cr_clean_imported_components($tempcomponents));
             }
             $newreport->{$key} = trim($val[0]['#']);
         }
+        // The report type must be one the user is allowed to create in this course (SQL reports need managesqlreports).
+        $allowedtypes = array_keys(cr_get_report_plugins((int) $course->id));
+        if (empty($newreport->type) || !in_array($newreport->type, $allowedtypes, true)) {
+            throw new moodle_exception('nosqlpermissions', 'block_configurable_reports');
+        }
+
+        // Only keep known export formats.
+        $exportformats = array_keys(cr_get_export_plugins());
+        $export = array_intersect(explode(',', $newreport->export ?? ''), $exportformats);
+        $newreport->export = $export ? implode(',', $export) . ',' : '';
+
+        foreach (['visible', 'summaryformat', 'pagination', 'jsordering', 'global', 'cron', 'remote', 'displaytotalrecords',
+                'displayprintbutton'] as $field) {
+            if (isset($newreport->{$field})) {
+                $newreport->{$field} = (int) $newreport->{$field};
+            }
+        }
+        $newreport->name = clean_param($newreport->name ?? '', PARAM_TEXT);
+
         $newreport->courseid = $course->id;
         $newreport->ownerid = $USER->id;
         $newreport->name .= " (" . userdate(time()) . ")";
@@ -615,6 +736,41 @@ function cr_import_xml(string $xml, object $course) {
     }
 
     return false;
+}
+
+/**
+ * Remove the imported components and elements that do not exist in the plugin.
+ *
+ * Imported reports do not go through the component forms, so plugins also validate their data when they run.
+ *
+ * @param array $components
+ * @return array
+ */
+function cr_clean_imported_components(array $components): array {
+    $cleaned = [];
+    $validcomponents = get_list_of_plugins('blocks/configurable_reports/components');
+    foreach ($components as $comp => $compdata) {
+        if (!in_array($comp, $validcomponents, true) || !is_array($compdata)) {
+            continue;
+        }
+        if (isset($compdata['elements'])) {
+            $elements = [];
+            foreach ((array) $compdata['elements'] as $element) {
+                if (!is_array($element) || !isset($element['pluginname']) || !is_string($element['pluginname']) ||
+                        !in_array($element['pluginname'], cr_get_component_plugins($comp), true)) {
+                    continue;
+                }
+                if (!isset($element['formdata']) || !is_object($element['formdata'])) {
+                    $element['formdata'] = new stdClass();
+                }
+                $elements[] = $element;
+            }
+            $compdata['elements'] = $elements;
+        }
+        $cleaned[$comp] = $compdata;
+    }
+
+    return $cleaned;
 }
 
 /**
@@ -666,6 +822,22 @@ function cr_logging_info(): array {
         $useinternalreader,
         $logtable,
     ];
+}
+
+/**
+ * Login and get the context of the course given in the courseid parameter, for AJAX endpoints.
+ *
+ * @return context
+ */
+function block_configurable_reports_require_course_login(): context {
+    $courseid = optional_param('courseid', SITEID, PARAM_INT);
+    if ($courseid == SITEID) {
+        require_login();
+        return context_system::instance();
+    }
+    require_login($courseid);
+
+    return context_course::instance($courseid);
 }
 
 /**

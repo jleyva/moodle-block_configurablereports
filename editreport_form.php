@@ -40,7 +40,7 @@ class report_edit_form extends moodleform {
     public function definition(): void {
         global $CFG;
 
-        $adminmode = optional_param('adminmode', null, PARAM_INT);
+        $adminmode = optional_param('adminmode', null, PARAM_INT) && has_capability('moodle/site:config', context_system::instance());
 
         $mform =& $this->_form;
 

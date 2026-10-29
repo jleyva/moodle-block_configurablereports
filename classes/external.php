@@ -26,14 +26,12 @@ namespace block_configurable_reports;
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once("$CFG->libdir/externallib.php");
-
 use context_course;
 use context_system;
-use external_api;
-use external_function_parameters;
-use external_single_structure;
-use external_value;
+use core_external\external_api;
+use core_external\external_function_parameters;
+use core_external\external_single_structure;
+use core_external\external_value;
 use moodle_exception;
 
 /**
@@ -73,19 +71,31 @@ class external extends external_api {
             ['reportid' => $reportid, 'courseid' => $courseid]
         );
 
-        if ($courseid === SITEID) {
-            $context = context_system::instance();
-        } else {
-            $context = context_course::instance($courseid);
-        }
-
-        self::validate_context($context);
-
         $json = [];
         $warnings = '';
-        if (!$report = $DB->get_record('block_configurable_reports', ['id' => $reportid])) {
+        if (!$report = $DB->get_record('block_configurable_reports', ['id' => $params['reportid']])) {
+            self::validate_context(context_system::instance());
             $warnings = get_string('reportdoesnotexists', 'block_configurable_reports');
         } else {
+            // Permissions are always checked in the report's own course, only global reports can run in another course.
+            $courseid = (int) $params['courseid'];
+            if ($courseid && $report->global) {
+                $report->courseid = $courseid;
+            } else {
+                $courseid = (int) $report->courseid;
+            }
+
+            if ($courseid == SITEID) {
+                $context = context_system::instance();
+            } else {
+                $context = context_course::instance($courseid);
+            }
+            self::validate_context($context);
+
+            // The type is part of the path required below, so it must be one of the report plugins.
+            if (!in_array($report->type, get_list_of_plugins('blocks/configurable_reports/reports'), true)) {
+                throw new moodle_exception('reportdoesnotexists', 'block_configurable_reports');
+            }
 
             require_once($CFG->dirroot . '/blocks/configurable_reports/locallib.php');
             require_once($CFG->dirroot . '/blocks/configurable_reports/report.class.php');
