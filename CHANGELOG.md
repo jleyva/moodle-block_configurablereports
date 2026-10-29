@@ -65,6 +65,7 @@ A security review of the whole plugin thanks to MDL Shield, and the first accept
 - A filter_var that cannot be used raises an error instead of being dropped in
   silence, which left the report showing every row it was meant to narrow
   (CONTRIB-10669).
+- Fixed the spelling of "accessible" on the report settings page (CONTRIB-8676).
 
 ## 5.3.1 (2027050403) for Moodle 4.0 and later
 
