@@ -58,6 +58,8 @@ A security review of the whole plugin thanks to MDL Shield, and the first accept
 - The pie and line charts are drawn with pChart2, as the bar chart already was, so
   the unmaintained pChart 1.x is gone from the plugin (#259).
 - The line chart legend names its series again, rather than showing Serie0 and Serie1.
+- A query is only refused for naming a table explicitly when it really does, rather
+  than whenever a word happens to begin with the database prefix (#145).
 
 ## 5.3.1 (2027050403) for Moodle 4.0 and later
 

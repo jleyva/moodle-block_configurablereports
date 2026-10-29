@@ -117,8 +117,6 @@ class customsql_form extends moodleform {
      * @return array
      */
     public function validation_high_security($data, $files): array {
-        global $CFG;
-
         $errors = parent::validation($data, $files);
 
         $sql = $data['querysql'];
@@ -128,7 +126,7 @@ class customsql_form extends moodleform {
         if ($error = report_sql::get_query_security_error($sql)) {
             $errors['querysql'] = get_string($error, 'block_configurable_reports');
 
-        } else if ($CFG->prefix != '' && preg_match('/\b' . $CFG->prefix . '\w+/i', $sql)) {
+        } else if (report_sql::uses_explicit_prefix($sql)) {
             // Make sure prefix is prefix_, not explicit.
             $errors['querysql'] = get_string('noexplicitprefix', 'block_configurable_reports');
 

@@ -86,6 +86,37 @@ class report_sql extends report_base {
     }
 
     /**
+     * Check whether the query names a table by its real name instead of through the prefix_ placeholder.
+     *
+     * Only the prefix followed by the name of a table that exists counts. Treating the prefix followed by any
+     * word as a table reads "month" as one wherever the prefix is a single letter, which is what sites on
+     * Oracle use: its thirty character limit on identifiers leaves little room for a longer one.
+     *
+     * @param string $sql
+     * @return bool
+     */
+    public static function uses_explicit_prefix(string $sql): bool {
+        global $CFG, $DB;
+
+        if ($CFG->prefix === '') {
+            return false;
+        }
+
+        if (!preg_match_all('/\b' . preg_quote($CFG->prefix, '/') . '(\w+)\b/i', $sql, $matches)) {
+            return false;
+        }
+
+        $tables = $DB->get_tables();
+        foreach ($matches[1] as $name) {
+            if (isset($tables[strtolower($name)])) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * Check whether viewers can filter on a column using %%FILTER_VAR%%.
      *
      * @param string $field The left side of the clause, a column optionally wrapped in a function.
