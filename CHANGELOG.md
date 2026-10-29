@@ -45,6 +45,8 @@ A security review of the whole plugin thanks to MDL Shield, and the first accept
   restyle the tables of other plugins across the site (#266).
 - The user field filter applies values longer than 48 characters again, and keeps
   the chosen one selected after Apply (#190).
+- A user field filter left empty no longer leaves its placeholder behind in the
+  query, where Moodle counted the column inside it as a named parameter (#299).
 
 ## 5.3.1 (2027050403) for Moodle 4.0 and later
 

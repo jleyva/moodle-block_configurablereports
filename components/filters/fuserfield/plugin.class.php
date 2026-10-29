@@ -107,6 +107,9 @@ class plugin_fuserfield extends filter_base {
             $metatype = $column->__get('meta_type');
         }
 
+        // The expression the match uses, so that an empty filter removes exactly what a filled one replaces.
+        $filtermatch = 'FILTER_USERS(_' . preg_quote($data->field, '/') . ')?';
+
         if ($filter !== '') {
             switch ($metatype) {
                 case 'I':
@@ -133,13 +136,10 @@ class plugin_fuserfield extends filter_base {
                     throw new moodle_exception('invalidfiltervalue');
             }
         } else {
-            $pattern = '/%%FILTER_USERS:' . preg_quote($data->field, '/') . ':.%%/i';
-            $sql = preg_replace($pattern, '', $sql);
+            $sql = preg_replace("/%%{$filtermatch}:[^%]+%%/i", '', $sql);
             return [$sql, []];
         }
 
-            // For backwards compatibility with existing reports.
-        $filtermatch = "FILTER_USERS(_{$data->field})?";
         return $this->sql_replace($filter, $filtermatch, $sql);
     }
 
