@@ -84,6 +84,8 @@ A security review of the whole plugin thanks to MDL Shield, and the first accept
   parent, and leaves out the ones the user may not see (CONTRIB-4159).
 - The user field filter sorts the values of a custom profile field, as it already
   did for the columns of the user table (#281).
+- A start or end time placeholder written without an operator is refused without
+  a PHP warning first.
 
 ## 5.3.1 (2027050403) for Moodle 4.0 and later
 
