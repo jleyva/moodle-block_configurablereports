@@ -39,6 +39,8 @@ A security review of the whole plugin thanks to MDL Shield, and the first accept
 - The date filters are read with optional_param_array(), so the user and course
   statistics columns and the timeline report no longer throw on Moodle 4.5 and
   later (#278).
+- Exporting a report no longer trips a PHP deprecation when a column is NULL
+  (#267).
 
 ## 5.3.1 (2027050403) for Moodle 4.0 and later
 

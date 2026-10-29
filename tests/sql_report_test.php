@@ -115,6 +115,23 @@ final class sql_report_test extends advanced_testcase {
     }
 
     /**
+     * Issue #267: a NULL column reaches str_replace() unformatted on the export path.
+     */
+    public function test_a_null_column_exports_as_an_empty_string(): void {
+        global $DB;
+
+        // The test only means anything while the column really is NULL.
+        $this->assertNull($DB->get_field('user', 'imagealt', ['username' => 'crtest1']));
+
+        $query = "SELECT u.username, u.imagealt FROM {user} u WHERE u.username = 'crtest1'";
+        $report = new \report_sql($this->create_report($query, []));
+        $report->set_forexport(true);
+
+        $this->assertTrue($report->create_report());
+        $this->assertSame(['crtest1', ''], $report->finalreport->table->data[0]);
+    }
+
+    /**
      * Issues #294 and #295: two search text filters on aliased columns failed with 'missing param "u"',
      * and a value in the second filter was ignored when the first one was empty.
      */

@@ -310,6 +310,8 @@ class report_sql extends report_base {
                     }
                     $arrayrow = array_values((array) $row);
                     foreach ($arrayrow as $ii => $cell) {
+                        // A NULL column reaches the export path unformatted, and str_replace() will not take null.
+                        $cell ??= '';
                         if (!$this->is_forexport()) {
                             $cell = format_text($cell, FORMAT_HTML, ['para' => false, 'context' => $cellcontext ?: context_system::instance()]);
                         }
