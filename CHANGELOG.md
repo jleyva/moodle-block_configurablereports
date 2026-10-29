@@ -32,6 +32,8 @@ A security review of the whole plugin thanks to MDL Shield, and the first accept
   rows out silently (#121).
 - The search text filter matches "0" again, instead of reading it as no filter
   at all (#242).
+- Deleting a component from the middle of the list no longer breaks the move
+  arrows for the ones after it (#220).
 
 ## 5.3.1 (2027050403) for Moodle 4.0 and later
 

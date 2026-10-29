@@ -110,9 +110,15 @@ if (!$cid) {
             if ($e['id'] == $cid) {
                 if ($delete) {
                     unset($elements[$index]);
+                    // Close the gap, so the positions the move arrows work with stay contiguous.
+                    $elements = array_values($elements);
                     break;
                 }
                 $newindex = ($moveup) ? $index - 1 : $index + 1;
+                if (!isset($elements[$newindex])) {
+                    // Already at one end of the list, so there is nothing to swap with.
+                    break;
+                }
                 $tmp = $elements[$newindex];
                 $elements[$newindex] = $e;
                 $elements[$index] = $tmp;

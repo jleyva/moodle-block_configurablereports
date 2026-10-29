@@ -32,6 +32,26 @@ Feature: Configure the components of a report
     And I press "Add"
 
   @javascript
+  Scenario: Reorder the columns left after deleting one from the middle
+    When I set the field "plugin" to "User profile field"
+    And I set the following fields to these values:
+      | Column | email |
+      | Name   | Email |
+    And I press "Add"
+    And I set the field "plugin" to "User profile field"
+    And I set the following fields to these values:
+      | Column | city |
+      | Name   | City |
+    And I press "Add"
+    And I click on "Delete" "link" in the "Email" "table_row"
+    Then I should not see "Email"
+    When I click on "Move up" "link" in the "City" "table_row"
+    Then "City" "text" should appear before "Full name" "text"
+    When I follow "View report"
+    Then I should see "Alice Archer"
+    And I should see "Barcelona"
+
+  @javascript
   Scenario: Order a users report by a user field
     When I follow "Ordering"
     Then I should see "No ordering yet"
