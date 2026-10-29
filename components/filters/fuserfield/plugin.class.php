@@ -242,6 +242,7 @@ class plugin_fuserfield extends filter_base {
                     $selectname = format_string($field->name);
                     $sql = "SELECT DISTINCT(data) as data FROM {user_info_data} WHERE fieldid = ?";
                     $params = [$field->id];
+                    $order = " ORDER BY data ASC";
                     if ($userlist !== null) {
                         [$usql, $userparams] = $remotedb->get_in_or_equal($userlist);
                         $sql .= " AND userid $usql";
@@ -250,7 +251,7 @@ class plugin_fuserfield extends filter_base {
                         $sql .= " AND userid IN (SELECT id FROM {user} WHERE deleted = 0)";
                     }
 
-                    if ($infodata = $remotedb->get_records_sql($sql, $params)) {
+                    if ($infodata = $remotedb->get_records_sql($sql . $order, $params)) {
                         foreach ($infodata as $d) {
                             $filteroptions[base64_encode(format_string($d->data))] = format_string($d->data);
                         }

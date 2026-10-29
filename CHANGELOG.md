@@ -82,6 +82,8 @@ A security review of the whole plugin thanks to MDL Shield, and the first accept
   which is what the other export formats already did (CONTRIB-9739).
 - The category filter follows the category tree, names each category under its
   parent, and leaves out the ones the user may not see (CONTRIB-4159).
+- The user field filter sorts the values of a custom profile field, as it already
+  did for the columns of the user table (#281).
 
 ## 5.3.1 (2027050403) for Moodle 4.0 and later
 
