@@ -80,6 +80,8 @@ A security review of the whole plugin thanks to MDL Shield, and the first accept
   URL that only ever answered 404 (CONTRIB-9932).
 - A report that returns no rows downloads as an empty CSV rather than failing,
   which is what the other export formats already did (CONTRIB-9739).
+- The category filter follows the category tree, names each category under its
+  parent, and leaves out the ones the user may not see (CONTRIB-4159).
 
 ## 5.3.1 (2027050403) for Moodle 4.0 and later
 
