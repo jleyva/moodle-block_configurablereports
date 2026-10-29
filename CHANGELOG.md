@@ -30,6 +30,8 @@ A security review of the whole plugin thanks to MDL Shield, and the first accept
   web service.
 - SQL reports cut short by the report row limit now say so, instead of leaving
   rows out silently (#121).
+- The search text filter matches "0" again, instead of reading it as no filter
+  at all (#242).
 
 ## 5.3.1 (2027050403) for Moodle 4.0 and later
 
