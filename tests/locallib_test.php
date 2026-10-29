@@ -75,6 +75,7 @@ final class locallib_test extends advanced_testcase {
     /**
      * Anything that is not a whole date is no filter at all, rather than a date built from missing parts.
      *
+     * @dataProvider incomplete_dates_provider
      * @param array $date
      */
     #[DataProvider('incomplete_dates_provider')]
