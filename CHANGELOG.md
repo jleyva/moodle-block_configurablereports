@@ -34,6 +34,8 @@ A security review of the whole plugin thanks to MDL Shield, and the first accept
   at all (#242).
 - Deleting a component from the middle of the list no longer breaks the move
   arrows for the ones after it (#220).
+- The user field ordering summary falls back to the column name for fields core
+  has no string for, such as id and auth (#191).
 
 ## 5.3.1 (2027050403) for Moodle 4.0 and later
 
