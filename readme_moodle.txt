@@ -63,6 +63,11 @@ https://cdn.datatables.net/releases.html
 4. Copy the new 'css/jquery.dataTables.css' after replacing the references to
 the image folder into the "DataTables styles" section in 'styles.css'.
 
+   4.a. Prefix every selector with '#page-blocks-configurable_reports-viewreport '.
+   Moodle serves each plugin's styles.css on every page of the site, so selectors
+   as broad as 'table.dataTable' would otherwise restyle the tables of any other
+   plugin that uses DataTables.
+
 5. Execute grunt to compile js
    grunt js
 

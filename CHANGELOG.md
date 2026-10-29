@@ -41,6 +41,8 @@ A security review of the whole plugin thanks to MDL Shield, and the first accept
   later (#278).
 - Exporting a report no longer trips a PHP deprecation when a column is NULL
   (#267).
+- The bundled DataTables styles are scoped to the report page, so they no longer
+  restyle the tables of other plugins across the site (#266).
 
 ## 5.3.1 (2027050403) for Moodle 4.0 and later
 
