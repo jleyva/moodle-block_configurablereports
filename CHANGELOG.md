@@ -5,7 +5,7 @@ All notable changes to the Configurable Reports block, newest first. Entries up 
 
 ## Unreleased (2027050404)
 
-A security review of the whole plugin, and the first acceptance tests.
+A security review of the whole plugin thanks to MDL Shield, and the first acceptance tests.
 
 - Permissions are decided in the course a report belongs to, in the component and
   plugin editors, the report data web service and `send_emails.php`, so the
