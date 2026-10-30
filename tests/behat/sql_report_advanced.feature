@@ -88,3 +88,31 @@ Feature: Build an advanced SQL report
     Then I should see "Reporting 202"
     And I should not see "Reporting 101"
     And I should see "Total record count = 1"
+
+  @javascript
+  Scenario: A courses filter narrows the rows of an SQL report
+    When I set the report SQL query to "SELECT shortname, fullname FROM prefix_course WHERE id > 1 %%FILTER_COURSES:id%%"
+    And I press "Save changes"
+    And I click on "Filters" "link" in the "#region-main" "css_element"
+    And I set the field "plugin" to "Courses"
+    Then I should not see "No filters yet"
+    When I follow "View report"
+    Then I should see "Reporting 101"
+    And I should see "Reporting 202"
+    When I set the field "Course" to "Reporting 202"
+    And I press "Apply"
+    Then I should see "Reporting 202" in the "#reporttable" "css_element"
+    And I should not see "Reporting 101" in the "#reporttable" "css_element"
+    And I should see "Total record count = 1"
+
+  Scenario: The filter_var URL parameter is bound as a value in the query
+    When I set the report SQL query to "SELECT fullname FROM prefix_course WHERE shortname = %%FILTER_VAR%%"
+    And I press "Save changes"
+    And I am on the "Course query > C2" "block_configurable_reports > view with value" page
+    Then I should see "Reporting 202" in the "#reporttable" "css_element"
+    And I should not see "Reporting 101" in the "#reporttable" "css_element"
+    And I should see "Total record count = 1"
+    When I am on the "Course query > C1' OR '1'='1" "block_configurable_reports > view with value" page
+    Then I should see "No records found"
+    When I am on the "Course query" "block_configurable_reports > view" page
+    Then I should see "No records found"

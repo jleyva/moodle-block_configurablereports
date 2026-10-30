@@ -71,3 +71,40 @@ Feature: Create a courses report
     Then I should see "Ancient history"
     And I should not see "Reporting 101"
     And I should see "Total record count = 1"
+
+  @javascript
+  Scenario: Filter a courses report by category, including its subcategories
+    Given the following "categories" exist:
+      | name     | category | idnumber |
+      | Classics | HUM      | CLA      |
+    And the following "courses" exist:
+      | fullname  | shortname | category |
+      | Roman law | C3        | CLA      |
+    When I follow "Add report"
+    And I set the following fields to these values:
+      | Name           | Courses by category |
+      | Type of report | Courses report      |
+      | Total Records  | 1                   |
+    And I press "Add"
+    And I set the field "plugin" to "Course field"
+    And I set the following fields to these values:
+      | Column | fullname  |
+      | Name   | Full name |
+    And I press "Add"
+    And I click on "Filters" "link" in the "#region-main" "css_element"
+    And I set the field "plugin" to "Category course filter"
+    Then I should not see "No filters yet"
+    When I follow "View report"
+    Then I should see "Reporting 101"
+    And I should see "Ancient history"
+    And I should see "Roman law"
+    When I set the field "Category" to "Humanities"
+    And I press "Apply"
+    Then I should see "Ancient history" in the "#reporttable" "css_element"
+    And I should see "Roman law" in the "#reporttable" "css_element"
+    And I should not see "Reporting 101" in the "#reporttable" "css_element"
+    When I set the field "Category" to "Humanities / Classics"
+    And I press "Apply"
+    Then I should see "Roman law" in the "#reporttable" "css_element"
+    And I should not see "Ancient history" in the "#reporttable" "css_element"
+    And I should see "Total record count = 1"

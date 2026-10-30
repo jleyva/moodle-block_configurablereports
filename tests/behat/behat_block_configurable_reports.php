@@ -78,6 +78,8 @@ class behat_block_configurable_reports extends behat_base {
      * | component in course  | Report name > component > shortname   | The same, with a crafted course id    |
      * | plugin               | Report name > component > plugin      | Adding a plugin, without a sesskey    |
      * | view with debug      | Report name                           | The report, asking for the query dump |
+     * | view                 | Report name                           | The report                            |
+     * | view with value      | Report name > value                   | The report, with a filter_var value   |
      * | edit in admin mode   | Report name                           | The report settings, in admin mode    |
      * | remote import        | Course shortname > url                | A remote import, without a sesskey    |
      *
@@ -108,6 +110,16 @@ class behat_block_configurable_reports extends behat_base {
                 $report = $this->get_report($parts[0]);
                 return new moodle_url('/blocks/configurable_reports/viewreport.php',
                     ['id' => $report->id, 'courseid' => $report->courseid, 'debug' => 1]);
+
+            case 'view':
+                $report = $this->get_report($parts[0]);
+                return new moodle_url('/blocks/configurable_reports/viewreport.php',
+                    ['id' => $report->id, 'courseid' => $report->courseid]);
+
+            case 'view with value':
+                $report = $this->get_report($parts[0]);
+                return new moodle_url('/blocks/configurable_reports/viewreport.php',
+                    ['id' => $report->id, 'courseid' => $report->courseid, 'filter_var' => $parts[1]]);
 
             case 'edit in admin mode':
                 $report = $this->get_report($parts[0]);
