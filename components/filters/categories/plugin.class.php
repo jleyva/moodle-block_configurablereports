@@ -95,10 +95,6 @@ class plugin_categories extends filter_base {
             return [$sql, []];
         }
 
-        if ($this->report->type !== 'sql') {
-            return [$filtercategories];
-        }
-
         $params = [];
 
         if (preg_match("/%%FILTER_CATEGORIES:([^%]+)%%/i", $sql, $output)) {

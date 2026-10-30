@@ -87,10 +87,6 @@ class plugin_enrolledstudents extends filter_base {
             return [$sql, []];
         }
 
-        if ($this->report->type !== 'sql') {
-            return [$filterenrolledstudents];
-        }
-
         $params = [];
 
         if (preg_match("/%%FILTER_COURSEENROLLEDSTUDENTS:([^%]+)%%/i", $sql, $output)) {

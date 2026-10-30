@@ -102,7 +102,7 @@ class plugin_fsearchuserfield extends filter_base {
 
         $filterfuserfield = optional_param('filter_fuserfield_' . $data->field, 0, PARAM_RAW);
 
-        if ($filterfuserfield) {
+        if ($filterfuserfield && $finalelements) {
             // Function addslashes is done in clean param.
             $filter = clean_param(base64_decode($filterfuserfield), PARAM_TEXT);
 
@@ -117,14 +117,9 @@ class plugin_fsearchuserfield extends filter_base {
                     $sql = "fieldid = :fieldid AND {$likesql} AND userid {$insql}";
                     $params = array_merge(['fieldid' => $fieldid], $likeparams, $inparams);
 
-                    if ($infodata = $remotedb->get_records_select('user_info_data', $sql, $params)) {
-                        $finalusersid = [];
-                        foreach ($infodata as $d) {
-                            $finalusersid[] = $d->userid;
-                        }
-
-                        return $finalusersid;
-                    }
+                    // Only the users matching the value, none if nobody matches.
+                    return array_values(array_unique(array_column(
+                        $remotedb->get_records_select('user_info_data', $sql, $params, '', 'id, userid'), 'userid')));
                 }
 
             } else if (array_key_exists($data->field, $remotedb->get_columns('user')) &&
@@ -132,9 +127,7 @@ class plugin_fsearchuserfield extends filter_base {
                 $likesql = $remotedb->sql_like($data->field, ':datafield', false);
                 $sql = "{$likesql} AND id {$insql}";
                 $params = array_merge($likeparams, $inparams);
-                if ($elements = $remotedb->get_records_select('user', $sql, $params)) {
-                    $finalelements = array_keys($elements);
-                }
+                $finalelements = array_keys($remotedb->get_records_select('user', $sql, $params, '', 'id'));
             }
         }
 
