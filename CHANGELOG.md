@@ -22,8 +22,14 @@ A security review of the whole plugin thanks to MDL Shield, and the first accept
   formats are kept, components and plugin data are checked before they run, and
   unserialising only allows `stdClass`.
 - Report data, author-entered values and export links are escaped or cleaned
-  before they are displayed, and `%%FILTER_VAR%%` only accepts the columns the
-  report author allows.
+  before they are displayed.
+- `%%FILTER_VAR%%` is replaced with the `filter_var` URL parameter bound as a
+  value, so it can be used anywhere a value is valid, such as
+  `WHERE cm.id = %%FILTER_VAR%%` or `<= %%FILTER_VAR%% * 86400`, and the URL can
+  no longer add SQL. Without a value it is `NULL` where a value is expected and
+  removed anywhere else. Reports that passed a whole condition in the URL, such as
+  `filter_var=AND u.city = 'Madrid'`, have to move the condition into the query:
+  `AND u.city = %%FILTER_VAR%%` with `filter_var=Madrid`.
 - Filter values are bound as SQL parameters, TLS certificates are verified when
   fetching reports from GitHub, scheduled SQL reports run from a scheduled task,
   and the bundled Tahoma font was replaced with the OFL licensed Cairo font.
