@@ -723,6 +723,8 @@ function cr_import_xml(string $xml, object $course) {
             }
         }
         $newreport->name = clean_param($newreport->name ?? '', PARAM_TEXT);
+        // Reports are visible by default, as when they are created with the form.
+        $newreport->visible = $newreport->visible ?? 1;
 
         $newreport->courseid = $course->id;
         $newreport->ownerid = $USER->id;
