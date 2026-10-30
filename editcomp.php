@@ -100,6 +100,8 @@ if ($compclass->form) {
         redirect($CFG->wwwroot . '/blocks/configurable_reports/editcomp.php?id=' . $id . '&amp;comp=' . $comp);
     } else if ($data = $editform->get_data()) {
         $compclass->form_process_data($editform);
+        $updatedreport = $DB->get_record('block_configurable_reports', ['id' => $report->id]);
+        \block_configurable_reports\event\report_updated::create_from_report($updatedreport, null, ['component' => $comp])->trigger();
     }
 
     $compclass->form_set_data($editform);

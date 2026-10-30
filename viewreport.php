@@ -81,7 +81,11 @@ if ($download && $report->type === "sql") {
 }
 $reportclass->create_report();
 
-$action = (!empty($download)) ? 'download' : 'view';
+if ($download) {
+    \block_configurable_reports\event\report_exported::create_from_report($report, $context, ['format' => $format])->trigger();
+} else {
+    \block_configurable_reports\event\report_viewed::create_from_report($report, $context)->trigger();
+}
 
 // No download, build navigation header etc..
 if (!$download) {

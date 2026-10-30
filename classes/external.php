@@ -108,6 +108,7 @@ class external extends external_api {
             }
 
             $reportclass->create_report();
+            event\report_viewed::create_from_report($report, $context)->trigger();
             $table = $reportclass->finalreport->table;
             $headers = $table->head;
             foreach ($table->data as $data) {

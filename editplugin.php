@@ -128,6 +128,7 @@ if (!$cid) {
         $components[$comp]['elements'] = $elements;
         $report->components = cr_serialize($components);
         $DB->update_record('block_configurable_reports', $report);
+        \block_configurable_reports\event\report_updated::create_from_report($report, null, ['component' => $comp])->trigger();
         redirect(new moodle_url('/blocks/configurable_reports/editcomp.php', ['id' => $id, 'comp' => $comp]));
         exit;
     }
@@ -191,6 +192,7 @@ if (isset($pluginclass->form) && $pluginclass->form) {
             if (!$DB->update_record('block_configurable_reports', $report)) {
                 throw new moodle_exception('errorsaving');
             }
+            \block_configurable_reports\event\report_updated::create_from_report($report, null, ['component' => $comp])->trigger();
 
             redirect(new moodle_url('/blocks/configurable_reports/editcomp.php', ['id' => $id, 'comp' => $comp]));
             exit;
@@ -217,6 +219,7 @@ if (isset($pluginclass->form) && $pluginclass->form) {
         if (!$DB->update_record('block_configurable_reports', $report)) {
             throw new moodle_exception('errorsaving');
         }
+        \block_configurable_reports\event\report_updated::create_from_report($report, null, ['component' => $comp])->trigger();
 
         redirect(new moodle_url('/blocks/configurable_reports/editcomp.php', ['id' => $id, 'comp' => $comp]));
         exit;
@@ -244,6 +247,7 @@ if (isset($pluginclass->form) && $pluginclass->form) {
     if (!$DB->update_record('block_configurable_reports', $report)) {
         throw new moodle_exception('errorsaving');
     }
+    \block_configurable_reports\event\report_updated::create_from_report($report, null, ['component' => $comp])->trigger();
 
     redirect(new moodle_url('/blocks/configurable_reports/editcomp.php', ['id' => $id, 'comp' => $comp]));
     exit;

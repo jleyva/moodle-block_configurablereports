@@ -57,6 +57,8 @@ if (!confirm_sesskey()) {
     throw new moodle_exception('badpermissions', 'block_configurable_reports');
 }
 
+\block_configurable_reports\event\report_exported::create_from_report($report, $context, ['format' => 'xml'])->trigger();
+
 $downloadfilename = clean_filename(format_string($report->name)) . '.xml';
 
 $version = $DB->get_field('config_plugins', 'value', ['plugin' => 'block_configurable_reports', 'name' => 'version']);

@@ -304,6 +304,11 @@ $string['printreport'] = 'Print report';
 
 $string['importreport'] = "Import report";
 $string['errorimporting'] = 'Error importing the report';
+$string['eventreportcreated'] = 'Report created';
+$string['eventreportdeleted'] = 'Report deleted';
+$string['eventreportexported'] = 'Report exported';
+$string['eventreportupdated'] = 'Report updated';
+$string['eventreportviewed'] = 'Report viewed';
 $string['nosqlpermissions'] = 'You do not have permission to manage SQL reports';
 $string['badpermissions'] = 'You do not have permission to perform this action';
 $string['reportdoesnotexists'] = 'The report does not exist';

@@ -118,7 +118,8 @@ if (($show || $hide) && confirm_sesskey()) {
     if (!$DB->set_field('block_configurable_reports', 'visible', $visible, ['id' => $report->id])) {
         throw new moodle_exception('cannotupdatereport', 'block_configurable_reports');
     }
-    $action = ($visible) ? 'showed' : 'hidden';
+    $report->visible = $visible;
+    \block_configurable_reports\event\report_updated::create_from_report($report)->trigger();
 
     header("Location: $CFG->wwwroot/blocks/configurable_reports/managereport.php?courseid=$courseid");
     die;
@@ -131,6 +132,8 @@ if ($duplicate && confirm_sesskey()) {
     if (!$newreportid = $DB->insert_record('block_configurable_reports', $newreport)) {
         throw new moodle_exception('cannotduplicate', 'block_configurable_reports');
     }
+    $newreport->id = $newreportid;
+    \block_configurable_reports\event\report_created::create_from_report($newreport)->trigger();
 
     header("Location: $CFG->wwwroot/blocks/configurable_reports/managereport.php?courseid=$courseid");
     die;
@@ -153,6 +156,7 @@ if ($delete && confirm_sesskey()) {
     }
 
     $DB->delete_records('block_configurable_reports', ['id' => $report->id]);
+    \block_configurable_reports\event\report_deleted::create_from_report($report)->trigger();
     header("Location: $CFG->wwwroot/blocks/configurable_reports/managereport.php?courseid=$courseid");
     die;
 }
@@ -237,6 +241,8 @@ if ($editform->is_cancelled()) {
         if (!$lastid = $DB->insert_record('block_configurable_reports', $data)) {
             throw new moodle_exception('errorsavingreport', 'block_configurable_reports');
         }
+        $newreport = $DB->get_record('block_configurable_reports', ['id' => $lastid]);
+        \block_configurable_reports\event\report_created::create_from_report($newreport)->trigger();
 
         $reportclass = new $reportclassname($lastid);
         redirect(
@@ -265,6 +271,8 @@ if ($editform->is_cancelled()) {
         if (!$DB->update_record('block_configurable_reports', $data)) {
             throw new moodle_exception('errorsavingreport', 'block_configurable_reports');
         }
+        $updatedreport = $DB->get_record('block_configurable_reports', ['id' => $data->id]);
+        \block_configurable_reports\event\report_updated::create_from_report($updatedreport)->trigger();
 
         redirect(
             $CFG->wwwroot . '/blocks/configurable_reports/editcomp.php?id=' . $data->id . '&comp=' . $reportclass->components[0]

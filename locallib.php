@@ -730,9 +730,11 @@ function cr_import_xml(string $xml, object $course) {
         $newreport->ownerid = $USER->id;
         $newreport->name .= " (" . userdate(time()) . ")";
 
-        if (!$DB->insert_record('block_configurable_reports', $newreport)) {
+        if (!$newreportid = $DB->insert_record('block_configurable_reports', $newreport)) {
             return false;
         }
+        $newreport = $DB->get_record('block_configurable_reports', ['id' => $newreportid]);
+        \block_configurable_reports\event\report_created::create_from_report($newreport, null, ['imported' => true])->trigger();
 
         return true;
     }
