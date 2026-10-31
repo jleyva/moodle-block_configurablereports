@@ -91,6 +91,7 @@ final class events_test extends advanced_testcase {
     /**
      * Every event records the report, its course context and what happened.
      *
+     * @dataProvider event_provider
      * @param string $classname
      * @param string $crud
      * @param array $other

@@ -89,6 +89,7 @@ final class report_filters_test extends advanced_testcase {
     /**
      * The id filters narrow the elements to the selected one, or leave them as they are without a value.
      *
+     * @dataProvider id_filter_provider
      * @param string $pluginname
      * @param string $reporttype
      * @param string $param
