@@ -3,7 +3,7 @@
 All notable changes to the Configurable Reports block, newest first. Entries up to
 4.5.0 were kept in `README.txt`, which this file replaces.
 
-## 5.3.2 (2027050405) for Moodle 4.0 and later
+## 5.3.2 (2027050404) for Moodle 4.0 and later
 
 _Release date: ..2026_
 
@@ -92,6 +92,7 @@ A security review of the whole plugin thanks to MDL Shield, and the first accept
   did for the columns of the user table (#281).
 - A start or end time placeholder written without an operator is refused without
   a PHP warning first.
+- Log events when reports are viewed, created, updated, deleted and exported.
 
 ## 5.3.1 (2027050403) for Moodle 4.0 and later
 
