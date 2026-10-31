@@ -285,7 +285,18 @@ class report_sql extends report_base {
         if (isset($config->querysql)) {
             [$sql, $params] = $this->prepare_sql($config->querysql);
 
-            if ($rs = $this->execute_query($sql, $params)) {
+            try {
+                $rs = $this->execute_query($sql, $params);
+            } catch (dml_read_exception $e) {
+                // Databases like PostgreSQL refuse comparing a number with text, so a filter_var value of the
+                // wrong type is an error there. Say so instead of showing a database error.
+                if (trim(optional_param('filter_var', '', PARAM_RAW)) !== '' && strpos($config->querysql, '%%FILTER_VAR%%') !== false) {
+                    throw new moodle_exception('invalidfiltervar', 'block_configurable_reports', '', null, $e->getMessage());
+                }
+                throw $e;
+            }
+
+            if ($rs) {
                 $cellcontext = ($this->config->courseid == SITEID) ? context_system::instance() :
                     context_course::instance($this->config->courseid, IGNORE_MISSING);
                 foreach ($rs as $row) {

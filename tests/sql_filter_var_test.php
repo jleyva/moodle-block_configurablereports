@@ -78,22 +78,27 @@ final class sql_filter_var_test extends advanced_testcase {
     /**
      * The value is always bound as a parameter, and numbers are bound as numbers.
      *
+     * Each value is compared with an expression of a matching type, as PostgreSQL refuses comparing a number
+     * column with text: in a report that only means the report author has to compare like with like.
+     *
      * @dataProvider value_provider
+     * @param string $expression The left side of the comparison.
      * @param string $filtervar
      * @param mixed $expected The bound value.
      */
     #[DataProvider('value_provider')]
-    public function test_value_is_bound(string $filtervar, $expected): void {
+    public function test_value_is_bound(string $expression, string $filtervar, $expected): void {
         global $DB;
         $this->resetAfterTest();
 
-        [$sql, $params] = $this->prepare($filtervar);
+        $query = "SELECT u.id FROM {user} u WHERE $expression = %%FILTER_VAR%% ORDER BY u.id";
+        [$sql, $params] = $this->prepare($filtervar, $query);
 
-        $this->assertSame('SELECT u.id FROM {user} u WHERE u.id = :filtervar1 ORDER BY u.id', $sql);
+        $this->assertSame("SELECT u.id FROM {user} u WHERE $expression = :filtervar1 ORDER BY u.id", $sql);
         $this->assertSame(['filtervar1' => $expected], $params);
 
         // The query runs, and SQL in the value is just a value that matches nothing.
-        $DB->get_records_sql($sql, $params);
+        $this->assertSame([], $DB->get_records_sql($sql, $params));
     }
 
     /**
@@ -103,15 +108,15 @@ final class sql_filter_var_test extends advanced_testcase {
      */
     public static function value_provider(): array {
         return [
-            'integer' => ['2', 2],
-            'negative' => [' -5 ', -5],
-            'decimal' => ['1.5', 1.5],
-            'text' => ['admin', 'admin'],
-            'tautology' => ['2 OR 1=1', '2 OR 1=1'],
-            'union' => ['0 UNION SELECT password FROM {user}', '0 UNION SELECT password FROM {user}'],
-            'quote' => ["admin' OR '1'='1", "admin' OR '1'='1"],
-            'semicolon' => ['2; DROP TABLE {user}', '2; DROP TABLE {user}'],
-            'comment' => ['2 -- x', '2 -- x'],
+            'integer' => ['u.id', '-2', -2],
+            'negative' => ['u.id', ' -5 ', -5],
+            'decimal' => ['u.id * 1.0', '1.5', 1.5],
+            'text' => ['u.username', 'nobody', 'nobody'],
+            'tautology' => ['u.username', 'x OR 1=1', 'x OR 1=1'],
+            'union' => ['u.username', "x' UNION SELECT password FROM {user} --", "x' UNION SELECT password FROM {user} --"],
+            'quote' => ['u.username', "admin' OR '1'='1", "admin' OR '1'='1"],
+            'semicolon' => ['u.username', 'x; DROP TABLE {user}', 'x; DROP TABLE {user}'],
+            'comment' => ['u.username', 'x -- y', 'x -- y'],
         ];
     }
 
@@ -164,5 +169,33 @@ final class sql_filter_var_test extends advanced_testcase {
         [$sql, $params] = $this->prepare('', $query);
         $this->assertSame('SELECT u.id FROM {user} u WHERE u.deleted = 0  ORDER BY u.id', $sql);
         $DB->get_records_sql($sql, $params);
+    }
+
+    /**
+     * A value the database refuses for the comparison, such as text against a number on PostgreSQL, says so.
+     */
+    public function test_value_of_the_wrong_type(): void {
+        global $DB, $SITE, $USER;
+        $this->resetAfterTest();
+        $this->setAdminUser();
+
+        if ($DB->get_dbfamily() !== 'postgres') {
+            $this->markTestSkipped('Only PostgreSQL refuses comparing a number with text.');
+        }
+
+        $components = ['customsql' => ['config' => (object) ['querysql' => self::QUERY]]];
+        $report = (object) ['courseid' => $SITE->id, 'ownerid' => $USER->id, 'visible' => 1, 'name' => 'Report',
+            'type' => 'sql', 'components' => cr_serialize($components), 'remote' => 0];
+        $report->id = $DB->insert_record('block_configurable_reports', $report);
+
+        $_GET['filter_var'] = 'abc';
+        try {
+            (new \report_sql($report->id))->create_report();
+            $this->fail('Exception expected');
+        } catch (\moodle_exception $e) {
+            $this->assertSame('invalidfiltervar', $e->errorcode);
+        } finally {
+            unset($_GET['filter_var']);
+        }
     }
 }

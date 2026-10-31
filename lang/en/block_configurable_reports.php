@@ -309,6 +309,7 @@ $string['eventreportdeleted'] = 'Report deleted';
 $string['eventreportexported'] = 'Report exported';
 $string['eventreportupdated'] = 'Report updated';
 $string['eventreportviewed'] = 'Report viewed';
+$string['invalidfiltervar'] = 'The value of the filter_var parameter is not valid for this report.';
 $string['nosqlpermissions'] = 'You do not have permission to manage SQL reports';
 $string['badpermissions'] = 'You do not have permission to perform this action';
 $string['reportdoesnotexists'] = 'The report does not exist';
