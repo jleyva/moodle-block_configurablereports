@@ -87,4 +87,20 @@ class timeline_form extends moodleform {
         $this->add_action_buttons();
     }
 
+    /**
+     * Server side validation.
+     *
+     * @param array $data
+     * @param array $files
+     * @return array
+     */
+    public function validation($data, $files): array {
+        $errors = parent::validation($data, $files);
+
+        if ((int) $data['interval'] < 1) {
+            $errors['interval'] = get_string('err_numeric', 'form');
+        }
+
+        return $errors;
+    }
 }

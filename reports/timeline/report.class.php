@@ -23,6 +23,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+defined('BLOCK_CONFIGURABLE_REPORTS_MAX_RECORDS') || define('BLOCK_CONFIGURABLE_REPORTS_MAX_RECORDS', 5000);
+
 /**
  * Class report_timeline
  *
@@ -89,11 +91,16 @@ class report_timeline extends report_base {
                 $config->endtime = usergetmidnight($filterendtime) + 24 * 60 * 60;
             }
 
-            for ($i = $config->starttime; $i < $config->endtime; $i += $config->interval * $daysecs) {
+            // The dates can come from the request, so bound the number of rows: an interval below one day never
+            // ends the loop, and a long range with a short interval runs every column for each of its rows.
+            $interval = max(1, (int) $config->interval);
+            $limit = (int) get_config('block_configurable_reports', 'reportlimit') ?: BLOCK_CONFIGURABLE_REPORTS_MAX_RECORDS;
+
+            for ($i = $config->starttime; $i < $config->endtime && count($elements) < $limit; $i += $interval * $daysecs) {
                 $row = new stdclass();
                 $row->id = $i;
                 $row->starttime = $i;
-                $row->endtime = $row->starttime + ($config->interval * $daysecs - 1);
+                $row->endtime = $row->starttime + ($interval * $daysecs - 1);
                 if ($row->endtime > $config->endtime) {
                     $row->endtime = $config->endtime;
                 }

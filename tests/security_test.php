@@ -35,6 +35,7 @@ require_once($CFG->dirroot . '/blocks/configurable_reports/locallib.php');
 require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
 require_once($CFG->dirroot . '/blocks/configurable_reports/report.class.php');
 require_once($CFG->dirroot . '/blocks/configurable_reports/reports/sql/report.class.php');
+require_once($CFG->dirroot . '/blocks/configurable_reports/reports/timeline/report.class.php');
 require_once($CFG->dirroot . '/blocks/configurable_reports/components/filters/yearhebrew/plugin.class.php');
 require_once($CFG->dirroot . '/blocks/configurable_reports/components/columns/userfield/plugin.class.php');
 require_once($CFG->dirroot . '/blocks/configurable_reports/components/conditions/cuserfield/plugin.class.php');
@@ -378,5 +379,22 @@ final class security_test extends advanced_testcase {
         $this->assertCount(3, $ids);
         $this->assertMatchesRegularExpression('/^[a-zA-Z0-9]{15}$/', $ids[1]);
         $this->assertMatchesRegularExpression('/^[a-zA-Z0-9]{15}$/', $ids[2]);
+    }
+
+    /**
+     * A timeline with an interval below one day still ends, and a long range is cut at the report limit.
+     */
+    public function test_timeline_rows_are_bounded(): void {
+        set_config('reportlimit', 100, 'block_configurable_reports');
+
+        $config = (object) ['timemode' => 'fixeddate', 'starttime' => 0, 'endtime' => time(), 'interval' => 0,
+            'ordering' => 'asc'];
+        $report = new \report_timeline((object) ['id' => 0, 'courseid' => SITEID, 'type' => 'timeline', 'remote' => 0,
+            'components' => cr_serialize(['timeline' => ['config' => $config]])]);
+
+        $elements = $report->get_all_elements();
+
+        $this->assertCount(100, $elements);
+        $this->assertSame(DAYSECS, $elements[1] - $elements[0]);
     }
 }

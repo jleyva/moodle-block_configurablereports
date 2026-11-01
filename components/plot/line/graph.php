@@ -148,8 +148,9 @@ if (!empty($graphs)) {
             $measure->myData = $dataset;
             $measure->setFontProperties($fontsettings);
             [$legendwidth, $legendheight] = array_values($measure->getLegendSize($legendsettings));
-            $width = max($width, $legendwidth + 300);
-            $height = max($height, $legendheight + 2 * $padding);
+            // The series come from the request, so bound the canvas their legend sizes.
+            $width = min(max($width, $legendwidth + 300), 4000);
+            $height = min(max($height, $legendheight + 2 * $padding), 4000);
         }
 
         $mypicture = new \pChart\pDraw($width, $height);

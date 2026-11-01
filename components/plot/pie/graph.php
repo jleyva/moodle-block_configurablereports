@@ -114,7 +114,8 @@ if (!empty($graphs)) {
 
         $fontpath = $CFG->dirroot . "/blocks/configurable_reports/lib/pChart2/fonts";
         $width = 450;
-        $height = 200 + (count($series[0]) * 10);
+        // The series come from the request, so bound the canvas they size.
+        $height = min(200 + (count($series[0]) * 10), 4000);
         $radius = 90;
 
         $mypicture = new \pChart\pDraw($width, $height);
