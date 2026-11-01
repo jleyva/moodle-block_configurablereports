@@ -174,7 +174,9 @@ class plugin_fuserfield extends filter_base {
                         return $finalusersid;
                     }
                 }
-            } else {
+            } else if (array_key_exists($data->field, $remotedb->get_columns('user')) &&
+                    !in_array($data->field, cr_get_sensitive_user_columns(), true)) {
+                // Imported reports skip the form, so the field is only used once known to be a user column.
                 [$insql, $inparams] = $remotedb->get_in_or_equal($finalelements, SQL_PARAMS_NAMED);
                 // sql_like() returns a string, not [sql, params]. "Contains" like 5.2.
                 $likesql = $remotedb->sql_like($data->field, ':data', false);

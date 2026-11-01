@@ -207,4 +207,30 @@ final class report_filters_test extends advanced_testcase {
         $this->set_request('filter_semester', 'Spring');
         $this->assertSame(['Spring'], $filter->execute([1, 2]));
     }
+
+    /**
+     * User field filter keeps the users whose user column contains the value, and only uses fields that are user
+     * columns, as imported reports skip the form.
+     */
+    public function test_user_field(): void {
+        global $DB;
+
+        $u1 = $this->getDataGenerator()->create_user(['city' => 'Madrid']);
+        $u2 = $this->getDataGenerator()->create_user(['city' => 'Barcelona']);
+        $users = [$u1->id, $u2->id];
+        $filter = $this->filter('fuserfield', 'users');
+
+        $this->set_request('filter_fuserfield_city', base64_encode('madr'));
+        $this->assertEquals([$u1->id], $filter->execute($users, (object) ['field' => 'city']));
+
+        // An SQL expression as the field: a true condition would keep both users, a false one neither.
+        $field = "(CASE WHEN (SELECT COUNT(1) FROM {user}) > 0 THEN username ELSE 'zz' END)";
+        $this->set_request('filter_fuserfield_' . $field, base64_encode('a'));
+        $this->assertSame($users, $filter->execute($users, (object) ['field' => $field]));
+
+        // Credentials are never searched, even though they are user columns.
+        $DB->set_field('user', 'password', 'secret', ['id' => $u1->id]);
+        $this->set_request('filter_fuserfield_password', base64_encode('secret'));
+        $this->assertSame($users, $filter->execute($users, (object) ['field' => 'password']));
+    }
 }
