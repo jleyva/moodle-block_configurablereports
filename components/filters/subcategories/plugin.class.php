@@ -67,7 +67,7 @@ class plugin_subcategories extends filter_base {
             return $finalelements;
         }
 
-        return [$filtersubcategories];
+        return $this->narrow_to((array) $finalelements, $filtersubcategories);
     }
 
     /**

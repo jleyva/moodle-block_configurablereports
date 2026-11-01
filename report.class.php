@@ -634,7 +634,12 @@ abstract class report_base {
             foreach ($filters as $f) {
                 $classname = cr_require_component_plugin('filters', $f['pluginname']);
                 $class = new $classname($this->config);
-                $finalelements = $class->execute($finalelements, $f['formdata']);
+                $filtered = $class->execute($finalelements, $f['formdata']);
+                // Filters only narrow what the conditions selected, whatever the request asks for.
+                if (in_array($this->config->type, ['courses', 'categories', 'users'], true)) {
+                    $filtered = array_values(array_intersect((array) $filtered, (array) $finalelements));
+                }
+                $finalelements = $filtered;
             }
         }
 

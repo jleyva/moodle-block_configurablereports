@@ -69,7 +69,7 @@ class plugin_users extends filter_base {
         }
 
         if ($this->report->type !== 'sql') {
-            return [$filterusers];
+            return $this->narrow_to((array) $finalelements, $filterusers);
         }
 
         if (preg_match("/%%FILTER_SYSTEMUSER:([^%]+)%%/i", $finalelements, $output)) {

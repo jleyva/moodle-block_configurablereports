@@ -42,4 +42,18 @@ abstract class filter_base extends plugin_base {
     function execute_for_sql_report(string $sql, ?\stdClass $data = null): array {
         return [$sql, []];
     }
+
+    /**
+     * Narrow the elements of a report to the one picked in the filter.
+     *
+     * The value comes from the request, so it is only kept when the report conditions selected it: a filter can
+     * narrow what a report shows, never add elements the conditions left out.
+     *
+     * @param array $finalelements The elements the conditions and previous filters selected.
+     * @param int|string $value The value picked in the filter.
+     * @return array
+     */
+    protected function narrow_to(array $finalelements, $value): array {
+        return in_array($value, $finalelements) ? [$value] : [];
+    }
 }

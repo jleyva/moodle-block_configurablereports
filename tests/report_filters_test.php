@@ -33,6 +33,7 @@ defined('MOODLE_INTERNAL') || die();
 global $CFG;
 require_once($CFG->dirroot . '/blocks/configurable_reports/locallib.php');
 require_once($CFG->dirroot . '/blocks/configurable_reports/report.class.php');
+require_once($CFG->dirroot . '/blocks/configurable_reports/reports/courses/report.class.php');
 
 /**
  * Tests for execute() of the filters in non SQL reports
@@ -88,6 +89,7 @@ final class report_filters_test extends advanced_testcase {
 
     /**
      * The id filters narrow the elements to the selected one, or leave them as they are without a value.
+     * A value the report conditions did not select gives no elements, so a filter never widens a report.
      *
      * @dataProvider id_filter_provider
      * @param string $pluginname
@@ -102,6 +104,9 @@ final class report_filters_test extends advanced_testcase {
 
         $this->set_request($param, 5);
         $this->assertEquals([5], $filter->execute([4, 5, 6]));
+
+        $this->set_request($param, 7);
+        $this->assertSame([], $filter->execute([4, 5, 6]));
     }
 
     /**
@@ -117,6 +122,9 @@ final class report_filters_test extends advanced_testcase {
             'enrolled students' => ['enrolledstudents', 'courses', 'filter_enrolledstudents'],
             'subcategories' => ['subcategories', 'categories', 'filter_subcategories'],
             'year numeric' => ['yearnumeric', 'categories', 'filter_yearnumeric'],
+            'courses' => ['courses', 'courses', 'filter_courses'],
+            'course user' => ['user', 'courses', 'filter_user'],
+            'course modules' => ['coursemodules', 'courses', 'filter_coursemodules'],
         ];
     }
 
@@ -197,15 +205,20 @@ final class report_filters_test extends advanced_testcase {
     }
 
     /**
-     * Semester filter returns the selected semester.
+     * Semester and Hebrew year filters keep the selected value only when it is one of the elements.
      */
-    public function test_semester(): void {
+    public function test_semester_and_hebrew_year(): void {
         $filter = $this->filter('semester', 'categories');
 
         $this->assertSame([1, 2], $filter->execute([1, 2]));
 
         $this->set_request('filter_semester', 'Spring');
-        $this->assertSame(['Spring'], $filter->execute([1, 2]));
+        $this->assertSame([], $filter->execute([1, 2]));
+        $this->assertSame(['Spring'], $filter->execute(['Spring', 'Autumn']));
+
+        $filter = $this->filter('yearhebrew', 'categories');
+        $this->set_request('filter_yearhebrew', 'תשפ"ז');
+        $this->assertSame([], $filter->execute([1, 2]));
     }
 
     /**
@@ -232,5 +245,37 @@ final class report_filters_test extends advanced_testcase {
         $DB->set_field('user', 'password', 'secret', ['id' => $u1->id]);
         $this->set_request('filter_fuserfield_password', base64_encode('secret'));
         $this->assertSame($users, $filter->execute($users, (object) ['field' => 'password']));
+    }
+
+    /**
+     * A filter value sent in the request cannot show a course the report conditions left out.
+     */
+    public function test_filters_cannot_widen_the_report(): void {
+        global $USER;
+        $this->setAdminUser();
+
+        $mine = $this->getDataGenerator()->create_course(['shortname' => 'mine']);
+        $other = $this->getDataGenerator()->create_course(['shortname' => 'other', 'visible' => 0]);
+        $this->getDataGenerator()->enrol_user($USER->id, $mine->id);
+
+        $components = [
+            'conditions' => ['elements' => [['pluginname' => 'currentusercourses', 'formdata' => new \stdClass()]]],
+            'filters' => ['elements' => [['pluginname' => 'courses', 'formdata' => new \stdClass()]]],
+            'columns' => ['elements' => [['pluginname' => 'coursefield',
+                'formdata' => (object) ['column' => 'shortname', 'columname' => 'Short name']]]],
+        ];
+        $report = new \report_courses((object) ['id' => 0, 'courseid' => SITEID, 'ownerid' => $USER->id, 'type' => 'courses',
+            'name' => 'My courses', 'summary' => '', 'remote' => 0, 'components' => cr_serialize($components)]);
+
+        $shortnames = function() use ($report): array {
+            $report->create_report();
+            return array_column($report->finalreport->table->data, 0);
+        };
+
+        $this->set_request('filter_courses', $mine->id);
+        $this->assertSame(['mine'], $shortnames());
+
+        $this->set_request('filter_courses', $other->id);
+        $this->assertSame([], $shortnames());
     }
 }

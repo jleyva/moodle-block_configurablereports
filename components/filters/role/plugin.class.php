@@ -69,7 +69,7 @@ class plugin_role extends filter_base {
         }
 
         if ($this->report->type !== 'sql') {
-            return [$filterrole];
+            return $this->narrow_to((array) $finalelements, $filterrole);
         } else {
             if (preg_match("/%%FILTER_ROLE:([^%]+)%%/i", $finalelements, $output)) {
                 $replace = ' AND ' . $output[1] . ' = ' . $filterrole . ' ';

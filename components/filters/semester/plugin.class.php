@@ -68,7 +68,7 @@ class plugin_semester extends filter_base {
             return $finalelements;
         }
 
-        return [$filtersemester];
+        return $this->narrow_to((array) $finalelements, $filtersemester);
     }
 
     /**

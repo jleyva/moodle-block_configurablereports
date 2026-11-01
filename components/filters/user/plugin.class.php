@@ -68,7 +68,7 @@ class plugin_user extends filter_base {
         }
 
         if ($this->report->type !== 'sql') {
-            return [$filteruser];
+            return $this->narrow_to((array) $finalelements, $filteruser);
         } else {
             if (preg_match("/%%FILTER_COURSEUSER:([^%]+)%%/i", $finalelements, $output)) {
                 $replace = ' AND ' . $output[1] . ' = ' . $filteruser;

@@ -67,7 +67,7 @@ class plugin_courses extends filter_base {
             return $finalelements;
         }
 
-        return [$filtercourses];
+        return $this->narrow_to((array) $finalelements, $filtercourses);
     }
 
     #[\Override]

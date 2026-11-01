@@ -67,7 +67,7 @@ class plugin_yearhebrew extends filter_base {
             return $finalelements;
         }
 
-        return [$filteryearhebrew];
+        return $this->narrow_to((array) $finalelements, $filteryearhebrew);
     }
 
     #[\Override]

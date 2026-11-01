@@ -68,7 +68,7 @@ class plugin_yearnumeric extends filter_base {
             return $finalelements;
         }
 
-        return [$filteryearnumeric];
+        return $this->narrow_to((array) $finalelements, $filteryearnumeric);
     }
 
     #[\Override]

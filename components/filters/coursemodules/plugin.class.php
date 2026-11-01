@@ -70,7 +70,7 @@ class plugin_coursemodules extends filter_base {
         }
 
         if ($this->report->type !== 'sql') {
-            return [$filtercoursemoduleid];
+            return $this->narrow_to((array) $finalelements, $filtercoursemoduleid);
         }
 
         if (preg_match("/%%FILTER_COURSEMODULEID:([^%]+)%%/i", $finalelements, $output)) {
