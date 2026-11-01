@@ -24,8 +24,6 @@
 
 namespace block_configurable_reports;
 
-defined('MOODLE_INTERNAL') || die();
-
 use context_course;
 use context_system;
 use core_external\external_api;
