@@ -5,94 +5,62 @@ All notable changes to the Configurable Reports block, newest first. Entries up 
 
 ## 5.3.2 (2027050404) for Moodle 4.0 and later
 
-_Release date: ..2026_
+_Release date: 01.11.2026_
 
-A security review of the whole plugin thanks to MDL Shield, and the first acceptance tests.
+Requires PHP 8.0 or later.
 
-- Permissions are decided in the course a report belongs to, in the component and
-  plugin editors, the report data web service and `send_emails.php`, so the
-  capabilities a user holds in one course no longer reach another one's reports.
-- Adding a plugin to a report, importing a report from the repository and the
-  repository endpoints require a sesskey and, for SQL reports, the
-  `managesqlreports` capability.
-- The report query is only dumped in debug mode for users who may manage SQL
-  reports, and the SQL keyword check now also runs when a report runs, not only
-  when it is saved.
-- Imported reports are validated: only known fields, report types and export
-  formats are kept, components and plugin data are checked before they run, and
-  unserialising only allows `stdClass`.
-- Report data, author-entered values and export links are escaped or cleaned
-  before they are displayed.
-- `%%FILTER_VAR%%` is replaced with the `filter_var` URL parameter bound as a
-  value, so it can be used anywhere a value is valid, such as
-  `WHERE cm.id = %%FILTER_VAR%%` or `<= %%FILTER_VAR%% * 86400`, and the URL can
-  no longer add SQL. Without a value it is `NULL` where a value is expected and
-  removed anywhere else. Reports that passed a whole condition in the URL, such as
-  `filter_var=AND u.city = 'Madrid'`, have to move the condition into the query:
-  `AND u.city = %%FILTER_VAR%%` with `filter_var=Madrid`.
-- Filter values are bound as SQL parameters, TLS certificates are verified when
-  fetching reports from GitHub, scheduled SQL reports run from a scheduled task,
-  and the bundled Tahoma font was replaced with the OFL licensed Cairo font.
-- Added Behat tests covering every report type, the advanced components and the
-  security checks, plus PHPUnit tests for the filters, the import path and the
-  web service.
-- SQL reports cut short by the report row limit now say so, instead of leaving
-  rows out silently (#121).
-- The search text filter matches "0" again, instead of reading it as no filter
-  at all (#242).
-- Deleting a component from the middle of the list no longer breaks the move
-  arrows for the ones after it (#220).
-- The user field ordering summary falls back to the column name for fields core
-  has no string for, such as id and auth (#191).
-- The date filters are read with optional_param_array(), so the user and course
-  statistics columns and the timeline report no longer throw on Moodle 4.5 and
-  later (#278).
-- Exporting a report no longer trips a PHP deprecation when a column is NULL
-  (#267).
-- The bundled DataTables styles are scoped to the report page, so they no longer
-  restyle the tables of other plugins across the site (#266).
-- The user field filter applies values longer than 48 characters again, and keeps
-  the chosen one selected after Apply (#190).
-- A user field filter left empty no longer leaves its placeholder behind in the
-  query, where Moodle counted the column inside it as a named parameter (#299).
-- Reports are deleted together with their course, instead of lingering in the
-  list with no way to open or remove them (#232).
-- The remote column is added to the sites that skipped the original upgrade step,
-  so the database schema check passes on them again (#228).
-- environment.xml declares the PHP version the code actually needs, and warns when
-  GD cannot draw the text on the graphs (#233).
-- The charts no longer carry a PHP 8.1 deprecation notice drawn into the image,
-  which affected the bar charts as well (#259).
-- The pie and line charts are drawn with pChart2, as the bar chart already was, so
-  the unmaintained pChart 1.x is gone from the plugin (#259).
-- The line chart legend names its series again, rather than showing Serie0 and Serie1.
-- A query is only refused for naming a table explicitly when it really does, rather
-  than whenever a word happens to begin with the database prefix (#145).
-- A filter_var that cannot be used raises an error instead of being dropped in
-  silence, which left the report showing every row it was meant to narrow
-  (CONTRIB-10669).
-- Fixed the spelling of "accessible" on the report settings page (CONTRIB-8676).
-- The user field filter on a SQL report no longer loads every user to build its
-  options, which hung large sites and exceeded the database parameter limit
-  (CONTRIB-4937).
-- Columns that core has no name for are shown as themselves in the filters,
-  conditions and ordering, rather than as [[sortorder]] and a debugging message.
-- The users, courses and categories reports no longer bind one database parameter
-  per row, which stopped them running at all on sites with more rows than the
-  database allows parameters (CONTRIB-8780).
-- The remote report repository works again on the custom SQL form: choosing a
-  category lists its reports, and choosing one loads its query. The selectors ran
-  on YUI code that was never initialised there, and the query was fetched from a
-  URL that only ever answered 404 (CONTRIB-9932).
-- A report that returns no rows downloads as an empty CSV rather than failing,
-  which is what the other export formats already did (CONTRIB-9739).
-- The category filter follows the category tree, names each category under its
-  parent, and leaves out the ones the user may not see (CONTRIB-4159).
-- The user field filter sorts the values of a custom profile field, as it already
-  did for the columns of the user table (#281).
-- A start or end time placeholder written without an operator is refused without
-  a PHP warning first.
-- Log events when reports are viewed, created, updated, deleted and exported.
+### Security
+
+Several security fixes from a review of the whole plugin by MDL Shield. Upgrading
+is recommended. Permissions are now checked in the course the report belongs to,
+editing and importing reports require a sesskey and, for SQL reports, the
+`managesqlreports` capability, imported reports are validated, report output is
+escaped, every filter binds its values as SQL parameters, and fetching reports
+from GitHub verifies TLS certificates.
+
+Changes to check when upgrading:
+
+- `%%FILTER_VAR%%` is now bound as a value, so it can be used anywhere a value is
+  valid, such as `WHERE cm.id = %%FILTER_VAR%%`, and the URL can no longer add
+  SQL. Reports that passed a whole condition in the URL have to move it into the
+  query: `AND u.city = %%FILTER_VAR%%` with `filter_var=Madrid` (CONTRIB-10669).
+- With SQL security enabled, the keyword and semicolon check also runs when a
+  report runs, so imported or older reports that break it stop running.
+- Password, secret and sesskey columns are never shown or used in conditions and
+  filters, and `?debug=1` only shows the query to users who can manage SQL reports.
+- Emails sent from a report only go to active users enrolled in its course.
+- `manageownreports` is now flagged with the personal data, spam and XSS risks.
+
+### Fixes
+
+- GitHub issues #121, #145, #190, #191, #220, #228, #232, #233, #242, #259, #266,
+  #267, #278, #281, #299 and #300.
+- Tracker issues CONTRIB-4159, CONTRIB-4937, CONTRIB-8676, CONTRIB-8780,
+  CONTRIB-9739, CONTRIB-9932 and CONTRIB-10669.
+- Embedded report columns are scoped to the course again and no longer crash when
+  the embedded report has no conditions, and the custom SQL page no longer throws
+  a JavaScript error when no remote repository is set.
+- Several filter and column bugs found while adding tests, such as the course
+  categories filter leaving out the courses in subcategories, and the user and
+  course statistics columns failing with a date range or with no roles selected.
+
+### Other changes
+
+- Scheduled SQL reports run from a scheduled task, as Moodle no longer runs the
+  legacy block cron.
+- Events are logged when reports are viewed, created, updated, deleted and
+  exported.
+- Every chart is drawn with pChart2, so the unmaintained pChart 1.x is gone, and
+  the bundled Tahoma font was replaced with the OFL licensed Cairo font.
+- PHPUnit and Behat tests cover every report type, the filters, the import path,
+  the web service and the security fixes, and run in GitHub Actions together with
+  the AMD build and stylelint checks.
+- Deprecated core APIs such as `xmlize()` and `lib/externallib.php` were replaced,
+  and `thirdpartylibs.xml` lists the bundled libraries with their real versions
+  and licences.
+- Releases are packaged from the tag and published to the Moodle plugins directory
+  by a GitHub workflow.
+- `README.txt` was split into `README.md` and this changelog.
 
 ## 5.3.1 (2027050403) for Moodle 4.0 and later
 
