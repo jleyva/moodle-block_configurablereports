@@ -348,4 +348,35 @@ final class security_test extends advanced_testcase {
         $task->execute();
         $this->assertSame('', ob_get_clean());
     }
+
+    /**
+     * Imported column formats keep only the values the column form allows, as they end up in a style attribute.
+     */
+    public function test_column_format_is_validated(): void {
+        $column = new \plugin_userfield((object) ['id' => 0, 'type' => 'users', 'components' => cr_serialize([]),
+            'courseid' => SITEID]);
+
+        $this->assertSame(['right', '50%', 1], $column->colformat((object) ['align' => 'right', 'size' => '50%', 'wrap' => 1]));
+        $this->assertSame(['', '', ''], $column->colformat((object) [
+            'align' => 'x;" onmouseover="alert(1)" data-x="',
+            'size' => '10px;" onmouseover="alert(1)',
+        ]));
+    }
+
+    /**
+     * Imported element ids that are not alphanumeric are replaced, as they end up in the links of the report editor.
+     */
+    public function test_import_replaces_invalid_element_ids(): void {
+        $components = cr_clean_imported_components(['columns' => ['elements' => [
+            ['id' => 'abc123', 'pluginname' => 'userfield', 'formdata' => new \stdClass()],
+            ['id' => '"><script>alert(1)</script>', 'pluginname' => 'userfield', 'formdata' => new \stdClass()],
+            ['pluginname' => 'userfield', 'formdata' => new \stdClass()],
+        ]]]);
+
+        $ids = array_column($components['columns']['elements'], 'id');
+        $this->assertSame('abc123', $ids[0]);
+        $this->assertCount(3, $ids);
+        $this->assertMatchesRegularExpression('/^[a-zA-Z0-9]{15}$/', $ids[1]);
+        $this->assertMatchesRegularExpression('/^[a-zA-Z0-9]{15}$/', $ids[2]);
+    }
 }

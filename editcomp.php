@@ -160,32 +160,25 @@ if ($elements) {
         $pluginclass = new $pluginclassname($report);
 
         $editcell = '';
+        // Element ids of imported reports are not checked, so let moodle_url encode them.
+        $params = ['id' => $id, 'comp' => $comp, 'pname' => $e['pluginname'], 'cid' => $e['id']];
 
         if ($pluginclass->form) {
-            $editcell .= '<a href="editplugin.php?id=' . $id . '&comp=' . $comp . '&pname=' . $e['pluginname'] . '&cid=' .
-                $e['id'] . '">' .
-                $OUTPUT->pix_icon('t/edit', get_string('edit')) .
-                '</a>';
+            $editcell .= html_writer::link(new moodle_url('/blocks/configurable_reports/editplugin.php', $params),
+                $OUTPUT->pix_icon('t/edit', get_string('edit')));
         }
 
-        $editcell .= '<a href="editplugin.php?id=' . $id . '&comp=' . $comp . '&pname=' . $e['pluginname'] .
-            '&cid=' . $e['id'] . '&delete=1&amp;sesskey=' . sesskey() . '">' .
-            $OUTPUT->pix_icon('t/delete', get_string('delete')) .
-            '</a>';
+        $actionparams = $params + ['sesskey' => sesskey()];
+        $editcell .= html_writer::link(new moodle_url('/blocks/configurable_reports/editplugin.php',
+            $actionparams + ['delete' => 1]), $OUTPUT->pix_icon('t/delete', get_string('delete')));
 
         if ($compclass->ordering && $i != 0 && count($elements) > 1) {
-            $editcell .= '<a href="editplugin.php?id=' . $id . '&comp=' . $comp . '&pname=' . $e['pluginname'] . '&cid=' .
-                $e['id'] .
-                '&moveup=1&amp;sesskey=' . sesskey() . '">' .
-                $OUTPUT->pix_icon('t/up', get_string('moveup')) .
-                '</a>';
+            $editcell .= html_writer::link(new moodle_url('/blocks/configurable_reports/editplugin.php',
+                $actionparams + ['moveup' => 1]), $OUTPUT->pix_icon('t/up', get_string('moveup')));
         }
         if ($compclass->ordering && $i != count($elements) - 1) {
-            $editcell .= '<a href="editplugin.php?id=' . $id . '&comp=' . $comp . '&pname=' . $e['pluginname'] . '&cid=' .
-                $e['id'] .
-                '&movedown=1&amp;sesskey=' . sesskey() . '">' .
-                $OUTPUT->pix_icon('t/down', get_string('movedown')) .
-                '</a>';
+            $editcell .= html_writer::link(new moodle_url('/blocks/configurable_reports/editplugin.php',
+                $actionparams + ['movedown' => 1]), $OUTPUT->pix_icon('t/down', get_string('movedown')));
         }
 
         $table->data[] = ['c' . ($i + 1), format_string($e['pluginfullname']), format_string($e['summary']), $editcell];

@@ -467,7 +467,7 @@ function cr_print_table(object $table, bool $return = false) {
                 $extraclass = '';
             }
 
-            $output .= '<th style="vertical-align:top;' . $align[$key] . $size[$key] . ';white-space:normal;" class="header c' .
+            $output .= '<th style="vertical-align:top;' . s($align[$key] . $size[$key]) . ';white-space:normal;" class="header c' .
                 $key . $extraclass . '" scope="col">' . $heading . '</th>';
         }
         $output .= '</tr></thead>' . "\n";
@@ -510,11 +510,11 @@ function cr_print_table(object $table, bool $return = false) {
                         $extraclass = '';
                     }
                     if ($keyouter == $isuserid) {
-                        $output .= '<td style="' . $align[$keyouter] . $size[$keyouter] . $wrap[$keyouter] . '" class="cell c' .
+                        $output .= '<td style="' . s($align[$keyouter] . $size[$keyouter] . $wrap[$keyouter]) . '" class="cell c' .
                             $keyouter .
                             $extraclass . '"><input name="userids[]" type="checkbox" value="' . s($item) . '"></td>';
                     } else {
-                        $output .= '<td style="' . $align[$keyouter] . $size[$keyouter] . $wrap[$keyouter] . '" class="cell c' .
+                        $output .= '<td style="' . s($align[$keyouter] . $size[$keyouter] . $wrap[$keyouter]) . '" class="cell c' .
                             $keyouter .
                             $extraclass . '">' . $item . '</td>';
                     }
@@ -766,6 +766,10 @@ function cr_clean_imported_components(array $components): array {
                 }
                 if (!isset($element['formdata']) || !is_object($element['formdata'])) {
                     $element['formdata'] = new stdClass();
+                }
+                // Element ids are random alphanumeric strings, which is what editplugin.php accepts.
+                if (!isset($element['id']) || !is_string($element['id']) || !preg_match('/^[a-zA-Z0-9]+$/', $element['id'])) {
+                    $element['id'] = random_string(15);
                 }
                 $elements[] = $element;
             }

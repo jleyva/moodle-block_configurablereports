@@ -116,8 +116,10 @@ abstract class plugin_base {
      * @return string[]
      */
     public function colformat(?object $data): array {
-        $align = $data->align ?? '';
-        $size = $data->size ?? '';
+        // Imported reports skip the column form, so keep only the values the form allows.
+        $align = in_array($data->align ?? '', ['center', 'left', 'right'], true) ? $data->align : '';
+        $size = trim((string) ($data->size ?? ''));
+        $size = preg_match('/^\d+(%|px)$/i', $size) ? $size : '';
         $wrap = $data->wrap ?? '';
 
         return [$align, $size, $wrap];
