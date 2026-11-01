@@ -98,6 +98,10 @@ function dump_slk_row($data)
             $datum = iconv("UTF-8", "ISO-8859-1//TRANSLIT", $datum);
         }
 
+        // A new line would start a new record and a semicolon a new field, such as a formula: SYLK escapes
+        // semicolons by doubling them, and the rest of the control characters have no place in a cell.
+        $datum = str_replace(';', ';;', preg_replace('/[\x00-\x1F\x7F]+/', ' ', $datum));
+
         echo "C;Y$row;X$col;K\"$datum\"\n";
 
         ++$col;

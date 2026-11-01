@@ -36,6 +36,7 @@ require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
 require_once($CFG->dirroot . '/blocks/configurable_reports/report.class.php');
 require_once($CFG->dirroot . '/blocks/configurable_reports/reports/sql/report.class.php');
 require_once($CFG->dirroot . '/blocks/configurable_reports/reports/timeline/report.class.php');
+require_once($CFG->dirroot . '/blocks/configurable_reports/export/slk/export.php');
 require_once($CFG->dirroot . '/blocks/configurable_reports/components/filters/yearhebrew/plugin.class.php');
 require_once($CFG->dirroot . '/blocks/configurable_reports/components/columns/userfield/plugin.class.php');
 require_once($CFG->dirroot . '/blocks/configurable_reports/components/conditions/cuserfield/plugin.class.php');
@@ -396,5 +397,19 @@ final class security_test extends advanced_testcase {
 
         $this->assertCount(100, $elements);
         $this->assertSame(DAYSECS, $elements[1] - $elements[0]);
+    }
+
+    /**
+     * Cell values cannot start new SYLK records or fields.
+     */
+    public function test_slk_cells_are_escaped(): void {
+        ob_start();
+        dump_slk_row(["x\nC;Y1;X1;K0;E1+1", 'a;b']);
+        $output = ob_get_clean();
+
+        $lines = explode("\n", trim($output));
+        $this->assertCount(2, $lines);
+        $this->assertStringEndsWith('K"x C;;Y1;;X1;;K0;;E1+1"', $lines[0]);
+        $this->assertStringEndsWith('K"a;;b"', $lines[1]);
     }
 }
