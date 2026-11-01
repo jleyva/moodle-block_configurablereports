@@ -101,7 +101,7 @@ class plugin_startendtime extends filter_base {
         $params = [];
 
         if (preg_match("/%%FILTER_STARTTIME:([^%]+)%%/i", $sql, $output)) {
-            [$field, $operator] = preg_split('/:/', $output[1]);
+            [$field, $operator] = array_pad(preg_split('/:/', $output[1]), 2, '');
             if (!in_array($operator, $operators)) {
                 throw new moodle_exception('nosuchoperator');
             }
@@ -111,7 +111,7 @@ class plugin_startendtime extends filter_base {
         }
 
         if (preg_match("/%%FILTER_ENDTIME:([^%]+)%%/i", $sql, $output)) {
-            [$field, $operator] = preg_split('/:/', $output[1]);
+            [$field, $operator] = array_pad(preg_split('/:/', $output[1]), 2, '');
             if (!in_array($operator, $operators)) {
                 throw new moodle_exception('nosuchoperator');
             }

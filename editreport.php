@@ -72,7 +72,7 @@ if ($id) {
     }
     // Extra check.
     if ($report->type == 'sql' && !block_configurable_reports_can_managesqlreports($context)) {
-        throw new moodle_exception('nosqlpermissions');
+        throw new moodle_exception('nosqlpermissions', 'block_configurable_reports');
     }
 
     $title = format_string($report->name);
@@ -118,7 +118,8 @@ if (($show || $hide) && confirm_sesskey()) {
     if (!$DB->set_field('block_configurable_reports', 'visible', $visible, ['id' => $report->id])) {
         throw new moodle_exception('cannotupdatereport', 'block_configurable_reports');
     }
-    $action = ($visible) ? 'showed' : 'hidden';
+    $report->visible = $visible;
+    \block_configurable_reports\event\report_updated::create_from_report($report)->trigger();
 
     header("Location: $CFG->wwwroot/blocks/configurable_reports/managereport.php?courseid=$courseid");
     die;
@@ -131,6 +132,8 @@ if ($duplicate && confirm_sesskey()) {
     if (!$newreportid = $DB->insert_record('block_configurable_reports', $newreport)) {
         throw new moodle_exception('cannotduplicate', 'block_configurable_reports');
     }
+    $newreport->id = $newreportid;
+    \block_configurable_reports\event\report_created::create_from_report($newreport)->trigger();
 
     header("Location: $CFG->wwwroot/blocks/configurable_reports/managereport.php?courseid=$courseid");
     die;
@@ -153,6 +156,7 @@ if ($delete && confirm_sesskey()) {
     }
 
     $DB->delete_records('block_configurable_reports', ['id' => $report->id]);
+    \block_configurable_reports\event\report_deleted::create_from_report($report)->trigger();
     header("Location: $CFG->wwwroot/blocks/configurable_reports/managereport.php?courseid=$courseid");
     die;
 }
@@ -231,12 +235,14 @@ if ($editform->is_cancelled()) {
 
         // Extra check.
         if ($data->type === 'sql' && !block_configurable_reports_can_managesqlreports($context)) {
-            throw new moodle_exception('nosqlpermissions');
+            throw new moodle_exception('nosqlpermissions', 'block_configurable_reports');
         }
 
         if (!$lastid = $DB->insert_record('block_configurable_reports', $data)) {
             throw new moodle_exception('errorsavingreport', 'block_configurable_reports');
         }
+        $newreport = $DB->get_record('block_configurable_reports', ['id' => $lastid]);
+        \block_configurable_reports\event\report_created::create_from_report($newreport)->trigger();
 
         $reportclass = new $reportclassname($lastid);
         redirect(
@@ -244,12 +250,29 @@ if ($editform->is_cancelled()) {
         );
     } else {
 
+        $data->id = $report->id;
         $reportclass = new $reportclassname($data->id);
         $data->type = $report->type;
+
+        // Moving a report to a different course requires managing reports in the target course.
+        if (!isset($data->courseid) || (int) $data->courseid !== (int) $report->courseid) {
+            $targetcourseid = (int) ($data->courseid ?? 0);
+            $data->courseid = $report->courseid;
+            if ($targetcourseid && $DB->record_exists('course', ['id' => $targetcourseid])) {
+                $targetcontext = ($targetcourseid == SITEID) ? context_system::instance() :
+                    context_course::instance($targetcourseid);
+                if (has_capability('block/configurable_reports:managereports', $targetcontext) &&
+                        ($report->type !== 'sql' || block_configurable_reports_can_managesqlreports($targetcontext))) {
+                    $data->courseid = $targetcourseid;
+                }
+            }
+        }
 
         if (!$DB->update_record('block_configurable_reports', $data)) {
             throw new moodle_exception('errorsavingreport', 'block_configurable_reports');
         }
+        $updatedreport = $DB->get_record('block_configurable_reports', ['id' => $data->id]);
+        \block_configurable_reports\event\report_updated::create_from_report($updatedreport)->trigger();
 
         redirect(
             $CFG->wwwroot . '/blocks/configurable_reports/editcomp.php?id=' . $data->id . '&comp=' . $reportclass->components[0]

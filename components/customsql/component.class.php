@@ -47,6 +47,10 @@ class component_customsql extends component_base {
         if (get_config('block_configurable_reports', 'sqlsyntaxhighlight')) {
             $PAGE->requires->js_call_amd('block_configurable_reports/main', 'cmirror');
         }
+
+        if (get_config('block_configurable_reports', 'sharedsqlrepository')) {
+            $PAGE->requires->js_call_amd('block_configurable_reports/main', 'remote_reports');
+        }
     }
 
     /**

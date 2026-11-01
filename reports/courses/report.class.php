@@ -76,17 +76,7 @@ class report_courses extends report_base {
      * @return array
      */
     public function get_rows(array $elements, string $sqlorder = '') {
-        global $DB;
-
-        $finalelements = [];
-
-        if (!empty($elements)) {
-            [$usql, $params] = $DB->get_in_or_equal($elements);
-
-            return $DB->get_records_select('course', "id $usql", $params, $sqlorder);
-        }
-
-        return $finalelements;
+        return $this->get_rows_by_ids('course', $elements, $sqlorder);
     }
 
 }

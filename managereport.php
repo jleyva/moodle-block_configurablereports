@@ -45,7 +45,7 @@ if ($course->id == SITEID) {
 
 if (!has_capability('block/configurable_reports:managereports', $context) &&
     !has_capability('block/configurable_reports:manageownreports', $context)) {
-    throw new moodle_exception('badpermissions');
+    throw new moodle_exception('badpermissions', 'block_configurable_reports');
 }
 
 $PAGE->set_url('/blocks/configurable_reports/managereport.php', ['courseid' => $course->id]);
@@ -53,12 +53,21 @@ $PAGE->set_context($context);
 $PAGE->set_pagelayout('incourse');
 
 if ($importurl) {
+    require_sesskey();
+
+    // Only allow importing from the configured GitHub repository.
+    $repository = get_config('block_configurable_reports', 'crrepository');
+    $allowedprefix = 'https://api.github.com/repos/' . $repository . '/';
+    if (empty($repository) || strpos($importurl, $allowedprefix) !== 0 || strpos($importurl, '..') !== false) {
+        throw new moodle_exception('errorimporting', 'block_configurable_reports');
+    }
+
     $c = new curl();
-    if ($data = $c->get($importurl)) {
+    if ($data = $c->get($importurl, [], ['CURLOPT_SSL_VERIFYPEER' => true])) {
         $data = json_decode($data);
         $xml = base64_decode($data->content);
     } else {
-        throw new moodle_exception('errorimporting');
+        throw new moodle_exception('errorimporting', 'block_configurable_reports');
     }
 
     if (cr_import_xml($xml, $course)) {
@@ -67,7 +76,7 @@ if ($importurl) {
             get_string('reportcreated', 'block_configurable_reports')
         );
     } else {
-        throw new moodle_exception('errorimporting');
+        throw new moodle_exception('errorimporting', 'block_configurable_reports');
     }
 }
 
@@ -81,7 +90,7 @@ if ($data = $mform->get_data()) {
                 get_string('reportcreated', 'block_configurable_reports')
             );
         } else {
-            throw new moodle_exception('errorimporting');
+            throw new moodle_exception('errorimporting', 'block_configurable_reports');
         }
     }
 }
@@ -123,6 +132,7 @@ if ($reports) {
     $strshow = get_string('show');
     $strcopy = get_string('duplicate');
     $strexport = get_string('exportreport', 'block_configurable_reports');
+    $exportformats = cr_get_export_plugins();
 
     foreach ($reports as $r) {
         if ($r->courseid == 1) {
@@ -177,10 +187,13 @@ if ($reports) {
         $export = explode(',', $r->export);
         if (!empty($export)) {
             foreach ($export as $e) {
-                if ($e) {
-                    $download .= '<a href="viewreport.php?id=' . $r->id . '&amp;download=1&amp;format=' . $e . '">' .
-                        '<img src="' . $CFG->wwwroot . '/blocks/configurable_reports/export/' . $e . '/pix.gif" alt="' . $e . '">' .
-                        '&nbsp;' . (strtoupper($e)) . '</a>&nbsp;&nbsp;';
+                // Only known formats, the value may come from an imported report.
+                if ($e && isset($exportformats[$e])) {
+                    $url = new moodle_url('/blocks/configurable_reports/viewreport.php',
+                        ['id' => $r->id, 'download' => 1, 'format' => $e]);
+                    $icon = html_writer::empty_tag('img',
+                        ['src' => new moodle_url('/blocks/configurable_reports/export/' . $e . '/pix.gif'), 'alt' => $e]);
+                    $download .= html_writer::link($url, $icon . '&nbsp;' . s(strtoupper($e))) . '&nbsp;&nbsp;';
                 }
             }
         }

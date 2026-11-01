@@ -115,6 +115,53 @@ final class sql_report_test extends advanced_testcase {
     }
 
     /**
+     * Issue #145: with a one letter prefix, which is what Oracle sites use, the old check read any word
+     * starting with that letter as a table named with an explicit prefix.
+     */
+    public function test_a_short_prefix_does_not_make_every_word_a_table(): void {
+        global $CFG;
+
+        $CFG->prefix = 'm';
+
+        // The reporter's own query: "month" is a word, not the table "onth".
+        $this->assertFalse(\report_sql::uses_explicit_prefix(
+            "select c.id from prefix_course c where lsl.timecreated between add_months(trunc(sysdate, 'month'), -12)"
+        ));
+        $this->assertFalse(\report_sql::uses_explicit_prefix('SELECT max(id), min(id) FROM prefix_user'));
+
+        // A real table named with the prefix is still caught.
+        $this->assertTrue(\report_sql::uses_explicit_prefix('SELECT id FROM muser'));
+    }
+
+    /**
+     * The check still does its job with the prefix this site actually runs on.
+     */
+    public function test_an_explicit_table_name_is_caught(): void {
+        global $CFG;
+
+        $this->assertTrue(\report_sql::uses_explicit_prefix("SELECT id FROM {$CFG->prefix}user"));
+        $this->assertFalse(\report_sql::uses_explicit_prefix('SELECT id FROM prefix_user'));
+        $this->assertFalse(\report_sql::uses_explicit_prefix("SELECT id FROM {$CFG->prefix}nosuchtable"));
+    }
+
+    /**
+     * Issue #267: a NULL column reaches str_replace() unformatted on the export path.
+     */
+    public function test_a_null_column_exports_as_an_empty_string(): void {
+        global $DB;
+
+        // The test only means anything while the column really is NULL.
+        $this->assertNull($DB->get_field('user', 'imagealt', ['username' => 'crtest1']));
+
+        $query = "SELECT u.username, u.imagealt FROM {user} u WHERE u.username = 'crtest1'";
+        $report = new \report_sql($this->create_report($query, []));
+        $report->set_forexport(true);
+
+        $this->assertTrue($report->create_report());
+        $this->assertSame(['crtest1', ''], $report->finalreport->table->data[0]);
+    }
+
+    /**
      * Issues #294 and #295: two search text filters on aliased columns failed with 'missing param "u"',
      * and a value in the second filter was ignored when the first one was empty.
      */

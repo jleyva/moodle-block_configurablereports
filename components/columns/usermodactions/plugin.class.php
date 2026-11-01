@@ -57,11 +57,11 @@ class plugin_usermodactions extends plugin_base {
         if ($cm = $DB->get_record('course_modules', ['id' => $data->cmid])) {
             $modname = $DB->get_field('modules', 'name', ['id' => $cm->module]);
             if ($name = $DB->get_field("$modname", 'name', ['id' => $cm->instance])) {
-                return $data->columname . ' (' . $name . ')';
+                return format_string($data->columname . ' (' . $name . ')');
             }
         }
 
-        return $data->columname;
+        return format_string($data->columname);
     }
 
     /**
@@ -85,21 +85,22 @@ class plugin_usermodactions extends plugin_base {
             $sql = "SELECT COUNT('x') AS numviews
                       FROM {course_modules} cm
                            JOIN {log} l ON l.cmid = cm.id
-                     WHERE cm.id = $data->cmid
-                           AND l.userid = $row->id
+                     WHERE cm.id = :cmid
+                           AND l.userid = :userid
                            AND l.action LIKE 'view%'
                   GROUP BY cm.id";
         } else if ($useinternalreader) {
             $sql = "SELECT COUNT('x') AS numviews
                       FROM {" . $logtable . "}
-                     WHERE contextinstanceid = $data->cmid
-                           AND contextlevel = " . CONTEXT_MODULE . "
-                           AND userid = $row->id
+                     WHERE contextinstanceid = :cmid
+                           AND contextlevel = :contextlevel
+                           AND userid = :userid
                            AND crud = 'r'
                   GROUP BY contextinstanceid";
         }
 
-        if (!empty($sql) && $views = $DB->get_record_sql($sql)) {
+        $params = ['cmid' => (int) $data->cmid, 'userid' => (int) $row->id, 'contextlevel' => CONTEXT_MODULE];
+        if (!empty($sql) && $views = $DB->get_record_sql($sql, $params)) {
             return $views->numviews;
         }
 

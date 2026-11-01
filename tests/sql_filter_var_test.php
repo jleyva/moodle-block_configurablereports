@@ -44,16 +44,17 @@ require_once($CFG->dirroot . '/blocks/configurable_reports/reports/sql/report.cl
 #[CoversMethod(\report_sql::class, 'prepare_sql')]
 final class sql_filter_var_test extends advanced_testcase {
 
-    /** @var string Report query used by all tests */
-    private const QUERY = 'SELECT u.id FROM {user} u WHERE u.deleted = 0 %%FILTER_VAR%% ORDER BY u.id';
+    /** @var string Report query used by most tests */
+    private const QUERY = 'SELECT u.id FROM {user} u WHERE u.id = %%FILTER_VAR%% ORDER BY u.id';
 
     /**
      * Run prepare_sql() with the given filter_var value.
      *
      * @param string $filtervar
+     * @param string $query
      * @return array [$sql, $params]
      */
-    private function prepare(string $filtervar): array {
+    private function prepare(string $filtervar, string $query = self::QUERY): array {
         global $SITE;
 
         $_GET['filter_var'] = $filtervar;
@@ -68,93 +69,133 @@ final class sql_filter_var_test extends advanced_testcase {
         $report = new \report_sql($config);
 
         try {
-            return $report->prepare_sql(self::QUERY);
+            return $report->prepare_sql($query);
         } finally {
             unset($_GET['filter_var']);
         }
     }
 
     /**
-     * Valid clauses are kept, with the value bound as a parameter.
+     * The value is always bound as a parameter, and numbers are bound as numbers.
      *
-     * @dataProvider valid_provider
+     * Each value is compared with an expression of a matching type, as PostgreSQL refuses comparing a number
+     * column with text: in a report that only means the report author has to compare like with like.
+     *
+     * @dataProvider value_provider
+     * @param string $expression The left side of the comparison.
      * @param string $filtervar
-     * @param string $expectedclause Expected SQL fragment (before parameter placeholders).
-     * @param array $expectedvalues Expected bound values, in order.
+     * @param mixed $expected The bound value.
      */
-    #[DataProvider('valid_provider')]
-    public function test_valid_clauses(string $filtervar, string $expectedclause, array $expectedvalues): void {
+    #[DataProvider('value_provider')]
+    public function test_value_is_bound(string $expression, string $filtervar, $expected): void {
         global $DB;
         $this->resetAfterTest();
 
-        [$sql, $params] = $this->prepare($filtervar);
+        $query = "SELECT u.id FROM {user} u WHERE $expression = %%FILTER_VAR%% ORDER BY u.id";
+        [$sql, $params] = $this->prepare($filtervar, $query);
 
-        $this->assertStringContainsString($expectedclause, $sql);
-        $this->assertStringNotContainsString('%%FILTER_VAR%%', $sql);
-        $this->assertSame($expectedvalues, array_values($params));
+        $this->assertSame("SELECT u.id FROM {user} u WHERE $expression = :filtervar1 ORDER BY u.id", $sql);
+        $this->assertSame(['filtervar1' => $expected], $params);
 
-        // The resulting query must run.
+        // The query runs, and SQL in the value is just a value that matches nothing.
+        $this->assertSame([], $DB->get_records_sql($sql, $params));
+    }
+
+    /**
+     * Data provider for test_value_is_bound.
+     *
+     * @return array
+     */
+    public static function value_provider(): array {
+        return [
+            'integer' => ['u.id', '-2', -2],
+            'negative' => ['u.id', ' -5 ', -5],
+            'decimal' => ['u.id * 1.0', '1.5', 1.5],
+            'text' => ['u.username', 'nobody', 'nobody'],
+            'tautology' => ['u.username', 'x OR 1=1', 'x OR 1=1'],
+            'union' => ['u.username', "x' UNION SELECT password FROM {user} --", "x' UNION SELECT password FROM {user} --"],
+            'quote' => ['u.username', "admin' OR '1'='1", "admin' OR '1'='1"],
+            'semicolon' => ['u.username', 'x; DROP TABLE {user}', 'x; DROP TABLE {user}'],
+            'comment' => ['u.username', 'x -- y', 'x -- y'],
+        ];
+    }
+
+    /**
+     * Typical uses: a value in a comparison and in arithmetic.
+     */
+    public function test_typical_uses(): void {
+        global $DB, $USER;
+        $this->resetAfterTest();
+        $this->setAdminUser();
+
+        [$sql, $params] = $this->prepare((string) $USER->id);
+        $this->assertEquals([$USER->id], array_keys($DB->get_records_sql($sql, $params)));
+
+        $query = 'SELECT u.id FROM {user} u WHERE u.id = ' . $USER->id .
+            ' AND (u.timecreated - %%FILTER_VAR%% * 86400) < u.timecreated';
+        [$sql, $params] = $this->prepare('7', $query);
+        $this->assertStringContainsString(':filtervar1 * 86400', $sql);
+        $this->assertEquals([$USER->id], array_keys($DB->get_records_sql($sql, $params)));
+    }
+
+    /**
+     * Every placeholder gets its own parameter, as Moodle does not allow repeating a named parameter.
+     */
+    public function test_several_placeholders(): void {
+        global $DB;
+        $this->resetAfterTest();
+
+        $query = 'SELECT u.id FROM {user} u WHERE u.id = %%FILTER_VAR%% OR u.id = %%FILTER_VAR%%';
+        [$sql, $params] = $this->prepare('2', $query);
+
+        $this->assertSame('SELECT u.id FROM {user} u WHERE u.id = :filtervar1 OR u.id = :filtervar2', $sql);
+        $this->assertSame(['filtervar1' => 2, 'filtervar2' => 2], $params);
         $DB->get_records_sql($sql, $params);
     }
 
     /**
-     * Data provider for test_valid_clauses.
-     *
-     * @return array
+     * CONTRIB-10669: no filter_var is not an error. A placeholder used as a value is NULL, anywhere else it is removed.
      */
-    public static function valid_provider(): array {
-        return [
-            'equals' => ['AND id = 2', 'AND id = :filtervar', ['2']],
-            'quoted value' => ["AND username = 'admin'", 'AND username = :filtervar', ['admin']],
-            'less or equal' => ['AND id <= 5', 'AND id <= :filtervar', ['5']],
-            'not equal' => ['AND id <> 1', 'AND id <> :filtervar', ['1']],
-            'alias' => ['AND u.id = 2', 'AND u.id = :filtervar', ['2']],
-            'or' => ['or id = 2', 'OR id = :filtervar', ['2']],
-            'like' => ["AND username LIKE 'adm%'", 'AND username LIKE :filtervar', ['adm%']],
-            'not like' => ["AND username NOT LIKE 'adm%'", 'AND username NOT LIKE :filtervar', ['adm%']],
-            'function' => ["AND LOWER(username) = 'admin'", 'AND LOWER(username) = :filtervar', ['admin']],
-            'in' => ['AND id IN (2,3)', 'AND id IN (', ['2', '3']],
-            'not in' => ["AND id NOT IN ('1', '2')", 'AND id NOT IN (', ['1', '2']],
-            'between' => ['AND id BETWEEN 1 AND 5', 'AND id BETWEEN :filtervarfrom AND :filtervarto', ['1', '5']],
-            'column starting with in' => ['AND institution = x', 'AND institution = :filtervar', ['x']],
-            'value with sql' => ["AND username = admin' OR '1'='1", 'AND username = :filtervar', ["admin' OR '1'='1"]],
-        ];
-    }
-
-    /**
-     * Anything other than a plain column (or whitelisted function of one) on the left side is dropped.
-     *
-     * @dataProvider injection_provider
-     * @param string $filtervar
-     */
-    #[DataProvider('injection_provider')]
-    public function test_injection_rejected(string $filtervar): void {
+    public function test_no_value_is_not_an_error(): void {
+        global $DB;
         $this->resetAfterTest();
 
-        [$sql, $params] = $this->prepare($filtervar);
-
-        $this->assertSame('SELECT u.id FROM {user} u WHERE u.deleted = 0  ORDER BY u.id', $sql);
+        [$sql, $params] = $this->prepare('');
+        $this->assertSame('SELECT u.id FROM {user} u WHERE u.id = NULL ORDER BY u.id', $sql);
         $this->assertSame([], $params);
+        $this->assertSame([], $DB->get_records_sql($sql, $params));
+
+        $query = 'SELECT u.id FROM {user} u WHERE u.deleted = 0 %%FILTER_VAR%% ORDER BY u.id';
+        [$sql, $params] = $this->prepare('', $query);
+        $this->assertSame('SELECT u.id FROM {user} u WHERE u.deleted = 0  ORDER BY u.id', $sql);
+        $DB->get_records_sql($sql, $params);
     }
 
     /**
-     * Data provider for test_injection_rejected.
-     *
-     * @return array
+     * A value the database refuses for the comparison, such as text against a number on PostgreSQL, says so.
      */
-    public static function injection_provider(): array {
-        return [
-            'tautology' => ['AND 1=1 OR id = 2'],
-            'union' => ['AND 1=0 UNION SELECT password FROM {user} WHERE id = 2'],
-            'comment' => ['AND id -- = 2'],
-            'semicolon' => ['AND id; DROP TABLE {user}; SELECT 1 WHERE id = 2'],
-            'other function' => ['AND SLEEP(id) = 0'],
-            'nested function' => ['AND LOWER(UPPER(username)) = x'],
-            'expression' => ['AND id + 0 = 2'],
-            'quoted identifier' => ['AND "id" = 2'],
-            'braces' => ['AND {user}.id = 2'],
-            'no conjunction' => ['id = 2'],
-            'no operator' => ['AND id 2'],
-        ];
+    public function test_value_of_the_wrong_type(): void {
+        global $DB, $SITE, $USER;
+        $this->resetAfterTest();
+        $this->setAdminUser();
+
+        if ($DB->get_dbfamily() !== 'postgres') {
+            $this->markTestSkipped('Only PostgreSQL refuses comparing a number with text.');
+        }
+
+        $components = ['customsql' => ['config' => (object) ['querysql' => self::QUERY]]];
+        $report = (object) ['courseid' => $SITE->id, 'ownerid' => $USER->id, 'visible' => 1, 'name' => 'Report',
+            'type' => 'sql', 'components' => cr_serialize($components), 'remote' => 0];
+        $report->id = $DB->insert_record('block_configurable_reports', $report);
+
+        $_GET['filter_var'] = 'abc';
+        try {
+            (new \report_sql($report->id))->create_report();
+            $this->fail('Exception expected');
+        } catch (\moodle_exception $e) {
+            $this->assertSame('invalidfiltervar', $e->errorcode);
+        } finally {
+            unset($_GET['filter_var']);
+        }
     }
 }

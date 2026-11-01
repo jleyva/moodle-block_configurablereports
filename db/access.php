@@ -72,6 +72,7 @@ $capabilities = [
     'block/configurable_reports:manageownreports' => [
 
         'captype' => 'write',
+        'riskbitmask' => RISK_PERSONAL | RISK_SPAM | RISK_XSS,
         'contextlevel' => CONTEXT_BLOCK,
         'archetypes' => [
             'manager' => CAP_ALLOW,

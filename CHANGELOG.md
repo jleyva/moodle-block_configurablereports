@@ -1,34 +1,104 @@
-Configurable Reports Block
+# Changelog
 
-Installation, Documentation, Tutorials....
-See http://docs.moodle.org/en/blocks/configurable_reports/
-Also http://moodle.org/mod/data/view.php?d=13&rid=4283
+All notable changes to the Configurable Reports block, newest first. Entries up to
+4.5.0 were kept in `README.txt`, which this file replaces.
 
-Author: Juan Leyva
-<http://twitter.com/jleyvadelgado>
+## 5.3.2 (2027050404) for Moodle 4.0 and later
 
-Thanks to:
-Sara Arjona for being a co-maintainer
-Nadav Kavalerchik for developing amazing new features
-Ivan Breziansky for translating the block to slovak language
-Iñaki Arenaza for translating the block documentation to spanish
-Luis de Vasconcelos for testing the block
-Adam Olley and Netspot Moodle Partner for improving some parts of the Moodle2 version
+_Release date: 01.11.2026_
 
-Some functionalities of this plugin uses code from:
+Requires PHP 8.0 or later.
 
-Admin Report: Custom SQL queries
-http://moodle.org/mod/data/view.php?d=13&rid=2884
-By Tim Hunt
+### Security
 
+Several security fixes from a review of the whole plugin by MDL Shield. Upgrading
+is recommended. Permissions are now checked in the course the report belongs to,
+editing and importing reports require a sesskey and, for SQL reports, the
+`managesqlreports` capability, imported reports are validated, report output is
+escaped, every filter binds its values as SQL parameters, and fetching reports
+from GitHub verifies TLS certificates.
 
-VERSIONS HISTORY
+Changes to check when upgrading:
 
-4.5.0 (2024051300) for Moodle 4.5
-Release date: 06.10.2024
-----------------------------------------------------------------------
+- `%%FILTER_VAR%%` is now bound as a value, so it can be used anywhere a value is
+  valid, such as `WHERE cm.id = %%FILTER_VAR%%`, and the URL can no longer add
+  SQL. Reports that passed a whole condition in the URL have to move it into the
+  query: `AND u.city = %%FILTER_VAR%%` with `filter_var=Madrid` (CONTRIB-10669).
+- With SQL security enabled, the keyword and semicolon check also runs when a
+  report runs, so imported or older reports that break it stop running.
+- Password, secret and sesskey columns are never shown or used in conditions and
+  filters, and `?debug=1` only shows the query to users who can manage SQL reports.
+- Emails sent from a report only go to active users enrolled in its course.
+- `manageownreports` is now flagged with the personal data, spam and XSS risks.
 
-## What's Changed
+### Fixes
+
+- GitHub issues #121, #145, #190, #191, #220, #228, #232, #233, #242, #259, #266,
+  #267, #278, #281, #299 and #300.
+- Tracker issues CONTRIB-4159, CONTRIB-4937, CONTRIB-8676, CONTRIB-8780,
+  CONTRIB-9739, CONTRIB-9932 and CONTRIB-10669.
+- Embedded report columns are scoped to the course again and no longer crash when
+  the embedded report has no conditions, and the custom SQL page no longer throws
+  a JavaScript error when no remote repository is set.
+- Several filter and column bugs found while adding tests, such as the course
+  categories filter leaving out the courses in subcategories, and the user and
+  course statistics columns failing with a date range or with no roles selected.
+
+### Other changes
+
+- Scheduled SQL reports run from a scheduled task, as Moodle no longer runs the
+  legacy block cron.
+- Events are logged when reports are viewed, created, updated, deleted and
+  exported.
+- Every chart is drawn with pChart2, so the unmaintained pChart 1.x is gone, and
+  the bundled Tahoma font was replaced with the OFL licensed Cairo font.
+- PHPUnit and Behat tests cover every report type, the filters, the import path,
+  the web service and the security fixes, and run in GitHub Actions together with
+  the AMD build and stylelint checks.
+- Deprecated core APIs such as `xmlize()` and `lib/externallib.php` were replaced,
+  and `thirdpartylibs.xml` lists the bundled libraries with their real versions
+  and licences.
+- Releases are packaged from the tag and published to the Moodle plugins directory
+  by a GitHub workflow.
+- `README.txt` was split into `README.md` and this changelog.
+
+## 5.3.1 (2027050403) for Moodle 4.0 and later
+
+_Release date: 19.10.2026_
+
+- Fixed the search text filter removing more than its own placeholder (#295).
+- Reported SQL errors in low security mode, with regression tests (#294).
+- Reworked the user field filter: custom profile fields, aliased columns, meta
+  types, `sql_like()` and the contains operator (#296, #297).
+- Supported `IN`, `NOT IN` and `BETWEEN` in `%%FILTER_VAR%%`, and hardened it
+  against SQL injection in the clause.
+- Fixed the course modules filter placeholders and restored wildcards in
+  contains conditions.
+- Added unit tests for the SQL report filters, conditions and components.
+
+## 5.3.0 (2027050402) for Moodle 4.0 and later
+
+_Release date: 07.10.2026_
+
+- Threw an exception from the web service when the permission check fails
+  (CONTRIB-10664).
+- Added the Moodle Playground demo blueprint and README badge.
+- Bug fixes and improvements.
+
+## 5.2.0 (2027050401) for Moodle 4.0 and later
+
+_Release date: 04.05.2026_
+
+- Updated the supported branches and the minimum Moodle version.
+- Set the capabilities risk bit mask (#286).
+- Replaced the deprecated `get_all_user_name_fields()` (CONTRIB-9748, #247).
+- Fixed the search text `~` operator to be case insensitive on PostgreSQL.
+- Fixed the RTL cursor issue in the editor.
+
+## 4.5.0 (2024051300) for Moodle 4.5
+_Release date: 06.10.2024_
+
+### What's Changed
 * fix webservice calls when missing user by @danielneis in https://github.com/jleyva/moodle-block_configurablereports/pull/250
 * Issue with downloading a filtered report by @luukverhoeven in https://github.com/jleyva/moodle-block_configurablereports/pull/248
 * Apply format_string on the breadcrumb navigation by @golenkovm in https://github.com/jleyva/moodle-block_configurablereports/pull/181
@@ -45,7 +115,7 @@ Release date: 06.10.2024
 * Add embed options by @keevan in https://github.com/jleyva/moodle-block_configurablereports/pull/182
 * fix variable redeclaration by @danielneis in https://github.com/jleyva/moodle-block_configurablereports/pull/256
 
-## New Contributors
+### New Contributors
 * @luukverhoeven made their first contribution in https://github.com/jleyva/moodle-block_configurablereports/pull/248
 * @golenkovm made their first contribution in https://github.com/jleyva/moodle-block_configurablereports/pull/181
 * @Tsheke made their first contribution in https://github.com/jleyva/moodle-block_configurablereports/pull/214
@@ -55,10 +125,8 @@ Release date: 06.10.2024
 * @TomoTsuyuki made their first contribution in https://github.com/jleyva/moodle-block_configurablereports/pull/211
 * @keevan made their first contribution in https://github.com/jleyva/moodle-block_configurablereports/pull/182
 
-
-4.1.0 (2023120600) for Moodle 4.1
-Release date: 06.12.2023
-----------------------------------------------------------------------
+## 4.1.0 (2023120600) for Moodle 4.1
+_Release date: 06.12.2023_
 This release focuses on solving issues in Moodle 4.1 and PHP 7.4 and start with small improvements and bug fixes.
 - Reformat code
 - Add CI testing based on Github Actions created by Catalyst IT
@@ -89,10 +157,8 @@ Thanks to Lesterhuis Training & Consultancy for the contribution / updated by Ld
   * phpcpd and phpdocs checks in CI
   * Make CSS strict should only affect this plugin!
 
-
-3.9.0 (2019122000) for Moodle 3.4, 3.5, 3.6, 3.7, 3.8, 3.9
-Release date: Tuesday, 3 November 2020
-----------------------------------------------------------------------
+## 3.9.0 (2019122000) for Moodle 3.4, 3.5, 3.6, 3.7, 3.8, 3.9
+_Release date: Tuesday, 3 November 2020_
 - Starting this version for allowing SQL queries performing data insertion/creation the following configuration variable set to 1
   is required in your site root /config.php:
   $CFG->block_configurable_reports_enable_sql_execution = 1;
@@ -112,10 +178,8 @@ Release date: Tuesday, 3 November 2020
 
 Thanks Alex Rowe, David Saylor, Michael Gardener, Muhammad Osama Arshad, Daniel Poggenpohl, Daniel Neis, François Parlant and all the contributors who have sent several fixes and improvements.
 
-
-3.8.0 (2019122000) for Moodle 3.4, 3.5, 3.6, 3.7, 3.8
-Release date: Friday, 20 Dec 2019
-----------------------------------------------------------------------
+## 3.8.0 (2019122000) for Moodle 3.4, 3.5, 3.6, 3.7, 3.8
+_Release date: Friday, 20 Dec 2019_
 - Order the list of users in users filter by fullname considering language - #130
 - Other fixes and improvements:
   * Fix template array error - #132
@@ -124,14 +188,11 @@ Release date: Friday, 20 Dec 2019
   * Remove "_" from the table header titles - #137
   * Review supported Moodle versions, because the core_userlist_provider interface is only supported from 3.4 onwards - #125
 
-
 Thanks Daniel Neis (danielneis), Mike McDougal (mcdoogs), Tuan Ngoc Nguyen (tuanngocnguyen), Mike Henry (mhenry79mnet), safatshahinsd, kristian-94 and all the contributors who have sent several fixes and improvements.
 And special thanks also to Carlos, Moodle HQ and Juan for letting Sara work on this again during the project week.
 
-
-3.3.0 (2019121900) for Moodle 3.0, 3.1, 3.2, 3.3
-Release date: Friday, 20 Dec 2019
-----------------------------------------------------------------------
+## 3.3.0 (2019121900) for Moodle 3.0, 3.1, 3.2, 3.3
+_Release date: Friday, 20 Dec 2019_
 - Order the list of users in users filter by fullname considering language - #130
 - Add a new calculation type: percentage
 - Allow userfields to be used more than once in the permissions
@@ -158,14 +219,11 @@ Release date: Friday, 20 Dec 2019
   * Fix error with user field search box filter
   * Improve compatibility with PostgreSQL when importing
 
-
 Thanks Daniel Neis (danielneis), Mike McDougal (mcdoogs), Tuan Ngoc Nguyen (tuanngocnguyen), Mike Henry (mhenry79mnet), safatshahinsd, kristian-94, David (davidpesce), Dimitrii (dmitriim), Alex (agrowe), Donald (emyb2), sopnep15, Danniel (dannielarriola) and all the contributors who have sent several fixes and improvements.
 And special thanks also to Carlos, Sander, Moodle HQ and Juan for letting Sara work on this again during the project week.
 
-
-3.7.0 (2019060300) for Moodle 3.4, 3.5, 3.6, 3.7
-Release date: Monday, 3 Jun 2019
-----------------------------------------------------------------------
+## 3.7.0 (2019060300) for Moodle 3.4, 3.5, 3.6, 3.7
+_Release date: Monday, 3 Jun 2019_
 - Add a new calculation type: percentage
 - Allow userfields to be used more than once in the permissions
 - Other fixes and improvements:
@@ -174,14 +232,11 @@ Release date: Monday, 3 Jun 2019
   * Fix legacy_polyfill error when running unit tests
   * Display custom title for the block
 
-
 Thanks David (davidpesce), Dimitrii (dmitriim) and all the contributors who have sent several fixes and improvements.
 And special thanks also to Sander, Moodle HQ and Juan for letting Sara work on this again during the project week.
 
-
-3.6.0 (2019021500) for Moodle 3.4, 3.5, 3.6
-Release date: Friday, 15 Feb 2019
-----------------------------------------------------------------------
+## 3.6.0 (2019021500) for Moodle 3.4, 3.5, 3.6
+_Release date: Friday, 15 Feb 2019_
 - Implement Privacy API
 - Replace deprecated methods:
   * htmleditor
@@ -204,62 +259,45 @@ Thanks Alex (agrowe), Donald (emyb2), sopnep15, Danniel (dannielarriola) and all
 fixes and improvements.
 And special thanks also to Sander, Moodle HQ and Juan for letting Sara work on this during the project week.
 
-
-
-3.1.1 (2016020103) for Moodle 3.0, 3.1
-Release date: Monday, 10 Oct 2016
-----------------------------------------------------------------------
+## 3.1.1 (2016020103) for Moodle 3.0, 3.1
+_Release date: Monday, 10 Oct 2016_
 - Fix a critical bug when adding user action/outline statistics, see https://tracker.moodle.org/browse/CONTRIB-4600
 
 Thanks Marina Glancy for the fix
 
-
-3.1.0 (2016020102) for Moodle 3.0, 3.1
-Release date: Wednesday, 25 May 2016
-----------------------------------------------------------------------
+## 3.1.0 (2016020102) for Moodle 3.0, 3.1
+_Release date: Wednesday, 25 May 2016_
 - Several bug fixes
 
-
-3.0.1 (2016020101) for Moodle 3.0
-2.3.9 (2011040121) for Moodle 2.2, 2.3, 2.4, 2.5, 2.6, 2.7, 2.8, 2.9
-Release date: Wednesday, 17 Feb 2016
-----------------------------------------------------------------------
+## 3.0.1 (2016020101) for Moodle 3.0
+## 2.3.9 (2011040121) for Moodle 2.2, 2.3, 2.4, 2.5, 2.6, 2.7, 2.8, 2.9
+_Release date: Wednesday, 17 Feb 2016_
 - Fix bug when creating the category list
 
-
-3.0.0 (2016020100) for Moodle 3.0
-Release date: Tuesday, 02 Feb 2016
-----------------------------------------------------------------------
+## 3.0.0 (2016020100) for Moodle 3.0
+_Release date: Tuesday, 02 Feb 2016_
 - Compatible version with Moodle 3.0
 
-
-2.3.8 (2011040120) for Moodle 2.2, 2.3, 2.4, 2.5, 2.6, 2.7, 2.8, 2.9
-Release date: Tuesday, 02 Feb 2016
-----------------------------------------------------------------------
+## 2.3.8 (2011040120) for Moodle 2.2, 2.3, 2.4, 2.5, 2.6, 2.7, 2.8, 2.9
+_Release date: Tuesday, 02 Feb 2016_
 - Release including bug fixes
 
-
-2.3.7 (2011040119) for Moodle 2.2, 2.3, 2.4, 2.5, 2.6, 2.7, 2.8, 2.9
-Release date: Monday, 03 Aug 2015
-----------------------------------------------------------------------
+## 2.3.7 (2011040119) for Moodle 2.2, 2.3, 2.4, 2.5, 2.6, 2.7, 2.8, 2.9
+_Release date: Monday, 03 Aug 2015_
 - Several bug fixes
 - Fixed installation for old moodle versions
 - Improved pie chats
 
 Thanks CV&A and Carlos Escobedo for the contribution
 
-
-2.3.6 (2011040118) for Moodle 2.2, 2.3, 2.4, 2.5, 2.6, 2.7, 2.8, 2.9
-Release date: Wednesday, 27 May 2015
-----------------------------------------------------------------------
+## 2.3.6 (2011040118) for Moodle 2.2, 2.3, 2.4, 2.5, 2.6, 2.7, 2.8, 2.9
+_Release date: Wednesday, 27 May 2015_
 - Minor release fixing a regression
 
 Thanks to Dan Marsden for the fix
 
-
-2.3.5 (2011040116) for Moodle 2.2, 2.3, 2.4, 2.5, 2.6, 2.7, 2.8, 2.9
-Release date: Wednesday, 06 May 2015
-----------------------------------------------------------------------
+## 2.3.5 (2011040116) for Moodle 2.2, 2.3, 2.4, 2.5, 2.6, 2.7, 2.8, 2.9
+_Release date: Wednesday, 06 May 2015_
 - Added support for Moodle 2.8 and 2.9
 - Added support to the new logging system
 - Improved the color palette for graphics with lots of elements
@@ -269,51 +307,37 @@ Release date: Wednesday, 06 May 2015
 
 Thanks albergasset and jpeak5 for their fixes
 
-
-2.3.4 (2011040114) for Moodle 2.2, 2.3, 2.4, 2.5, 2.6, 2.7
-Release date: Thursday, 26 June 2014, 18:16
-----------------------------------------------------------------------
+## 2.3.4 (2011040114) for Moodle 2.2, 2.3, 2.4, 2.5, 2.6, 2.7
+_Release date: Thursday, 26 June 2014, 18:16_
 - New fullname user field column
 - Several bug fixes
 
-
-2.3.3 (2011040113) for Moodle 2.2, 2.3, 2.4, 2.5, 2.6, 2.7
-Release date: Friday, 13 June 2014, 18:16
-----------------------------------------------------------------------
+## 2.3.3 (2011040113) for Moodle 2.2, 2.3, 2.4, 2.5, 2.6, 2.7
+_Release date: Friday, 13 June 2014, 18:16_
 - Fixed layout and notice/warnings problems
 
-
-2.3.2 (2011040110) for Moodle 2.2, 2.3, 2.4, 2.5, 2.6
-Release date: Friday, 14 February 2014, 11:14 AM
-----------------------------------------------------------------------
+## 2.3.2 (2011040110) for Moodle 2.2, 2.3, 2.4, 2.5, 2.6
+_Release date: Friday, 14 February 2014, 11:14 AM_
 - Several bug fixes
 
-
-2.3.2 (2011040109) for Moodle 2.2, 2.3, 2.4, 2.5, 2.6
-Release date: Thursday, 30 January 2014, 10:33 AM
-----------------------------------------------------------------------
+## 2.3.2 (2011040109) for Moodle 2.2, 2.3, 2.4, 2.5, 2.6
+_Release date: Thursday, 30 January 2014, 10:33 AM_
 - Fixed invalid table reference in cron
 
-
-2.3.2 (2011040108) for Moodle  2.2, 2.3, 2.4, 2.5m 2.6
-Release date Thursday, 16 January 2014, 15:25 AM
-----------------------------------------------------------------------
+## 2.3.2 (2011040108) for Moodle  2.2, 2.3, 2.4, 2.5m 2.6
+_Release date Thursday, 16 January 2014, 15:25 AM_
 - Some bug fixes
 - New CSV export
 
-
-2.3.1 (2011040107) for Moodle 2.0, 2.1, 2.2, 2.3, 2.4, 2.5m 2.6
-Release date Monday, 16 December 2013, 10:25 AM
-----------------------------------------------------------------------
+## 2.3.1 (2011040107) for Moodle 2.0, 2.1, 2.2, 2.3, 2.4, 2.5m 2.6
+_Release date Monday, 16 December 2013, 10:25 AM_
 - Some minor bug fixes
 - SQL syntax by default is disabled
 - New block instance settings (change name and also show/hide global reports)
 - New users cohorts condition
 
-
-2.3 (2011040106) for Moodle 2.0, 2.1, 2.2, 2.3, 2.4, 2.5m 2.6
-Release date Friday, 13 December 2013, 4:35 PM
-----------------------------------------------------------------------
+## 2.3 (2011040106) for Moodle 2.0, 2.1, 2.2, 2.3, 2.4, 2.5m 2.6
+_Release date Friday, 13 December 2013, 4:35 PM_
 - Support for Moodle 2.6
 - Multiple bugs fixed
 - Global report that can be shared in all courses
@@ -328,38 +352,26 @@ Release date Friday, 13 December 2013, 4:35 PM
 
 Thanks to Nadav Kavalerchik for providing most of the new features
 
-
-2.2 (2011040105) for Moodle 2.0, 2.1, 2.2, 2.3, 2.4, 2.5
-Release date Wednesday, 27 February 2013, 9:35 AM
-----------------------------------------------------------------------
+## 2.2 (2011040105) for Moodle 2.0, 2.1, 2.2, 2.3, 2.4, 2.5
+_Release date Wednesday, 27 February 2013, 9:35 AM_
 - Support for Moodle 2.4 and 2.5
 - Bugs fixed
 
-
-2.1 (2011040103) for Moodle 2.0, 2.1, 2.2, 2.3
-Release date Friday, 6 July 2012, 1:29 PM
-----------------------------------------------------------------------
+## 2.1 (2011040103) for Moodle 2.0, 2.1, 2.2, 2.3
+_Release date Friday, 6 July 2012, 1:29 PM_
 - Support for Moodle 2.3
 - Bugs fixed
 
-
-2.0.2 (2011040102) for Moodle 2.0, 2.1, 2.2
-Release date Monday, 9 January 2012, 11:41 AM
-----------------------------------------------------------------------
+## 2.0.2 (2011040102) for Moodle 2.0, 2.1, 2.2
+_Release date Monday, 9 January 2012, 11:41 AM_
 - Support for Moodle 2.2
 - Bugs fixed
 
+## 2.0.1 (2011040101) for Moodle 2.0, 2.1
+_Release date Thursday, 13 October 2011, 12:55 AM_
 
-2.0.1 (2011040101) for Moodle 2.0, 2.1
-Release date Thursday, 13 October 2011, 12:55 AM
-----------------------------------------------------------------------
+## 2.0 (2011040100) for Moodle 2.0, 2.1
+_Release date Thursday, 29 September 2011, 10:47 AM_
 
-
-2.0 (2011040100) for Moodle 2.0, 2.1
-Release date Thursday, 29 September 2011, 10:47 AM
-----------------------------------------------------------------------
-
-
-1.0 (2010090100) for Moodle 1.9
-Release date Thursday, 29 September 2011, 10:38 AM
-----------------------------------------------------------------------
+## 1.0 (2010090100) for Moodle 1.9
+_Release date Thursday, 29 September 2011, 10:38 AM_

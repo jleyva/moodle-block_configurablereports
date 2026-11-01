@@ -80,10 +80,13 @@ class plugin_categoryfield extends plugin_base {
                 case 'parent':
                     $row->{$data->column} = $DB->get_field('course_categories', 'name', ['id' => $row->{$data->column}]);
                     break;
+                case 'description':
+                    $context = context_coursecat::instance($row->id, IGNORE_MISSING) ?: context_system::instance();
+                    return format_text($row->description, $row->descriptionformat ?? FORMAT_HTML, ['context' => $context]);
             }
         }
 
-        return $row->{$data->column} ?? '';
+        return s($row->{$data->column} ?? '');
     }
 
 }

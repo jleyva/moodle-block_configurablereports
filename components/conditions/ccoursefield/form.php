@@ -38,17 +38,7 @@ class ccoursefield_form extends moodleform {
     /**
      * @var array|string[] allowed operators
      */
-    public array $allowedops = [
-        '=' => '=',
-        '>' => '>',
-        '<' => '<',
-        '>=' => '>=',
-        '<=' => '<=',
-        '<>' => '<>',
-        'LIKE' => 'LIKE',
-        'NOT LIKE' => 'NOT LIKE',
-        'LIKE % %' => 'LIKE % %',
-    ];
+    public array $allowedops = [];
 
     /**
      * Form definition
@@ -57,6 +47,7 @@ class ccoursefield_form extends moodleform {
         global $DB;
 
         $mform =& $this->_form;
+        $this->allowedops = cr_get_condition_operators();
 
         $mform->addElement('header', 'crformheader', get_string('coursefield', 'block_configurable_reports'), '');
 

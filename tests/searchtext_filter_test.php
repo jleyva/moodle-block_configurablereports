@@ -55,7 +55,7 @@ final class searchtext_filter_test extends advanced_testcase {
 
         $this->filter = new \plugin_searchtext((object) ['id' => 1, 'type' => 'sql', 'components' => '']);
 
-        foreach (['Oberhausen', 'Coburg', 'Madrid', 'Barcelona'] as $city) {
+        foreach (['Oberhausen', 'Coburg', 'Madrid', 'Barcelona', '0'] as $city) {
             $this->users[$city] = (int) $this->getDataGenerator()->create_user(['city' => $city])->id;
         }
     }
@@ -121,6 +121,17 @@ final class searchtext_filter_test extends advanced_testcase {
         $this->assertSame([$this->users['Barcelona']], $ids);
         $this->assertSame(['Barcelona'], array_values($params));
         $this->assertStringContainsString('AND u.city = :', $sql);
+    }
+
+    /**
+     * "0" is a value like any other, so it has to filter rather than read as no filter at all.
+     */
+    public function test_zero_is_filtered(): void {
+        [$sql, $params, $ids] = $this->run_filter('%%FILTER_SEARCHTEXT_city:u.city:=%%', '0');
+
+        $this->assertSame([$this->users['0']], $ids);
+        $this->assertSame(['0'], array_values($params));
+        $this->assertStringNotContainsString('%%', $sql);
     }
 
     /**

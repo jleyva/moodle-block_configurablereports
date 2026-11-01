@@ -55,6 +55,10 @@ if ((int) $course->id === SITEID) {
     $context = context_course::instance($course->id);
 }
 
+if (!in_array($report->type, get_list_of_plugins('blocks/configurable_reports/reports'), true)) {
+    throw new moodle_exception('reportdoesnotexists', 'block_configurable_reports');
+}
+
 require_once($CFG->dirroot . '/blocks/configurable_reports/report.class.php');
 require_once($CFG->dirroot . '/blocks/configurable_reports/reports/' . $report->type . '/report.class.php');
 
@@ -77,7 +81,11 @@ if ($download && $report->type === "sql") {
 }
 $reportclass->create_report();
 
-$action = (!empty($download)) ? 'download' : 'view';
+if ($download) {
+    \block_configurable_reports\event\report_exported::create_from_report($report, $context, ['format' => $format])->trigger();
+} else {
+    \block_configurable_reports\event\report_viewed::create_from_report($report, $context)->trigger();
+}
 
 // No download, build navigation header etc..
 if (!$download) {

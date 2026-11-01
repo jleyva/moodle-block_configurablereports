@@ -74,7 +74,31 @@ class github extends \curl {
         $repolink .= $this->repo;
         $repolink .= $url;
 
+        // Always verify the GitHub certificate, core curl does not do it by default.
+        $options['CURLOPT_SSL_VERIFYPEER'] = true;
+
         return parent::get($repolink, $params, $options);
+    }
+
+    /**
+     * Get a file's contents
+     *
+     * The API host describes a file rather than serving it, so the contents come from the raw host.
+     *
+     * @param string $path The path of the file in the repository, branch first.
+     * @param array $params
+     * @param array $options
+     * @return bool|string
+     */
+    public function get_file(string $path, array $params = [], array $options = []) {
+        $rawlink = 'https://raw.githubusercontent.com/';
+        $rawlink .= $this->repo;
+        $rawlink .= $path;
+
+        // Always verify the GitHub certificate, core curl does not do it by default.
+        $options['CURLOPT_SSL_VERIFYPEER'] = true;
+
+        return parent::get($rawlink, $params, $options);
     }
 
 }

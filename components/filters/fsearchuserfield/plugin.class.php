@@ -77,9 +77,9 @@ class plugin_fsearchuserfield extends filter_base {
 
         if (preg_match("/%%FILTER_USERS:([^%]+)%%/i", $sql, $output)) {
             if ($filterfuserfield) {
-                $replace = ' AND ' . $DB->sql_like($output[1], ":{$data->field}");
+                $replace = ' AND ' . $DB->sql_like($output[1], ':fsearchuserfield');
                 $sql = str_replace('%%FILTER_USERS:' . $output[1] . '%%', $replace, $sql);
-                $params[$data->field] = $filter;
+                $params['fsearchuserfield'] = $filter;
             } else {
                 // Remove SQL clause.
                 $pattern = '/%%FILTER_USERS:' . preg_quote($output[1], '/') . '%%/i';
@@ -102,36 +102,32 @@ class plugin_fsearchuserfield extends filter_base {
 
         $filterfuserfield = optional_param('filter_fuserfield_' . $data->field, 0, PARAM_RAW);
 
-        if ($filterfuserfield) {
+        if ($filterfuserfield && $finalelements) {
             // Function addslashes is done in clean param.
             $filter = clean_param(base64_decode($filterfuserfield), PARAM_TEXT);
 
             [$insql, $inparams] = $remotedb->get_in_or_equal($finalelements, SQL_PARAMS_NAMED, 'userfield');
-            $likesql = $remotedb->sql_like($data->field, ":datafield", false);
             $likeparams = ['datafield' => $filter];
 
             if (strpos($data->field, 'profile_') === 0) {
+                // Profile field values are stored in the data column of user_info_data.
+                $likesql = $remotedb->sql_like('data', ':datafield', false);
                 $conditions = ['shortname' => str_replace('profile_', '', $data->field)];
                 if ($fieldid = $remotedb->get_field('user_info_field', 'id', $conditions)) {
                     $sql = "fieldid = :fieldid AND {$likesql} AND userid {$insql}";
                     $params = array_merge(['fieldid' => $fieldid], $likeparams, $inparams);
 
-                    if ($infodata = $remotedb->get_records_select('user_info_data', $sql, $params)) {
-                        $finalusersid = [];
-                        foreach ($infodata as $d) {
-                            $finalusersid[] = $d->userid;
-                        }
-
-                        return $finalusersid;
-                    }
+                    // Only the users matching the value, none if nobody matches.
+                    return array_values(array_unique(array_column(
+                        $remotedb->get_records_select('user_info_data', $sql, $params, '', 'id, userid'), 'userid')));
                 }
 
-            } else {
+            } else if (array_key_exists($data->field, $remotedb->get_columns('user')) &&
+                    !in_array($data->field, cr_get_sensitive_user_columns(), true)) {
+                $likesql = $remotedb->sql_like($data->field, ':datafield', false);
                 $sql = "{$likesql} AND id {$insql}";
                 $params = array_merge($likeparams, $inparams);
-                if ($elements = $remotedb->get_records_select('user', $sql, $params)) {
-                    $finalelements = array_keys($elements);
-                }
+                $finalelements = array_keys($remotedb->get_records_select('user', $sql, $params, '', 'id'));
             }
         }
 
@@ -163,6 +159,10 @@ class plugin_fsearchuserfield extends filter_base {
             }
         }
 
+        foreach (cr_get_sensitive_user_columns() as $column) {
+            unset($usercolumns[$column]);
+        }
+
         if (!isset($usercolumns[$formdata->field])) {
             throw new moodle_exception('nosuchcolumn');
         }
@@ -191,7 +191,7 @@ class plugin_fsearchuserfield extends filter_base {
 
                     if ($infodata = $remotedb->get_records_sql($sql, $params)) {
                         foreach ($infodata as $d) {
-                            $filteroptions[base64_encode($d->data)] = $d->data;
+                            $filteroptions[base64_encode($d->data)] = s($d->data);
                         }
                     }
                 }
@@ -209,7 +209,7 @@ class plugin_fsearchuserfield extends filter_base {
                 $sql = "SELECT DISTINCT({$formdata->field}) as ufield FROM {user} WHERE id $insql ORDER BY ufield ASC";
                 if ($rs = $remotedb->get_recordset_sql($sql, $inparams)) {
                     foreach ($rs as $u) {
-                        $filteroptions[base64_encode($u->ufield)] = $u->ufield;
+                        $filteroptions[base64_encode($u->ufield)] = s($u->ufield);
                     }
                     $rs->close();
                 }

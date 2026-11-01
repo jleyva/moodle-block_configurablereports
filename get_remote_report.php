@@ -26,9 +26,13 @@
 define('AJAX_SCRIPT', true);
 require(dirname(__FILE__, 3) . '/config.php');
 require_once($CFG->libdir . '/filelib.php');
+require_once($CFG->dirroot . '/blocks/configurable_reports/locallib.php');
 
-require_login();
-$reportname = required_param('reportname', PARAM_RAW);
+$context = block_configurable_reports_require_course_login();
+if (!block_configurable_reports_can_managesqlreports($context)) {
+    throw new moodle_exception('nosqlpermissions', 'block_configurable_reports');
+}
+$reportname = required_param('reportname', PARAM_PATH);
 
 if (!$userandrepo = get_config('block_configurable_reports', 'sharedsqlrepository')) {
     echo json_encode('');
@@ -37,7 +41,13 @@ if (!$userandrepo = get_config('block_configurable_reports', 'sharedsqlrepositor
 
 $github = new \block_configurable_reports\github;
 $github->set_repo($userandrepo);
-$content = $github->get('/master/' . $reportname);
-[$subject, $description, $sql] = explode('###', $content);
+$content = $github->get_file('/master/' . $reportname);
 
-echo json_encode($sql);
+// A report file is a subject, a description and the query, in that order. Anything else is not one:
+// the repository answers a request for a file it does not have with a page of its own.
+$parts = explode('###', (string) $content);
+if (count($parts) < 3) {
+    throw new moodle_exception('errorremotereport', 'block_configurable_reports');
+}
+
+echo json_encode(trim($parts[2]));

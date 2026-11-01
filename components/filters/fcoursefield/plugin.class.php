@@ -64,16 +64,19 @@ class plugin_fcoursefield extends filter_base {
      */
     public function execute($finalelements, $data) {
         global $remotedb;
+        // Imported reports do not go through the form, so check the field is a course column.
+        if (!array_key_exists($data->field, $remotedb->get_columns('course'))) {
+            return $finalelements;
+        }
+
         $filterfcoursefield = optional_param('filter_fcoursefield_' . $data->field, 0, PARAM_RAW);
-        if ($filterfcoursefield) {
+        if ($filterfcoursefield && $finalelements) {
             // Function addslashes is done in clean param.
             $filter = clean_param(base64_decode($filterfcoursefield), PARAM_TEXT);
             [$usql, $params] = $remotedb->get_in_or_equal($finalelements);
             $sql = "$data->field = ? AND id $usql";
             $params = array_merge([$filter], $params);
-            if ($elements = $remotedb->get_records_select('course', $sql, $params)) {
-                $finalelements = array_keys($elements);
-            }
+            $finalelements = array_keys($remotedb->get_records_select('course', $sql, $params, '', 'id'));
         }
 
         return $finalelements;
@@ -118,14 +121,14 @@ class plugin_fcoursefield extends filter_base {
                 " <> '' ORDER BY ufield ASC";
             if ($rs = $remotedb->get_recordset_sql($sql, null)) {
                 foreach ($rs as $u) {
-                    $filteroptions[base64_encode($u->ufield)] = $u->ufield;
+                    $filteroptions[base64_encode($u->ufield)] = s($u->ufield);
                 }
                 $rs->close();
             }
         }
 
-        $mform->addElement('select', 'filter_fcoursefield_' . $formdata->field, get_string($formdata->field), $filteroptions);
-        $mform->setType('filter_courses', PARAM_BASE64);
+        $mform->addElement('select', 'filter_fcoursefield_' . $formdata->field, cr_get_field_name($formdata->field), $filteroptions);
+        $mform->setType('filter_courses', PARAM_RAW);
     }
 
 }

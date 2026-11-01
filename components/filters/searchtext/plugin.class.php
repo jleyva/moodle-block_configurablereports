@@ -88,7 +88,8 @@ class plugin_searchtext extends filter_base {
             $filtermatch = "FILTER_SEARCHTEXT";
         }
 
-        if ($filtersearchtext) {
+        // Compare against the empty default rather than testing for truth, so that "0" filters like any other value.
+        if ($filtersearchtext !== '') {
             return $this->sql_replace($filtersearchtext, $filtermatch, $sql);
         }
 

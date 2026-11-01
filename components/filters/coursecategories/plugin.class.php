@@ -80,7 +80,9 @@ class plugin_coursecategories extends filter_base {
                 $coursecache[$course] = $remotedb->get_record('course', ['id' => $course]);
             }
             $course = $coursecache[$course];
-            if ($category != $course->category && (empty($parents[$course->id]) || !in_array($category, $parents[$course->id]))) {
+            // Keep the courses in the category or in any of its subcategories.
+            if (!$course || ($category != $course->category &&
+                    (empty($parents[$course->category]) || !in_array($category, $parents[$course->category])))) {
                 unset($finalelements[$key]);
             }
         }

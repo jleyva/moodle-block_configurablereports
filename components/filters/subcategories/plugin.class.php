@@ -79,14 +79,19 @@ class plugin_subcategories extends filter_base {
      */
     #[Override]
     function execute_for_sql_report(string $sql, ?stdClass $data = null): array {
+        global $DB;
+
         $filtersubcategories = optional_param('filter_subcategories', 0, PARAM_INT);
 
         $params = [];
 
         if ($filtersubcategories && preg_match("/%%FILTER_SUBCATEGORIES:([^%]+)%%/i", $sql, $output)) {
-            $replace = ' AND ( ' . $output[1] . ' LIKE CONCAT( \'%/\', ' . $filtersubcategories . ', \'/%\' ) OR ' . $output[1] . ' LIKE CONCAT( \'%/\', :filtersubcategories ) )';
+            // The category path contains the category in the middle ("/1/5/7") or at the end ("/1/5").
+            $replace = ' AND (' . $DB->sql_like($output[1], ':filtersubcategories1') . ' OR ' .
+                $DB->sql_like($output[1], ':filtersubcategories2') . ')';
             $sql = str_replace('%%FILTER_SUBCATEGORIES:' . $output[1] . '%%', $replace, $sql);
-            $params['filtersubcategories'] = $filtersubcategories;
+            $params['filtersubcategories1'] = '%/' . $filtersubcategories . '/%';
+            $params['filtersubcategories2'] = '%/' . $filtersubcategories;
         } else if (preg_match("/%%FILTER_SUBCATEGORIES:([^%]+)%%/i", $sql, $output)) {
             $sql = preg_replace('/%%FILTER_SUBCATEGORIES:([^%]+)%%/i', '', $sql);
         }
@@ -128,12 +133,7 @@ class plugin_subcategories extends filter_base {
                 }
             }
         } else {
-            if (class_exists('core_course_category')) {
-                $subcategorieslist = core_course_category::make_categories_list();
-            } else {
-                require_once($CFG->libdir . '/coursecatlib.php');
-                $subcategorieslist = coursecat::make_categories_list();
-            }
+            $subcategorieslist = core_course_category::make_categories_list();
 
             if (!empty($subcategorieslist)) {
                 $courseoptions += $subcategorieslist;

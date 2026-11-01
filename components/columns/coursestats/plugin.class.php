@@ -74,8 +74,9 @@ class plugin_coursestats extends plugin_base {
 
         $stat = '--';
 
-        $filterstarttime = optional_param('filter_starttime', 0, PARAM_RAW);
-        $filterendtime = optional_param('filter_endtime', 0, PARAM_RAW);
+        // The date filter posts its parts as an array, which optional_param() refuses to clean.
+        $filterstarttime = cr_filter_date_to_timestamp(optional_param_array('filter_starttime', [], PARAM_INT));
+        $filterendtime = cr_filter_date_to_timestamp(optional_param_array('filter_endtime', [], PARAM_INT));
 
         // Do not apply filters in timeline report (filters yet applied).
         if ($starttime && $endtime) {
@@ -83,27 +84,32 @@ class plugin_coursestats extends plugin_base {
             $filterendtime = 0;
         }
 
-        if ($filterstarttime && $filterendtime) {
-            $filterstarttime = make_timestamp($filterstarttime['year'], $filterstarttime['month'], $filterstarttime['day']);
-            $filterendtime = make_timestamp($filterendtime['year'], $filterendtime['month'], $filterendtime['day']);
-        }
-
         $starttime = ($filterstarttime) ? $filterstarttime : $starttime;
         $endtime = ($filterendtime) ? $filterendtime : $endtime;
 
         $limit = 0;
-        $numericroles = array_filter($data->roles, 'is_numeric');
+        $extraparams = [];
+        $numericroles = array_filter((array) ($data->roles ?? []), 'is_numeric');
+        $roleparams = [];
+        if ($numericroles) {
+            [$rolesql, $roleparams] = $DB->get_in_or_equal(array_map('intval', $numericroles));
+            $rolesql = " AND roleid $rolesql";
+        } else {
+            $rolesql = '';
+        }
 
         switch ($data->stat) {
             case 'activityview':
                 $total = 'SUM(stat1)';
                 $stattype = 'activity';
-                $extrasql = " AND roleid IN (" . implode(',', $numericroles ). ")";
+                $extrasql = $rolesql;
+                $extraparams = $roleparams;
                 break;
             case 'activitypost':
                 $total = 'SUM(stat2)';
                 $stattype = 'activity';
-                $extrasql = " AND roleid IN (" . implode(',', $numericroles) . ")";
+                $extrasql = $rolesql;
+                $extraparams = $roleparams;
                 break;
             case 'activeenrolments':
                 $total = 'stat2';
@@ -129,6 +135,7 @@ class plugin_coursestats extends plugin_base {
         }
 
         $sql .= $extrasql;
+        $params = array_merge($params, $extraparams);
 
         if ($res = $DB->get_records_sql($sql, $params, 0, $limit)) {
             $res = array_shift($res);

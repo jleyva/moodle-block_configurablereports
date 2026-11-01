@@ -58,74 +58,26 @@
     text-align: center;
 }
 
-/* Convert "Add report" link to a beautiful button
-    (Used: http://www.cssbuttongenerator.com/)
+/* Centre the "Add report" button
 */
 .addbutton {
     text-align: center;
 }
 
-.linkbutton {
-    -moz-box-shadow: inset 0px 1px 0px 0px #dcecfb;
-    -webkit-box-shadow: inset 0px 1px 0px 0px #dcecfb;
-    box-shadow: inset 0px 1px 0px 0px #dcecfb;
-    background: -webkit-gradient(linear, left top, left bottom, color-stop(0.05, #bddbfa), color-stop(1, #80b5ea));
-    background: -moz-linear-gradient(center top, #bddbfa 5%, #80b5ea 100%);
-    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#bddbfa', endColorstr='#80b5ea');
-    background-color: #bddbfa;
-    -webkit-border-top-left-radius: 0px;
-    -moz-border-radius-topleft: 0px;
-    border-top-left-radius: 0px;
-    -webkit-border-top-right-radius: 0px;
-    -moz-border-radius-topright: 0px;
-    border-top-right-radius: 0px;
-    -webkit-border-bottom-right-radius: 0px;
-    -moz-border-radius-bottomright: 0px;
-    border-bottom-right-radius: 0px;
-    -webkit-border-bottom-left-radius: 0px;
-    -moz-border-radius-bottomleft: 0px;
-    border-bottom-left-radius: 0px;
-    text-indent: 0;
-    border: 1px solid #84bbf3;
-    display: inline-block;
-    color: #ffffff;
-    font-family: Arial;
-    font-size: 15px;
-    font-weight: bold;
-    font-style: normal;
-    height: 30px;
-    line-height: 30px;
-    width: 100px;
-    text-decoration: none;
-    text-align: center;
-    text-shadow: 1px 1px 0px #528ecc;
-}
-
-.linkbutton:hover {
-    background: -webkit-gradient(linear, left top, left bottom, color-stop(0.05, #80b5ea), color-stop(1, #bddbfa));
-    background: -moz-linear-gradient(center top, #80b5ea 5%, #bddbfa 100%);
-    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#80b5ea', endColorstr='#bddbfa');
-    background-color: #80b5ea;
-}
-
-.linkbutton:active {
-    position: relative;
-    top: 1px;
-}
-
 
 /* DataTables styles */
+/* stylelint-disable -- Copied from the DataTables and CodeMirror releases, see readme_moodle.txt. */
 
 /*
  * Table
  */
-table.dataTable {
+#page-blocks-configurable_reports-viewreport table.dataTable {
     margin: 0 auto;
     clear: both;
     width: 100%;
 }
 
-table.dataTable thead th {
+#page-blocks-configurable_reports-viewreport table.dataTable thead th {
     padding: 3px 18px 3px 10px;
     border-bottom: 1px solid black;
     font-weight: bold;
@@ -133,50 +85,50 @@ table.dataTable thead th {
     *cursor: hand;
 }
 
-table.dataTable tfoot th {
+#page-blocks-configurable_reports-viewreport table.dataTable tfoot th {
     padding: 3px 18px 3px 10px;
     border-top: 1px solid black;
     font-weight: bold;
 }
 
-table.dataTable td {
+#page-blocks-configurable_reports-viewreport table.dataTable td {
     padding: 3px 10px;
 }
 
-table.dataTable td.center,
-table.dataTable td.dataTables_empty {
+#page-blocks-configurable_reports-viewreport table.dataTable td.center,
+#page-blocks-configurable_reports-viewreport table.dataTable td.dataTables_empty {
     text-align: center;
 }
 
-table.dataTable tr.odd {
+#page-blocks-configurable_reports-viewreport table.dataTable tr.odd {
     background-color: #E2E4FF;
 }
 
-table.dataTable tr.even {
+#page-blocks-configurable_reports-viewreport table.dataTable tr.even {
     background-color: white;
 }
 
-table.dataTable tr.odd td.sorting_1 {
+#page-blocks-configurable_reports-viewreport table.dataTable tr.odd td.sorting_1 {
     background-color: #D3D6FF;
 }
 
-table.dataTable tr.odd td.sorting_2 {
+#page-blocks-configurable_reports-viewreport table.dataTable tr.odd td.sorting_2 {
     background-color: #DADCFF;
 }
 
-table.dataTable tr.odd td.sorting_3 {
+#page-blocks-configurable_reports-viewreport table.dataTable tr.odd td.sorting_3 {
     background-color: #E0E2FF;
 }
 
-table.dataTable tr.even td.sorting_1 {
+#page-blocks-configurable_reports-viewreport table.dataTable tr.even td.sorting_1 {
     background-color: #EAEBFF;
 }
 
-table.dataTable tr.even td.sorting_2 {
+#page-blocks-configurable_reports-viewreport table.dataTable tr.even td.sorting_2 {
     background-color: #F2F3FF;
 }
 
-table.dataTable tr.even td.sorting_3 {
+#page-blocks-configurable_reports-viewreport table.dataTable tr.even td.sorting_3 {
     background-color: #F9F9FF;
 }
 
@@ -184,7 +136,7 @@ table.dataTable tr.even td.sorting_3 {
 /*
  * Table wrapper
  */
-.dataTables_wrapper {
+#page-blocks-configurable_reports-viewreport .dataTables_wrapper {
     position: relative;
     clear: both;
     *zoom: 1;
@@ -194,7 +146,7 @@ table.dataTable tr.even td.sorting_3 {
 /*
  * Page length menu
  */
-.dataTables_length {
+#page-blocks-configurable_reports-viewreport .dataTables_length {
     float: left;
 }
 
@@ -202,7 +154,7 @@ table.dataTable tr.even td.sorting_3 {
 /*
  * Filter
  */
-.dataTables_filter {
+#page-blocks-configurable_reports-viewreport .dataTables_filter {
     float: right;
     text-align: right;
 }
@@ -211,7 +163,7 @@ table.dataTable tr.even td.sorting_3 {
 /*
  * Table information
  */
-.dataTables_info {
+#page-blocks-configurable_reports-viewreport .dataTables_info {
     clear: both;
     float: left;
 }
@@ -220,16 +172,16 @@ table.dataTable tr.even td.sorting_3 {
 /*
  * Pagination
  */
-.dataTables_paginate {
+#page-blocks-configurable_reports-viewreport .dataTables_paginate {
     float: right;
     text-align: right;
 }
 
 /* Two button pagination - previous / next */
-.paginate_disabled_previous,
-.paginate_enabled_previous,
-.paginate_disabled_next,
-.paginate_enabled_next {
+#page-blocks-configurable_reports-viewreport .paginate_disabled_previous,
+#page-blocks-configurable_reports-viewreport .paginate_enabled_previous,
+#page-blocks-configurable_reports-viewreport .paginate_disabled_next,
+#page-blocks-configurable_reports-viewreport .paginate_enabled_next {
     height: 19px;
     float: left;
     cursor: pointer;
@@ -237,76 +189,76 @@ table.dataTable tr.even td.sorting_3 {
     color: #111 !important;
 }
 
-.paginate_disabled_previous:hover,
-.paginate_enabled_previous:hover,
-.paginate_disabled_next:hover,
-.paginate_enabled_next:hover {
+#page-blocks-configurable_reports-viewreport .paginate_disabled_previous:hover,
+#page-blocks-configurable_reports-viewreport .paginate_enabled_previous:hover,
+#page-blocks-configurable_reports-viewreport .paginate_disabled_next:hover,
+#page-blocks-configurable_reports-viewreport .paginate_enabled_next:hover {
     text-decoration: none !important;
 }
 
-.paginate_disabled_previous:active,
-.paginate_enabled_previous:active,
-.paginate_disabled_next:active,
-.paginate_enabled_next:active {
+#page-blocks-configurable_reports-viewreport .paginate_disabled_previous:active,
+#page-blocks-configurable_reports-viewreport .paginate_enabled_previous:active,
+#page-blocks-configurable_reports-viewreport .paginate_disabled_next:active,
+#page-blocks-configurable_reports-viewreport .paginate_enabled_next:active {
     outline: none;
 }
 
-.paginate_disabled_previous,
-.paginate_disabled_next {
+#page-blocks-configurable_reports-viewreport .paginate_disabled_previous,
+#page-blocks-configurable_reports-viewreport .paginate_disabled_next {
     color: #666 !important;
 }
 
-.paginate_disabled_previous,
-.paginate_enabled_previous {
+#page-blocks-configurable_reports-viewreport .paginate_disabled_previous,
+#page-blocks-configurable_reports-viewreport .paginate_enabled_previous {
     padding-left: 23px;
 }
 
-.paginate_disabled_next,
-.paginate_enabled_next {
+#page-blocks-configurable_reports-viewreport .paginate_disabled_next,
+#page-blocks-configurable_reports-viewreport .paginate_enabled_next {
     padding-right: 23px;
     margin-left: 10px;
 }
 
-.paginate_enabled_previous {
+#page-blocks-configurable_reports-viewreport .paginate_enabled_previous {
     background: url([[pix:block_configurable_reports|datatable/back_enabled]]) no-repeat top left;
 }
 
-.paginate_enabled_previous:hover {
+#page-blocks-configurable_reports-viewreport .paginate_enabled_previous:hover {
     background: url([[pix:block_configurable_reports|datatable/back_enabled_hover]]) no-repeat top left;
 }
 
-.paginate_disabled_previous {
+#page-blocks-configurable_reports-viewreport .paginate_disabled_previous {
     background: url([[pix:block_configurable_reports|datatable/back_disabled]]) no-repeat top left;
 }
 
-.paginate_enabled_next {
+#page-blocks-configurable_reports-viewreport .paginate_enabled_next {
     background: url([[pix:block_configurable_reports|datatable/forward_enabled]]) no-repeat top right;
 }
 
-.paginate_enabled_next:hover {
+#page-blocks-configurable_reports-viewreport .paginate_enabled_next:hover {
     background: url([[pix:block_configurable_reports|datatable/forward_enabled_hover]]) no-repeat top right;
 }
 
-.paginate_disabled_next {
+#page-blocks-configurable_reports-viewreport .paginate_disabled_next {
     background: url([[pix:block_configurable_reports|datatable/forward_disabled]]) no-repeat top right;
 }
 
 /* Full number pagination */
-.paging_full_numbers {
+#page-blocks-configurable_reports-viewreport .paging_full_numbers {
     height: 22px;
     line-height: 22px;
 }
 
-.paging_full_numbers a:active {
+#page-blocks-configurable_reports-viewreport .paging_full_numbers a:active {
     outline: none
 }
 
-.paging_full_numbers a:hover {
+#page-blocks-configurable_reports-viewreport .paging_full_numbers a:hover {
     text-decoration: none;
 }
 
-.paging_full_numbers a.paginate_button,
-.paging_full_numbers a.paginate_active {
+#page-blocks-configurable_reports-viewreport .paging_full_numbers a.paginate_button,
+#page-blocks-configurable_reports-viewreport .paging_full_numbers a.paginate_active {
     border: 1px solid #aaa;
     -webkit-border-radius: 5px;
     -moz-border-radius: 5px;
@@ -318,16 +270,16 @@ table.dataTable tr.even td.sorting_3 {
     color: #333 !important;
 }
 
-.paging_full_numbers a.paginate_button {
+#page-blocks-configurable_reports-viewreport .paging_full_numbers a.paginate_button {
     background-color: #ddd;
 }
 
-.paging_full_numbers a.paginate_button:hover {
+#page-blocks-configurable_reports-viewreport .paging_full_numbers a.paginate_button:hover {
     background-color: #ccc;
     text-decoration: none !important;
 }
 
-.paging_full_numbers a.paginate_active {
+#page-blocks-configurable_reports-viewreport .paging_full_numbers a.paginate_active {
     background-color: #99B3FF;
 }
 
@@ -335,7 +287,7 @@ table.dataTable tr.even td.sorting_3 {
 /*
  * Processing indicator
  */
-.dataTables_processing {
+#page-blocks-configurable_reports-viewreport .dataTables_processing {
     position: absolute;
     top: 50%;
     left: 50%;
@@ -355,28 +307,28 @@ table.dataTable tr.even td.sorting_3 {
 /*
  * Sorting
  */
-.sorting {
+#page-blocks-configurable_reports-viewreport .sorting {
     background: url([[pix:block_configurable_reports|datatable/sort_both]]) no-repeat center right;
 }
 
-.sorting_asc {
+#page-blocks-configurable_reports-viewreport .sorting_asc {
     background: url([[pix:block_configurable_reports|datatable/sort_asc]]) no-repeat center right;
 }
 
-.sorting_desc {
+#page-blocks-configurable_reports-viewreport .sorting_desc {
     background: url([[pix:block_configurable_reports|datatable/sort_desc]]) no-repeat center right;
 }
 
-.sorting_asc_disabled {
+#page-blocks-configurable_reports-viewreport .sorting_asc_disabled {
     background: url([[pix:block_configurable_reports|datatable/sort_asc_disabled]]) no-repeat center right;
 }
 
-.sorting_desc_disabled {
+#page-blocks-configurable_reports-viewreport .sorting_desc_disabled {
     background: url([[pix:block_configurable_reports|datatable/sort_desc_disabled]]) no-repeat center right;
 }
 
-table.dataTable thead th:active,
-table.dataTable thead td:active {
+#page-blocks-configurable_reports-viewreport table.dataTable thead th:active,
+#page-blocks-configurable_reports-viewreport table.dataTable thead td:active {
     outline: none;
 }
 
@@ -384,11 +336,11 @@ table.dataTable thead td:active {
 /*
  * Scrolling
  */
-.dataTables_scroll {
+#page-blocks-configurable_reports-viewreport .dataTables_scroll {
     clear: both;
 }
 
-.dataTables_scrollBody {
+#page-blocks-configurable_reports-viewreport .dataTables_scrollBody {
     *margin-top: -1px;
     -webkit-overflow-scrolling: touch;
 }
@@ -935,15 +887,7 @@ span.CodeMirror-selectedtext {
     background: none;
 }
 
-/* See issue #2901 */
-.cm-tab-wrap-hack:after {
-    content: '';
-}
-
-/* Help users use markselection to safely style text background */
-span.CodeMirror-selectedtext {
-    background: none;
-}
+/* stylelint-enable */
 
 #page-blocks-configurable_reports-editreport .CodeMirror {
     width: 100%;

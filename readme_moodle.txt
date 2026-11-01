@@ -63,6 +63,11 @@ https://cdn.datatables.net/releases.html
 4. Copy the new 'css/jquery.dataTables.css' after replacing the references to
 the image folder into the "DataTables styles" section in 'styles.css'.
 
+   4.a. Prefix every selector with '#page-blocks-configurable_reports-viewreport '.
+   Moodle serves each plugin's styles.css on every page of the site, so selectors
+   as broad as 'table.dataTable' would otherwise restyle the tables of any other
+   plugin that uses DataTables.
+
 5. Execute grunt to compile js
    grunt js
 
@@ -121,3 +126,31 @@ git clone -b 7.x-compatible https://github.com/bozhinov/pChart2.0-for-PHP7.git p
 
    3.a. Remove the folders 'examples' and 'cache' and the file 'index.php'.
 
+4. The charts use a font shipped with pChart2, not one of our own. The Tahoma,
+GeosansLight and MankSans fonts that used to live in 'lib/Fonts/' were removed
+because they are not redistributable, so do not restore them: keep
+components/plot/line/graph.php and components/plot/pie/graph.php pointing at
+'lib/pChart2/fonts/Cairo-Regular.ttf' (OFL licensed).
+
+5. In 'class/pDraw.php', drop the $num_points argument from every
+imagefilledpolygon() call, keeping the three argument form:
+
+   ------------------
+    imagefilledpolygon($this->Picture, $Points, $PointCount / 2, $color);
+   ------------------
+
+   to
+   ------------------
+    imagefilledpolygon($this->Picture, $Points, $color);
+   ------------------
+
+   PHP 8.1 deprecated that argument, so the released library writes a
+   deprecation notice into the middle of every image it draws. Check whether
+   the release has fixed this before patching it again.
+
+
+=======================
+After importing any of them
+=======================
+
+Update 'thirdpartylibs.xml' with the new version and licence of the library.

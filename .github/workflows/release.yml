@@ -1,0 +1,27 @@
+name: release
+
+# Submits a released version to the Moodle Marketplace.
+#
+# This runs when a GitHub release is published rather than when its tag is pushed, because the
+# reusable workflow takes the release notes from the GitHub release and falls back to the whole of
+# CHANGELOG.md when it cannot find one. Publishing a release creates the tag and the release
+# together, so the notes are always there by the time this runs; a tag push can win the race and
+# submit the entire changelog as the notes for one version.
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Tag to release, for example 5.3.2'
+        required: true
+
+jobs:
+  release-to-marketplace:
+    uses: moodlehq/moodle-plugin-release/.github/workflows/moodle-release.yml@main
+    with:
+      # On a release this is the tag it was published for; run by hand it is the tag typed above.
+      tag: ${{ github.event.release.tag_name || inputs.tag }}
+    secrets:
+      MOODLE_MARKETPLACE_TOKEN: ${{ secrets.MOODLE_MARKETPLACE_TOKEN }}

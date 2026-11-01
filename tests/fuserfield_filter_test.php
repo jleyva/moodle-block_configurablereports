@@ -29,6 +29,7 @@ use advanced_testcase;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG, $DB;
+require_once($CFG->dirroot . '/blocks/configurable_reports/locallib.php');
 require_once($CFG->dirroot . '/blocks/configurable_reports/filter.class.php');
 require_once($CFG->dirroot . '/blocks/configurable_reports/plugin.class.php');
 require_once($CFG->dirroot . '/blocks/configurable_reports/components/filters/fuserfield/plugin.class.php');
@@ -70,6 +71,102 @@ class fuserfield_filter_test extends advanced_testcase {
 
         // Instantiate the filter
         $this->filter = new \plugin_fuserfield($this->report);
+    }
+
+    /**
+     * CONTRIB-4937: a SQL report covers every user, so the options are read straight from the column
+     * rather than by listing every user id and binding one parameter for each of them.
+     */
+    public function test_sql_report_options_do_not_enumerate_users(): void {
+        global $CFG;
+        require_once($CFG->libdir . '/formslib.php');
+
+        $generator = $this->getDataGenerator();
+        $generator->create_user(['city' => 'Oberhausen']);
+        $generator->create_user(['city' => 'Madrid']);
+        $deleted = $generator->create_user(['city' => 'Atlantis']);
+        delete_user($deleted);
+
+        $options = $this->sql_report_options(0);
+
+        $this->assertContains('Oberhausen', $options);
+        $this->assertContains('Madrid', $options);
+        $this->assertContains('Atlantis', $options, 'a deleted user is in scope unless excluded');
+    }
+
+    /**
+     * The excludedeletedusers option still leaves deleted users out, now applied in the query itself.
+     */
+    public function test_sql_report_options_can_exclude_deleted_users(): void {
+        $generator = $this->getDataGenerator();
+        $generator->create_user(['city' => 'Oberhausen']);
+        $deleted = $generator->create_user(['city' => 'Atlantis']);
+        delete_user($deleted);
+
+        $options = $this->sql_report_options(1);
+
+        $this->assertContains('Oberhausen', $options);
+        $this->assertNotContains('Atlantis', $options);
+    }
+
+    /**
+     * Issue #281: the options were offered in whatever order the rows came back in, which for a
+     * custom profile field is the order the values were entered.
+     */
+    public function test_custom_profile_field_options_are_sorted(): void {
+        global $CFG;
+        require_once($CFG->libdir . '/formslib.php');
+
+        $generator = $this->getDataGenerator();
+        $generator->create_custom_profile_field([
+            'datatype' => 'text',
+            'shortname' => 'team',
+            'name' => 'Team',
+        ]);
+
+        // Entered back to front, so the order they were entered in is not alphabetical order.
+        foreach (['Zulu', 'Mike', 'Alpha'] as $value) {
+            $generator->create_user(['profile_field_team' => $value]);
+        }
+
+        $report = clone $this->report;
+        $report->type = 'sql';
+        $filter = new \plugin_fuserfield($report);
+
+        $mform = new \MoodleQuickForm('f', 'post', '');
+        $filter->print_filter($mform, (object) ['field' => 'profile_team']);
+
+        $labels = [];
+        foreach ($mform->getElement('filter_fuserfield_profile_team')->_options as $option) {
+            $labels[] = $option['text'];
+        }
+
+        $this->assertSame(get_string('filter_all', 'block_configurable_reports'), array_shift($labels));
+        $this->assertSame(['Alpha', 'Mike', 'Zulu'], $labels);
+    }
+
+    /**
+     * Build the city filter for a SQL report and return the labels it offers.
+     *
+     * @param int $excludedeleted
+     * @return string[]
+     */
+    private function sql_report_options(int $excludedeleted): array {
+        global $CFG;
+        require_once($CFG->libdir . '/formslib.php');
+
+        $report = clone $this->report;
+        $report->type = 'sql';
+        $filter = new \plugin_fuserfield($report);
+
+        $mform = new \MoodleQuickForm('f', 'post', '');
+        $filter->print_filter($mform, (object) ['field' => 'city', 'excludedeletedusers' => $excludedeleted]);
+
+        $labels = [];
+        foreach ($mform->getElement('filter_fuserfield_city')->_options as $option) {
+            $labels[] = $option['text'];
+        }
+        return $labels;
     }
 
     /**
