@@ -97,4 +97,31 @@ final class locallib_test extends advanced_testcase {
         ];
     }
 
+
+    /**
+     * Only the XML files of a repository folder are offered for import.
+     */
+    public function test_repository_listing_keeps_the_reports(): void {
+        $listing = json_decode(json_encode([
+            ['name' => 'README.md', 'type' => 'file'],
+            ['name' => 'Course users.xml', 'type' => 'file'],
+            ['name' => 'old', 'type' => 'dir'],
+            ['name' => 'Grades.XML', 'type' => 'file'],
+        ]));
+
+        $reports = block_configurable_reports_repository_reports($listing);
+
+        $this->assertSame(['Course users.xml', 'Grades.XML'], array_column($reports, 'name'));
+    }
+
+    /**
+     * A GitHub error, such as the rate limit, lists no reports.
+     */
+    public function test_repository_error_lists_nothing(): void {
+        $error = json_decode('{"message": "API rate limit exceeded", "documentation_url": "https://docs.github.com"}');
+
+        $this->assertSame([], block_configurable_reports_repository_reports($error));
+        $this->assertSame([], block_configurable_reports_repository_reports(null));
+    }
+
 }

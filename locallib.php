@@ -849,6 +849,26 @@ function block_configurable_reports_require_course_login(): context {
 }
 
 /**
+ * Keep the reports from a listing of a reports repository folder, as GitHub returns it.
+ *
+ * GitHub answers with an object instead of a list when the request fails, for example when the rate limit is
+ * reached, and a folder can hold files other than reports (README...), which cannot be imported.
+ *
+ * @param mixed $listing The decoded answer of the GitHub contents API.
+ * @return array The XML files of the folder.
+ */
+function block_configurable_reports_repository_reports($listing): array {
+    if (!is_array($listing)) {
+        return [];
+    }
+
+    return array_values(array_filter($listing, function($item) {
+        return is_object($item) && ($item->type ?? '') === 'file' &&
+            strtolower(pathinfo($item->name ?? '', PATHINFO_EXTENSION)) === 'xml';
+    }));
+}
+
+/**
  * Check if the current user is allowed to manage sql reports.
  *
  * @param context $context

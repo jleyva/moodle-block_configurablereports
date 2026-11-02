@@ -63,12 +63,12 @@ if ($importurl) {
     }
 
     $c = new curl();
-    if ($data = $c->get($importurl, [], ['CURLOPT_SSL_VERIFYPEER' => true])) {
-        $data = json_decode($data);
-        $xml = base64_decode($data->content);
-    } else {
+    $data = json_decode((string) $c->get($importurl, [], ['CURLOPT_SSL_VERIFYPEER' => true]));
+    // GitHub answers without content when the request fails, for example when the rate limit is reached.
+    if (!is_object($data) || !isset($data->content) || !is_string($data->content)) {
         throw new moodle_exception('errorimporting', 'block_configurable_reports');
     }
+    $xml = base64_decode($data->content);
 
     if (cr_import_xml($xml, $course)) {
         redirect(

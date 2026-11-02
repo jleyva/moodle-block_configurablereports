@@ -64,6 +64,10 @@ M.block_configurable_reports = {
         var Y = this.Y;
 
         var path = select_element[select_element.selectedIndex].value;
+        // The "..." option is not a report.
+        if (path === '-1' || path === '') {
+            return;
+        }
         location.href = location.href + "&importurl=" + encodeURIComponent(path) + "&sesskey=" + M.cfg.sesskey;
     }
 }

@@ -59,15 +59,10 @@ if ($action === 'listreports') {
         die;
     }
 } else if ($action === 'listcategory') {
-    $category = required_param('category', PARAM_PATH);
-    if ($res = $github->get('/contents/' . $category)) {
-        $data = json_decode($res);
-        foreach ($data as $key => $d) {
-            if ($d->type !== 'file') {
-                unset($data[$key]);
-            }
-        }
-        echo json_encode($data);
+    $category = trim(required_param('category', PARAM_PATH), '/');
+    // An empty category is the "..." option, which would list the files at the root of the repository (README...).
+    if ($category !== '' && ($res = $github->get('/contents/' . $category))) {
+        echo json_encode(block_configurable_reports_repository_reports(json_decode($res)));
         die;
     }
 }
