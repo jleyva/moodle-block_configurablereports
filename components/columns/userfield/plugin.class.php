@@ -103,6 +103,7 @@ class plugin_userfield extends plugin_base {
 
         if (isset($row->{$data->column})) {
             switch ($data->column) {
+                case 'timecreated':
                 case 'firstaccess':
                 case 'lastaccess':
                 case 'currentlogin':
