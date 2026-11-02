@@ -14,7 +14,7 @@ running in the browser, with no local install. The demo boots with the
 plugin installed, a sample SQL report ready to run, and lands on the
 reports management page.
 
-<a href="https://moodle-playground.com/?blueprint-url=https://raw.githubusercontent.com/jleyva/moodle-block_configurablereports/refs/heads/MOODLE_4x_STABLE/blueprint.json" target="_blank" rel="noopener"><img src="https://raw.githubusercontent.com/ateeducacion/action-moodle-playground-pr-preview/refs/heads/main/assets/playground-preview-button.svg" alt="Preview in Moodle Playground" width="200"></a>
+<a href="https://moodle-playground.com/?blueprint-url=https://raw.githubusercontent.com/jleyva/moodle-block_configurable_reports/refs/heads/MOODLE_4x_STABLE/blueprint.json" target="_blank" rel="noopener"><img src="https://raw.githubusercontent.com/ateeducacion/action-moodle-playground-pr-preview/refs/heads/main/assets/playground-preview-button.svg" alt="Preview in Moodle Playground" width="200"></a>
 
 ## Installation
 

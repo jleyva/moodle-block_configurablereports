@@ -30,7 +30,7 @@
       "step": "installMoodlePlugin",
       "pluginType": "block",
       "pluginName": "configurable_reports",
-      "url": "https://github.com/jleyva/moodle-block_configurablereports/archive/refs/heads/MOODLE_4x_STABLE.zip"
+      "url": "https://github.com/jleyva/moodle-block_configurable_reports/archive/refs/heads/MOODLE_4x_STABLE.zip"
     },
     {
       "step": "createCategory",

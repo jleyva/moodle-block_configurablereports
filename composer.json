@@ -1,5 +1,5 @@
 {
-  "name": "jleyva/moodle-block_configurablereports",
+  "name": "jleyva/moodle-block_configurable_reports",
   "type": "moodle-block",
   "description": "This block is a Moodle custom reports builder. You can create custom reports without SQL knowledge. It's a tool suitable for admins or teachers.",
   "homepage": "https://moodle.org/plugins/view.php?plugin=block_configurable_reports",
@@ -14,6 +14,6 @@
   },
   "support": {
     "issues": "http://tracker.moodle.org/browse/CONTRIB/component/10753",
-    "source": "https://github.com/jleyva/moodle-block_configurablereports/"
+    "source": "https://github.com/jleyva/moodle-block_configurable_reports/"
   }
 }
