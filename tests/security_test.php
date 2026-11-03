@@ -215,6 +215,25 @@ final class security_test extends advanced_testcase {
     }
 
     /**
+     * Question marks go back into the cells before they are cleaned, so they cannot be used to get script past it.
+     */
+    public function test_sql_report_question_marks_do_not_bypass_cleaning(): void {
+        $this->setAdminUser();
+        $this->getDataGenerator()->create_user(['username' => 'crtest1',
+            'description' => '<a href="javascript:alert(1)?x=[[QUESTIONMARK]]" onclick="alert(1)">?</a><img src="x?" onerror="alert(1)">']);
+
+        $report = new \report_sql($this->create_sql_report(
+            "SELECT u.description, '<script>alert(1)</script>?' AS other FROM {user} u WHERE u.username = 'crtest1'"));
+        $report->create_report();
+
+        $cells = implode('', $report->finalreport->table->data[0]);
+        $this->assertStringNotContainsString('javascript:', $cells);
+        $this->assertStringNotContainsString('onclick', $cells);
+        $this->assertStringNotContainsString('onerror', $cells);
+        $this->assertStringNotContainsString('<script>', $cells);
+    }
+
+    /**
      * User field columns escape plain fields.
      */
     public function test_userfield_column_is_escaped(): void {

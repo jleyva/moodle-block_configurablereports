@@ -308,11 +308,13 @@ class report_sql extends report_base {
                     $arrayrow = array_values((array) $row);
                     foreach ($arrayrow as $ii => $cell) {
                         // A NULL column reaches the export path unformatted, and str_replace() will not take null.
-                        $cell ??= '';
+                        $cell = str_replace('[[QUESTIONMARK]]', '?', $cell ?? '');
+                        // The question marks go back before cleaning: the cleaner encodes the placeholder inside
+                        // link URLs (issue #302), and it must see the content exactly as it will be shown.
                         if (!$this->is_forexport()) {
                             $cell = format_text($cell, FORMAT_HTML, ['para' => false, 'context' => $cellcontext ?: context_system::instance()]);
                         }
-                        $arrayrow[$ii] = str_replace('[[QUESTIONMARK]]', '?', $cell);
+                        $arrayrow[$ii] = $cell;
                     }
                     $totalrecords++;
                     $finaltable[] = $arrayrow;

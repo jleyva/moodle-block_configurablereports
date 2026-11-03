@@ -162,6 +162,30 @@ final class sql_report_test extends advanced_testcase {
     }
 
     /**
+     * Issue #302: a question mark in a string of the query reached the cleaned report as the placeholder,
+     * encoded inside link URLs, so the links were broken.
+     */
+    public function test_a_question_mark_in_a_link_survives_cleaning(): void {
+        global $DB;
+
+        $link = $DB->sql_concat("'<a href=\"%%WWWROOT%%/user/view.php?id='", 'u.id', "'&course=1\">Profile</a>'");
+        $query = "SELECT $link AS link, 'Why?' AS question FROM {user} u WHERE u.username = 'crtest1'";
+        $userid = $DB->get_field('user', 'id', ['username' => 'crtest1']);
+
+        $report = new \report_sql($this->create_report($query, []));
+        $this->assertTrue($report->create_report());
+        [$link, $question] = $report->finalreport->table->data[0];
+        $this->assertStringContainsString('href="' . (new \moodle_url('/user/view.php')) . '?id=' . $userid . '&amp;course=1"', $link);
+        $this->assertSame('Why?', $question);
+
+        // Exports never saw the placeholder either.
+        $report = new \report_sql($this->create_report($query, []));
+        $report->set_forexport(true);
+        $this->assertTrue($report->create_report());
+        $this->assertSame('Why?', $report->finalreport->table->data[0][1]);
+    }
+
+    /**
      * Issues #294 and #295: two search text filters on aliased columns failed with 'missing param "u"',
      * and a value in the second filter was ignored when the first one was empty.
      */
